@@ -1,0 +1,211 @@
+
+.wz-widget.hidden{
+	height: 39px;
+}
+
+.wz-scroll-bar{
+	width: 5px;
+	background: transparent;
+}
+
+.wz-scroll-slider{
+	width: 5px;
+	background: #FFF;
+}
+
+/* INICIO APARTADO CONVERSACIÓN */
+
+.wz-widget{
+	width: 259px;
+	overflow: hidden;
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+	position: absolute;
+	bottom: 0px;
+	right: 45px;
+	background: #2A2A2A;
+}
+
+.wz-win-close{
+	float: right;
+}
+
+.wz-win-close i{
+	background: url( "https://static.weezeel.com/app/14/buttons.png" ) no-repeat -30px 0px;
+	background-size: 45px 15px;
+}
+
+.weechat-friends-card{
+	width: 242px;
+	height: 33px;
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+	padding: 5px 6px 0px 11px;
+	border-top: 1px solid transparent;
+}
+
+.weechat-friends-card:hover {
+    background: none repeat scroll 0 0 #525252;
+    border-top: 1px solid #646464;
+}
+
+.weechat-friends-card img{
+	border: 2px solid #666;
+	float: left;
+    height: 24px;
+    width: 24px;
+}
+
+.weechat-friends-card.online img{	
+	border: 2px solid #66CD00;	
+}
+
+.weechat-friends-card span{
+	width: 146px;
+	height: 14px;
+	margin-top: 8px;
+	color: #D8D8D8;
+    float: left;
+    font-size: 13px;
+    margin-left: 11px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.weechat-friends-card:hover span {
+    color: #DCDCDC;
+}
+
+.weechat-counter{
+	
+	width: 22px;
+	height: 11px;
+	border-radius: 3px;
+	float: right;
+	margin-top: 7px;
+	text-align: center;
+	font-size: 12px;
+	font-weight: 500;
+	color: #FFF;
+	background: #C21A01;
+	padding: 2px 0px;
+	
+}
+
+.weechat-counter:empty{
+	
+	display: none;
+	
+}
+
+.weechat-conversation-opened{
+	width: 259px;
+	height: 323px;
+	float: left;
+	background: #3E3E3E;
+	box-shadow: 0 23px 20px -14px rgba(0,0,0,0.3) inset
+}
+
+.weechat-conversation-opened article{
+	
+	width: 231px;
+	padding: 14px 14px 0px 14px;
+	font-size: 13px;
+	float: left;
+	
+}
+
+.weechat-conversation-opened .weechat-conversation-message{
+	max-width: 190px;
+	word-wrap: break-word;
+}
+
+.weechat-conversation-opened .you .weechat-conversation-message{
+	float: left;
+	color: #FFF;
+}
+
+.weechat-conversation-opened .me .weechat-conversation-message{
+	float: right;
+	color: #8B8B8B;
+	font-style: italic;
+	text-align: left;
+}
+
+.weechat-conversation-opened .you .weechat-conversation-hour{
+	float: right;
+	color: #FFF;
+	display: none;
+}
+
+.weechat-conversation-opened .you:hover .weechat-conversation-hour{
+	display: block;
+}
+
+.weechat-conversation-opened .me .weechat-conversation-hour{
+	float: left;
+	color: #8B8B8B;
+	font-style: italic;
+	text-align: left;
+	display: none;
+}
+
+.weechat-conversation-opened .me:hover .weechat-conversation-hour{
+	display: block;
+}
+
+.weechat-conversation-bottom{
+	width: 231px;
+	height: 50px;
+	float: left;
+	padding: 14px;
+	background: #3E3E3E;
+}
+
+.weechat-conversation-bottom textarea{
+	width: 211px;
+	height: 30px;
+	padding: 10px;
+	border-radius: 2px;
+	background: #FFF;
+	font-size: 13px;
+	color: #585858;
+}
+
+/* FIN APARTADO CONVERSACION */
+
+/* INICIO APARTADO ICONO */
+/*
+
+.wz-widget-14.weechat-icon{
+	width: 40px;
+	height: 40px;
+	background: #2A2A2A;
+	position: absolute;
+	bottom: 0px;
+	right: 0px;
+	border-top-left-radius: 3px;
+}
+
+.wz-widget-14.weechat-icon:hover{
+	background: #525252;
+}
+
+.wz-widget-14.weechat-icon.open{
+	border-radius: 0px;
+	height: 45px;
+}
+
+.wz-widget-14.weechat-icon figure{
+	width: 24px;
+	height: 24px;
+	position: absolute;
+	bottom: 8px;
+	left: 8px;
+	background: url("https://static.weezeel.com/app/1/chat.png") no-repeat;
+	background-size: 24px 24px;
+}
+
+/* FIN APARTADO ICONO */
+

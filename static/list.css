@@ -1,0 +1,350 @@
+
+/* INICIO APARTADO LISTA DE AMIGOS */
+
+.wz-widget{
+	bottom: 0;
+	right: 0;
+}
+
+.wz-scroll-bar{
+	width: 5px;
+	background: transparent;
+}
+
+.wz-scroll-slider{
+	width: 5px;
+	background: #FFF;
+}
+
+.list{
+	
+	width: 214px;
+	height: 80%;
+	border-bottom-left-radius: 3px;
+	border-top-left-radius: 3px;
+	border-top: 1px solid #404040;
+	position: absolute;
+	right: 0;
+	bottom: 45px;
+	background: #2A2A2A;
+	z-index: 15000;
+	
+}
+
+.list.hidden{
+	height: 0px;
+	overflow: hidden;
+	border: none;
+}
+
+.weechat-self{
+	
+	width: 193px;
+	height: 31px;
+	position: absolute;
+	right: 0;
+	padding-left: 11px;
+	padding-top: 8px;
+	padding-right: 5px;
+	
+}
+
+.weechat-self figure{
+	
+	width: 9px;
+	height: 8px;
+	float: left;
+	margin-top: 8px;
+	background: url("https://static.weezeel.com/app/14/sprite.png") no-repeat 0px 0px;
+	background-size: 50px 8px;
+	
+}
+
+.weechat-self img{
+	
+	width: 24px;
+	height: 24px;
+	float: left;
+	margin-left: 12px;
+	
+}
+
+.weechat-self span{
+	
+	width: 100px;
+	font-size: 13px;
+	color: #D4D4D4;
+	float: left;
+	margin-top: 6px;
+	margin-left: 11px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	
+}
+
+.weechat-self-clickable{
+	
+	width: 24px;
+	height: 24px;
+	float: right;
+	border-radius: 12px;
+	margin-top: 2px;
+	
+}
+
+.weechat-self-clickable i{
+	margin-top: 8px;
+	margin-right: 8px;
+}
+
+.weechat-friends{
+	
+	width: 209px;
+	height: 90%;
+	border-top: 1px solid #535353;
+	border-bottom-left-radius: 3px;
+	border-top-left-radius: 3px;
+	position: absolute;
+	right: 0;
+	top: 8%;
+	background: #3E3E3E;	
+	
+}
+
+.weechat-friends-card{
+	
+	width: 186px;
+	height: 31px;
+	float: left;
+	padding: 8px 12px 0px 11px;
+	border-top: 1px solid #3E3E3E;
+	
+}
+
+.weechat-friends-card:hover{
+	
+	background: #525252;
+	border-top: 1px solid #646464;
+	
+}
+
+.weechat-friends-card img{
+	
+	width: 24px;
+	height: 24px;
+	float: left;
+	
+}
+
+.weechat-friends-card span{
+	
+	width: 111px;
+	font-size: 13px;
+	height: 14px;
+	color: #D8D8D8;
+	float: left;
+	margin-top: 6px;
+	margin-left: 11px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	
+}
+
+.weechat-friends-card:hover span{
+	
+	color: #DCDCDC;
+	
+}
+
+i{
+	
+	width: 8px;
+	height: 8px;
+	float: right;
+	margin-top: 10px;
+	border-radius: 2px;
+	background: url("https://static.weezeel.com/app/14/sprite.png") no-repeat;
+	background-size: 50px 8px;
+	
+}
+
+i.online{
+	background-position: -26px 0px;
+}
+
+i.offline{
+	background-position: -42px 0px;
+}
+
+i.busy{
+	background-position: -18px 0px;
+}
+
+i.away{
+	background-position: -34px 0px;
+}
+	
+.weechat-friends-card figure{
+	
+	width: 22px;
+	height: 11px;
+	border-radius: 3px;
+	float: right;
+	margin-top: 6px;
+	margin-right: 6px;
+	text-align: center;
+	font-size: 12px;
+	font-weight: 500;
+	color: #FFF;
+	background: #C21A01;
+	padding: 2px 0px;
+	
+}
+
+.weechat-friends-card figure:empty{
+	
+	display: none;
+	
+}
+
+.weechat-contextmenu{
+	
+	width: 148px;
+	height: 140px;
+	background: #404040;
+	position: absolute;
+	top: 5px;
+	right: 33px;
+	border-radius: 3px;
+	border-top: 1px solid #5C5C5C;
+	box-shadow: 0px 1px 3px #000;
+	
+}
+
+.wz-widget-14.contextmenu-invisible .weechat-contextmenu{
+	display: none;
+}
+
+.weechat-contextmenu article{
+	
+	width: 138px;
+	height: 19px;
+	border-top: 1px solid rgba(64, 64, 64, 0);
+	padding-top: 12px;
+	padding-left: 10px;
+	
+}
+
+.weechat-contextmenu article:first-child{
+	
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;	
+	
+}
+
+.weechat-contextmenu article:first-child:after{
+	
+	left: 100%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(64, 64, 64, 0);
+	border-left-color: #404040;
+	border-width: 10px;
+	top: 16px;
+	margin-top: -10px;
+	
+}
+
+.weechat-contextmenu article:first-child:hover:after{
+	border-left-color: #525252;
+}
+	
+.weechat-contextmenu article:last-child{
+	
+	border-bottom-left-radius: 3px;
+	border-bottom-right-radius: 3px;	
+	
+}
+
+.weechat-contextmenu article:hover{
+	background: #525252;
+	border-top: 1px solid #646464;
+}
+
+.weechat-contextmenu article span{
+	
+	width: 100px;
+	float: left;
+	margin-left: 10px;
+	font-size: 13px;
+	color: #E0E0E0;
+	
+}
+
+.weechat-contextmenu article i{
+	
+	float: left;
+	margin-top: 2px;
+	
+}
+
+.weechat-contextmenu-away{
+	border-bottom: 1px solid #181818;
+	padding-bottom: 5px;
+}
+	
+article.weechat-contextmenu-disconnect{
+	border-top: 1px solid #4D4D4D;
+	height: 25px;
+}
+
+.empty-list{
+	padding: 20px;
+	text-align: justify;
+}
+
+.empty-list span{
+	font-size: 13px;
+	color: #FFF;
+}
+
+/* FIN APARTADO LISTA DE AMIGOS*/
+
+/* INICIO APARTADO ICONO */
+
+.wz-widget-14.weechat-icon{
+	width: 40px;
+	height: 40px;
+	background: #2A2A2A;
+	position: absolute;
+	bottom: 0px;
+	right: 0px;
+	border-top-left-radius: 3px;
+}
+
+.wz-widget-14.weechat-icon:hover{
+	background: #525252;
+}
+
+.wz-widget-14.weechat-icon.open{
+	border-radius: 0px;
+	height: 45px;
+}
+
+.wz-widget-14.weechat-icon figure{
+	width: 24px;
+	height: 24px;
+	position: absolute;
+	bottom: 8px;
+	left: 8px;
+	background: url("https://static.weezeel.com/app/14/chat.png") no-repeat;
+	background-size: 24px 24px;
+}
+
+/* FIN APARTADO ICONO */

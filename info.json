@@ -1,0 +1,54 @@
+{
+
+    "name"    : "Chat",
+    "version" : "1.0",
+    "state"   : "beta",
+
+    "developer" : "wz",
+    "authKey"   : "wz",
+
+    "language" : {
+
+        "default" : "en-en",
+        "list"    : [ "en-en" ]
+
+    },
+
+    "common" : {
+
+        "css"    : [],
+        "script" : []
+
+    },
+
+    "primary" : "list",
+
+    "view" : {
+
+        "list" : {
+
+            "description" : "Contact List View",
+            
+            "template" : "list.html",
+            "css"      : ["list.css"],
+            "script"   : ["list.js"],
+
+            "class" : "wz-deskitem-front-always"
+
+        },
+
+        "conversation" : {
+
+            "description" : "Conversation View",
+            
+            "template" : "conversation.html",
+            "css"      : ["conversation.css"],
+            "script"   : ["conversation.js"],
+
+            "class" : "wz-deskitem-front-always"
+
+        }
+
+    }
+
+}

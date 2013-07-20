@@ -1,0 +1,11 @@
+
+{
+
+    "emptyList" : "You don't have any friends yet, open Contacts and look for them.",
+    "newMessage" : "New Message",
+    "statusOnline" : "Online",
+    "statusBusy" : "Busy",
+    "statusAway" : "Away", 
+    "statusDisconnect" : "Disconnect"
+
+}
