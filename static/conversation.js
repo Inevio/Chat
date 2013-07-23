@@ -21,7 +21,7 @@ wz.widget.addScript( 14, 'conversation', function( widget, wid, lang, params ){
                 .extract();
 
             wz.message()
-                .widget( 1 )
+                .widget( 14 )
                 .user( user.id )
                 .message( message )
                 .banner( banner )
@@ -218,13 +218,13 @@ wz.widget.addScript( 14, 'conversation', function( widget, wid, lang, params ){
     // Start the widget
     widget.addClass('weechat-conversation hidden');
 
-    var others     = wz.tool.widget( 1, 'conversation' ).not( widget );
+    var others     = wz.tool.widget( 14, 'conversation' ).not( widget );
     var othersSize = others.size();
 
     if( othersSize ){
 
         widget.css({
-            right : ( ( othersSize + 1 ) * 5 ) + ( othersSize * widget.width() ) + wz.tool.widget( 1, 'list' ).children('.weechat-icon').width()
+            right : ( ( othersSize + 1 ) * 5 ) + ( othersSize * widget.width() ) + wz.tool.widget( 14, 'list' ).children('.weechat-icon').width()
         });
         
     }

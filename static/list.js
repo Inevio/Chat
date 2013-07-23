@@ -2,8 +2,8 @@
 wz.widget.addScript( 14, 'list', function( widget, wid, lang, params ){
 
     // Local Variables
-    var userList   = $('.wz-widget-1.list');
-    var chatIcon   = $('.wz-widget-1.weechat-icon');
+    var userList   = $('.wz-widget-14.list');
+    var chatIcon   = $('.wz-widget-14.weechat-icon');
     var status     = $('.weechat-self', userList).children('i').attr('class');
     var friendZone = userList.children('.weechat-friends');
     var friend     = friendZone.children('.weechat-friends-card.wz-prototype');
@@ -56,7 +56,7 @@ wz.widget.addScript( 14, 'list', function( widget, wid, lang, params ){
         var conv = wz.tool.widget( 1 ).filter( '.weechat-user-' + user.id );
 
         if( !conv.size() ){
-            wz.desktop.focusDeskitem( wz.widget.createWidget( 1, [ user, status, message ], 'conversation' ) );
+            wz.desktop.focusDeskitem( wz.app( 14 ).createWidget( [ user, status, message ], 'conversation' ) );
         }else{
 
             if( conv.hasClass('hidden') ){

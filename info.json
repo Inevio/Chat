@@ -23,7 +23,7 @@
 
     "primary" : "list",
 
-    "view" : {
+    "widget" : {
 
         "list" : {
 
