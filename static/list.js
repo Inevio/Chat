@@ -11,7 +11,7 @@ wz.widget.addScript( 14, 'list', function( widget, wid, lang, params ){
     // Local Functions
     var addFriend = function( user ){
 
-        friendCard = friend.clone();
+        var friendCard = friend.clone();
         
         friendCard
             .removeClass('wz-prototype')
@@ -21,7 +21,7 @@ wz.widget.addScript( 14, 'list', function( widget, wid, lang, params ){
             .children('span')
                 .text( user.fullName );
 
-        friendCard.find( 'img' ).attr( 'src', user.avatar.tiny )
+        friendCard.find( 'img' ).attr( 'src', user.avatar.tiny );
         
         friendZone.append( friendCard );
 
@@ -52,8 +52,8 @@ wz.widget.addScript( 14, 'list', function( widget, wid, lang, params ){
     };
 
     var createConversation = function( user, status, message ){
-
-        var conv = wz.tool.widget( 1 ).filter( '.weechat-user-' + user.id );
+        
+        var conv = wz.tool.widget( 14 ).filter( '.weechat-user-' + user.id );
 
         if( !conv.size() ){
             wz.desktop.focusDeskitem( wz.app( 14 ).createWidget( [ user, status, message ], 'conversation' ) );
@@ -63,7 +63,7 @@ wz.widget.addScript( 14, 'list', function( widget, wid, lang, params ){
                 conv.find('.weechat-friends-card').click();
             }
 
-            wz.widget.bringWidgetToFront( conv );
+            wz.desktop.bringDeskitemToFront( conv );
             wz.desktop.focusDeskitem( conv );
 
         }
@@ -146,17 +146,19 @@ wz.widget.addScript( 14, 'list', function( widget, wid, lang, params ){
     // Events
     widget
 
-    .on( 'message', function( e, data ){
+    .on( 'message', function( e, user, data ){
 
-        var conv = wz.tool.widget( 1 ).filter( '.weechat-user-' + data.user.id );
+        var conv = wz.tool.widget( 14 ).filter( '.weechat-user-' + user );
 
         if( conv.size() ){
             return false;
         }
 
-        var card = $( '.weechat-friend-' + data.user.id + '-card', widget );
+        var card = $( '.weechat-friend-' + user + '-card', widget );
 
-        createConversation( card.data('user'), card.data('status'), data );
+        if( card.size() ){
+            createConversation( card.data('user'), card.data('status'), data );
+        }
 
     })
 

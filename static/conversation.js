@@ -4,16 +4,66 @@ wz.widget.addScript( 14, 'conversation', function( widget, wid, lang, params ){
     // Local Variables
     var header       = $( '.weechat-friends-card', widget );
     var counter      = $( '.weechat-counter', header );
-    var conversation = $( '.weechat-conversation-opened', widget );    
+    var conversation = $( '.weechat-conversation-opened', widget );
     var message      = $( '.weechat-conversation-opened article.wz-prototype', widget );
     var textarea     = $( 'textarea', widget );
     var user         = null;
+    var status       = null;
+    var channel      = null;
 
     // Local Functions
+    var readParams = function( params ){
+
+        user   = params[ 0 ];
+        status = params[ 1 ];
+
+        widget.addClass( 'weechat-user-' + user.id );
+        header.addClass( params[ 1 ] );
+
+        header.find( 'img' )
+            .attr( 'src', user.avatar.tiny );
+
+        header.find( 'span' )
+            .text( user.fullName );
+
+        if( params[ 2 ] ){
+
+            widget.trigger( 'message', [ user.id, params[ 2 ] ] );
+
+            if( widget.hasClass('hidden') ){
+                header.click();
+            }
+
+        }else{
+            header.click();
+        }
+
+        widget.removeClass( 'messages' );
+
+        if( channel === null ){
+
+            wz.channel.create( 14, function( error, chn ){
+
+                if( error ){
+                    console.log('NO PUEDE CREAR CANAL');
+                }else{
+
+                    channel = chn;
+                    channel.addUser( user.id );
+
+                }
+
+            });
+
+        }
+
+    };
+
     var sendMessage = function( message ){
-        
+
         if( message.length ){
 
+            /*
             var banner = wz.banner()
                 .title( lang.newMessage )
                 .text( message )
@@ -27,6 +77,9 @@ wz.widget.addScript( 14, 'conversation', function( widget, wid, lang, params ){
                 .banner( banner )
                 .self( true )
                 .send();
+            */
+
+            channel.send( message );
 
             addMessage( message, true );
 
@@ -73,68 +126,40 @@ wz.widget.addScript( 14, 'conversation', function( widget, wid, lang, params ){
 
     })
 
-    .on( 'widget-param', function( event, params ){
+    .on( 'message', function( e, userId, data ){
 
-        user = params[ 0 ];
-        status = params[ 1 ];
+        if( user.id !== userId ){
+            return false;
+        }
 
-        widget.addClass( 'weechat-user-' + user.id );
-        header.addClass( params[ 1 ] );
+        addMessage( data[ 0 ], Boolean( data.self ) );
 
-        header.find( 'img' )
-            .attr( 'src', user.avatar.tiny )
+        if( !data.self && widget.hasClass('hidden') ){
 
-        header.find( 'span' )
-            .text( user.fullName );
+            widget.addClass( 'messages' );
 
-        if( params[ 2 ] ){
-            
-            widget.trigger( 'message', [ params[ 2 ] ] );
+            /*
+            wz.banner()
+                .title( data.banner.title )
+                .text( data.banner.text )
+                .image( data.banner.image )
+                .render();
+            */
 
-            if( widget.hasClass('hidden') ){
-                header.click();
+            var num = parseInt( counter.text(), 10 );
+
+            if( isNaN( num ) ){
+                num = 0;
+            }
+
+            if( num < 999 ){
+                counter.text( ++num );
+            }else{
+                counter.text( '+' );
             }
 
         }else{
-            header.click();
-        }
-
-        widget.removeClass( 'messages' );
-
-    })
-
-    .on( 'message', function( e, data ){
-
-        if( user.id === parseInt( data.user.id, 10 ) ){ // To Do -> Si esto estuviese bien parseado se podria quitar el parseInt
-
-            addMessage( data.message, Boolean( data.self ) );
-
-            if( !data.self && widget.hasClass('hidden') ){
-
-                widget.addClass( 'messages' );
-
-                wz.banner()
-                    .title( data.banner.title )
-                    .text( data.banner.text )
-                    .image( data.banner.image )
-                    .render();
-
-                var num = parseInt( counter.text() );
-
-                if( isNaN( num ) ){
-                    num = 0;
-                }
-
-                if( num < 999 ){
-                    counter.text( ++num );
-                }else{
-                    counter.text( '+' );
-                }
-
-            }else{
-                widget.removeClass( 'messages' );
-            }
-
+            widget.removeClass( 'messages' );
         }
 
     })
@@ -142,7 +167,7 @@ wz.widget.addScript( 14, 'conversation', function( widget, wid, lang, params ){
     .on( 'wz-focus', function(){
 
         if( !widget.hasClass('hidden') ){
-            textarea.focus();            
+            textarea.focus();
         }
 
     })
@@ -218,6 +243,8 @@ wz.widget.addScript( 14, 'conversation', function( widget, wid, lang, params ){
     // Start the widget
     widget.addClass('weechat-conversation hidden');
 
+    readParams( params );
+
     var others     = wz.tool.widget( 14, 'conversation' ).not( widget );
     var othersSize = others.size();
 
@@ -226,7 +253,7 @@ wz.widget.addScript( 14, 'conversation', function( widget, wid, lang, params ){
         widget.css({
             right : ( ( othersSize + 1 ) * 5 ) + ( othersSize * widget.width() ) + wz.tool.widget( 14, 'list' ).children('.weechat-icon').width()
         });
-        
+
     }
 
     // Nullify
