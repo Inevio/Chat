@@ -148,13 +148,13 @@ wz.widget.addScript( 14, 'list', function( widget, wid, lang, params ){
 
     .on( 'message', function( e, user, data ){
 
-        var conv = wz.tool.widget( 14 ).filter( '.weechat-user-' + user );
+        var conv = wz.tool.widget( 14 ).filter( '.weechat-user-' + user.id );
 
         if( conv.size() ){
             return false;
         }
 
-        var card = $( '.weechat-friend-' + user + '-card', widget );
+        var card = $( '.weechat-friend-' + user.id + '-card', widget );
 
         if( card.size() ){
             createConversation( card.data('user'), card.data('status'), data );
