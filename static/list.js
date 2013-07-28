@@ -1,6 +1,4 @@
 
-wz.widget.addScript( 14, 'list', function( widget, wid, lang, params ){
-
     // Local Variables
     var userList   = $('.wz-widget-14.list');
     var chatIcon   = $('.wz-widget-14.weechat-icon');
@@ -236,5 +234,3 @@ wz.widget.addScript( 14, 'list', function( widget, wid, lang, params ){
     $( '.status-busy', widget ).text( lang.statusBusy );
     $( '.status-away', widget ).text( lang.statusAway );
     $( '.status-disconnect', widget ).text( lang.statusDisconnect );
-
-});

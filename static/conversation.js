@@ -1,6 +1,4 @@
 
-wz.widget.addScript( 14, 'conversation', function( widget, wid, lang, params ){
-
     // Local Variables
     var header       = $( '.weechat-friends-card', widget );
     var counter      = $( '.weechat-counter', header );
@@ -258,5 +256,3 @@ wz.widget.addScript( 14, 'conversation', function( widget, wid, lang, params ){
 
     // Nullify
     others = othersSize = null;
-
-});
