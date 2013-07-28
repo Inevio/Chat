@@ -49,6 +49,17 @@
 
         }
 
+    },
+
+    "permissions" : {
+
+        "channel" : true,
+        "user" : {
+
+            "read" : true
+
+        }
+
     }
 
 }
