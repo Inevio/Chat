@@ -40,7 +40,7 @@
 
         if( channel === null ){
 
-            wz.channel.create( 14, function( error, chn ){
+            wz.channel.create( function( error, chn ){
 
                 if( error ){
                     console.log('NO PUEDE CREAR CANAL');
@@ -126,9 +126,12 @@
 
     .on( 'message', function( e, userId, data ){
 
+        console.log( user.id, userId, arguments );
+
         if( user.id !== userId ){
             return false;
         }
+        console.log('***');
 
         addMessage( data[ 0 ], Boolean( data.self ) );
 
