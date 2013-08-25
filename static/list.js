@@ -50,7 +50,7 @@
     };
 
     var createConversation = function( user, status, message ){
-        
+            
         var conv = wz.tool.widget( 14 ).filter( '.weechat-user-' + user.id );
 
         if( !conv.size() ){

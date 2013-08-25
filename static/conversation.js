@@ -26,7 +26,7 @@
 
         if( params[ 2 ] ){
 
-            widget.trigger( 'message', [ user.id, params[ 2 ] ] );
+            widget.trigger( 'message', [ user, params[ 2 ] ] );
 
             if( widget.hasClass('hidden') ){
                 header.click();
@@ -124,28 +124,17 @@
 
     })
 
-    .on( 'message', function( e, userId, data ){
+    .on( 'message', function( e, userInfo, data ){
 
-        console.log( user.id, userId, arguments );
-
-        if( user.id !== userId ){
+        if( user.id !== userInfo.id ){
             return false;
         }
-        console.log('***');
 
         addMessage( data[ 0 ], Boolean( data.self ) );
 
         if( !data.self && widget.hasClass('hidden') ){
 
             widget.addClass( 'messages' );
-
-            /*
-            wz.banner()
-                .title( data.banner.title )
-                .text( data.banner.text )
-                .image( data.banner.image )
-                .render();
-            */
 
             var num = parseInt( counter.text(), 10 );
 
