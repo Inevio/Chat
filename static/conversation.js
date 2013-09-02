@@ -65,7 +65,7 @@
             var banner = wz.banner()
                 .title( lang.newMessage )
                 .text( message )
-                .image( wz.info.user().avatar.tiny )
+                .icon( wz.info.user().avatar.tiny )
                 .extract();
 
             wz.message()
