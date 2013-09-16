@@ -1,10 +1,10 @@
 
     // Local Variables
-    var userList   = $('.wz-widget-14.list');
-    var chatIcon   = $('.wz-widget-14.weechat-icon');
-    var status     = $('.weechat-self', userList).children('i').attr('class');
-    var friendZone = userList.children('.weechat-friends');
-    var friend     = friendZone.children('.weechat-friends-card.wz-prototype');
+    var userList   = $( '.wz-widget-14.list' );
+    var chatIcon   = $( '.wz-widget-14.weechat-icon' );
+    var status     = $( '.weechat-self', userList ).children( 'i' ).attr( 'class' );
+    var friendZone = userList.children( '.weechat-friends' );
+    var friend     = friendZone.children( '.weechat-friends-card.wz-prototype' );
     
     // Local Functions
     var addFriend = function( user ){
@@ -12,14 +12,14 @@
         var friendCard = friend.clone();
         
         friendCard
-            .removeClass('wz-prototype')
+            .removeClass( 'wz-prototype' )
             .data( 'user', user )
             .data( 'status', 'offline' )
-            .addClass('weechat-friend-' + user.id + '-card')
-            .children('span')
+            .addClass( 'weechat-friend-' + user.id + '-card' )
+            .children( 'span' )
                 .text( user.fullName );
 
-        friendCard.find( 'img' ).attr( 'src', user.avatar.tiny );
+        friendCard.find( '.user-avatar' ).attr( 'src', user.avatar.tiny );
         
         friendZone.append( friendCard );
 
@@ -31,7 +31,7 @@
 
         $( '.weechat-friend-' + id + '-card i', friendZone )
             .removeClass()
-            .addClass( status )
+            .addClass( 'status ' + status )
             .parent()
                 .data( 'status', status );
 
@@ -125,15 +125,15 @@
 
                 friendCard
                     .removeClass()
-                    .addClass('empty-list')
-                    .children('span')
+                    .addClass( 'empty-list' )
+                    .children( 'span' )
                         .text( lang.emptyList )
                     .siblings()
                         .remove();
                 
                 friendZone.append( friendCard );
                 
-                friendCard.siblings().not('.wz-prototype').remove();
+                friendCard.siblings().not( '.wz-prototype' ).remove();
 
             }
             
@@ -226,8 +226,9 @@
 
     // Start the widget
     friends();
-    setTimeout(connectedFriends,500);
-    $( '.weechat-self img', widget ).attr( 'src', wz.info.user().avatar.tiny );
+    setTimeout( connectedFriends, 500 );
+    $( '.weechat-self .user-avatar', widget ).attr( 'src', wz.info.user().avatar.tiny );
+    $( '.weechat-self .user-name', widget ).text( wz.info.user().fullName );
 
     $( '.self-status', widget ).text( lang.statusOnline );
     $( '.status-online', widget ).text( lang.statusOnline );
