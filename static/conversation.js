@@ -3,8 +3,10 @@
     var header       = $( '.weechat-friends-card', widget );
     var counter      = $( '.weechat-counter', header );
     var conversation = $( '.weechat-conversation-opened', widget );
-    var message      = $( '.weechat-conversation-opened article.wz-prototype', widget );
-    var textarea     = $( 'textarea', widget );
+    var message      = $( 'section.wz-prototype', conversation );
+    var writingGlobe = $( '.weechat-conversation-writing', conversation );     
+    var bottom       = $( '.weechat-conversation-bottom', widget );
+    var textarea     = $( 'textarea', bottom );
     var user         = null;
     var status       = null;
     var channel      = null;
@@ -58,31 +60,7 @@
     };
 
     var sendMessage = function( message ){
-
-        if( message.length ){
-
-            /*
-            var banner = wz.banner()
-                .title( lang.newMessage )
-                .text( message )
-                .icon( wz.info.user().avatar.tiny )
-                .extract();
-
-            wz.message()
-                .widget( 14 )
-                .user( user.id )
-                .message( message )
-                .banner( banner )
-                .self( true )
-                .send();
-            */
-
-            channel.send( message );
-
-            addMessage( message, true );
-
-        }
-
+        channel.send( message );
     };
 
     var addMessage = function( text, self ){
@@ -99,7 +77,7 @@
         item
             .removeClass()
             .addClass( ( self ) ? 'me' : 'you' )
-            .children('.weechat-conversation-message')
+            .find('.weechat-conversation-message span')
                 .text( text );
 
         item
@@ -107,9 +85,62 @@
                 .text( hour + ':' + minute );
 
         conversation
-            .append( item );
+            .append( item )
+            .append( writingGlobe );
 
         conversation.scrollTop( conversation[ 0 ].scrollHeight );
+
+    };
+
+    var autoResize = function( textarea ){
+
+        var settings = $.extend({ onResize : function(){}, extraSpace : 0, limit: 100 } );
+
+        origHeight = textarea.height(),
+         
+        clone = ( function(){
+         
+            var props = [ 'height', 'width', 'lineHeight', 'textDecoration', 'letterSpacing' ], propOb = {};
+             
+            $.each( props, function( i, prop ){ propOb[prop] = textarea.css( prop ); } );
+             
+            return textarea.clone().css({
+                position: 'absolute',
+                top: 0,
+                left: -9999
+            }).css( propOb ).attr( 'tabIndex', '-1' ).insertBefore( textarea );
+         
+        })(),
+        lastScrollTop = null,
+        updateSize = function() {
+         
+            clone.height( 0 ).val( $( this ).val() ).scrollTop( 10000 );
+             
+            var scrollTop = Math.max( clone.scrollTop(), origHeight ) + settings.extraSpace, toChange = $( this ).add( clone );
+         
+            // Don't do anything if scrollTop hasen't changed:
+            if ( lastScrollTop === scrollTop ) { return; }
+            lastScrollTop = scrollTop;
+             
+            // Check for limit:
+            if ( scrollTop >= settings.limit ) {
+                $( this ).css( 'overflow-y', 'auto' );
+                return;
+            }
+
+            settings.onResize.call( this );
+            toChange.height( scrollTop );
+
+            textarea.trigger( 'resize' );
+
+        };
+     
+        // Bind namespaced handlers to appropriate events:
+        textarea
+            .unbind( '.dynSiz' )
+            .bind( 'keyup.dynSiz', updateSize )
+            .bind( 'keydown.dynSiz', updateSize )
+            .bind( 'change.dynSiz', updateSize );
 
     };
 
@@ -126,30 +157,60 @@
 
     .on( 'message', function( e, userInfo, data ){
 
-        if( user.id !== userInfo.id ){
-            return false;
-        }
+        if( data[ 0 ].sender === user.id || data[ 0 ].receiver === user.id ){
 
-        addMessage( data[ 0 ], Boolean( data.self ) );
+            if( data[ 0 ].text ){
 
-        if( !data.self && widget.hasClass('hidden') ){
+                if( data[ 0 ].sender === user.id ){
+                    $( '.weechat-conversation-writing', widget ).removeClass( 'writing' ); 
+                    conversation.scrollTop( conversation[ 0 ].scrollHeight );
+                }
 
-            widget.addClass( 'messages' );
+                addMessage( data[ 0 ].text, Boolean( userInfo.selfUser ) );
 
-            var num = parseInt( counter.text(), 10 );
+                if( !userInfo.selfUser && widget.hasClass('hidden') ){
 
-            if( isNaN( num ) ){
-                num = 0;
-            }
+                    widget.addClass( 'messages' );
 
-            if( num < 999 ){
-                counter.text( ++num );
+                    var num = parseInt( counter.text(), 10 );
+
+                    if( isNaN( num ) ){
+                        num = 0;
+                    }
+
+                    if( num < 999 ){
+                        counter.text( ++num );
+                    }else{
+                        counter.text( '+' );
+                    }
+
+                    wz.banner()
+                        .title( user.fullName )
+                        .text( data[ 0 ].text )
+                        .icon( user.avatar.tiny )
+                        .sound( 'marimba' )
+                        .render();
+
+                }else{
+                    widget.removeClass( 'messages' );
+                }
+
             }else{
-                counter.text( '+' );
+
+                if( data[ 0 ].sender === user.id ){
+
+                    if( data[ 0 ].writing ){
+                        $( '.weechat-conversation-writing', widget ).addClass( 'writing' );
+                        conversation.scrollTop( conversation[ 0 ].scrollHeight );
+                    }else{
+                        $( '.weechat-conversation-writing', widget ).removeClass( 'writing' );
+                        conversation.scrollTop( conversation[ 0 ].scrollHeight );
+                    }
+
+                }
+
             }
 
-        }else{
-            widget.removeClass( 'messages' );
         }
 
     })
@@ -193,6 +254,24 @@
         e.stopPropagation();
         widget.remove();
 
+        var others     = wz.tool.widget( 14, 'conversation' ).not( widget );
+        var othersSize = others.size();
+        var control    = 0;
+
+        if( othersSize ){
+
+            others.each( function(){
+
+                $( this ).css({
+                    right : wz.tool.widget( 14, 'list' ).children( '.weechat-icon' ).outerWidth( true ) + control * widget.outerWidth( true ) + 5 * ( control + 1 )
+                });
+
+                control++;
+
+            });
+
+        }
+
     })
 
     .on( 'click', function(){
@@ -215,18 +294,41 @@
 
         if( e.which === 13 ){
 
-            e.preventDefault();
-
             var text = $( this ).val();
+
+            e.preventDefault();
 
             if( $.trim( text ).length ){
 
-                sendMessage( text );
+                sendMessage( { text: text, receiver : user.id, sender : wz.info.user().id } );
                 $( this ).val('');
 
             }
 
         }
+
+    })
+
+    .on( 'keyup', function( e ){
+
+        if( e.which !== 13 ){
+
+            var text = $( this ).val();
+
+            if( $.trim( text ).length ){
+                sendMessage( { writing: true, receiver : user.id, sender : wz.info.user().id } );
+            }else{
+                sendMessage( { writing: false, receiver : user.id, sender : wz.info.user().id } );
+            }
+
+        }
+
+    })
+
+    .on( 'resize', function(){
+
+        bottom.height( textarea.outerHeight( true ) );
+        conversation.height( 339 - bottom.outerHeight( true ) );
 
     });
 
@@ -241,10 +343,12 @@
     if( othersSize ){
 
         widget.css({
-            right : ( ( othersSize + 1 ) * 5 ) + ( othersSize * widget.width() ) + wz.tool.widget( 14, 'list' ).children('.weechat-icon').width()
+            right : wz.tool.widget( 14, 'list' ).children( '.weechat-icon' ).outerWidth( true ) + othersSize * widget.outerWidth( true ) + 5 * ( othersSize + 1 )
         });
 
     }
+
+    autoResize( textarea );
 
     // Nullify
     others = othersSize = null;
