@@ -189,6 +189,9 @@
                         .text( data[ 0 ].text )
                         .icon( user.avatar.tiny )
                         .sound( 'marimba' )
+                        .action( function(){
+                            $( '.weechat-friends-card', widget ).click();
+                        })
                         .render();
 
                 }else{
