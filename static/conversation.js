@@ -263,7 +263,7 @@
             others.each( function(){
 
                 $( this ).css({
-                    right : wz.tool.widget( 14, 'list' ).children( '.weechat-icon' ).outerWidth( true ) + control * widget.outerWidth( true ) + 5 * ( control + 1 )
+                    right : wz.tool.widget( 14, 'list' ).children( '.weechat-icon' ).outerWidth( true ) + control * $( this ).outerWidth( true ) + 5 * ( control + 1 )
                 });
 
                 control++;
