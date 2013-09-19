@@ -29,6 +29,8 @@
 
     var changeFriendStatus = function( id, status ){
 
+        console.log( id, status );
+
         $( '.weechat-friend-' + id + '-card i', friendZone )
             .removeClass()
             .addClass( 'status ' + status )
@@ -161,10 +163,12 @@
     })
 
     .on( 'user-connect', function( event, user ){
+        console.log( 'Connect: ', user, user.id );
         changeFriendStatus( user.id, 'online' );
     })
 
     .on( 'user-disconnect', function( event, user ){
+        console.log( 'Disconnect: ', user, user.id );
         changeFriendStatus( user.id, 'offline' );
     })
 
