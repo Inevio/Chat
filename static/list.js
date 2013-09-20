@@ -3,8 +3,8 @@
     var userList   = $( '.wz-widget-14.list' );
     var chatIcon   = $( '.wz-widget-14.weechat-icon' );
     var status     = $( '.weechat-self', userList ).children( 'i' ).attr( 'class' );
-    var friendZone = userList.children( '.weechat-friends' );
-    var friend     = friendZone.children( '.weechat-friends-card.wz-prototype' );
+    var friendZone = $( '.weechat-friends', userList );
+    var friend     = $( '.weechat-friends-card.wz-prototype', friendZone );
     
     // Local Functions
     var addFriend = function( user ){
@@ -28,8 +28,6 @@
     };
 
     var changeFriendStatus = function( id, status ){
-
-        console.log( id, status );
 
         $( '.weechat-friend-' + id + '-card i', friendZone )
             .removeClass()
@@ -163,12 +161,10 @@
     })
 
     .on( 'user-connect', function( event, user ){
-        console.log( 'Connect: ', user, user.id );
         changeFriendStatus( user.id, 'online' );
     })
 
     .on( 'user-disconnect', function( event, user ){
-        console.log( 'Disconnect: ', user, user.id );
         changeFriendStatus( user.id, 'offline' );
     })
 
