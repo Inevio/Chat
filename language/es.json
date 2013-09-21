@@ -1,7 +1,7 @@
 
 {
     
-	"emptyList" : "No tienes amigos todavía, abre Contactos y búscalos.",
+    "emptyList" : "No tienes amigos todavía, abre Contactos y búscalos.",
     "newMessage" : "Nuevo mensaje",
     "statusOnline" : "Conectado",
     "statusBusy" : "Ocupado",
