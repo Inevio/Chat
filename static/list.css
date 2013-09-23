@@ -145,12 +145,17 @@
 }
 
 .empty-list{
+    height: 26px;
     padding: 20px;
     text-align: justify;
 }
 
 .empty-list span{
     font-size: 13px;
+    white-space: normal;
+    word-wrap: break-word;
+    width: 205px;
+    margin: 0;
     color: #FFF;
 }
 
