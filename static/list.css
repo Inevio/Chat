@@ -105,6 +105,7 @@
 .user-name{
     width: 180px;
     font-size: 13px;
+    height: 14px;
     color: #FFF;
     float: left;
     margin-top: 8px;
@@ -172,7 +173,7 @@
     right: 0;
     padding: 13px 10px 12px 11px;
     border-top-left-radius: 3px;
-    box-shadow: -1px -1px rgba( 0, 0, 0, 0.75 ), inset 0 1px rgba( 255, 255, 255, 0.1 );
+    box-shadow: 0 0 0 1px rgba( 0, 0, 0, 0.75 ), inset 0 1px rgba( 255, 255, 255, 0.1 );
 
     background-image: -moz-linear-gradient( bottom, rgba( 23, 23, 23, 0.75 ), rgba( 53, 53, 53, 0.75 ) ); 
     background-image: -webkit-linear-gradient( bottom, rgba( 23, 23, 23, 0.75 ), rgba( 53, 53, 53, 0.75 ) );
@@ -182,7 +183,7 @@
 }
 
 .wz-widget-14.weechat-icon:hover{
-    box-shadow: -1px -1px rgba( 0, 0, 0, 0.3 ), inset 0 1px rgba( 255, 255, 255, 0.1 );
+    box-shadow: 0 0 0 1px rgba( 0, 0, 0, 0.3 ), inset 0 1px rgba( 255, 255, 255, 0.1 );
     background-image: -moz-linear-gradient( bottom, rgba( 78, 156, 33, 0.75 ), rgba( 126, 190, 48, 0.75 ) ); 
     background-image: -webkit-linear-gradient( bottom, rgba( 78, 156, 33, 0.75 ), rgba( 126, 190, 48, 0.75 ) );
     background-image: -o-linear-gradient( bottom, rgba( 78, 156, 33, 0.75 ), rgba( 126, 190, 48, 0.75 ) );
@@ -190,7 +191,7 @@
 }
 
 .wz-widget-14.weechat-icon.open{
-    box-shadow: -1px -1px rgba( 0, 0, 0, 0.3 ), inset 0 1px rgba( 255, 255, 255, 0.1 );
+    box-shadow: 0 0 0 1px rgba( 0, 0, 0, 0.3 ), inset 0 1px rgba( 255, 255, 255, 0.1 );
     background-image: -moz-linear-gradient( bottom, #4E9C21, #7EBE30 ); 
     background-image: -webkit-linear-gradient( bottom, #4E9C21, #7EBE30 );
     background-image: -o-linear-gradient( bottom, #4E9C21, #7EBE30 );
