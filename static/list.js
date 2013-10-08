@@ -95,6 +95,10 @@
 
             }else{
                 
+                if( list.length * friend.outerHeight( true ) > ( wz.tool.desktopHeight() * 0.8 - $( '.weechat-self', userList ).outerHeight( true ) ) ){
+                    friendZone.height( wz.tool.desktopHeight() * 0.8 - $( '.weechat-self', userList ).outerHeight( true ) );
+                }
+                
                 for( var i = 0; i < list.length; i++ ){ 
                     addFriend( list[ i ] );
                 }
