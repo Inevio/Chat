@@ -203,7 +203,7 @@
     width: 18px;
     height: 16px;
     display: block;
-    background: url("https://static.weezeel.com/app/14/chat.png") no-repeat;
+    background: url("@static/chat.png") no-repeat;
     background-size: 18px 16px;
     opacity: 0.75;
 }
