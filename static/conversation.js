@@ -1,10 +1,11 @@
 
     // Local Variables
+    var widget       = $( this );
     var header       = $( '.weechat-friends-card', widget );
     var counter      = $( '.weechat-counter', header );
     var conversation = $( '.weechat-conversation-opened', widget );
     var message      = $( 'section.wz-prototype', conversation );
-    var writingGlobe = $( '.weechat-conversation-writing', conversation );     
+    var writingGlobe = $( '.weechat-conversation-writing', conversation );
     var bottom       = $( '.weechat-conversation-bottom', widget );
     var textarea     = $( 'textarea', bottom );
     var user         = null;
@@ -232,20 +233,16 @@
 
     .on( 'user-connect', function( event, data ){
 
-        if( user.id === data.id ){ 
-
+        if( user.id === data.id ){
             header.removeClass( 'offline' ).addClass( 'online' );
-
         }
 
     })
 
     .on( 'user-disconnect', function( event, data ){
 
-        if( user.id === data.id ){ 
-
+        if( user.id === data.id ){
             header.removeClass( 'online' ).addClass( 'offline' );
-
         }
 
     });

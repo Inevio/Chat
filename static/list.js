@@ -1,5 +1,6 @@
 
     // Local Variables
+    var widget     = $( this );
     var userList   = $( '.wz-widget-14.list' );
     var chatIcon   = $( '.wz-widget-14.weechat-icon' );
     var status     = $( '.weechat-self', userList ).children( 'i' ).attr( 'class' );
