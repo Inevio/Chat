@@ -55,7 +55,9 @@
         var conv = wz.tool.widget( 14 ).filter( '.weechat-user-' + user.id );
 
         if( !conv.size() ){
-            wz.desktop.focusDeskitem( wz.app( 14 ).createWidget( [ user, status, message ], 'conversation' ) );
+            console.log( wz.app );
+            wz.app.createWidget( [ user, status, message ], 'conversation' );
+            //wz.desktop.focusDeskitem( wz.app( 14 ).createWidget( [ user, status, message ], 'conversation' ) );
         }else{
 
             if( conv.hasClass('hidden') ){
