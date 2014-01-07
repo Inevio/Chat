@@ -28,29 +28,25 @@
 
             },
 
-            "view" : {
+            "widget" : {
 
                 "list" : {
-
-                    "type" : "widget",
                     
                     "template" : "list.html",
                     "css"      : ["list.css"],
                     "script"   : ["list.js"],
 
-                    "class" : "wz-deskitem-front-always"
+                    "alwaysInFront" : true
 
                 },
 
                 "conversation" : {
-
-                    "type" : "widget",
                     
                     "template" : "conversation.html",
                     "css"      : ["conversation.css"],
                     "script"   : ["conversation.js"],
 
-                    "class" : "wz-deskitem-front-always"
+                    "alwaysInFront" : true
 
                 }
 

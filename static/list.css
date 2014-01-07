@@ -21,11 +21,11 @@
     max-height: 80%;
     border-radius: 3px;
     border: 1px solid #252525;
-    position: absolute;
+    position: relative;
     right: 4px;
     bottom: 52px;
     background: #3A3A3A;
-    z-index: 15000;
+    z-index: 15000; /* To Do -> It's necessary this? */
 }
 
 .list:after, .list:before{

@@ -64,8 +64,7 @@
                 conv.find('.weechat-friends-card').click();
             }
 
-            wz.desktop.bringDeskitemToFront( conv );
-            wz.desktop.focusDeskitem( conv );
+            wz.app.widgetToFront( conv );
 
         }
 
