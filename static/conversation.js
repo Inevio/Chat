@@ -254,7 +254,7 @@
         e.stopPropagation();
         widget.remove();
 
-        var others     = wz.tool.widget( 14, 'conversation' ).not( widget );
+        var others     = wz.tool.widget('conversation').not( widget );
         var othersSize = others.size();
         var control    = 0;
 
@@ -263,7 +263,7 @@
             others.each( function(){
 
                 $( this ).css({
-                    right : wz.tool.widget( 14, 'list' ).children( '.weechat-icon' ).outerWidth( true ) + control * $( this ).outerWidth( true ) + 5 * ( control + 1 )
+                    right : wz.tool.widget('list').children( '.weechat-icon' ).outerWidth( true ) + control * $( this ).outerWidth( true ) + 5 * ( control + 1 )
                 });
 
                 control++;
@@ -337,13 +337,13 @@
 
     readParams( params );
 
-    var others     = wz.tool.widget( 14, 'conversation' ).not( widget );
+    var others     = wz.tool.widget('conversation').not( widget );
     var othersSize = others.size();
 
     if( othersSize ){
 
         widget.css({
-            right : wz.tool.widget( 14, 'list' ).children( '.weechat-icon' ).outerWidth( true ) + othersSize * widget.outerWidth( true ) + 5 * ( othersSize + 1 )
+            right : wz.tool.widget('list').children( '.weechat-icon' ).outerWidth( true ) + othersSize * widget.outerWidth( true ) + 5 * ( othersSize + 1 )
         });
 
     }
