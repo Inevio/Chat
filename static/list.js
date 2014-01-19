@@ -182,7 +182,7 @@
         removeFriend( user );
     })    
 
-    .on( 'wz-blur', function(){
+    .on( 'ui-view-blur', function(){
 
         userList.addClass('hidden');
         chatIcon.removeClass('open');

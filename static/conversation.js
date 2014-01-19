@@ -219,7 +219,7 @@
 
     })
 
-    .on( 'wz-focus', function(){
+    .on( 'ui-view-focus', function(){
 
         if( !widget.hasClass('hidden') ){
             textarea.focus();
@@ -227,7 +227,7 @@
 
     })
 
-    .on( 'wz-blur', function(){
+    .on( 'ui-view-blur', function(){
         textarea.blur();
     })
 
