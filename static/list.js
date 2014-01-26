@@ -52,7 +52,7 @@
 
     var createConversation = function( user, status, message ){
             
-        var conv = wz.tool.widget().filter( '.weechat-user-' + user.id );
+        var conv = wz.app.getWidgets().filter( '.weechat-user-' + user.id );
 
         if( !conv.size() ){
             console.log( wz.app );
@@ -152,7 +152,7 @@
 
     .on( 'message', function( e, user, data ){
 
-        var conv = wz.tool.widget().filter( '.weechat-user-' + user.id );
+        var conv = wz.app.getWidgets().filter( '.weechat-user-' + user.id );
 
         if( conv.size() ){
             return false;
