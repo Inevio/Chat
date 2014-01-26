@@ -145,25 +145,16 @@
 
     };
 
-    // Events
-    widget
-
-    .on( 'mousedown', function( e ){
-
-        if( !widget.hasClass('wz-deskitem-focus') ){
-            e.preventDefault();
-        }
-
-    })
-
-    .on( 'message', function( e, userInfo, data ){
+    // WZ Events
+    wz.channel
+    .on( 'message', function( userInfo, data ){
 
         if( data[ 0 ].sender === user.id || data[ 0 ].receiver === user.id ){
 
             if( data[ 0 ].text ){
 
                 if( data[ 0 ].sender === user.id ){
-                    $( '.weechat-conversation-writing', widget ).removeClass( 'writing' ); 
+                    $( '.weechat-conversation-writing', widget ).removeClass( 'writing' );
                     conversation.scrollTop( conversation[ 0 ].scrollHeight );
                 }
 
@@ -215,6 +206,17 @@
 
             }
 
+        }
+
+    });
+
+    // Events
+    widget
+
+    .on( 'mousedown', function( e ){
+
+        if( !widget.hasClass('wz-deskitem-focus') ){
+            e.preventDefault();
         }
 
     })
