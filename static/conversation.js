@@ -302,7 +302,7 @@
 
             if( $.trim( text ).length ){
 
-                sendMessage( { text: text, receiver : user.id, sender : wz.info.user().id } );
+                sendMessage( { text: text, receiver : user.id, sender : wz.system.user().id } );
                 $( this ).val('');
 
             }
@@ -318,9 +318,9 @@
             var text = $( this ).val();
 
             if( $.trim( text ).length ){
-                sendMessage( { writing: true, receiver : user.id, sender : wz.info.user().id } );
+                sendMessage( { writing: true, receiver : user.id, sender : wz.system.user().id } );
             }else{
-                sendMessage( { writing: false, receiver : user.id, sender : wz.info.user().id } );
+                sendMessage( { writing: false, receiver : user.id, sender : wz.system.user().id } );
             }
 
         }

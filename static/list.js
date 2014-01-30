@@ -233,8 +233,8 @@
     // Start the widget
     friends();
     setTimeout( connectedFriends, 500 );
-    $( '.weechat-self .user-avatar', widget ).attr( 'src', wz.info.user().avatar.tiny );
-    $( '.weechat-self .user-name', widget ).text( wz.info.user().fullName );
+    $( '.weechat-self .user-avatar', widget ).attr( 'src', wz.system.user().avatar.tiny );
+    $( '.weechat-self .user-name', widget ).text( wz.system.user().fullName );
 
     $( '.self-status', widget ).text( lang.statusOnline );
     $( '.status-online', widget ).text( lang.statusOnline );
