@@ -55,7 +55,6 @@
         var conv = wz.app.getWidgets().filter( '.weechat-user-' + user.id );
 
         if( !conv.size() ){
-            console.log( wz.app );
             wz.app.createWidget( [ user, status, message ], 'conversation' );
             //wz.desktop.focusDeskitem( wz.app( 14 ).createWidget( [ user, status, message ], 'conversation' ) );
         }else{
@@ -147,40 +146,43 @@
 
     };
 
-    // Events
-    widget
+    // WZ Events
+    wz.channel
+    .on( 'message', function( info, data ){
 
-    .on( 'message', function( e, user, data ){
-
-        var conv = wz.app.getWidgets().filter( '.weechat-user-' + user.id );
+        var conv = wz.app.getWidgets().filter( '.weechat-user-' + info.sender );
 
         if( conv.size() ){
             return false;
         }
 
-        var card = $( '.weechat-friend-' + user.id + '-card', widget );
+        var card = $( '.weechat-friend-' + info.sender + '-card', widget );
 
         if( card.size() ){
             createConversation( card.data('user'), card.data('status'), data );
         }
 
-    })
+    });
 
-    .on( 'user-connect', function( event, user ){
+    wz.user
+    .on( 'connect', function( user ){
         changeFriendStatus( user.id, 'online' );
     })
 
-    .on( 'user-disconnect', function( event, user ){
+    .on( 'disconnect', function( user ){
         changeFriendStatus( user.id, 'offline' );
     })
 
-    .on( 'user-friendAdded', function( event, user ){
+    .on( 'friendAdded', function( user ){
         addFriend( user );
     })
 
-    .on( 'user-friendRemoved', function( event, user ){
+    .on( 'friendRemoved', function( user ){
         removeFriend( user );
-    })    
+    });
+
+    // DOM Events
+    widget
 
     .on( 'ui-view-blur', function(){
 
@@ -191,7 +193,6 @@
     });
 
     userList
-
     .on( 'click', '.weechat-friends-card', function(){
         createConversation( $( this ).data('user'), $( this ).data('status') );
     })
@@ -213,7 +214,6 @@
     });
 
     chatIcon
-
     .on( 'click', function(){
 
         if( userList.hasClass('hidden') ){

@@ -147,20 +147,20 @@
 
     // WZ Events
     wz.channel
-    .on( 'message', function( userInfo, data ){
+    .on( 'message', function( info, data ){
 
-        if( data[ 0 ].sender === user.id || data[ 0 ].receiver === user.id ){
+        if( data.sender === user.id || data.receiver === user.id ){
 
-            if( data[ 0 ].text ){
+            if( data.text ){
 
-                if( data[ 0 ].sender === user.id ){
+                if( data.sender === user.id ){
                     $( '.weechat-conversation-writing', widget ).removeClass( 'writing' );
                     conversation.scrollTop( conversation[ 0 ].scrollHeight );
                 }
 
-                addMessage( data[ 0 ].text, Boolean( userInfo.selfUser ) );
+                addMessage( data.text, Boolean( info.selfUser ) );
 
-                if( !userInfo.selfUser && widget.hasClass('hidden') ){
+                if( !info.selfUser && widget.hasClass('hidden') ){
 
                     widget.addClass( 'messages' );
 
@@ -178,7 +178,7 @@
 
                     wz.banner()
                         .title( user.fullName )
-                        .text( data[ 0 ].text )
+                        .text( data.text )
                         .icon( user.avatar.tiny )
                         .sound( 'marimba' )
                         .action( function(){
@@ -192,9 +192,9 @@
 
             }else{
 
-                if( data[ 0 ].sender === user.id ){
+                if( data.sender === user.id ){
 
-                    if( data[ 0 ].writing ){
+                    if( data.writing ){
                         $( '.weechat-conversation-writing', widget ).addClass( 'writing' );
                         conversation.scrollTop( conversation[ 0 ].scrollHeight );
                     }else{
