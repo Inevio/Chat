@@ -43,7 +43,7 @@
 
         if( channel === null ){
 
-            wz.channel.create( function( error, chn ){
+            wz.channel( function( error, chn ){
 
                 if( error ){
                     console.log('NO PUEDE CREAR CANAL');
