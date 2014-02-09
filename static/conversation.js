@@ -251,7 +251,7 @@
 
     header
 
-    .on( 'click', '.wz-win-close', function( e ){
+    .on( 'click', '.wz-view-close', function( e ){
 
         e.stopPropagation();
         widget.remove();
