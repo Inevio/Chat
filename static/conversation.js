@@ -215,7 +215,7 @@
 
     .on( 'mousedown', function( e ){
 
-        if( !widget.hasClass('wz-deskitem-focus') ){
+        if( !widget.hasClass('wz-app-focus') ){
             e.preventDefault();
         }
 
