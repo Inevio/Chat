@@ -4,6 +4,8 @@
 .wz-widget{
     bottom: 0;
     right: 0;
+    height: 41px;
+    width: 39px;
 }
 
 .wz-scroll-bar{
@@ -18,10 +20,9 @@
 
 .list{
     width: 245px;
-    max-height: 80%;
     border-radius: 3px;
     border: 1px solid #252525;
-    position: relative;
+    position: absolute;
     right: 4px;
     bottom: 52px;
     background: #3A3A3A;
@@ -130,7 +131,7 @@
 
 .weechat-friends{
     width: 245px;
-    height: 90%;    
+    min-height: 160px;
 }
 
 .weechat-friends-card{
@@ -165,7 +166,7 @@
 
 /* INICIO APARTADO ICONO */
 
-.wz-widget-14.weechat-icon{
+.weechat-icon{
 
     width: 18px;
     height: 16px;
@@ -183,7 +184,7 @@
 
 }
 
-.wz-widget-14.weechat-icon:hover{
+.weechat-icon:hover{
     box-shadow: 0 0 0 1px rgba( 0, 0, 0, 0.3 ), inset 0 1px rgba( 255, 255, 255, 0.1 );
     background-image: -moz-linear-gradient( bottom, rgba( 78, 156, 33, 0.75 ), rgba( 126, 190, 48, 0.75 ) ); 
     background-image: -webkit-linear-gradient( bottom, rgba( 78, 156, 33, 0.75 ), rgba( 126, 190, 48, 0.75 ) );
@@ -191,7 +192,7 @@
     background-image: linear-gradient( to top, rgba( 78, 156, 33, 0.75 ), rgba( 126, 190, 48, 0.75 ) );
 }
 
-.wz-widget-14.weechat-icon.open{
+.weechat-icon.open{
     box-shadow: 0 0 0 1px rgba( 0, 0, 0, 0.3 ), inset 0 1px rgba( 255, 255, 255, 0.1 );
     background-image: -moz-linear-gradient( bottom, #4E9C21, #7EBE30 ); 
     background-image: -webkit-linear-gradient( bottom, #4E9C21, #7EBE30 );
@@ -199,7 +200,7 @@
     background-image: linear-gradient( to top, #4E9C21, #7EBE30 );
 }
 
-.wz-widget-14.weechat-icon figure{
+.weechat-icon figure{
     width: 18px;
     height: 16px;
     display: block;
@@ -208,7 +209,7 @@
     opacity: 0.75;
 }
 
-.wz-widget-14.weechat-icon.open figure{
+.weechat-icon.open figure{
     opacity: 1;
 }
 

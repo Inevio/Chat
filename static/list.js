@@ -1,11 +1,12 @@
 
     // Local Variables
     var widget     = $( this );
-    var userList   = $( '.wz-widget-14.list' );
-    var chatIcon   = $( '.wz-widget-14.weechat-icon' );
-    var status     = $( '.weechat-self', userList ).children( 'i' ).attr( 'class' );
+    var userList   = $( '.list' );
+    var chatIcon   = $( '.weechat-icon' );
+    var chatSelf   = $( '.weechat-self', userList );
     var friendZone = $( '.weechat-friends', userList );
     var friend     = $( '.weechat-friends-card.wz-prototype', friendZone );
+    var status     = chatSelf.children('i').attr('class');
     
     // Local Functions
     var addFriend = function( user ){
@@ -26,6 +27,10 @@
 
         $( '.empty-list', friendZone ).remove();
 
+    };
+
+    var calculateListHeight = function(){
+        friendZone.css( 'max-height', wz.tool.environmentHeight() - ( 2 * parseInt( userList.css('bottom'), 10 ) ) - chatSelf.outerHeight() );
     };
 
     var changeFriendStatus = function( id, status ){
@@ -111,8 +116,10 @@
     };
 
     var removeFriend = function( user ){
+
         $( '.weechat-friend-' + user.id + '-card', userList ).remove();
         countFriends();
+
     };
 
     var countFriends = function(){
@@ -162,6 +169,11 @@
             createConversation( card.data('user'), card.data('status'), data );
         }
 
+    });
+
+    wz.system
+    .on( 'resize', function(){
+        calculateListHeight();
     });
 
     wz.user
@@ -232,7 +244,8 @@
 
     // Start the widget
     friends();
-    setTimeout( connectedFriends, 500 );
+    calculateListHeight();
+    setTimeout( connectedFriends, 500 ); // To Do -> Se puede hacer mejor en una promesa
     $( '.weechat-self .user-avatar', widget ).attr( 'src', wz.system.user().avatar.tiny );
     $( '.weechat-self .user-name', widget ).text( wz.system.user().fullName );
 
