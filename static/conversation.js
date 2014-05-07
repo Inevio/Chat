@@ -1,16 +1,24 @@
 
     // Local Variables
-    var widget       = $( this );
-    var header       = $( '.weechat-friends-card', widget );
-    var counter      = $( '.weechat-counter', header );
-    var conversation = $( '.weechat-conversation-opened', widget );
-    var message      = $( 'section.wz-prototype', conversation );
-    var writingGlobe = $( '.weechat-conversation-writing', conversation );
-    var bottom       = $( '.weechat-conversation-bottom', widget );
-    var textarea     = $( 'textarea', bottom );
-    var user         = null;
-    var status       = null;
-    var channel      = null;
+    var widget                 = $( this );
+    var header                 = $( '.weechat-friends-card', widget );
+    var counter                = $( '.weechat-counter', header );
+    var conversation           = $( '.weechat-conversation-opened', widget );
+    var message                = $( 'section.wz-prototype', conversation );
+    var writingGlobe           = $( '.weechat-conversation-writing', conversation );
+    var bottom                 = $( '.weechat-conversation-bottom', widget );
+    var textarea               = $( 'textarea', bottom );
+    var user                   = null;
+    var status                 = null;
+    var channel                = null;
+    var RTCPeerConnection      = mozRTCPeerConnection || webkitRTCPeerConnection;
+    var RTCSessionDescription  = mozRTCSessionDescription || webkitRTCSessionDescription;
+    var pc                     = new RTCPeerConnection( wz.app.storage('configuration') );
+    navigator.getUserMedia     = navigator.getUserMedia  || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+    var actualReq              = 0;
+
+    pc.onaddstream     = streamAdded;
+    pc.onicecandidate  = ICEcandidate;
 
     // Local Functions
     var readParams = function( params ){
@@ -145,6 +153,32 @@
 
     };
 
+    function streamAdded ( event ) {
+        
+        console.log("Stream received");
+        var audio = new Audio();
+        audio.src = URL.createObjectURL( event.stream );
+        audio.play();
+
+    }
+
+    function ICEcandidate ( e ) {
+        
+        if ( e.candidate ) {
+
+            channel.send({
+
+                ice: true,
+                label: e.candidate.sdpMLineIndex,
+                id: e.candidate.sdpMid,
+                candidate: e.candidate.candidate
+
+            });
+
+        }
+
+    }
+
     // WZ Events
     wz.channel
     .on( 'message', function( info, data ){
@@ -189,6 +223,58 @@
                 }else{
                     widget.removeClass( 'messages' );
                 }
+
+            }else if( data.sender === user.id && data.rtc === 1 ){
+
+                console.log(1);
+                if ( data.call === 1 ) {
+
+                    pc.setRemoteDescription( new RTCSessionDescription( data.desc ) );
+
+                } else if ( data.call === 2 ) {
+
+                } else {
+
+                    wz.banner()
+                        .setTitle( 'Incomming call' )
+                        .setText( 'From: ' + user.fullName )
+                        .setIcon( user.avatar )
+                        .setButton( 0, 'Accept', 'accept' )
+                        .setButton( 1, 'Dismiss', 'cancel' )
+                        .on( 'button', function ( button ) {
+                            if ( button ) {
+                                // NO ACEPTA
+                            } else {
+
+                                pc.setRemoteDescription( new RTCSessionDescription( data.desc ), function () {
+                                        
+                                    navigator.getUserMedia({ audio: true, video: false }, function ( stream ) {
+                                        pc.addStream( stream );
+
+                                        pc.createAnswer( function ( desc ) {
+                                            pc.setLocalDescription( desc );
+                                            sendMessage({ receiver: user.id, sender: wz.system.user().id, rtc: 1, call: 1, desc: desc });
+                                        });
+                                    }, function ( err ) {
+                                        console.log( err );
+                                    });
+
+                                });
+
+                            }
+                        })
+                        .render();
+
+                    }
+
+            }else if( data.sender === user.id && data.rtc === 2){
+
+            }else if( data.ice ){
+
+                pc.addIceCandidate( new RTCIceCandidate({
+                    sdpMLineIndex: data.label,
+                    candidate: data.candidate
+                }) );
 
             }else{
 
@@ -354,3 +440,26 @@
 
     // Nullify
     others = othersSize = null;
+
+    $('.weechat-call-button').on( 'click', function ( e ) {
+
+        if ( !actualReq ) {
+            
+            navigator.getUserMedia({ video: false, audio: true }, function ( stream ) {
+                
+                pc.addStream( stream );
+                pc.createOffer( function ( desc ) {
+
+                    pc.setLocalDescription( desc );
+                    sendMessage({ receiver: user.id, sender: wz.system.user().id, rtc: 1, desc: desc });
+
+                }, function ( err ) {
+                    console.log( err );
+                });
+
+            }, function( err ) {
+                console.log( err );
+            });
+
+        }
+    });
