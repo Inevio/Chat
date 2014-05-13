@@ -1,0 +1,68 @@
+   
+<section class="wz-view-menu wz-view-menu-radius dark wz-dragger">
+
+    <span class="wz-dragger"></span>
+    
+    <section class="wz-dragger wz-view-menu-group right">
+        <figure class="wz-view-minimize">
+            <i></i>
+        </figure>
+        <figure class="wz-view-close">
+            <i></i>
+        </figure>
+    </section>
+
+</section>
+
+<section class="webrtc-content">
+
+    <article id="webrtc-userlist">
+        <ul id="user-list"></ul>
+    </article>
+
+    <article id="webrtc-callform" style="display: none;">
+
+        <img id="userCallAvatar" class="callAvatar">
+        <h1 id="userCallName" class="callName"></h1>
+
+        <button id="accept" class="wz-ui-button" style="margin-left: 30%; margin-right: 8.5%;">Accept</button>
+        <button id="cancel" class="wz-ui-button red">Cancel</button>
+
+    </article>
+
+    <article id="webrtc-call" style="display: none; position: relative;">
+        
+        <video id="remote" style="width: 100%; height: 100%;"></video>
+        <img id="camErr" src="http://blog.simexinformatica.com/wp-content/uploads/2012/09/no_webcam.png" style="height: 100%; width: 100%;" />
+        <video id="local"  muted style="width: 200px; height: 200px; position: absolute; bottom: 75px; right: 10px;"></video>
+
+        <div style="background: rgba(84, 84, 84, 0.5); padding: 5px; position: absolute; top: 0px; width: 27%; border-bottom-left-radius: 9px; border-bottom-right-radius: 9px; display: inline;">
+            <button id="hangup" class="wz-ui-button red">Hang Up</button>
+            <span style="color: #fff; margin-left: 1.5em; margin-top: 3px; font-size: 120%;"><span id="minutesVideo">00</span>:<span id="secondsVideo">00</span></span>   
+        </div>
+
+    </article>
+
+    <article id="webrtc-chat" style="display: none">
+        <div id="converContainer">
+            <!-- CREATE A DIV FOR A NEW CONVERSATION -->
+        </div>
+        <div id="input">
+            <textarea></textarea>
+        </div>
+    </article>
+
+    <article id="webrtc-audio" style="display: none; position: relative;">
+
+        <div style="background: rgba(84, 84, 84, 0.5); padding: 5px; position: absolute; top: 0px; width: 27%; border-bottom-left-radius: 9px; border-bottom-right-radius: 9px; display: inline;">
+            <button class="wz-ui-button red hangup">Hang Up</button>
+            <span style="color: #fff; margin-left: 1.5em; margin-top: 3px; font-size: 120%;"><span id="minutesAudio">00</span>:<span id="secondsAudio">00</span></span>   
+        </div>
+
+        <audio id="remoteAudio" style="display: none"></audio>
+        <img class="callAvatar" id="userAvatarAudio">
+        <h1 class="callName" id="userNameAudio"></h1>
+         
+    </article>
+
+</section>

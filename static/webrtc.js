@@ -1,4 +1,4 @@
-var configuration      = { "iceServers": [
+    configuration      = { "iceServers": [ 
     								{
     									url: 'turn:numb.viagenie.ca',
     									credential: 'mangakas123',
@@ -26,7 +26,24 @@ var configuration      = { "iceServers": [
                                     }
                                  ]};
 
-navigator.getUserMedia     = navigator.getUserMedia  || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+RTCPeerConnection      = typeof webkitRTCPeerConnection === 'undefined' ? mozRTCPeerConnection : webkitRTCPeerConnection;
+navigator.getUserMedia = navigator.getUserMedia  || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+pc                     = new RTCPeerConnection( configuration ); 
 
-wz.app.storage('PeerConnection', RTCPeerConnection);
-wz.app.storage('configuration', configuration);
+wz.channel.on('message', function ( info, data ) {
+
+	if  ( data.receiver === wz.system.user().id ) {
+
+		if ( data.event == "newCall" ) {
+
+			wz.user( info.sender, function ( err, user ) {
+
+				wz.app.createView({ event: 'newSuspCall', desc: data.desc, channel: info.id, avatar: user.avatar.big, name: user.fullName, callType: data.callType });
+
+			});
+
+		}
+
+	}
+
+});

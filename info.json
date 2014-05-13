@@ -17,13 +17,46 @@
 
         "desktop" : {
 
-            "primary" : "list",
-            "service" : [],
+            "primary" : "main",
+            "unique"  : true,
+            "service" : ["webrtc.js"],
             "common"  : {
 
                 "css"    : [],
                 "script" : [],
                 "start"  : []
+
+            },
+
+            "view" : {
+
+                "main" : {
+                    
+                    "template" : "main.html",
+
+                    "maxizable" : false,
+                    "resizable" : false,
+
+                    "width"  : {
+
+                        "default" : 950,
+                        "min"     : 0,
+                        "max"     : 0
+
+                    },
+
+                    "height" : {
+
+                        "default" : 680,
+                        "min"     : 0,
+                        "max"     : 0
+
+                    },
+
+                    "css"    : ["wzstyle.css", "style.css"],
+                    "script" : ["script.js"]
+
+                }
 
             },
 
@@ -62,7 +95,8 @@
 
             "read" : true
 
-        }
+        },
+        "service": true
 
     }
 

@@ -1,0 +1,22 @@
+#user-list {
+	margin-top: 1.5em;
+}
+
+.callAvatar {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 5em;
+	margin-bottom: 16px;
+	border-radius: 500px;
+}
+
+.callName {
+	font-size: 135%;
+	text-align: center;
+	margin-bottom: 8%;
+}
+
+#answerCall {
+	margin: 0 auto;
+}

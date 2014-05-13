@@ -45,7 +45,7 @@
 
     var connectedFriends = function(){
 
-        wz.user.connectedFriends( true, function( error, list ){
+        wz.user.connectedFriends( function( error, list ){
 
             for( var i = 0; i < list.length; i++ ){
                 changeFriendStatus( list[ i ], 'online' );
