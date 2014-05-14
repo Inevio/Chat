@@ -13,6 +13,52 @@
     var channel                = null;
     var localStream            = null;
 
+    if ( typeof mozRTCSessionDescription !== 'undefined' ) {
+        RTCSessionDescription = mozRTCSessionDescription;
+    }
+
+    if ( typeof mozRTCIceCandidate !== 'undefined' ) {
+        RTCIceCandidate = mozRTCIceCandidate;
+    }
+
+    wz.channel( function( error, chn ){
+
+        if( error ){
+            console.log('NO PUEDE CREAR CANAL');
+        }else{
+
+            channel = chn;
+            channel.addUser( params[ 0 ].id );
+
+        }
+
+    });
+
+    pc.onaddstream     = function ( event ) {
+        console.log("Stream received");
+        $('.weechat-conversation-voice')[0].src = URL.createObjectURL( event.stream );
+        $('.weechat-conversation-voice')[0].play();
+    };
+
+    pc.onicecandidate  = function ( e ) {
+
+        if ( e.candidate ) {
+
+            channel.send({
+
+                event: "ICEcandidate",
+                callType: 2,
+                sender: user.id,
+                label: e.candidate.sdpMLineIndex,
+                id: e.candidate.sdpMid,
+                candidate: e.candidate.candidate
+
+            });
+
+        }
+
+    };
+
     // Local Functions
     var readParams = function( params ){
 
@@ -150,6 +196,14 @@
     wz.channel
     .on( 'message', function( info, data ){
 
+        if ( data.event === 'acceptCall' && data.callType === 2 && data.receiver === wz.system.user().id ){
+            pc.setRemoteDescription( new RTCSessionDescription( data.desc ), function () {
+
+            }, function ( err ) {
+                console.log( err );
+            });
+        }
+
         if( data.sender === user.id || data.receiver === user.id ){
 
             if( data.text ){
@@ -190,6 +244,60 @@
                 }else{
                     widget.removeClass( 'messages' );
                 }
+
+            }else if ( data.event === 'newCall' && data.sender === user.id ){
+
+                var banner = wz.banner();
+
+                banner
+                    .setTitle('Incomming call from:')
+                    .setText( user.fullName )
+                    .setButton( 0, 'Accept', 'accept' )
+                    .setButton( 1, 'Dismiss', 'cancel' )
+                    .render();
+
+                banner.on('button', function ( button ) {
+
+                    if ( button ) {
+                        //Cancell
+                    } else {
+                    
+                        pc.setRemoteDescription( new RTCSessionDescription( data.desc ), function () {
+
+                            navigator.getUserMedia({audio: true, video: false}, function ( stream ) {
+
+                                pc.addStream( stream );
+
+                                pc.createAnswer( function ( desc ) {
+                                    
+                                    localDesc = new RTCSessionDescription( desc );
+                                    pc.setLocalDescription( localDesc );
+                                    channel.send({ event: 'acceptCall', desc: desc, callType: 2, receiver: user.id });
+
+                                }, function ( err ) {
+                                    console.log( err );
+                                });
+
+                            }, function ( err ) {
+                                console.log( err );
+                            });
+
+                        }, function ( err ) {
+                            console.log( err );
+                        });
+
+                    }
+
+                });
+
+            }else if ( data.event === 'ICEcandidate' && data.callType === 2 && data.sender === user.id ){
+                
+                console.log(2);
+
+                pc.addIceCandidate( new RTCIceCandidate({
+                    sdpMLineIndex: data.label,
+                    candidate: data.candidate
+                }) );
 
             }else{
 
@@ -359,22 +467,19 @@
     $('.weechat-call-button').on( 'click', function ( e ) {
 
         e.stopPropagation();
-        wz.app.storage('channel', channel);
-        wz.app.createView();
 
         navigator.getUserMedia( { audio: true, video: false }, function ( stream ) {
 
-            localStream = stream;
             pc.addStream( stream );
-            wz.app.storage('callType', 2);
 
             pc.createOffer( function ( desc ) {
 
                 localDesc = new RTCSessionDescription( desc );
                 pc.setLocalDescription( localDesc );
-                wz.app.storage('callType', 2);
-                channel.send({ event: 'newCall', desc: desc, callType: 2, receiver: user.id });
+                channel.send({ event: 'newCall', desc: desc, callType: 2, receiver: user.id, sender: wz.system.user().id });
 
+            }, function ( err ) {
+                console.log( err );
             });
 
         }, function ( err ) {

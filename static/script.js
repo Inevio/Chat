@@ -66,65 +66,6 @@
 
     }
 
-    wz.user.connectedFriends( function ( err, list ) {
-
-        if ( err ) {
-            console.log( err );
-        } else {
-
-            list.forEach( function( user ){
-
-                var div  = $('<li style="display: inline; margin-left: 1em;"></li>');
-                var item = $('<span></span>');
-
-                item.text( user.name );
-
-                div.append( item );
-                div.append('<button style="margin-left: 10px;" class="wz-ui-button black video id-' + user.id + '">Video</button>');
-                div.append('<button style="margin-left: 10px;" class="wz-ui-button black audio id-' + user.id + '">Audio</button>');
-                $('#user-list').append( div );
-
-            });
-
-            $('.audio, .video').on( 'click', function() {
-
-                if ( !actualReq ) {
-
-
-                    if ( this.className.split(' ')[2] == 'video' ) {
-                        callElements.video = true;
-                        callType = 1;
-                    } else {
-                        callElements.video = false;
-                        callType = 2;
-                    }
-
-                    navigator.getUserMedia( callElements, function ( stream ) {
-
-                        localStream = stream;
-                        pc.addStream( stream );
-                        localVideo.src = URL.createObjectURL( stream );
-
-                        pc.createOffer( function ( desc ) {
-
-                            localDesc = new RTCSessionDescription( desc );
-                            pc.setLocalDescription( localDesc );
-                            channel.send({ event: 'newCall', desc: desc, callType: callType });
-
-                        });
-
-                    }, function ( err ) {
-                        console.log( err );
-                    });
-
-                }
-
-            });
-
-        }
-
-    });
-
     wz.channel.on( 'message', function( info, data ){
 
         if( info.sender !== wz.system.user().id ){
