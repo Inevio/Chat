@@ -162,19 +162,79 @@
         if ( params.event == 'newSuspCall' ) {
 
             $('article').css('display', 'none');
+            /*
             $('#userCallAvatar')[0].src = params.avatar;
             $('#userCallName').text( params.name );
             $('#webrtc-callform').css('display', 'block');
+            */
 
             callType   = params.callType;
 
             channel    = wz.channel( params.channel );
             remoteDesc = new  RTCSessionDescription( params.desc );
 
+            /*
             if ( params.callType == 2 ) {
                 $('#userAvatarAudio')[0].src = params.avatar;
                 $('#userNameAudio').text( params.name );
             }
+            */
+
+            wz.banner()
+                .setTitle('Incoming call')
+                .setButton(0, 'cancel')
+                .setButton(1, 'accept')
+                .on( 'button', function ( button ) {
+                    
+                    if( !button ){
+
+                        channel.send({ event: 'cancelCall' });
+                        $('article').css('display', 'none');
+                        $('#webrtc-userlist').css('display', 'block');
+                        return;
+
+                    }
+
+                    callElements.video = ( callType === 2 ) ? false : true;
+
+                    pc.setRemoteDescription( remoteDesc, function () {
+
+                        navigator.getUserMedia(callElements, function ( stream ) {
+                        
+                            localStream = stream;
+                            pc.addStream( stream );
+
+                            pc.createAnswer( function ( desc ) {
+                                
+                                localDesc = new RTCSessionDescription( desc );
+                                pc.setLocalDescription( localDesc );
+                                channel.send({ event: 'acceptCall', desc: desc });
+
+                                $('article').css('display', 'none');
+
+                                if ( callType === 1 ) {
+                                    $('#webrtc-call').css('display', 'block');
+                                } else {
+                                    $('#webrtc-audio').css('display', 'block');
+                                }
+
+                                localVideo.src = URL.createObjectURL( localStream );
+                                localVideo.play();
+
+                            }, function ( err ) {
+                                console.log( err );
+                            });
+
+                        }, function ( err ) {
+                            console.log( err );
+                        });
+
+                    }, function ( err ) {
+                        if ( err ) console.log( err );
+                    });
+
+                })
+                .render();
 
         } else if ( params.event === 'localVid' ) {
             localVideo.src = URL.createObjectURL( params.stream );
@@ -182,7 +242,8 @@
         }
 
     });
-
+    
+    /*
     $('#cancel').on('click', function () {
         
         channel.send({ event: 'cancelCall' });
@@ -232,6 +293,7 @@
         });
     
     });
+    */
 
     $('.hangup').on('click', function () {
 
