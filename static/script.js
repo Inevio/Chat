@@ -5,7 +5,7 @@
     var remoteDesc;
     var localDesc;
     var actualReq      = false;
-    var remoteVideo    = $('#remote')[0], localVideo = $('#local')[0];
+    var remoteVideo    = $('.video-remote')[0], localVideo = $('.video-local')[0];
     var callElements   = { video: true, audio: true };
     var callType       = 0;
     localVideo.muted   = true;
@@ -236,8 +236,8 @@
             }
 
         } else if ( params.event === 'localVid' ) {
-            $('#local')[0].src = URL.createObjectURL( params.stream );
-            $('#local')[0].play();
+            localVideo.src = URL.createObjectURL( params.stream );
+            localVideo.play();
         }
 
     });
