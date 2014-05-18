@@ -22,16 +22,104 @@ configuration = {
 RTCPeerConnection      = typeof webkitRTCPeerConnection === 'undefined' ? mozRTCPeerConnection : webkitRTCPeerConnection;
 navigator.getUserMedia = navigator.getUserMedia  || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
 pc                     = new RTCPeerConnection( configuration );
+channel                = null;
+callType               = null;
+
+if ( typeof mozRTCSessionDescription !== 'undefined' ) {
+    RTCSessionDescription = mozRTCSessionDescription;
+}
+
+if ( typeof mozRTCIceCandidate !== 'undefined' ) {
+    RTCIceCandidate = mozRTCIceCandidate;
+}
+
+pc.onaddstream     = streamAdded;
+pc.onicecandidate  = ICEcandidate;
+
+function streamAdded ( event ) {
+    
+    console.log("Stream received");
+
+    var internChannel  = channel ? channel : wz.app.storage('channel');
+    internChannel.send({ stream: URL.createObjectURL( event.stream ), receiver: wz.system.user().id, event: 'remoteAudio' });
+
+}
+
+function ICEcandidate ( e ) {
+    
+    var internChannel = channel ? channel : wz.app.storage('channel');
+
+    if ( e.candidate ) {
+
+        internChannel.send({
+
+            event: "ICEcandidate",
+            sender: wz.system.user().id,
+            label: e.candidate.sdpMLineIndex,
+            id: e.candidate.sdpMid,
+            candidate: e.candidate.candidate
+
+        });
+
+    }
+
+}
+
 
 wz.channel.on('message', function ( info, data ) {
 
 	if  ( data.receiver === wz.system.user().id ) {
 
-		if ( data.event === "newCall" && data.callType === 1 ) {
+		if ( data.event === "newCall" ) {
 
-			wz.user( info.sender, function ( err, user ) {
-				wz.app.createView({ event: 'newSuspCall', desc: data.desc, channel: info.id, avatar: user.avatar.big, name: user.fullName, callType: data.callType });
-			});
+            if ( data.callType === 2 ) {
+
+                channel  = wz.channel( info.id );
+                callType = data.callType;
+
+                wz.banner()
+                    .setTitle('Incomming call')
+                    .setButton( 0, 'Accept', 'accept' )
+                    .setButton( 1, 'Dismiss', 'cancel' )
+                    .on('button', function ( button ) {
+
+                        if ( button ) {
+                            //Cancell
+                        } else {
+                        
+                            pc.setRemoteDescription( new RTCSessionDescription( data.desc ), function () {
+
+                                navigator.getUserMedia({ audio: true, video: false }, function ( stream ) {
+
+                                    pc.addStream( stream );
+
+                                    pc.createAnswer( function ( desc ) {
+
+                                        pc.setLocalDescription( new RTCSessionDescription( desc ) );
+                                        channel.send({ event: 'acceptCall', callType: 2, receiver: info.sender, desc: desc });
+
+                                    }, function ( err ) {
+                                        console.log( err );
+                                    });
+
+                                }, function ( err ) {
+                                    console.log( err );
+                                });
+
+                            }, function ( err ) {
+                                console.log( err );
+                            });
+
+                        }
+
+                    })
+                    .render();
+
+            } else {
+                wz.user( info.sender, function ( err, user ) {
+                    wz.app.createView({ event: 'newSuspCall', desc: data.desc, channel: info.id, avatar: user.avatar.big, name: user.fullName, callType: data.callType });
+                });
+            }
 
 		}
 

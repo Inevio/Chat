@@ -9,9 +9,10 @@
     var callElements   = { video: true, audio: true };
     var callType       = 0;
     localVideo.muted   = true;
-
+    
     pc.onaddstream     = streamAdded;
     pc.onicecandidate  = ICEcandidate;
+
 
     if ( typeof mozRTCSessionDescription !== 'undefined' ) {
         RTCSessionDescription = mozRTCSessionDescription;
@@ -171,7 +172,7 @@
             callType   = params.callType;
 
             channel    = wz.channel( params.channel );
-            remoteDesc = new  RTCSessionDescription( params.desc );
+            remoteDesc = new RTCSessionDescription( params.desc );
 
             /*
             if ( params.callType == 2 ) {
