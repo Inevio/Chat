@@ -62,6 +62,11 @@
     border: 2px solid #7EBE30;    
 }
 
+.weechat-call-buttons{
+    width: 224px;
+    height: 26px;
+}
+
 .user-name{
     width: 124px;
     font-size: 13px;

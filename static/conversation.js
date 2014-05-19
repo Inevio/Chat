@@ -171,18 +171,6 @@
     wz.channel
     .on( 'message', function( info, data ){
 
-        if ( data.event === 'acceptCall' && data.callType === 2 && data.receiver === wz.system.user().id ){
-            pc.setRemoteDescription( new RTCSessionDescription( data.desc ), function () {
-            }, function ( err ) {
-                console.log( err );
-            });
-        }
-
-        if ( data.receiver === wz.system.user().id && data.event === 'remoteAudio' ) {
-            $('.weechat-conversation-voice')[0].src = data.stream;
-            $('.weechat-conversation-voice')[0].play();
-        }
-
         if( data.sender === user.id || data.receiver === user.id ){
 
             if( data.text ){
@@ -247,6 +235,24 @@
 
             }
 
+        }else if( data.receiver === wz.system.user().id ) {
+            
+            if ( data.event === 'remoteAudio' ) {
+                
+                $('.weechat-conversation-voice')[0].src = data.stream;
+                $('.weechat-conversation-voice')[0].play();
+                $('.weechat-button-call').css('display', 'none');
+                $('.weechat-button-video').css('display', 'none');
+                $('.weechat-button-hangup').css('display', 'inline');
+
+            }else if( data.event === 'acceptCall' && data.callType === 2 ) {
+
+                pc.setRemoteDescription( new RTCSessionDescription( data.desc ), function () {
+                }, function ( err ) {
+                    console.log( err );
+                });
+
+            }
         }
 
     });
@@ -396,7 +402,7 @@
     // Nullify
     others = othersSize = null;
 
-    $('.weechat-call-button').on( 'click', function ( e ) {
+    $('.weechat-button-call').on( 'click', function ( e ) {
 
         e.stopPropagation();
 
@@ -428,7 +434,7 @@
 
     });
 
-    $('.weechat-video-button').on( 'click', function ( e ) {
+    $('.weechat-button-video').on( 'click', function ( e ) {
 
         e.stopPropagation();
 

@@ -37,12 +37,8 @@ pc.onaddstream     = streamAdded;
 pc.onicecandidate  = ICEcandidate;
 
 function streamAdded ( event ) {
-    
-    console.log("Stream received");
-
     var internChannel  = channel ? channel : wz.app.storage('channel');
     internChannel.send({ stream: URL.createObjectURL( event.stream ), receiver: wz.system.user().id, event: 'remoteAudio' });
-
 }
 
 function ICEcandidate ( e ) {
@@ -74,8 +70,8 @@ wz.channel.on('message', function ( info, data ) {
 
             if ( data.callType === 2 ) {
 
-                channel  = wz.channel( info.id );
                 callType = data.callType;
+                channel  = wz.channel( info.id );
 
                 wz.banner()
                     .setTitle('Incomming call')
