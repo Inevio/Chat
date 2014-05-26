@@ -167,6 +167,23 @@
 
     };
 
+    var hangUp = function () {
+
+        if ( actualReq ) {
+
+            pc.close();
+            wz.app.storage('localStream').stop();
+
+            ( wz.app.storage('renew') )();
+            actualReq = false;
+            $('.weechat-button-call').css('display', 'inline');
+            $('.weechat-button-video').css('display', 'inline');
+            $('.weechat-button-hangup').css('display', 'none');
+
+        }
+
+    };
+
     // WZ Events
     wz.channel
     .on( 'message', function( info, data ){
@@ -238,6 +255,8 @@
         }else if( data.receiver === wz.system.user().id ) {
             
             if ( data.event === 'remoteAudio' ) {
+
+                if ( !actualReq ) actualReq = true;
                 
                 $('.weechat-conversation-voice')[0].src = data.stream;
                 $('.weechat-conversation-voice')[0].play();
@@ -252,7 +271,10 @@
                     console.log( err );
                 });
 
+            } else if ( data.event === 'hangUp' ) {
+                hangUp();
             }
+
         }
 
     });
@@ -412,9 +434,9 @@
 
             navigator.getUserMedia( { audio: true, video: false }, function ( stream ) {
 
-                pc.addStream( stream );
-                wz.app.storage('callType', 2);
+                wz.app.storage('localStream', stream);
                 wz.app.storage('channel', channel);
+                pc.addStream( stream );
 
                 pc.createOffer( function ( desc ) {
 
@@ -467,5 +489,13 @@
             });
 
         }
+
+    });
+
+    $('.weechat-button-hangup').on('click', function ( e ) {
+        
+        e.stopPropagation();
+        channel.send({ receiver: user.id, event: 'hangUp' });
+        hangUp();
 
     });
