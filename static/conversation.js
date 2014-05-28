@@ -172,6 +172,7 @@
         if ( actualReq ) {
 
             pc.close();
+            wz.app.removeView();
             wz.app.storage('localStream').stop();
 
             ( wz.app.storage('renew') )();
@@ -179,6 +180,7 @@
             $('.weechat-button-call').css('display', 'inline');
             $('.weechat-button-video').css('display', 'inline');
             $('.weechat-button-hangup').css('display', 'none');
+            $('.weechat-button-change').css('display', 'none');
 
         }
 
@@ -236,6 +238,11 @@
                     candidate: data.candidate
                 }) );
 
+            }else if( data.event === 'acceptCall' ) {
+                $('.weechat-button-call').css('display', 'none');
+                $('.weechat-button-video').css('display', 'none');
+                $('.weechat-button-hangup').css('display', 'inline');
+                $('.weechat-button-change').css('display', 'inline'); 
             }else{
 
                 if( data.sender === user.id ){
@@ -243,6 +250,11 @@
                     if( data.writing ){
                         $( '.weechat-conversation-writing', widget ).addClass( 'writing' );
                         conversation.scrollTop( conversation[ 0 ].scrollHeight );
+                    }else if ( data.event === 'acceptCall' ) {
+                        $('.weechat-button-call').css('display', 'none');
+                        $('.weechat-button-video').css('display', 'none');
+                        $('.weechat-button-hangup').css('display', 'inline');
+                        $('.weechat-button-change').css('display', 'inline'); 
                     }else{
                         $( '.weechat-conversation-writing', widget ).removeClass( 'writing' );
                         conversation.scrollTop( conversation[ 0 ].scrollHeight );
@@ -264,17 +276,18 @@
                 $('.weechat-button-video').css('display', 'none');
                 $('.weechat-button-hangup').css('display', 'inline');
 
-            }else if( data.event === 'acceptCall' && data.callType === 2 ) {
+            }else if( data.event === 'acceptCall' ) {
 
-                pc.setRemoteDescription( new RTCSessionDescription( data.desc ), function () {
-                }, function ( err ) {
-                    console.log( err );
-                });
+                if ( data.callType === 2 ) {
+                    pc.setRemoteDescription( new RTCSessionDescription( data.desc ), function () {
+                    }, function ( err ) {
+                        console.log( err );
+                    });
+                }
 
             } else if ( data.event === 'hangUp' ) {
                 hangUp();
             }
-
         }
 
     });
@@ -470,7 +483,7 @@
 
             navigator.getUserMedia( { audio: true, video: true }, function ( stream ) {
 
-                localStream = stream;
+                wz.app.storage('localStream', stream);
                 wz.app.createView({ stream: stream, event: 'localVid' });
                 pc.addStream( stream );
 
@@ -497,5 +510,17 @@
         e.stopPropagation();
         channel.send({ receiver: user.id, event: 'hangUp' });
         hangUp();
+
+    });
+
+    $('.weechat-button-change').on('click', function ( e ) {
+        
+        e.stopPropagation();
+
+        if ( actualReq ) {
+
+
+
+        }
 
     });

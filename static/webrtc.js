@@ -73,16 +73,18 @@
                     callType = data.callType;
                     channel  = wz.channel( info.id );
 
-                    wz.banner()
-                        .setTitle('Incomming call')
+                    wz.user( info.sender, function ( err, user ) { 
+                        wz.banner()
+                        .setTitle('Incomming call from:')
+                        .setText( user.fullName )
+                        .setIcon( user.avatar.normal )
                         .setButton( 0, 'Accept', 'accept' )
                         .setButton( 1, 'Dismiss', 'cancel' )
                         .on('button', function ( button ) {
 
                             if ( button ) {
-                                //Cancell
-                            } else {
-                            
+                                channel.send({ event: 'hangUp', receiver: info.sender });
+                            } else {
                                 pc.setRemoteDescription( new RTCSessionDescription( data.desc ), function () {
 
                                     navigator.getUserMedia({ audio: true, video: false }, function ( stream ) {
@@ -93,7 +95,7 @@
                                         pc.createAnswer( function ( desc ) {
 
                                             pc.setLocalDescription( new RTCSessionDescription( desc ) );
-                                            channel.send({ event: 'acceptCall', callType: 2, receiver: info.sender, desc: desc });
+                                            channel.send({ event: 'acceptCall', callType: 2, receiver: info.sender, sender: wz.system.user().id, desc: desc });
 
                                         }, function ( err ) {
                                             console.log( err );
@@ -106,15 +108,15 @@
                                 }, function ( err ) {
                                     console.log( err );
                                 });
-
                             }
 
                         })
                         .render();
+                    });
 
                 } else {
                     wz.user( info.sender, function ( err, user ) {
-                        wz.app.createView({ event: 'newSuspCall', desc: data.desc, channel: info.id, avatar: user.avatar.big, name: user.fullName, callType: data.callType });
+                        wz.app.createView({ event: 'newSuspCall', desc: data.desc, channel: info.id, callType: data.callType, userID: info.sender });
                     });
                 }
 
