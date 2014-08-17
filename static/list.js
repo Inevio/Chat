@@ -75,8 +75,8 @@
     };
 
     var friends = function(){
-        
-        wz.user.friendList( function( error, list ){
+
+        wz.user.friendList( false, function( error, list ){
 
             var friendCard = null;
             
@@ -105,7 +105,7 @@
                     friendZone.height( wz.tool.desktopHeight() * 0.8 - $( '.weechat-self', userList ).outerHeight( true ) );
                 }
                 
-                for( var i = 0; i < list.length; i++ ){ 
+                for( var i = 0; i < list.length; i++ ){
                     addFriend( list[ i ] );
                 }
             
