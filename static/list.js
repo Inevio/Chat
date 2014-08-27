@@ -100,6 +100,10 @@
                 friendCard.siblings().not('.wz-prototype').remove();
 
             }else{
+
+                list = list.sort( function( a, b ){
+                    return a.fullName.localeCompare( b.fullName );
+                });
                 
                 if( list.length * friend.outerHeight( true ) > ( wz.tool.desktopHeight() * 0.8 - $( '.weechat-self', userList ).outerHeight( true ) ) ){
                     friendZone.height( wz.tool.desktopHeight() * 0.8 - $( '.weechat-self', userList ).outerHeight( true ) );
