@@ -9,23 +9,67 @@
     var status     = chatSelf.children('i').attr('class');
     
     // Local Functions
-    var addFriend = function( user ){
+    var addFriend = function( user, connected ){
 
-        var friendCard = friend.clone();
-        
-        friendCard
-            .removeClass( 'wz-prototype' )
-            .data( 'user', user )
-            .data( 'status', 'offline' )
-            .addClass( 'weechat-friend-' + user.id + '-card' )
-            .children( 'span' )
-                .text( user.fullName );
+        var friendCard = friendZone.find('.weechat-friend-' + user.id + '-card');
+        var status     = connected ? 'online' : 'offline';
 
-        friendCard.find( '.user-avatar' ).attr( 'src', user.avatar.tiny );
+        if( !friendCard.length ){
+
+            friendCard = friend.clone();
         
-        friendZone.append( friendCard );
+            friendCard
+                .removeClass('wz-prototype')
+                .addClass('weechat-friend-' + user.id + '-card')
+                .addClass( status )
+                .data( 'user', user )
+                .find('span')
+                    .text( user.fullName );
+
+            friendCard.find( '.user-avatar' ).attr( 'src', user.avatar.tiny );
+        
+        }
 
         $( '.empty-list', friendZone ).remove();
+
+        var list = friendZone.find( '.weechat-friends-card.' + status );
+
+        if( list.length ){
+
+            var inserted = false;
+
+            list.each( function(){
+
+                if( user.fullName.localeCompare( $(this).find('span').text() ) === -1 ){
+
+                    inserted = true;
+
+                    $(this).before( friendCard );
+
+                    return false;
+
+                }
+
+            });
+
+            if( !inserted ){
+                list.last().after( friendCard );
+            }
+
+        }else if( connected ){
+            friendZone.prepend( friendCard );
+        }else{
+            friendZone.append( friendCard );
+        }
+
+        // Actualizamos el estado al final para no contaminar la lista
+        friendCard
+            .data( 'status', status )
+            .removeClass('online offline')
+            .addClass( status )
+            .find('i')
+                .removeClass('online offline')
+                .addClass( status );
 
     };
 
@@ -33,22 +77,12 @@
         friendZone.css( 'max-height', wz.tool.environmentHeight() - ( 2 * parseInt( userList.css('bottom'), 10 ) ) - chatSelf.outerHeight() );
     };
 
-    var changeFriendStatus = function( id, status ){
-
-        $( '.weechat-friend-' + id + '-card i', friendZone )
-            .removeClass()
-            .addClass( 'status ' + status )
-            .parent()
-                .data( 'status', status );
-
-    };
-
     var connectedFriends = function(){
 
-        wz.user.connectedFriends( function( error, list ){
+        wz.user.connectedFriends( false, function( error, list ){
 
             for( var i = 0; i < list.length; i++ ){
-                changeFriendStatus( list[ i ], 'online' );
+                addFriend( list[ i ], true );
             }
 
         });
@@ -75,7 +109,7 @@
     };
 
     var friends = function(){
-        
+
         wz.user.friendList( false, function( error, list ){
 
             var friendCard = null;
@@ -84,8 +118,6 @@
             if( list.length === 0 ){
                                     
                 friendCard = friend.clone();
-
-                // To Do -> Cambiar CSS por una clase
 
                 friendCard
                     .removeClass()
@@ -100,6 +132,13 @@
                 friendCard.siblings().not('.wz-prototype').remove();
 
             }else{
+
+                // Los ordenamos por orden inverso alfabético, hace mucho más eficiente el ordenado de addFriend()
+                // Si está ordenado alfabéticamente se recorre el bucle ( n * n ) / 2 aproximadamente
+                // Si está ordenado alfabéticamente a la inversa se recorre el bucle n aproximadamente
+                list = list.sort( function( a, b ){
+                    return a.fullName.localeCompare( b.fullName );
+                }).reverse();
                 
                 if( list.length * friend.outerHeight( true ) > ( wz.tool.desktopHeight() * 0.8 - $( '.weechat-self', userList ).outerHeight( true ) ) ){
                     friendZone.height( wz.tool.desktopHeight() * 0.8 - $( '.weechat-self', userList ).outerHeight( true ) );
@@ -178,15 +217,15 @@
 
     wz.user
     .on( 'connect', function( user ){
-        changeFriendStatus( user.id, 'online' );
+        addFriend( user, true );
     })
 
     .on( 'disconnect', function( user ){
-        changeFriendStatus( user.id, 'offline' );
+        addFriend( user, false );
     })
 
     .on( 'friendAdded', function( user ){
-        addFriend( user );
+        addFriend( user, false );
     })
 
     .on( 'friendRemoved', function( user ){

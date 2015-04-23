@@ -218,11 +218,11 @@
                     }
 
                     wz.banner()
-                        .title( user.fullName )
-                        .text( data.text )
-                        .icon( user.avatar.tiny )
-                        .sound( 'marimba' )
-                        .action( function(){
+                        .setTitle( user.fullName )
+                        .setText( data.text )
+                        .setIcon( user.avatar.tiny )
+                        // To Do -> .sound( 'marimba' )
+                        .on( 'click', function(){
                             $( '.weechat-friends-card', widget ).click();
                         })
                         .render();
