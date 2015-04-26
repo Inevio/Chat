@@ -68,13 +68,12 @@
 }
 
 .user-name{
-    width: 124px;
+    width: 118px;
     font-size: 13px;
     height: 14px;
     color: #FFF;
     float: left;
-    margin-top: 8px;
-    margin-left: 10px;
+    margin: 8px 9px 0 10px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -228,4 +227,22 @@
     right: 10px;
     resize: none;
     overflow-y: hidden;
+}
+
+.weechat-button-video{
+    width: 18px;
+    height: 10px;
+    padding: 5px 6px;
+    border-radius: 3px;
+    background-color: #7ebe30;
+    float: left;
+    margin-top: 4px;
+}
+
+.weechat-button-video i{
+    width: 18px;
+    height: 10px;
+    background: url("@static/videocall.png") no-repeat;
+    background-size: 18px 10px;
+    display: block;
 }

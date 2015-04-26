@@ -4,6 +4,34 @@
 	box-shadow: 0 5px 15px rgba(0,0,0,.75);
 }
 
+.prevideo{
+	background-color: #262626;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 700px;
+	height: 525px;
+	text-align: center;
+}
+
+.prevideo img{
+	width: 250px;
+	height: 250px;
+	background: rgba(0,0,0,.3);
+	border: #eee 1px solid;
+	border-radius: 3px;
+	margin-top: 90px;
+}
+
+.prevideo span{
+	font-family: Lato;
+	font-weight: lighter;
+	color: #fff;
+	font-size: 25px;
+	margin-top: 30px;
+	display: block;
+}
+
 .video-remote{
 	width: 100%;
 	height: 100%;
@@ -11,36 +39,63 @@
 	background: #262626;
 }
 
+.video-local{
+	position: absolute;
+	bottom: 60px;
+	right: 10px;
+	max-width: 165px;
+	border: solid 1px rgba(0,0,0,.3);
+	background: rgba(0,0,0,.3);
+}
+
 .control-bar{
 	width: 700px;
-	height: 50px;
+	height: 45px;
 	background-color: rgba(40,50,60,.85);
 	position: absolute;
 	bottom: 0;
 	left: 0;
 }
 
-/*
-#user-list {
-	margin-top: 1.5em;
+.control-name{
+	float: left;
+	width: 300px;
+	text-align: left;
+	padding: 17px 0 15px 29px;
+	font-family: Lato;
+	font-size: 13px;
+	color: #fff;
 }
 
-.callAvatar {
-	display: block;
-	margin-left: auto;
-	margin-right: auto;
-	margin-top: 5em;
-	margin-bottom: 16px;
-	border-radius: 500px;
+.control-time{
+	float: left;
+	width: 300px;
+	text-align: right;
+	padding: 17px 29px 15px 0;
+	font-family: Lato;
+	font-size: 13px;
+	color: #fff;
 }
 
-.callName {
-	font-size: 135%;
+.control-tools{
+	float: left;
+	width: 42px;
+	padding: 12px 0 11px;
+}
+
+.hangup{
+	width: 18px;
+	height: 6px;
+	border-radius: 3px;
+	background-color: #da605b;
 	text-align: center;
-	margin-bottom: 8%;
+	padding: 8px 12px;
 }
 
-#answerCall {
-	margin: 0 auto;
+.hangup i{
+	width: 18px;
+	height: 6px;
+	background: url("@static/end.png") no-repeat;
+    background-size: 18px 6px;
+    display: block;
 }
-*/
