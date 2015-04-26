@@ -1,191 +1,103 @@
 
-    var win            = $( this );
-    var channel        = null;
-    var localStream;
-    var remoteDesc;
-    var localDesc;
-    var actualReq      = false;
-    var remoteVideo    = $('.video-remote')[0], localVideo = $('.video-local')[0];
-    var callElements   = { video: true, audio: true };
-    var callType       = 0;
-    localVideo.muted   = true;
+'use strict';
+
+var preVideo    = $('.prevideo');
+var videoInput  = $('.video-local')[ 0 ];
+var videoOutput = $('.video-remote')[ 0 ];
+var timer       = $('.control-time');
+var timerStart;
+var timerControl;
+var webRtcPeer;
+
+$('.control-name').text( params.user.fullName );
+preVideo.find('img').attr( 'src', params.user.avatar.big );
+preVideo.find('span').text('Preparing...');
+
+if( params.type === 'startCall' ){
+
+    kurentoUtils.WebRtcPeer.startSendRecv( videoInput, videoOutput, function( offerSdp, wp ){
+
+        preVideo.find('span').text('Ringing...');
+
+        webRtcPeer = wp;
+
+        wz.webrtc.call( params.user.id, offerSdp );
+
+    }, function( error ){});
+
+}else{
+
+    webRtcPeer = kurentoUtils.WebRtcPeer.startSendRecv( videoInput, videoOutput, function( offerSdp, wp ){
+
+        preVideo.find('span').text('Connecting...');
+        
+        wz.webrtc.acceptCall( params.user.id, params.prevSpd, offerSdp );
+        
+    }, function(error){});
+
+}
+
+var generateTimerText = function( time ){
+
+    var seconds, minutes, hours, result;
+
+    time    = parseInt( time / 1000, 10 );
+    seconds = time % 60;
+    time    = parseInt( time / 60, 10 );
+    minutes = time % 60;
+    hours   = parseInt( time / 60, 10 );
+
+    if( hours ){
+
+        minutes = minutes.toString();
+
+        if( minutes.length === 1 ){
+            minutes = '0' + minutes;
+        }
+
+        result = hours + ':' + minutes;
+
+    }else{
+        result = minutes;
+    }
+
+    seconds = seconds.toString();
+
+    if( seconds.length === 1 ){
+        seconds = '0' + seconds;
+    }
+
+    result = result + ':' + seconds;
+
+    return result;
+
+};
+
+wz.webrtc.on( 'callAccepted', function( userId, sdpAnswer ){
+
+    preVideo.find('span').text('Connecting...');
+    webRtcPeer.processSdpAnswer( sdpAnswer );
+
+});
+
+wz.webrtc.on( 'callStarted', function( userId, sdpAnswer ){
+    webRtcPeer.processSdpAnswer( sdpAnswer );
+});
+
+$( videoOutput ).on( 'play', function() {
     
-    pc.onaddstream     = streamAdded;
-    pc.onicecandidate  = ICEcandidate;
-
-
-    if ( typeof mozRTCSessionDescription !== 'undefined' ) {
-        RTCSessionDescription = mozRTCSessionDescription;
+    if( timerStart ){
+        return;
     }
 
-    if ( typeof mozRTCIceCandidate !== 'undefined' ) {
-        RTCIceCandidate = mozRTCIceCandidate;
-    }
+    preVideo.remove();
 
-    function streamAdded ( event ) {
-        
-        console.log("Stream received");
-        
-        if ( event.stream.getVideoTracks().length > 0 ) {
-            $('#camErr').css('display', 'none');
-            remoteVideo.style.display = 'block';
-            remoteVideo.src = URL.createObjectURL( event.stream );
-            remoteVideo.play();
-        } else {
-            $('#camErr')[0].css('display', 'block');
-            remoteVideo.style.display = 'none';
-        }
+    timerStart = Date.now();
 
-    }
+    timerControl = setInterval( function(){
+        timer.text( generateTimerText( Date.now() - timerStart ) )
+    }, 1000 );
 
-    function ICEcandidate ( e ) {
-        
-        var internChannel = ( wz.app.storage('channel') === undefined ) ? channel : wz.app.storage('channel');
+    timer.text( generateTimerText( 0 ) );
 
-        if ( e.candidate ) {
-
-            internChannel.send({
-                event: "ICEcandidate",
-                label: e.candidate.sdpMLineIndex,
-                id: e.candidate.sdpMid,
-                candidate: e.candidate.candidate
-            });
-
-        }
-
-    }
-
-    wz.channel.on( 'message', function( info, data ){
-
-        if( info.sender !== wz.system.user().id ){
-
-            if ( data.event === 'cancelCall' ) {
-                
-                $('article').css('display', 'none');
-                $('#webrtc-userlist').css('display', 'block');
-                actualReq = false;
-                pc.close();
-
-            } else if ( data.event === 'acceptCall' ) {
-
-                pc.setRemoteDescription( new RTCSessionDescription( data.desc ));
-                localVideo.play();
-                $('article').css('display', 'none');
-
-                var internCallType = wz.app.storage('callType');
-                $('#webrtc-call').css('display', 'block');
-
-            } else if ( data.event === 'ICEcandidate' ) {
-
-                pc.addIceCandidate( new RTCIceCandidate({
-                    sdpMLineIndex: data.label,
-                    candidate: data.candidate
-                }) );
-
-            } else if ( data.event === 'stopCall' ) {
-
-                wz.app.removeView();
-                pc.close();
-
-                pc = new RTCPeerConnection( configuration );
-                pc.onaddstream    = streamAdded;
-                pc.onicecandidate = ICEcandidate;
-
-                localVideo.src = "";
-                remoteVideo.src = "";
-
-                localStream.stop();
-
-            }
-
-        }
-
-    });
-
-    win.on('app-param', function ( error, params ) {
-
-        if ( params.event == 'newSuspCall' ) {
-
-            $('article').css('display', 'none');
-            channel    = wz.channel( params.channel );
-
-            wz.user( params.userID, function ( err, user ) {
-                
-                wz.banner()
-                    .setTitle('Incoming call from:')
-                    .setText( user.fullName )
-                    .setIcon( user.avatar.normal )
-                    .setButton(0, 'Cancel', 'cancel')
-                    .setButton(1, 'Accept', 'accept')
-                    .on( 'button', function ( button ) {
-                        
-                        if( !button ) {
-                            wz.app.removeView();
-                            channel.send({ event: 'hangUp', receiver: params.userID });
-                        } else {
-                            pc.setRemoteDescription( new RTCSessionDescription( params.desc ), function () {
-
-                            navigator.getUserMedia({ audio: true, video: true }, function ( stream ) {
-                            
-                                localStream = stream;
-                                pc.addStream( stream );
-
-                                pc.createAnswer( function ( desc ) {
-                                    
-                                    pc.setLocalDescription( new RTCSessionDescription( desc ) );
-                                    channel.send({ event: 'acceptCall', sender: wz.system.user().id, receiver: params.userID, desc: desc });
-
-                                    $('article').css('display', 'none');
-                                    $('#webrtc-call').css('display', 'block');
-
-                                    localVideo.src = URL.createObjectURL( localStream );
-                                    localVideo.play();
-
-                                }, function ( err ) {
-                                    console.log( err );
-                                });
-
-                            }, function ( err ) {
-                                console.log( err );
-                            });
-
-                            }, function ( err ) {
-                                if ( err ) console.log( err );
-                            });
-                        }
-
-                    })
-                    .render();
-
-            });
-
-        } else if ( params.event === 'localVid' ) {
-            localVideo.src = URL.createObjectURL( params.stream );
-            localVideo.play();
-        }
-
-    });
-
-    $('.hangup').on('click', function () {
-
-        channel.send({ event: 'stopCall' });
-        $('article').css('display', 'none');
-        $('#webrtc-userlist').css('display', 'block');
-        actualReq  = false;
-        localDesc  = null;
-        remoteDesc = null;
-        pc.close();
-
-        pc = new RTCPeerConnection( configuration );
-        pc.onaddstream    = streamAdded;
-        pc.onicecandidate = ICEcandidate;
-
-        localVideo.pause();
-        localVideo.src = "";
-
-        remoteVideo.pause();
-        remoteVideo.src = "";
-
-        localStream.stop();
-
-    });
+});
