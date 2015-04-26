@@ -1,0 +1,881 @@
+
+.wz-win{
+    
+    background: #F6F6F6;
+    
+}
+
+.wz-win-menu{
+    height: 39px;
+    box-shadow: 0 1px rgba( 255, 255, 255, 0.1 ) inset;
+    background-image: -webkit-linear-gradient(bottom, #d6d6d6, #fff);
+    background-image: -moz-linear-gradient(bottom, #d6d6d6, #fff);
+    background-image: -o-linear-gradient(bottom, #d6d6d6, #fff);
+    background-image: linear-gradient(to top, #d6d6d6, #fff);
+}
+
+.wz-win-menu-group:last-child{
+    padding: 10px 20px 6px;
+}
+
+.contact-title{
+
+    float: left;
+    font-size: 14px;
+    color: #666;
+    margin-top: 15px;
+    margin-left: 40px;
+
+}
+
+.contact-content{
+
+    float: left;
+    width: 485px;
+    padding: 35px 40px;
+
+}
+
+.contact-text{
+
+    float: left;
+    width: 485px;
+    font-size: 15px;
+    color: #666;
+    text-align: justify;
+    margin-bottom: 15px;
+
+}
+
+.content-subject-text{
+
+    float: left;
+    width: 455px;
+    border: 1px solid #DCDCDC;
+    border-radius: 3px;
+    color: #5D5D5D;
+    font-size: 14px;
+    padding: 3px 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 1px rgba( 0, 0, 0, 0.05 ) inset;
+
+}
+
+.content-subject-text:focus{
+
+    border: 1px solid #7EBE30;
+
+}
+
+.content-description-text{
+
+    float: left;
+    width: 455px;
+    height: 150px;
+    line-height: 16px;
+    border: 1px solid #DCDCDC;
+    border-radius: 3px;
+    color: #5D5D5D;
+    font-size: 14px;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 1px rgba( 0, 0, 0, 0.05 ) inset;
+
+}
+
+.content-description-text:focus{
+
+    border: 1px solid #7EBE30;
+
+}
+
+.content-button{
+
+    padding: 8px 15px;
+    float: right;
+    border-radius: 3px;
+    border: 1px solid #1B961B;
+    box-shadow: inset 0 1px rgba( 255, 255, 255, 0.3 );
+    text-align: center;
+
+    background-image: -moz-linear-gradient( bottom, #4E9C21, #7EBE30 ); 
+    background-image: -webkit-linear-gradient( bottom, #4E9C21, #7EBE30 );
+    background-image: -o-linear-gradient( bottom, #4E9C21, #7EBE30 );
+    background-image: linear-gradient( to top, #4E9C21, #7EBE30 );
+
+}
+
+.content-button span{
+    font-size: 15px;
+    color: #FFF;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+.content-button:hover{
+
+    background-image: -moz-linear-gradient( bottom, #56AB25, #86CA33 ); 
+    background-image: -webkit-linear-gradient( bottom, #56AB25, #86CA33 );
+    background-image: -o-linear-gradient( bottom, #56AB25, #86CA33 );
+    background-image: linear-gradient( to top, #56AB25, #86CA33 );
+
+}
+
+.content-button:active{
+
+    box-shadow: inset 0 1px 2px rgba( 0, 0, 0, 0.2 );
+
+    background-image: -moz-linear-gradient( bottom, #609125, #448A1C ); 
+    background-image: -webkit-linear-gradient( bottom, #609125, #448A1C );
+    background-image: -o-linear-gradient( bottom, #609125, #448A1C );
+    background-image: linear-gradient( to top, #609125, #448A1C );
+
+}
+
+.contact-info{
+
+    margin-bottom: 25px;
+
+}
+
+.wz-ui-button{
+
+    width: 146px;
+    height: 37px;
+    border-radius: 3px;
+    background-color: #75D142;
+    box-shadow: 0 1px rgba( 255, 255, 255, 0.3 ) inset;
+    border: 1px solid #1B961B;
+    background-image: -webkit-linear-gradient( bottom, #4e9c21, #7ebe30 );
+    background-image: -moz-linear-gradient( bottom, #4e9c21, #7ebe30 );
+    background-image: -o-linear-gradient( bottom, #4e9c21, #7ebe30 );
+    background-image: linear-gradient( to top, #4e9c21, #7ebe30 );
+    font-size: 15px;
+    color: #FFF;
+    text-shadow: 0 1px 1px rgba( 0, 0, 0, 0.5 );
+
+}
+
+.wz-ui-button:hover{
+
+    background-color: #85e74e;
+    background-image: -webkit-linear-gradient( bottom, #56ab25, #86ca33 );
+    background-image: -moz-linear-gradient( bottom, #56ab25, #86ca33 );
+    background-image: -o-linear-gradient( bottom, #56ab25, #86ca33 );
+    background-image: linear-gradient( to top, #56ab25, #86ca33 );
+
+}
+
+.wz-ui-button.hover{
+
+    background-color: #85e74e;
+    background-image: -webkit-linear-gradient( bottom, #56ab25, #86ca33 );
+    background-image: -moz-linear-gradient( bottom, #56ab25, #86ca33 );
+    background-image: -o-linear-gradient( bottom, #56ab25, #86ca33 );
+    background-image: linear-gradient( to top, #56ab25, #86ca33 );
+
+}
+
+.wz-ui-button:active{
+
+    box-shadow: 0 1px 2px rgba( 0, 0, 0, 0.2 ) inset;
+    background-color: #539f29;
+    background-image: -webkit-linear-gradient( top, #448a1c, #609125 );
+    background-image: -moz-linear-gradient( top, #448a1c, #609125 );
+    background-image: -o-linear-gradient( top, #448a1c, #609125 );
+    background-image: linear-gradient( to bottom, #448a1c, #609125 );
+
+}
+
+.wz-ui-button.active{
+
+    box-shadow: 0 1px 2px rgba( 0, 0, 0, 0.2 ) inset;
+    background-color: #539f29;
+    background-image: -webkit-linear-gradient( top, #448a1c, #609125 );
+    background-image: -moz-linear-gradient( top, #448a1c, #609125 );
+    background-image: -o-linear-gradient( top, #448a1c, #609125 );
+    background-image: linear-gradient( to bottom, #448a1c, #609125 );
+
+}
+
+.wz-ui-button.disabled, .wz-ui-button.disabled:hover, .wz-ui-button.disabled:active{
+
+    background-color: #75D142;
+    box-shadow: 0 1px rgba( 255, 255, 255, 0.3 ) inset;
+    border: 1px solid #8DCA8D;
+    background-image: -webkit-linear-gradient( bottom, #a7cd90, #bede97 );
+    background-image: -moz-linear-gradient( bottom, #a7cd90, #bede97 );
+    background-image: -o-linear-gradient( bottom, #a7cd90, #bede97 );
+    background-image: linear-gradient( to top, #a7cd90, #bede97 );
+    text-shadow: 0 1px 1px rgba( 0, 0, 0, 0.3 );
+
+}
+
+.wz-ui-button.black{
+
+    background-color: #4c4c4c;
+    box-shadow: 0 1px rgba( 255, 255, 255, 0.2 ) inset;
+    border: 1px solid #2f2f2f;
+    background-image: -webkit-linear-gradient( bottom, #414141, #656565 );
+    background-image: -moz-linear-gradient( bottom, #414141, #656565 );
+    background-image: -o-linear-gradient( bottom, #414141, #656565 );
+    background-image: linear-gradient( to top, #414141, #656565 );
+
+}
+
+.wz-ui-button.black:hover{
+
+    background-color: #616161;
+    background-image: -webkit-linear-gradient( bottom, #4c4c4c, #737373 );
+    background-image: -moz-linear-gradient( bottom, #4c4c4c, #737373 );
+    background-image: -o-linear-gradient( bottom, #4c4c4c, #737373 );
+    background-image: linear-gradient( to top, #4c4c4c, #737373 );
+
+}
+
+.wz-ui-button.black.hover{
+
+    background-color: #616161;
+    background-image: -webkit-linear-gradient( bottom, #4c4c4c, #737373 );
+    background-image: -moz-linear-gradient( bottom, #4c4c4c, #737373 );
+    background-image: -o-linear-gradient( bottom, #4c4c4c, #737373 );
+    background-image: linear-gradient( to top, #4c4c4c, #737373 );
+
+}
+
+.wz-ui-button.black:active{
+
+    background-color: #282828;
+    box-shadow: 0 1px 2px rgba( 0, 0, 0, 0.2 ) inset; 
+    background-image: -webkit-linear-gradient( top, #3f3f3f, #4d4d4d );
+    background-image: -moz-linear-gradient( top, #3f3f3f, #4d4d4d );
+    background-image: -o-linear-gradient( top, #3f3f3f, #4d4d4d );
+    background-image: linear-gradient( to bottom, #3f3f3f, #4d4d4d );
+
+}
+
+.wz-ui-button.black.active{
+
+    background-color: #282828;
+    box-shadow: 0 1px 2px rgba( 0, 0, 0, 0.2 ) inset; 
+    background-image: -webkit-linear-gradient( top, #3f3f3f, #4d4d4d );
+    background-image: -moz-linear-gradient( top, #3f3f3f, #4d4d4d );
+    background-image: -o-linear-gradient( top, #3f3f3f, #4d4d4d );
+    background-image: linear-gradient( to bottom, #3f3f3f, #4d4d4d );
+
+}
+
+.wz-ui-button.black.disabled, .wz-ui-button.black.disabled:hover, .wz-ui-button.black.disabled:active{
+
+    background-color: #434343;
+    box-shadow: 0 1px rgba( 255, 255, 255, 0.2 ) inset;
+    border: 1px solid #979797;
+    background-image: -webkit-linear-gradient( bottom, #a0a0a0, #b1b1b1 );
+    background-image: -moz-linear-gradient( bottom, #a0a0a0, #b1b1b1 );
+    background-image: -o-linear-gradient( bottom, #a0a0a0, #b1b1b1 );
+    background-image: linear-gradient( to top, #a0a0a0, #b1b1b1 );
+    text-shadow: 0 1px 1px rgba( 0, 0, 0, 0.3 );
+
+}
+
+.wz-ui-button.red{
+
+    background-color: #dc513a;
+    box-shadow: 0 1px rgba( 255, 255, 255, 0.3 ) inset;
+    border: 1px solid #8e3c3c;
+    background-image: -webkit-linear-gradient( bottom, #b93f39, #da605b );
+    background-image: -moz-linear-gradient( bottom, #b93f39, #da605b );
+    background-image: -o-linear-gradient( bottom, #b93f39, #da605b );
+    background-image: linear-gradient( to top, #b93f39, #da605b );
+
+}
+
+.wz-ui-button.red:hover{
+
+    background-color: #dc513a;
+    background-image: -webkit-linear-gradient( bottom, #e34840, #e86f6a );
+    background-image: -moz-linear-gradient( bottom, #e34840, #e86f6a );
+    background-image: -o-linear-gradient( bottom, #e34840, #e86f6a );
+    background-image: linear-gradient( to top, #e34840, #e86f6a );
+
+}
+
+.wz-ui-button.red.hover{
+
+    background-color: #dc513a;
+    background-image: -webkit-linear-gradient( bottom, #e34840, #e86f6a );
+    background-image: -moz-linear-gradient( bottom, #e34840, #e86f6a );
+    background-image: -o-linear-gradient( bottom, #e34840, #e86f6a );
+    background-image: linear-gradient( to top, #e34840, #e86f6a );
+
+}
+
+.wz-ui-button.red:active{
+
+    background-color: #dc513a;
+    box-shadow: 0 1px 2px rgba( 0, 0, 0, 0.2 ) inset;
+    background-image: -webkit-linear-gradient( top, #a43733, #c85551 );
+    background-image: -moz-linear-gradient( top, #a43733, #c85551 );
+    background-image: -o-linear-gradient( top, #a43733, #c85551 );
+    background-image: linear-gradient( to bottom, #a43733, #c85551 );
+
+}
+
+.wz-ui-button.red.active{
+
+    background-color: #dc513a;
+    box-shadow: 0 1px 2px rgba( 0, 0, 0, 0.2 ) inset;
+    background-image: -webkit-linear-gradient( top, #a43733, #c85551 );
+    background-image: -moz-linear-gradient( top, #a43733, #c85551 );
+    background-image: -o-linear-gradient( top, #a43733, #c85551 );
+    background-image: linear-gradient( to bottom, #a43733, #c85551 );
+
+}
+
+.wz-ui-button.red.disabled, .wz-ui-button.red.disabled:hover, .wz-ui-button.red.disabled:active{
+
+    background-color: #DC513A;
+    box-shadow: 0 1px rgba( 255, 255, 255, 0.3 ) inset;
+    border: 1px solid #C69D9D;
+    background-image: -webkit-linear-gradient( bottom, #dc9f9c, #ecafad );
+    background-image: -moz-linear-gradient( bottom, #dc9f9c, #ecafad );
+    background-image: -o-linear-gradient( bottom, #dc9f9c, #ecafad );
+    background-image: linear-gradient( to top, #dc9f9c, #ecafad );
+    text-shadow: 0 1px 1px rgba( 0, 0, 0, 0.3 );
+
+}
+
+.wz-ui-button.blue{
+
+    background-color: #66a3da;
+    box-shadow: 0 1px rgba( 255, 255, 255, 0.2 ) inset;
+    border: solid 1px #4679a6;
+    background-image: -webkit-linear-gradient( top, #6daade, #508bc0 );
+    background-image: -moz-linear-gradient( top, #6daade, #508bc0 );
+    background-image: -o-linear-gradient( top, #6daade, #508bc0 );
+    background-image: linear-gradient( to bottom, #6daade, #508bc0 );
+
+}
+
+.wz-ui-button.blue:hover{
+
+    background-color: #76b6ec;
+    background-image: -webkit-linear-gradient( top, #7abaf0, #5a96cc );
+    background-image: -moz-linear-gradient( top, #7abaf0, #5a96cc );
+    background-image: -o-linear-gradient( top, #7abaf0, #5a96cc );
+    background-image: linear-gradient( to bottom, #7abaf0, #5a96cc );
+
+}
+
+.wz-ui-button.blue.hover{
+
+    background-color: #76b6ec;
+    background-image: -webkit-linear-gradient( top, #7abaf0, #5a96cc );
+    background-image: -moz-linear-gradient( top, #7abaf0, #5a96cc );
+    background-image: -o-linear-gradient( top, #7abaf0, #5a96cc );
+    background-image: linear-gradient( to bottom, #7abaf0, #5a96cc );
+
+}
+
+.wz-ui-button.blue:active{
+
+    background-color: #6dabe1;
+    box-shadow: 0 1px 2px rgba( 0, 0, 0, 0.2 ) inset;
+    background-image: -webkit-linear-gradient( top, #5084b1, #669fd1 );
+    background-image: -moz-linear-gradient( top, #5084b1, #669fd1 );
+    background-image: -o-linear-gradient( top, #5084b1, #669fd1 );
+    background-image: linear-gradient( to bottom, #5084b1, #669fd1 );
+
+}
+
+.wz-ui-button.blue.active{
+
+    background-color: #6dabe1;
+    box-shadow: 0 1px 2px rgba( 0, 0, 0, 0.2 ) inset;
+    background-image: -webkit-linear-gradient( top, #5084b1, #669fd1 );
+    background-image: -moz-linear-gradient( top, #5084b1, #669fd1 );
+    background-image: -o-linear-gradient( top, #5084b1, #669fd1 );
+    background-image: linear-gradient( to bottom, #5084b1, #669fd1 );
+
+}
+
+.wz-ui-button.blue.disabled, .wz-ui-button.blue.disabled:hover, .wz-ui-button.blue.disabled:active{
+
+    background-color: #66A3DA;
+    box-shadow: 0 1px rgba( 255, 255, 255, 0.2 ) inset;
+    border: 1px solid #A2BCD2;
+    background-image: -webkit-linear-gradient( bottom, #a7c5df, #b6d4ee );
+    background-image: -moz-linear-gradient( bottom, #a7c5df, #b6d4ee );
+    background-image: -o-linear-gradient( bottom, #a7c5df, #b6d4ee );
+    background-image: linear-gradient( to top, #a7c5df, #b6d4ee );
+    text-shadow: 0 1px 1px rgba( 0, 0, 0, 0.3 );
+
+}
+
+.wz-ui-list{
+
+    width: 214px;
+    height: 158px;
+    background-color: #FFF;
+    box-shadow: 0 0 0 1px rgba( 0, 0, 0, 0.15 );
+    border-radius: 3px;
+    margin: 0;
+    list-style: none;
+    padding: 0;
+
+}
+
+.wz-ui-list li{
+
+    font-size: 13px;
+    color: #646464;
+    line-height: 24px;
+    padding: 0 6px;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+
+}
+
+.wz-ui-list li:hover{
+
+    background-color: #EAF3E7;
+    border-top: 1px solid #C9EABE;
+    border-bottom: 1px solid #C9EABE;
+
+}
+
+.wz-ui-list li.hover{
+
+    background-color: #EAF3E7;
+    border-top: 1px solid #C9EABE;
+    border-bottom: 1px solid #C9EABE;
+
+}
+
+.wz-ui-list.dark{
+
+    background-color: #333538;
+    box-shadow: 0 0 0 1px #2a2a2a, 0 1px rgba( 255, 255, 255, 0.1 ) inset;
+
+}
+
+.wz-ui-list.dark li{
+    color: #FFF;
+}
+
+.wz-ui-list.dark li:hover{
+
+    background-color: #404244;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+
+}
+
+.wz-ui-list.dark li.hover{
+
+    background-color: #404244;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+
+}
+
+.wz-scroll-bar{
+
+    width: 6px;
+    height: 136px;
+    border-radius: 3px;
+    background-color: #9FA0A1;
+    box-shadow: 0 2px 2px rgba( 0, 0, 0, 0.1 ) inset;
+
+}
+
+.wz-scroll-bar .wz-scroll-slider{
+
+    height: 38px;
+    border-radius: 3px;
+    background-color: #333538;
+
+}
+
+.wz-scroll-bar.dark{
+
+    background-color: #292A2D;
+    box-shadow: 0 2px 2px rgba( 0, 0, 0, 0.1 ) inset;
+
+}
+
+.wz-scroll-bar.dark .wz-scroll-slider{
+
+    background-color: #FFF;
+    box-shadow: 0 1px 1px rgba( 0, 0, 0, 0.15 ), 0 2px 2px rgba( 0, 0, 0, 0.1 ) inset;
+    background-image: -webkit-linear-gradient( top, #fff, #d3d3d3 );
+    background-image: -moz-linear-gradient( top, #fff, #d3d3d3 );
+    background-image: -o-linear-gradient( top, #fff, #d3d3d3 );
+    background-image: linear-gradient( to bottom, #fff, #d3d3d3 );
+
+}
+
+.wz-ui-head{
+
+    width: 322px;
+    height: 40px;
+    border-radius: 3px 3px 0 0;
+    background-color: #CBCBCB;
+    box-shadow: 0 -1px 0 rgba( 0, 0, 0, 0.15 ), 0 1px 0 #b7b7b7, -1px 0 0 rgba( 0, 0, 0, 0.15 ), 1px 0 0 rgba( 0, 0, 0, 0.15 ), 0 2px 4px rgba( 0, 0, 0, 0.1 ), 0 1px rgba( 255, 255, 255, 0.1 ) inset;
+    background-image: -webkit-linear-gradient( bottom, #d6d6d6, #fff );
+    background-image: -moz-linear-gradient( bottom, #d6d6d6, #fff );
+    background-image: -o-linear-gradient( bottom, #d6d6d6, #fff );
+    background-image: linear-gradient( to top, #d6d6d6, #fff );
+
+}
+
+.wz-ui-head span{
+
+    float: left;
+    margin: 12px 14px;
+    font-size: 13px;
+    color: #666;
+
+}
+
+.wz-ui-head article{
+
+    float: right;
+    padding: 15px 20px 16px;
+    border-left: 1px solid rgba( 0, 0, 0, 0.2 );
+    box-shadow: -1px 0 rgba( 255, 255, 255, 0.1 );
+
+}
+
+.wz-ui-head article i{
+
+    width: 10px;
+    height: 9px;
+    float: left;
+    background: url("https://static.weezeel.com/image/win_buttons.png") no-repeat;
+    background-size: 30px 18px;
+
+}
+
+.wz-ui-head article i.min{
+    background-position: 0 -9px;
+}
+
+.wz-ui-head article i.max{
+    background-position: -10px -9px;
+    margin: 0 15px;
+}
+
+.wz-ui-head article i.close{
+    background-position: -20px -9px;
+}
+
+.wz-ui-head.dark{
+
+    background-color: #131313;
+    box-shadow: 0 0 0 1px #252525, 0 2px 4px rgba( 0, 0, 0, 0.15 ), 0 1px rgba( 255, 255, 255, 0.1 ) inset;
+    background-image: -webkit-linear-gradient( bottom, #2e2e2e, #383838 );
+    background-image: -moz-linear-gradient( bottom, #2e2e2e, #383838 );
+    background-image: -o-linear-gradient( bottom, #2e2e2e, #383838 );
+    background-image: linear-gradient( to top, #2e2e2e, #383838 );
+
+}
+
+.wz-ui-head.dark span{
+    color: #FFF;
+    text-shadow: 0 -1px rgba( 0, 0, 0, 0.15 );
+}
+
+.wz-ui-head.dark article{
+
+    padding: 15px 20px;
+    margin-top: 1px;
+    border-left: 1px solid #252525;
+
+}
+
+.wz-ui-head.dark article i.min{
+    background-position: 0 0;
+}
+
+.wz-ui-head.dark article i.max{
+    background-position: -10px 0;
+}
+
+.wz-ui-head.dark article i.close{
+    background-position: -20px 0;
+}
+
+.wz-ui-dropdown{
+
+    width: 174px;
+    height: 160px;
+    background-color: #FFF;
+    box-shadow: 0 0 0 1px rgba( 0, 0, 0, 0.15 );
+    border-radius: 3px;
+    position: relative;
+
+}
+
+.wz-ui-dropdown:after, .wz-ui-dropdown:before{
+
+    bottom: 100%;
+    left: 85%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+
+}
+
+.wz-ui-dropdown:after{
+
+    border-color: 1px solid transparent;
+    border-bottom-color: #FFF;
+    border-width: 6px;
+    margin-left: -6px;
+
+} 
+
+.wz-ui-dropdown:before{
+
+    border-color: 1px solid transparent;
+    border-bottom-color: #BFBFBF;
+    border-width: 7px;
+    margin-left: -7px;
+    box-shadow: 0 1px #FFF;
+
+}
+
+.wz-ui-dropdown article{
+
+    width: 146px;
+    height: 26px;
+    float: left;
+    padding: 6px 14px;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+
+}
+
+.wz-ui-dropdown article:hover{
+
+    background-color: #EAF3E7;
+    border-top: 1px solid #C9EABE;
+    border-bottom: 1px solid #C9EABE;
+
+}
+
+.wz-ui-dropdown article.hover{
+
+    background-color: #EAF3E7;
+    border-top: 1px solid #C9EABE;
+    border-bottom: 1px solid #C9EABE;
+
+}
+
+.wz-ui-dropdown article i{
+
+    width: 14px;
+    height: 16px;
+    float: left;
+    margin-top: 4px;
+    background: url("https://static.weezeel.com/app/11/dropdown.png") no-repeat;
+    background-size: 56px 16px;
+
+}
+
+.wz-ui-dropdown article i.info{
+    background-position: -28px 0;
+}
+
+.wz-ui-dropdown article i.stats{
+    background-position: -42px 0;
+}
+
+.wz-ui-dropdown article i.db{
+    background-position: -14px 0;
+}
+
+.wz-ui-dropdown article i.config{
+    background-position: 0 0;
+}
+
+.wz-ui-dropdown article span{
+
+    font-size: 13px;
+    color: #646464;
+    line-height: 24px;
+    float: left;
+    margin-left: 8px;
+}
+
+.wz-ui-dropdown.dark{
+
+    background-color: #333538;
+    box-shadow: 0 0 0 1px #2a2a2a, 0 1px rgba( 255, 255, 255, 0.1 ) inset;
+
+}
+
+.wz-ui-dropdown.dark:after{
+    border-bottom-color: #333538;
+} 
+
+.wz-ui-dropdown.dark:before{
+    border-bottom-color: #2a2a2a;
+    box-shadow: 0 1px #333538;
+}
+
+.wz-ui-dropdown.dark article{
+    color: #FFF;
+}
+
+.wz-ui-dropdown.dark article:hover{
+
+    background-color: #404244;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+
+}
+
+.wz-ui-dropdown.dark article.hover{
+
+    background-color: #404244;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+
+}
+
+.wz-ui-dropdown.dark article span{
+    color: #FFF;
+}
+
+.wz-ui-input{
+
+    width: 204px;
+    height: 28px;
+    padding: 0 10px;
+    border-radius: 3px;
+    background-color: #FCFEFF;
+    box-shadow: 0 1px rgba( 0, 0, 0, 0.05 ) inset;
+    border: 1px solid #DCDCDC;
+    font-size: 13px;
+    color: #464646;
+    cursor: text;
+
+}
+
+.wz-ui-input:focus{
+    border: 1px solid #7ebe30;
+}
+
+.wz-ui-input.active{
+    border: 1px solid #7ebe30;
+}
+
+.wz-ui-input.error{
+    border: 1px solid #DA605B;
+}
+
+.wz-ui-input.disabled{
+
+    background-color: #F0F0F0;
+    box-shadow: 0 1px 1px rgba( 0, 0, 0, 0.1 ) inset;
+    border: 1px solid #C6C6C6;
+    color: #A8A8A8;
+    cursor: default;
+
+}
+
+.wz-ui-input[type="checkbox"]{
+    display: none;
+}
+
+.wz-ui-input[type="checkbox"] + label i{
+    display: inline-block;
+    width: 17px;
+    height: 17px;
+    margin: -1px 4px 0 0;
+    vertical-align: middle;
+    background: url( 'http://api.weezeel.com/static/checkbox_white.png' ) -17px 0 no-repeat;
+}
+
+.wz-ui-input[type="checkbox"]:checked + label i{
+    background-position: 0 0;
+}
+
+.wz-ui-input[type="checkbox"].checked + label i{
+    background-position: 0 0;
+}
+
+.wz-ui-input[type="checkbox"].disabled + label i{
+    background-position: -34px 0;
+}
+
+.wz-ui-input.dark[type="checkbox"] + label i{
+    display: inline-block;
+    width: 17px;
+    height: 17px;
+    margin: -1px 4px 0 0;
+    vertical-align: middle;
+    background: url( 'http://api.weezeel.com/static/checkbox_black.png' ) -17px 0 no-repeat;
+}
+
+.wz-ui-input.dark[type="checkbox"]:checked + label i{
+    background-position: 0 0;
+}
+
+.wz-ui-input.dark[type="checkbox"].checked + label i{
+    background-position: 0 0;
+}
+
+.wz-ui-input.dark[type="checkbox"].disabled + label i{
+    background-position: -34px 0;
+}
+
+.wz-ui-input[type="radio"]{
+    display: none;
+}
+
+.wz-ui-input[type="radio"] + label i{
+    display: inline-block;
+    width: 17px;
+    height: 17px;
+    margin: -1px 4px 0 0;
+    vertical-align: middle;
+    background: url( 'http://api.weezeel.com/static/radio_white.png' ) -17px 0 no-repeat;
+}
+
+.wz-ui-input[type="radio"]:checked + label i{
+    background-position: 0 0;
+}
+
+.wz-ui-input[type="radio"].checked + label i{
+    background-position: 0 0;
+}
+
+.wz-ui-input[type="radio"].disabled + label i{
+    background-position: -34px 0;
+}
+
+.wz-ui-input.dark[type="radio"] + label i{
+    display: inline-block;
+    width: 17px;
+    height: 17px;
+    margin: -1px 4px 0 0;
+    vertical-align: middle;
+    background: url( 'http://api.weezeel.com/static/radio_black.png' ) -17px 0 no-repeat;
+}
+
+.wz-ui-input.dark[type="radio"]:checked + label i{
+    background-position: 0 0;
+}
+
+.wz-ui-input.dark[type="radio"].checked + label i{
+    background-position: 0 0;
+}
+
+.wz-ui-input.dark[type="radio"].disabled + label i{
+    background-position: -34px 0;
+}

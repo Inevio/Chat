@@ -11,6 +11,20 @@
     var user         = null;
     var status       = null;
     var channel      = null;
+    var actualReq    = false;
+
+    wz.channel( function( error, chn ){
+
+        if( error ){
+            console.log('NO PUEDE CREAR CANAL');
+        }else{
+
+            channel = chn;
+            channel.addUser( params[ 0 ].id );
+
+        }
+
+    });
 
     // Local Functions
     var readParams = function( params ){
@@ -195,8 +209,10 @@
                 if( data.sender === user.id ){
 
                     if( data.writing ){
+                        
                         $( '.weechat-conversation-writing', widget ).addClass( 'writing' );
                         conversation.scrollTop( conversation[ 0 ].scrollHeight );
+
                     }else{
                         $( '.weechat-conversation-writing', widget ).removeClass( 'writing' );
                         conversation.scrollTop( conversation[ 0 ].scrollHeight );
@@ -343,14 +359,32 @@
     var othersSize = others.size();
 
     if( othersSize ){
-
-        widget.css({
-            right : wz.app.getWidgets('list').children( '.weechat-icon' ).outerWidth( true ) + othersSize * widget.outerWidth( true ) + 5 * ( othersSize + 1 )
-        });
-
+        widget.css( 'right', wz.app.getWidgets('list').children( '.weechat-icon' ).outerWidth( true ) + othersSize * widget.outerWidth( true ) + 5 * ( othersSize + 1 ) );
     }
 
     autoResize( textarea );
 
     // Nullify
     others = othersSize = null;
+
+    $('.weechat-button-call').on( 'click', function ( e ) {
+        // To Do
+    });
+
+    $('.weechat-button-video').on( 'click', function ( e ) {
+        wz.app.createView( { type : 'startCall', user : user } );        
+    });
+
+    $('.weechat-button-hangup').on('click', function ( e ) {
+        // To Do
+    });
+
+    $('.weechat-button-change').on('click', function ( e ) {
+        
+        e.stopPropagation();
+
+        if ( actualReq ) {
+            // To Do
+        }
+
+    });

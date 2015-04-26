@@ -163,7 +163,7 @@
 
     var countFriends = function(){
 
-        wz.user.friendList( function( error, list ){
+        wz.user.friendList( false, function( error, list ){
 
             var friendCard = null;
             
