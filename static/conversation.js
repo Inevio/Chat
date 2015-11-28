@@ -112,31 +112,31 @@
         var settings = $.extend({ onResize : function(){}, extraSpace : 0, limit: 100 } );
 
         origHeight = textarea.height(),
-         
+
         clone = ( function(){
-         
+
             var props = [ 'height', 'width', 'lineHeight', 'textDecoration', 'letterSpacing' ], propOb = {};
-             
+
             $.each( props, function( i, prop ){ propOb[prop] = textarea.css( prop ); } );
-             
+
             return textarea.clone().css({
                 position: 'absolute',
                 top: 0,
                 left: -9999
             }).css( propOb ).attr( 'tabIndex', '-1' ).insertBefore( textarea );
-         
+
         })(),
         lastScrollTop = null,
         updateSize = function() {
-         
+
             clone.height( 0 ).val( $( this ).val() ).scrollTop( 10000 );
-             
+
             var scrollTop = Math.max( clone.scrollTop(), origHeight ) + settings.extraSpace, toChange = $( this ).add( clone );
-         
+
             // Don't do anything if scrollTop hasen't changed:
             if ( lastScrollTop === scrollTop ) { return; }
             lastScrollTop = scrollTop;
-             
+
             // Check for limit:
             if ( scrollTop >= settings.limit ) {
                 $( this ).css( 'overflow-y', 'auto' );
@@ -149,7 +149,7 @@
             textarea.trigger( 'resize' );
 
         };
-     
+
         // Bind namespaced handlers to appropriate events:
         textarea
             .unbind( '.dynSiz' )
@@ -194,6 +194,7 @@
                         .setTitle( user.fullName )
                         .setText( data.text )
                         .setIcon( user.avatar.tiny )
+                        .setBackground( true )
                         // To Do -> .sound( 'marimba' )
                         .on( 'click', function(){
                             $( '.weechat-friends-card', widget ).click();
@@ -209,7 +210,7 @@
                 if( data.sender === user.id ){
 
                     if( data.writing ){
-                        
+
                         $( '.weechat-conversation-writing', widget ).addClass( 'writing' );
                         conversation.scrollTop( conversation[ 0 ].scrollHeight );
 
@@ -372,7 +373,7 @@
     });
 
     $('.weechat-button-video').on( 'click', function ( e ) {
-        wz.app.createView( { type : 'startCall', user : user } );        
+        wz.app.createView( { type : 'startCall', user : user } );
     });
 
     $('.weechat-button-hangup').on('click', function ( e ) {
@@ -380,7 +381,7 @@
     });
 
     $('.weechat-button-change').on('click', function ( e ) {
-        
+
         e.stopPropagation();
 
         if ( actualReq ) {
