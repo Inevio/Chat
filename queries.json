@@ -1,0 +1,5 @@
+
+{
+    "addMessage" : "INSERT INTO message SET text = ?, sender = ?, receiver = ?, time = UNIX_TIMESTAMP() * 1000",
+    "getMessages" : "SELECT * FROM message WHERE ( sender = ? AND receiver = ? ) OR ( sender = ? AND receiver = ? ) ORDER BY id ASC"
+}

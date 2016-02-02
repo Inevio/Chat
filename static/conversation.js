@@ -26,6 +26,18 @@
 
     });
 
+    wql.getMessages( [ params[ 0 ].id, wz.system.user().id, wz.system.user().id, params[ 0 ].id ], function( error, messages ){
+
+      if( error ){
+        return;
+      }
+
+      for( var i = 0; i < messages.length; i++ ){
+        addMessage( messages[ i ].text, messages[ i ].sender === wz.system.user().id, messages[ i ].time );
+      }
+
+    });
+
     // Local Functions
     var readParams = function( params ){
 
@@ -75,14 +87,20 @@
     };
 
     var sendMessage = function( message ){
+
         channel.send( message );
+
+        if( message.text ){
+          wql.addMessage( [ message.text, message.sender, message.receiver ] );
+        }
+
     };
 
-    var addMessage = function( text, self ){
+    var addMessage = function( text, self, time ){
 
         var item = message.clone();
 
-        var date = new Date();
+        var date = new Date( time );
 
         var hour = date.getHours();
             if( hour < 10 ){ hour = '0' + hour; }
