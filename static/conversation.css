@@ -58,8 +58,8 @@
     width: 24px;
 }
 
-.weechat-friends-card.online .user-avatar{    
-    border: 2px solid #7EBE30;    
+.weechat-friends-card.online .user-avatar{
+    border: 2px solid #7EBE30;
 }
 
 .weechat-call-buttons{
@@ -245,4 +245,11 @@
     background: url("@static/videocall.png") no-repeat;
     background-size: 18px 10px;
     display: block;
+}
+
+img.emoji {
+   height: 1.2em;
+   width: 1.2em;
+   margin: 0 .05em 0 .1em;
+   vertical-align: -0.2em;
 }
