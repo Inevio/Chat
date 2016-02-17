@@ -1,13 +1,23 @@
+// Local Variables
+var widget     = $( this );
+var chatIcon   = $( '.chat-icon' );
+var chat       = $( '.chat' );
 
-    // Local Variables
-    var widget     = $( this );
+// DOM Events
+chatIcon.on( 'click' , function(){
+  chat.toggleClass('visible');
+  chatIcon.toggleClass('open');
+});
+
+
+/*
+
     var userList   = $( '.list' );
-    var chatIcon   = $( '.weechat-icon' );
     var chatSelf   = $( '.weechat-self', userList );
     var friendZone = $( '.weechat-friends', userList );
     var friend     = $( '.weechat-friends-card.wz-prototype', friendZone );
     var status     = chatSelf.children('i').attr('class');
-    
+
     // Local Functions
     var addFriend = function( user, connected ){
 
@@ -17,7 +27,7 @@
         if( !friendCard.length ){
 
             friendCard = friend.clone();
-        
+
             friendCard
                 .removeClass('wz-prototype')
                 .addClass('weechat-friend-' + user.id + '-card')
@@ -27,7 +37,7 @@
                     .text( user.fullName );
 
             friendCard.find( '.user-avatar' ).attr( 'src', user.avatar.tiny );
-        
+
         }
 
         $( '.empty-list', friendZone ).remove();
@@ -90,7 +100,7 @@
     };
 
     var createConversation = function( user, status, message ){
-            
+
         var conv = wz.app.getWidgets().filter( '.weechat-user-' + user.id );
 
         if( !conv.size() ){
@@ -113,10 +123,10 @@
         wz.user.friendList( false, function( error, list ){
 
             var friendCard = null;
-            
+
             // To Do -> Error
             if( list.length === 0 ){
-                                    
+
                 friendCard = friend.clone();
 
                 friendCard
@@ -126,9 +136,9 @@
                         .text( lang.emptyList )
                     .siblings()
                         .remove();
-                
+
                 friendZone.append( friendCard );
-                
+
                 friendCard.siblings().not('.wz-prototype').remove();
 
             }else{
@@ -139,19 +149,19 @@
                 list = list.sort( function( a, b ){
                     return a.fullName.localeCompare( b.fullName );
                 }).reverse();
-                
+
                 if( list.length * friend.outerHeight( true ) > ( wz.tool.desktopHeight() * 0.8 - $( '.weechat-self', userList ).outerHeight( true ) ) ){
                     friendZone.height( wz.tool.desktopHeight() * 0.8 - $( '.weechat-self', userList ).outerHeight( true ) );
                 }
-                
+
                 for( var i = 0; i < list.length; i++ ){
                     addFriend( list[ i ] );
                 }
-            
+
             }
-            
+
         });
-        
+
     };
 
     var removeFriend = function( user ){
@@ -166,10 +176,10 @@
         wz.user.friendList( false, function( error, list ){
 
             var friendCard = null;
-            
+
             // To Do -> Error
             if( list.length === 0 ){
-                                    
+
                 friendCard = friend.clone();
 
                 // To Do -> Cambiar CSS por una clase
@@ -181,13 +191,13 @@
                         .text( lang.emptyList )
                     .siblings()
                         .remove();
-                
+
                 friendZone.append( friendCard );
-                
+
                 friendCard.siblings().not( '.wz-prototype' ).remove();
 
             }
-            
+
         });
 
     };
@@ -278,7 +288,7 @@
             chatIcon.removeClass('open');
 
         }
-        
+
     });
 
     // Start the widget
@@ -293,3 +303,6 @@
     $( '.status-busy', widget ).text( lang.statusBusy );
     $( '.status-away', widget ).text( lang.statusAway );
     $( '.status-disconnect', widget ).text( lang.statusDisconnect );
+
+
+    */
