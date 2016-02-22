@@ -1,5 +1,5 @@
 // Local Variables
-var widget     = $( this );
+var app        = $( this );
 var chatIcon   = $( '.chat-icon' );
 var chat       = $( '.chat' );
 
@@ -9,6 +9,8 @@ chatIcon.on( 'click' , function(){
   chatIcon.toggleClass('open');
 });
 
+// INIT Chat
+app.css('border-radius', '6px');
 
 /*
 
