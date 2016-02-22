@@ -28,15 +28,34 @@
 
             },
 
-            "widget" : {
+            "view" : {
 
-                "chat" : {
+                "main" : {
 
                     "template" : "chat.html",
-                    "css"      : ["chat.css"],
-                    "script"   : ["chat.js"],
 
-                    "alwaysInFront" : true
+                    "maxizable" : true,
+                    "resizable" : true,
+
+                    "width"  : {
+
+                        "default" : 315,
+                        "min"     : 315,
+                        "max"     : 0
+
+                    },
+
+                    "height" : {
+
+                        "default" : 543,
+                        "min"     : 543,
+                        "max"     : 0
+
+                    },
+
+                    "css"    : ["chat.css"],
+                    "script" : ["chat.js"],
+                    "start"  : []
 
                 }
 
