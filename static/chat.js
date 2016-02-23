@@ -1,17 +1,55 @@
 // Local Variables
-var app        = $( this );
-var chatIcon   = $( '.chat-icon' );
-var chat       = $( '.chat' );
+var app               = $( this );
+var chatIcon          = $( '.chat-icon' );
+var chat              = $( '.chat' );
+var channelPrototype  = $( '.channel.wz-prototype' );
+var channelList       = $( '.channel-list' );
 
 // DOM Events
 chatIcon.on( 'click' , function(){
-  chat.toggleClass('visible');
-  chatIcon.toggleClass('open');
+  chat.toggleClass( 'visible' );
+  chatIcon.toggleClass( 'open' );
 });
 
-// INIT Chat
-app.css('border-radius', '6px');
+var setTexts = function(){
+  $('.chat-tab-selector span').text(lang.chats);
+  $('.contact-tab-selector span').text(lang.contacts);
+}
 
+var getChannels = function(){
+
+    wz.user.friendList( false, function( error, list ){
+
+      console.log('Channels:', list);
+
+      list.forEach(function(c){
+
+        var channel = channelPrototype.clone();
+
+        console.log('imagen: ', c.avatar.big);
+
+        channel
+            .removeClass('wz-prototype')
+            .find('.channel-name').text(c.name)
+        channel
+            .find('.channel-img').css('background-image', 'url(' + c.avatar.big + ')');
+
+        channelList.append( channel );
+
+      });
+
+    });
+
+};
+
+var initChat = function(){
+  app.css('border-radius', '6px');
+  setTexts();
+  getChannels();
+}
+
+// INIT Chat
+initChat();
 /*
 
     var userList   = $( '.list' );
@@ -120,51 +158,7 @@ app.css('border-radius', '6px');
 
     };
 
-    var friends = function(){
 
-        wz.user.friendList( false, function( error, list ){
-
-            var friendCard = null;
-
-            // To Do -> Error
-            if( list.length === 0 ){
-
-                friendCard = friend.clone();
-
-                friendCard
-                    .removeClass()
-                    .addClass('empty-list')
-                    .children('span')
-                        .text( lang.emptyList )
-                    .siblings()
-                        .remove();
-
-                friendZone.append( friendCard );
-
-                friendCard.siblings().not('.wz-prototype').remove();
-
-            }else{
-
-                // Los ordenamos por orden inverso alfabético, hace mucho más eficiente el ordenado de addFriend()
-                // Si está ordenado alfabéticamente se recorre el bucle ( n * n ) / 2 aproximadamente
-                // Si está ordenado alfabéticamente a la inversa se recorre el bucle n aproximadamente
-                list = list.sort( function( a, b ){
-                    return a.fullName.localeCompare( b.fullName );
-                }).reverse();
-
-                if( list.length * friend.outerHeight( true ) > ( wz.tool.desktopHeight() * 0.8 - $( '.weechat-self', userList ).outerHeight( true ) ) ){
-                    friendZone.height( wz.tool.desktopHeight() * 0.8 - $( '.weechat-self', userList ).outerHeight( true ) );
-                }
-
-                for( var i = 0; i < list.length; i++ ){
-                    addFriend( list[ i ] );
-                }
-
-            }
-
-        });
-
-    };
 
     var removeFriend = function( user ){
 

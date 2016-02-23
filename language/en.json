@@ -5,7 +5,8 @@
     "newMessage" : "New Message",
     "statusOnline" : "Online",
     "statusBusy" : "Busy",
-    "statusAway" : "Away", 
-    "statusDisconnect" : "Disconnect"
-
+    "statusAway" : "Away",
+    "statusDisconnect" : "Disconnect",
+    "chats" : "Chats",
+    "contacts" : "Contacts"
 }

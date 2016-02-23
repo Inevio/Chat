@@ -1,11 +1,13 @@
 
 {
-    
+
     "emptyList" : "No tienes contactos todavía, abre Contactos y búscalos.",
     "newMessage" : "Nuevo mensaje",
     "statusOnline" : "Conectado",
     "statusBusy" : "Ocupado",
-    "statusAway" : "Ausente", 
-    "statusDisconnect" : "Desconectar"
+    "statusAway" : "Ausente",
+    "statusDisconnect" : "Desconectar",
+    "chats" : "Chats",
+    "contacts" : "Contactos"
 
 }
