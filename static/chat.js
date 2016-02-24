@@ -6,6 +6,11 @@ var channelPrototype  = $( '.channel.wz-prototype' );
 var channelList       = $( '.channel-list' );
 
 // DOM Events
+app.key(
+  'space',
+  function(){ $( '.ui-window' ).toggleClass( 'dark' ); }
+);
+
 chatIcon.on( 'click' , function(){
   chat.toggleClass( 'visible' );
   chatIcon.toggleClass( 'open' );
@@ -43,7 +48,9 @@ var getChannels = function(){
 };
 
 var initChat = function(){
-  app.css('border-radius', '6px');
+  app.css({'border-radius'    : '6px',
+           'background-color' : '#2c3238'
+  });
   setTexts();
   getChannels();
 }
