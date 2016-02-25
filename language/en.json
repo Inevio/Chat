@@ -8,5 +8,8 @@
     "statusAway" : "Away",
     "statusDisconnect" : "Disconnect",
     "chats" : "Chats",
-    "contacts" : "Contacts"
+    "contacts" : "Contacts",
+    "msg"  : "Message...",
+    "close" : "Close",
+    "send"  : "Send"
 }
