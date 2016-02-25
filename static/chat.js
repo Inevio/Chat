@@ -19,6 +19,9 @@ chatIcon.on( 'click' , function(){
 var setTexts = function(){
   $('.chat-tab-selector span').text(lang.chats);
   $('.contact-tab-selector span').text(lang.contacts);
+  $('.conversation-input input').attr('placeholder', lang.msg);
+  $('.close-coversation').text(lang.close);
+  $('.conversation-send').text(lang.send);
 }
 
 var getChannels = function(){

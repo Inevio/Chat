@@ -8,6 +8,9 @@
     "statusAway" : "Ausente",
     "statusDisconnect" : "Desconectar",
     "chats" : "Chats",
-    "contacts" : "Contactos"
+    "contacts" : "Contactos",
+    "msg"     : "Mensaje...",
+    "close"  : "Cerrar",
+    "send" : "Enviar"
 
 }
