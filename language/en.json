@@ -11,5 +11,6 @@
     "contacts" : "Contacts",
     "msg"  : "Message...",
     "close" : "Close",
-    "send"  : "Send"
+    "send"  : "Send",
+    "newGroup"  : "New Group"
 }
