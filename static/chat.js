@@ -4,24 +4,31 @@ var chatIcon          = $( '.chat-icon' );
 var chat              = $( '.chat' );
 var channelPrototype  = $( '.channel.wz-prototype' );
 var channelList       = $( '.channel-list' );
+var chatButton        = $( '.chat-tab-selector' );
+var contactsButton    = $( '.contact-tab-selector' );
 
 // DOM Events
-app.key(
-  'space',
-  function(){ $( '.ui-window' ).toggleClass( 'dark' ); }
-);
+app.key('space',function(){
+ $( '.ui-window' ).toggleClass( 'dark' );
+});
 
-chatIcon.on( 'click' , function(){
-  chat.toggleClass( 'visible' );
-  chatIcon.toggleClass( 'open' );
+chatButton.on('click', function(){
+  contactsButton.removeClass('active');
+  chatButton.addClass('active');
+});
+
+contactsButton.on('click', function(){
+  chatButton.removeClass('active');
+  contactsButton.addClass('active');
 });
 
 var setTexts = function(){
-  $('.chat-tab-selector span').text(lang.chats);
-  $('.contact-tab-selector span').text(lang.contacts);
-  $('.conversation-input input').attr('placeholder', lang.msg);
-  $('.close-coversation').text(lang.close);
-  $('.conversation-send').text(lang.send);
+  $( '.chat-tab-selector span' ).text(lang.chats);
+  $( '.contact-tab-selector span' ).text(lang.contacts);
+  $( '.conversation-input input' ).attr('placeholder', lang.msg);
+  $( '.close-coversation' ).text(lang.close);
+  $( '.conversation-send' ).text(lang.send);
+  $( '.new-group-button span' ).text(lang.newGroup);
 }
 
 var getChannels = function(){
@@ -37,10 +44,16 @@ var getChannels = function(){
         console.log('imagen: ', c.avatar.big);
 
         channel
-            .removeClass('wz-prototype')
-            .find('.channel-name').text(c.name)
+            .removeClass( 'wz-prototype' )
+            .addClass( 'channelDom' )
+            .find( '.channel-name' ).text( c.name );
         channel
-            .find('.channel-img').css('background-image', 'url(' + c.avatar.big + ')');
+            .find( '.channel-img' ).css( 'background-image' , 'url(' + c.avatar.big + ')' );
+        channel
+            .on( 'click' , function(){
+              $( '.channelDom.active' ).removeClass( 'active' );
+              $( this ).addClass( 'active' );
+            });
 
         channelList.append( channel );
 
