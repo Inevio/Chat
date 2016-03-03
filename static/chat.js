@@ -2,9 +2,11 @@
 var app               = $( this );
 var chatIcon          = $( '.chat-icon' );
 var chat              = $( '.chat' );
-var channelPrototype  = $( '.channel.wz-prototype' );
-var channelList       = $( '.channel-list' );
+var contactPrototype  = $( '.contact.wz-prototype' );
+var contactList       = $( '.contact-list' );
+var chatTab           = $( '.chat-tab' );
 var chatButton        = $( '.chat-tab-selector' );
+var contactTab       = $( '.contact-tab' );
 var contactsButton    = $( '.contact-tab-selector' );
 
 // DOM Events
@@ -13,13 +15,11 @@ app.key('space',function(){
 });
 
 chatButton.on('click', function(){
-  contactsButton.removeClass('active');
-  chatButton.addClass('active');
+  changeTab('chat');
 });
 
 contactsButton.on('click', function(){
-  chatButton.removeClass('active');
-  contactsButton.addClass('active');
+  changeTab('contact');
 });
 
 var setTexts = function(){
@@ -31,44 +31,112 @@ var setTexts = function(){
   $( '.new-group-button span' ).text(lang.newGroup);
 }
 
-var getChannels = function(){
+var checkTab = function(){
+
+  //Load channels
+  if ( chatButton.hasClass( 'active' ) ) {
+    changeTab( 'chat' );
+
+  //Load contacts
+  }else{
+    changeTab( 'contact' );
+  }
+
+}
+
+var changeTab = function(tab){
+
+  switch(tab) {
+
+    case 'chat':
+
+      //Make it active and visible
+      contactsButton.removeClass('active');
+      chatButton.addClass('active');
+      contactTab.removeClass( 'visible' );
+      chatTab.addClass( 'visible' );
+
+      break;
+
+    case 'contact':
+
+      //Make it active and visible
+      chatButton.removeClass( 'active' );
+      contactsButton.addClass( 'active' );
+      chatTab.removeClass( 'visible' );
+      contactTab.addClass( 'visible' );
+
+      //Insert contacts in DOM
+      $( '.contactDom' ).remove();
+      getContacts();
+
+      break;
+
+  }
+
+}
+
+var getContacts = function(){
 
     wz.user.friendList( false, function( error, list ){
 
-      console.log('Channels:', list);
+      console.log('Contacts:', list);
 
       list.forEach(function(c){
 
-        var channel = channelPrototype.clone();
+        var contact = contactPrototype.clone();
 
-        console.log('imagen: ', c.avatar.big);
-
-        channel
+        contact
             .removeClass( 'wz-prototype' )
-            .addClass( 'channelDom' )
-            .find( '.channel-name' ).text( c.name );
-        channel
-            .find( '.channel-img' ).css( 'background-image' , 'url(' + c.avatar.big + ')' );
-        channel
+            .addClass( 'contactDom' )
+            .find( '.contact-name' ).text( c.name );
+        contact
+            .find( '.contact-img' ).css( 'background-image' , 'url(' + c.avatar.big + ')' );
+        contact
             .on( 'click' , function(){
-              $( '.channelDom.active' ).removeClass( 'active' );
-              $( this ).addClass( 'active' );
+              var channel = contact.data( 'channel' );
+              selectContact( $(this), channel );
             });
 
-        channelList.append( channel );
+        contactList.append( contact );
 
       });
 
     });
 
-};
+}
+
+var selectContact = function(contact, channel){
+
+  //Make active
+  $( '.contactDom.active' ).removeClass( 'active' );
+  contact.addClass( 'active' );
+
+  //No channel
+  if( channel == undefined){
+
+  wz.channel( function( error, channel ){
+    console.log(error, channel);
+    console.log(channel.getStatus());
+    contact.data( 'channel' , channel )
+  });
+
+  //Channel
+  }else{
+
+  }
+}
 
 var initChat = function(){
+
   app.css({'border-radius'    : '6px',
            'background-color' : '#2c3238'
   });
+
   setTexts();
-  getChannels();
+  getContacts();
+  checkTab();
+
 }
 
 // INIT Chat
