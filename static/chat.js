@@ -94,8 +94,7 @@ var getContacts = function(){
             .find( '.contact-img' ).css( 'background-image' , 'url(' + c.avatar.big + ')' );
         contact
             .on( 'click' , function(){
-              var channel = contact.data( 'channel' );
-              selectContact( $(this), channel );
+              selectContact( $( this ) );
             });
 
         contactList.append( contact );
@@ -106,7 +105,10 @@ var getContacts = function(){
 
 }
 
-var selectContact = function(contact, channel){
+var selectContact = function( contact ){
+
+  //Get contact channel
+  var channel = contact.data( 'channel' );
 
   //Make active
   $( '.contactDom.active' ).removeClass( 'active' );
@@ -116,9 +118,17 @@ var selectContact = function(contact, channel){
   if( channel == undefined){
 
   wz.channel( function( error, channel ){
+
     console.log(error, channel);
-    console.log(channel.getStatus());
-    contact.data( 'channel' , channel )
+
+    wql.addChannel( channel.id , "simple" , function( error , message ){
+
+      console.log( error , message );
+      console.log(channel.getStatus());
+      contact.data( 'channel' , channel )
+
+    });
+
   });
 
   //Channel
