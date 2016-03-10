@@ -1,4 +1,8 @@
 
 {
-    "addChannel"    : "INSERT INTO channel SET id = ?, name = ?"
+    "addChannel"          : "INSERT INTO channel SET id = ?, name = ?",
+    "addUserInChannel"    : "INSERT INTO user_in_channel SET id_channel = ?, user = ?",
+    "getSingleChannel"    : "SELECT id_channel FROM ( SELECT id_channel, COUNT(user) AS counter FROM user_in_channel, channel WHERE ( user = ? OR user = ? ) AND user_in_channel.id_channel = channel.id AND channel.name IS NULL GROUP BY id_channel ) AS channels WHERE counter > 1",
+    "addMessage"          : "INSERT INTO message SET text = ?, sender = ?, channel = ?, time = UNIX_TIMESTAMP() * 1000",
+    "getMessages"         : "SELECT * FROM message WHERE channel = ? ORDER BY id ASC"
 }
