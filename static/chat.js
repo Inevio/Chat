@@ -80,24 +80,38 @@ var getContacts = function(){
 
     wz.user.friendList( false, function( error, list ){
 
-      console.log('Contacts:', list);
+      if ( error ) { console.log('ERROR: ', error ); }
 
-      list.forEach(function(c){
+        console.log( 'metiendo contactos' , list );
 
-        var contact = contactPrototype.clone();
+        list.forEach(function( c ){
 
-        contact
-            .removeClass( 'wz-prototype' )
-            .addClass( 'contactDom' )
-            .find( '.contact-name' ).text( c.name );
-        contact
-            .find( '.contact-img' ).css( 'background-image' , 'url(' + c.avatar.big + ')' );
-        contact
-            .on( 'click' , function(){
-              selectContact( $( this ) );
-            });
+          wql.getSingleChannel( [ wz.system.user().id , c.id ] , function( error , message ){
 
-        contactList.append( contact );
+            console.log( 'USR1(' , wz.system.user().id , ') USR2(' , c.id , ') CANAL=' , message );
+
+            if ( error ) { console.log('ERROR: ', error ); }
+
+            // Existe el canal
+            if (message.length > 0) {
+
+              wz.channel( message[ 'id_channel' ] , function( error, channel ){
+
+                if ( error ) { console.log('ERROR: ', error ); }
+
+                appendContact(c , channel);
+
+              });
+
+            }
+            // No existe el canal
+            else{
+
+              appendContact(c);
+
+            }
+
+        });
 
       });
 
@@ -105,27 +119,69 @@ var getContacts = function(){
 
 }
 
+var appendContact = function( c , channel ){
+
+  var contact = contactPrototype.clone();
+
+  contact
+      .removeClass( 'wz-prototype' )
+      .addClass( 'contactDom' )
+      .find( '.contact-name' ).text( c.fullName );
+  contact
+      .find( '.contact-img' ).css( 'background-image' , 'url(' + c.avatar.big + ')' );
+  contact
+      .on( 'click' , function(){
+        selectContact( $( this ) );
+      });
+  contact
+      .data( 'contact' , c );
+
+  if( channel != undefined ){ contact.data( 'channel' , channel ) }
+
+  contactList.append( contact );
+
+}
+
 var selectContact = function( contact ){
 
-  //Get contact channel
   var channel = contact.data( 'channel' );
+  var contactApi = contact.data( 'contact' );
 
-  //Make active
+  // Make active
   $( '.contactDom.active' ).removeClass( 'active' );
   contact.addClass( 'active' );
 
-  //No channel
-  if( channel == undefined){
+  // Set header
+  $( '.conversation-name' ).text( contact.find( '.contact-name' ).text() );
 
-  wz.channel( function( error, channel ){
+  // No channel
+  if( channel == undefined ){
 
-    console.log(error, channel);
+  wz.channel( function( error , channel ){
 
-    wql.addChannel( channel.id , "simple" , function( error , message ){
+    if ( error ) { console.log('ERROR: ', error ); }
 
-      console.log( error , message );
-      console.log(channel.getStatus());
-      contact.data( 'channel' , channel )
+    wql.addChannel( [ channel.id , null ] , function( error , message ){
+
+      if ( error ) { console.log('ERROR: ', error ); }
+
+      wql.addUserInChannel( [ channel.id , contactApi.id ] , function( error , message ){
+
+        if ( error ) { console.log('ERROR: ', error ); }
+
+        wql.addUserInChannel( [ channel.id , wz.system.user().id ] , function( error , message ){
+
+          if ( error ) { console.log('ERROR: ', error ); }
+
+          channel.addUser( contactApi.id , function(){
+
+            contact.data( 'channel' , channel );
+
+          });
+
+        });
+
+      });
 
     });
 
@@ -134,7 +190,29 @@ var selectContact = function( contact ){
   //Channel
   }else{
 
+    console.log( 'Channel encontrado!' , channel );
+
+    listMessages( channel );
+
   }
+}
+
+var listMessages = function( channel ){
+
+  wql.getMessages( channel , function( error, messages ){
+
+    if ( error ) { console.log('ERROR: ', error ); }
+
+    for( var i = 0; i < messages.length; i++ ){
+      printMessage( messages[ i ].text , messages[ i ].sender , messages[ i ].time );
+    }
+
+  });
+
+}
+
+var printMessage = function( text , sender , time ){
+
 }
 
 var initChat = function(){
@@ -144,262 +222,9 @@ var initChat = function(){
   });
 
   setTexts();
-  getContacts();
   checkTab();
 
 }
 
 // INIT Chat
 initChat();
-/*
-
-    var userList   = $( '.list' );
-    var chatSelf   = $( '.weechat-self', userList );
-    var friendZone = $( '.weechat-friends', userList );
-    var friend     = $( '.weechat-friends-card.wz-prototype', friendZone );
-    var status     = chatSelf.children('i').attr('class');
-
-    // Local Functions
-    var addFriend = function( user, connected ){
-
-        var friendCard = friendZone.find('.weechat-friend-' + user.id + '-card');
-        var status     = connected ? 'online' : 'offline';
-
-        if( !friendCard.length ){
-
-            friendCard = friend.clone();
-
-            friendCard
-                .removeClass('wz-prototype')
-                .addClass('weechat-friend-' + user.id + '-card')
-                .addClass( status )
-                .data( 'user', user )
-                .find('span')
-                    .text( user.fullName );
-
-            friendCard.find( '.user-avatar' ).attr( 'src', user.avatar.tiny );
-
-        }
-
-        $( '.empty-list', friendZone ).remove();
-
-        var list = friendZone.find( '.weechat-friends-card.' + status );
-
-        if( list.length ){
-
-            var inserted = false;
-
-            list.each( function(){
-
-                if( user.fullName.localeCompare( $(this).find('span').text() ) === -1 ){
-
-                    inserted = true;
-
-                    $(this).before( friendCard );
-
-                    return false;
-
-                }
-
-            });
-
-            if( !inserted ){
-                list.last().after( friendCard );
-            }
-
-        }else if( connected ){
-            friendZone.prepend( friendCard );
-        }else{
-            friendZone.append( friendCard );
-        }
-
-        // Actualizamos el estado al final para no contaminar la lista
-        friendCard
-            .data( 'status', status )
-            .removeClass('online offline')
-            .addClass( status )
-            .find('i')
-                .removeClass('online offline')
-                .addClass( status );
-
-    };
-
-    var calculateListHeight = function(){
-        friendZone.css( 'max-height', wz.tool.environmentHeight() - ( 2 * parseInt( userList.css('bottom'), 10 ) ) - chatSelf.outerHeight() );
-    };
-
-    var connectedFriends = function(){
-
-        wz.user.connectedFriends( false, function( error, list ){
-
-            for( var i = 0; i < list.length; i++ ){
-                addFriend( list[ i ], true );
-            }
-
-        });
-
-    };
-
-    var createConversation = function( user, status, message ){
-
-        var conv = wz.app.getWidgets().filter( '.weechat-user-' + user.id );
-
-        if( !conv.size() ){
-            wz.app.createWidget( [ user, status, message ], 'conversation' );
-            //wz.desktop.focusDeskitem( wz.app( 14 ).createWidget( [ user, status, message ], 'conversation' ) );
-        }else{
-
-            if( conv.hasClass('hidden') ){
-                conv.find('.weechat-friends-card').click();
-            }
-
-            wz.app.widgetToFront( conv );
-
-        }
-
-    };
-
-
-
-    var removeFriend = function( user ){
-
-        $( '.weechat-friend-' + user.id + '-card', userList ).remove();
-        countFriends();
-
-    };
-
-    var countFriends = function(){
-
-        wz.user.friendList( false, function( error, list ){
-
-            var friendCard = null;
-
-            // To Do -> Error
-            if( list.length === 0 ){
-
-                friendCard = friend.clone();
-
-                // To Do -> Cambiar CSS por una clase
-
-                friendCard
-                    .removeClass()
-                    .addClass( 'empty-list' )
-                    .children( 'span' )
-                        .text( lang.emptyList )
-                    .siblings()
-                        .remove();
-
-                friendZone.append( friendCard );
-
-                friendCard.siblings().not( '.wz-prototype' ).remove();
-
-            }
-
-        });
-
-    };
-
-    // WZ Events
-    wz.channel
-    .on( 'message', function( info, data ){
-
-        var conv = wz.app.getWidgets().filter( '.weechat-user-' + info.sender );
-
-        if( conv.size() ){
-            return false;
-        }
-
-        var card = $( '.weechat-friend-' + info.sender + '-card', widget );
-
-        if( card.size() ){
-            createConversation( card.data('user'), card.data('status'), data );
-        }
-
-    });
-
-    wz.system
-    .on( 'resize', function(){
-        calculateListHeight();
-    });
-
-    wz.user
-    .on( 'connect', function( user ){
-        addFriend( user, true );
-    })
-
-    .on( 'disconnect', function( user ){
-        addFriend( user, false );
-    })
-
-    .on( 'friendAdded', function( user ){
-        addFriend( user, false );
-    })
-
-    .on( 'friendRemoved', function( user ){
-        removeFriend( user );
-    });
-
-    // DOM Events
-    widget
-
-    .on( 'ui-view-blur', function(){
-
-        userList.addClass('hidden');
-        chatIcon.removeClass('open');
-        userList.addClass( 'contextmenu-invisible' );
-
-    });
-
-    userList
-    .on( 'click', '.weechat-friends-card', function(){
-        createConversation( $( this ).data('user'), $( this ).data('status') );
-    })
-
-    .on( 'click', '.weechat-self-clickable, .self-status', function( e ){
-
-        e.stopPropagation();
-
-        if( userList.hasClass( 'contextmenu-invisible' ) ){
-            userList.removeClass( 'contextmenu-invisible' );
-        }else{
-            userList.addClass( 'contextmenu-invisible' );
-        }
-
-    })
-
-    .on( 'click', function(){
-        userList.addClass( 'contextmenu-invisible' );
-    });
-
-    chatIcon
-    .on( 'click', function(){
-
-        if( userList.hasClass('hidden') ){
-
-            userList.removeClass('hidden');
-            chatIcon.addClass('open');
-
-        }else{
-
-            userList.addClass('hidden');
-            chatIcon.removeClass('open');
-
-        }
-
-    });
-
-    // Start the widget
-    friends();
-    calculateListHeight();
-    setTimeout( connectedFriends, 500 ); // To Do -> Se puede hacer mejor en una promesa
-    $( '.weechat-self .user-avatar', widget ).attr( 'src', wz.system.user().avatar.tiny );
-    $( '.weechat-self .user-name', widget ).text( wz.system.user().fullName );
-
-    $( '.self-status', widget ).text( lang.statusOnline );
-    $( '.status-online', widget ).text( lang.statusOnline );
-    $( '.status-busy', widget ).text( lang.statusBusy );
-    $( '.status-away', widget ).text( lang.statusAway );
-    $( '.status-disconnect', widget ).text( lang.statusDisconnect );
-
-
-    */
