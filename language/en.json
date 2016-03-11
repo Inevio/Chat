@@ -12,5 +12,7 @@
     "msg"  : "Message...",
     "close" : "Close",
     "send"  : "Send",
-    "newGroup"  : "New Group"
+    "newGroup"  : "New Group",
+    "last" : "last time",
+    "minutes" : "minutes"
 }
