@@ -3,7 +3,9 @@ var app               = $( this );
 var chatIcon          = $( '.chat-icon' );
 var chat              = $( '.chat' );
 var contactPrototype  = $( '.contact.wz-prototype' );
+var chatPrototype     = $( '.channel.wz-prototype' );
 var contactList       = $( '.contact-list' );
+var channelList       = $( '.channel-list' );
 var chatTab           = $( '.chat-tab' );
 var chatButton        = $( '.chat-tab-selector' );
 var contactTab        = $( '.contact-tab' );
@@ -62,11 +64,11 @@ var setTexts = function(){
 
 var checkTab = function(){
 
-  //Load channels
+  // Load channels
   if ( chatButton.hasClass( 'active' ) ) {
     changeTab( 'chat' );
 
-  //Load contacts
+  // Load contacts
   }else{
     changeTab( 'contact' );
   }
@@ -79,23 +81,27 @@ var changeTab = function(tab){
 
     case 'chat':
 
-      //Make it active and visible
+      // Make it active and visible
       contactsButton.removeClass('active');
       chatButton.addClass('active');
       contactTab.removeClass( 'visible' );
       chatTab.addClass( 'visible' );
 
+      // Insert chats in DOM
+      $( '.chatDom' ).remove();
+      getChats();
+
       break;
 
     case 'contact':
 
-      //Make it active and visible
+      // Make it active and visible
       chatButton.removeClass( 'active' );
       contactsButton.addClass( 'active' );
       chatTab.removeClass( 'visible' );
       contactTab.addClass( 'visible' );
 
-      //Insert contacts in DOM
+      // Insert contacts in DOM
       $( '.contactDom' ).remove();
       getContacts();
 
@@ -148,6 +154,77 @@ var getContacts = function(){
 
 }
 
+var getChats = function(){
+
+  wql.getChannels(function( error , message ){
+
+    if ( error ) { console.log('ERROR: ', error ); }
+
+    $.each( message , function( i , channel ){
+
+      wql.getUsersInChannel( channel.id , function( error , users ){
+
+        wz.user.friendList( false, function( error, friends ){
+
+          var isGroup = channel.name != null ? true : false;
+
+          if( !isGroup ){
+
+            var me = wz.system.user().id;
+            var you;
+
+            if( me == users[0].user ){
+
+              you = users[1].user;
+
+            }else{
+
+              you = users[0].user;
+
+            }
+
+           for (var i = 0; i < friends.length; i++) {
+
+             if (friends[i].id == you) {
+
+               appendChat( channel , friends[i] );
+
+             }
+
+            }
+
+          }else{
+
+            var usersInGroup = [];
+
+            for (var i = 0; i < users.length; i++) {
+
+              for (var j = 0; j < friends.length; j++) {
+
+                if ( users[i] == friends[j].id ) {
+
+                  usersInGroup.push( friends[j] );
+
+                }
+
+              }
+
+            }
+
+            appendChat( channel , usersInGroup );
+
+          }
+
+        });
+
+      });
+
+    });
+
+  });
+
+}
+
 var appendContact = function( c , channel ){
 
   var contact = contactPrototype.clone();
@@ -171,10 +248,66 @@ var appendContact = function( c , channel ){
 
 }
 
+var appendChat = function( c , user ){
+
+  wql.getMessages( c.id , function( error, messages ){
+
+    if ( error ) { console.log('ERROR: ', error ); }
+
+    var lastMsg;
+
+    for( var i = 0; i < messages.length; i++ ){
+
+      if( i+1 == messages.length ){
+
+         var lastMsg = messages[i];
+
+      }
+
+    }
+
+    var chat = chatPrototype.clone();
+
+    chat
+        .removeClass( 'wz-prototype' )
+        .addClass( 'chatDom' );
+
+    var isGroup = c.name != null ? true : false;
+
+    if( !isGroup ){
+
+      chat
+          .find( '.channel-name' ).text( user.fullName );
+      chat
+          .find( '.channel-img' ).css( 'background-image' , 'url(' + user.avatar.big + ')' );
+
+      if(lastMsg != undefined){
+
+        var date = new Date(lastMsg.time);
+
+        chat
+            .find( '.channel-last-time' ).text( date.getHours() + ':' + date.getMinutes() );
+        chat
+            .find( '.channel-last-msg' ).text( lastMsg.text );
+
+      }
+
+    }
+
+    channelList.append( chat );
+
+    chat
+        .data( 'channel' , c );
+    chat
+        .data( 'user' , user );
+
+  });
+
+}
+
 var selectContact = function( contact ){
 
   var channel = contact.data( 'channel' );
-  var contactApi = contact.data( 'contact' );
 
   // Make active
   $( '.contactDom.active' ).removeClass( 'active' );
@@ -184,49 +317,19 @@ var selectContact = function( contact ){
   // Set header
   $( '.conversation-name' ).text( contact.find( '.contact-name' ).text() );
 
-  // No channel
-  if( channel == undefined ){
+  $( '.conversation-header' ).data( 'channel' , channel );
 
-  wz.channel( function( error , channel ){
+  // Channel already created
+  if( channel != undefined ){
 
-    if ( error ) { console.log('ERROR: ', error ); }
-
-    wql.addChannel( [ channel.id , null ] , function( error , message ){
-
-      if ( error ) { console.log('ERROR: ', error ); }
-
-      wql.addUserInChannel( [ channel.id , contactApi.id ] , function( error , message ){
-
-        if ( error ) { console.log('ERROR: ', error ); }
-
-        wql.addUserInChannel( [ channel.id , wz.system.user().id ] , function( error , message ){
-
-          if ( error ) { console.log('ERROR: ', error ); }
-
-          channel.addUser( contactApi.id , function(){
-
-            contact.data( 'channel' , channel );
-            $( '.conversation-header' ).data( 'channel' , channel );
-
-          });
-
-        });
-
-      });
-
-    });
-
-  });
-
-  //Channel
-  }else{
-
-    console.log( 'Channel encontrado!' , channel );
-
-    $( '.conversation-header' ).data( 'channel' , channel );
     listMessages( channel );
 
+  }else{
+
+    $( '.messageDom' ).remove();
+
   }
+
 }
 
 var listMessages = function( channel ){
@@ -244,7 +347,7 @@ var listMessages = function( channel ){
 
       if( i+1 == messages.length ){
 
-        timeElapsed( messages[i].time );
+        lastMessage.text( timeElapsed( messages[i].time ) );
 
       }
 
@@ -321,8 +424,54 @@ var initChat = function(){
 
 var sendMessage = function(){
 
-  var message = $( '.conversation-input input' ).val();
+  var txt = $( '.conversation-input input' ).val();
   var channel = $( '.conversation-header' ).data( 'channel' );
+  var contactApi = $( '.contactDom.active' ).data( 'contact' );
+
+  if ( channel == undefined ) {
+
+    wz.channel( function( error , channel ){
+
+      if ( error ) { console.log('ERROR: ', error ); }
+
+      wql.addChannel( [ channel.id , null ] , function( error , message ){
+
+        if ( error ) { console.log('ERROR: ', error ); }
+
+        wql.addUserInChannel( [ channel.id , contactApi.id ] , function( error , message ){
+
+          if ( error ) { console.log('ERROR: ', error ); }
+
+          wql.addUserInChannel( [ channel.id , wz.system.user().id ] , function( error , message ){
+
+            if ( error ) { console.log('ERROR: ', error ); }
+
+            channel.addUser( contactApi.id , function(){
+
+              $( '.contactDom.active' ).data( 'channel' , channel );
+              $( '.conversation-header' ).data( 'channel' , channel );
+              send( txt , channel );
+
+            });
+
+          });
+
+        });
+
+      });
+
+    });
+
+  }else{
+
+    send( txt , channel );
+
+  }
+
+}
+
+var send = function( message , channel ){
+
   var date = new Date();
 
   if( message != '' ){
@@ -337,7 +486,7 @@ var sendMessage = function(){
 
         printMessage( message , wz.system.user().id , date.getTime() , true );
 
-        timeElapsed( new Date().getTime() );
+        lastMessage.text( timeElapsed( new Date().getTime() ) );
 
         // Clean sender
         $( '.conversation-input input' ).val('');
@@ -352,20 +501,39 @@ var sendMessage = function(){
 
 var timeElapsed = function( lastTime ){
 
-  var time = new Date().getTime() - lastTime;
-  time = new Date( time );
+  var now = new Date();
+  var last = new Date( lastTime );
 
-  lastMessage.text( lang.last + ' ' + time.getMinutes() + ' ' + lang.minutes );
+  if( now.getFullYear() > last.getFullYear() ){
+
+    return lang.last + ' ' + ( now.getFullYear() - last.getFullYear() ) + ' ' + lang.years;
+
+  }else if( now.getMonth() > last.getMonth() ){
+
+    return lang.last + ' ' + ( now.getMonth() - last.getMonth() ) + ' ' + lang.months;
+
+  }else if( now.getDate() > last.getDate() ){
+
+    return lang.last + ' ' + ( now.getDate() - last.getDate() ) + ' ' + lang.days;
+
+  }else if( now.getHours() > last.getHours() ){
+
+    return lang.last + ' ' + ( now.getHours() - last.getHours() ) + ' ' + lang.hours;
+
+  }else{
+
+    return lang.last + ' ' + ( now.getMinutes() - last.getMinutes() ) + ' ' + lang.minutes;
+
+  }
 
 }
 
 var startsWith = function( wordToCompare ){
 
-  return function( id, element ) {
+  return function( index , element ) {
 
+      return $( element ).find( '.contact-name' ).text().toLowerCase().indexOf( wordToCompare.toLowerCase() ) !== -1;
 
-
-      return $( element ).find( '.contact-name' ).text().indexOf( wordToCompare ) !== -1;
   }
 
 }
@@ -379,7 +547,7 @@ var filterElements = function( filter ){
   }else{
 
     var contacts = $( '.contactDom' );
-
+    contacts.show();
     var contactsToShow = contacts.filter( startsWith( filter ) );
     var contactsToHide = contacts.not( contactsToShow );
     contactsToHide.hide();

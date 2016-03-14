@@ -14,5 +14,9 @@
     "send"  : "Send",
     "newGroup"  : "New Group",
     "last" : "last time",
-    "minutes" : "minutes"
+    "minutes" : "minutes",
+    "hours" : "hours",
+    "days" : "days",
+    "months" : "months",
+    "years" : "años"
 }
