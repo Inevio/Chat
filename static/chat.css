@@ -69,7 +69,7 @@
 }
 
 .chat-search input{
-  width: 264px;
+  width: 240px;
 }
 
 .chat-body{
@@ -329,6 +329,10 @@
   color: #545f65;
   margin-top: 15px;
   width: 203px;
+}
+
+.active .contact-name{
+  color: #fff;
 }
 
 .dark .channel .channel-name{

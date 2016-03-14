@@ -14,6 +14,9 @@
     "send" : "Enviar",
     "newGroup"  : "Nuevo grupo",
     "last" : "última vez hace",
-    "minutes" : "minutos"
-
+    "minutes" : "minutos",
+    "hours" : "horas",
+    "days" : "días",
+    "months"  : "meses",
+    "years" : "años"
 }
