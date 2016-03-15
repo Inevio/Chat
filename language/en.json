@@ -18,5 +18,11 @@
     "hours" : "hours",
     "days" : "days",
     "months" : "months",
-    "years" : "años"
+    "years" : "años",
+    "noChat" : "There is no open chat",
+    "back"  : "Back",
+    "edit"  : "Edit",
+    "info"  : "INFORMATION",
+    "members"  : "MEMBERS",
+    "deleteExit" : "Delete and exit"
 }

@@ -14,6 +14,9 @@ var sendButton        = $( '.conversation-send' );
 var content           = $( '.ui-content' );
 var lastMessage       = $( '.conversation-moreinfo' );
 var searchBox         = $( '.chat-search input' );
+var closeChatButton   = $( '.close-coversation' );
+var newGroupButton    = $( '.new-group-button' );
+var groupMenu         = $( '.group-menu' );
 
 // DOM Events
 app.key( 'space' , function(){
@@ -52,6 +55,34 @@ searchBox.on( 'input' , function(){
 
 });
 
+wz.channel.on( 'message' , function( message , text ){
+
+  messageRecived( message , text );
+
+});
+
+closeChatButton.on( 'click' , function(){
+
+  content.removeClass( 'visible' );
+
+  if ( chatButton.hasClass( 'active' ) ) {
+
+    $( '.chatDom.active' ).removeClass( 'active' );
+
+  }else{
+
+    $( '.contactDom.active' ).removeClass( 'active' );
+
+  }
+
+});
+
+newGroupButton.on( 'click' , function(){
+
+  groupMenu.addClass( 'visible' );
+
+});
+
 // FUNCTIONS
 var setTexts = function(){
   $( '.chat-tab-selector span' ).text(lang.chats);
@@ -60,6 +91,12 @@ var setTexts = function(){
   $( '.close-coversation' ).text(lang.close);
   $( '.conversation-send' ).text(lang.send);
   $( '.new-group-button span' ).text(lang.newGroup);
+  $( '.no-chat-txt' ).text(lang.noChat);
+  $( '.group-menu .back span' ).text(lang.back);
+  $( '.group-menu .edit' ).text(lang.edit);
+  $( '.group-info .title' ).text(lang.info);
+  $( '.group-members .title' ).text(lang.members);
+  $( '.remove-group span' ).text(lang.deleteExit);
 }
 
 var checkTab = function(){
@@ -86,6 +123,7 @@ var changeTab = function(tab){
       chatButton.addClass('active');
       contactTab.removeClass( 'visible' );
       chatTab.addClass( 'visible' );
+      newGroupButton.removeClass( 'visible' );
 
       // Insert chats in DOM
       $( '.chatDom' ).remove();
@@ -100,6 +138,7 @@ var changeTab = function(tab){
       contactsButton.addClass( 'active' );
       chatTab.removeClass( 'visible' );
       contactTab.addClass( 'visible' );
+      newGroupButton.addClass( 'visible' );
 
       // Insert contacts in DOM
       $( '.contactDom' ).remove();
@@ -183,35 +222,43 @@ var getChats = function(){
 
             }
 
-           for (var i = 0; i < friends.length; i++) {
+           $.each( friends , function( index , element ){
 
-             if (friends[i].id == you) {
+             if ( element.id == you ) {
 
-               appendChat( channel , friends[i] );
+               wz.channel( channel.id , function( error, channel ){
+
+                 appendChat( channel , element );
+
+               });
 
              }
 
-            }
+           });
 
           }else{
 
-            var usersInGroup = [];
+            wz.channel( channel.id , function( error, channel ){
 
-            for (var i = 0; i < users.length; i++) {
+              var usersInGroup = [];
 
-              for (var j = 0; j < friends.length; j++) {
+              for (var i = 0; i < users.length; i++) {
 
-                if ( users[i] == friends[j].id ) {
+                for (var j = 0; j < friends.length; j++) {
 
-                  usersInGroup.push( friends[j] );
+                  if ( users[i] == friends[j].id ) {
+
+                    usersInGroup.push( friends[j] );
+
+                  }
 
                 }
 
               }
 
-            }
+              appendChat( channel , usersInGroup );
 
-            appendChat( channel , usersInGroup );
+            });
 
           }
 
@@ -300,6 +347,12 @@ var appendChat = function( c , user ){
         .data( 'channel' , c );
     chat
         .data( 'user' , user );
+    chat
+        .on( 'click' , function(){
+          selectChat( $( this ) );
+        });
+
+    setActiveChat( chat );
 
   });
 
@@ -317,7 +370,52 @@ var selectContact = function( contact ){
   // Set header
   $( '.conversation-name' ).text( contact.find( '.contact-name' ).text() );
 
-  $( '.conversation-header' ).data( 'channel' , channel );
+  if ( channel == undefined ) {
+
+    $( '.conversation-header' ).data( 'channel' , null );
+
+  }else{
+
+    $( '.conversation-header' ).data( 'channel' , channel );
+
+  }
+
+  // Channel already created
+  if( channel != undefined ){
+
+    listMessages( channel );
+
+  }else{
+
+    $( '.messageDom' ).remove();
+
+  }
+
+}
+
+var selectChat = function( chat ){
+
+  var channel = chat.data( 'channel' );
+
+  // Make active
+  $( '.chatDom.active' ).removeClass( 'active' );
+  chat.addClass( 'active' );
+  content.addClass( 'visible' );
+  chat.find( '.channel-badge' ).data( 'num' , null );
+  chat.find( '.channel-badge' ).removeClass( 'visible' );
+
+  // Set header
+  $( '.conversation-name' ).text( chat.find( '.channel-name' ).text() );
+
+  if ( channel == undefined ) {
+
+    $( '.conversation-header' ).data( 'channel' , null );
+
+  }else{
+
+    $( '.conversation-header' ).data( 'channel' , channel );
+
+  }
 
   // Channel already created
   if( channel != undefined ){
@@ -395,6 +493,18 @@ var printMessage = function( text , sender , time , animate ){
     message
           .find( '.message-time' ).text( hh + ':' + mm );
 
+    if ( chatButton.hasClass( 'active' ) ) {
+
+      message
+            .find( '.message-avatar' ).css( 'background-image' , $( '.chatDom.active' ).find( '.channel-img' ).css( 'background-image' ) );
+
+    }else{
+
+      message
+            .find( '.message-avatar' ).css( 'background-image' , $( '.contactDom.active' ).find( '.contact-img' ).css( 'background-image' ) );
+
+    }
+
   }
 
   $( '.message-container' ).append( message );
@@ -428,7 +538,7 @@ var sendMessage = function(){
   var channel = $( '.conversation-header' ).data( 'channel' );
   var contactApi = $( '.contactDom.active' ).data( 'contact' );
 
-  if ( channel == undefined ) {
+  if ( channel == null ) {
 
     wz.channel( function( error , channel ){
 
@@ -472,8 +582,6 @@ var sendMessage = function(){
 
 var send = function( message , channel ){
 
-  var date = new Date();
-
   if( message != '' ){
 
     channel.send( message , function( error ){
@@ -483,10 +591,6 @@ var send = function( message , channel ){
       wql.addMessage( [ message , wz.system.user().id , channel.id ] , function( error , messages ){
 
         if ( error ) { console.log('ERROR: ', error ); }
-
-        printMessage( message , wz.system.user().id , date.getTime() , true );
-
-        lastMessage.text( timeElapsed( new Date().getTime() ) );
 
         // Clean sender
         $( '.conversation-input input' ).val('');
@@ -528,11 +632,21 @@ var timeElapsed = function( lastTime ){
 
 }
 
-var startsWith = function( wordToCompare ){
+var startsWithContacts = function( wordToCompare ){
 
   return function( index , element ) {
 
       return $( element ).find( '.contact-name' ).text().toLowerCase().indexOf( wordToCompare.toLowerCase() ) !== -1;
+
+  }
+
+}
+
+var startsWithChats = function( wordToCompare ){
+
+  return function( index , element ) {
+
+      return $( element ).find( '.channel-name' ).text().toLowerCase().indexOf( wordToCompare.toLowerCase() ) !== -1;
 
   }
 
@@ -543,14 +657,73 @@ var filterElements = function( filter ){
   // Search chats
   if ( chatButton.hasClass( 'active' ) ) {
 
+    var chats = $( '.chatDom' );
+    chats.show();
+    var chatsToShow = chats.filter( startsWithChats( filter ) );
+    var chatsToHide = chats.not( chatsToShow );
+    chatsToHide.hide();
+
   // Search contacts
   }else{
 
     var contacts = $( '.contactDom' );
     contacts.show();
-    var contactsToShow = contacts.filter( startsWith( filter ) );
+    var contactsToShow = contacts.filter( startsWithContacts( filter ) );
     var contactsToHide = contacts.not( contactsToShow );
     contactsToHide.hide();
+
+  }
+
+}
+
+var setActiveChat = function( chat ){
+
+  var channelActive = $( '.conversation-header' ).data( 'channel' );
+
+  if (channelActive != undefined && chat.data( 'channel' ).id == channelActive.id) {
+
+    chat.click();
+
+  }
+
+}
+
+var messageRecived = function( message , txt ){
+
+  var channelActive = $( '.conversation-header' ).data( 'channel' );
+  var date = new Date();
+
+  if( channelActive.id == message.id ){
+
+    printMessage( txt , message.sender , date.getTime() , true );
+
+    lastMessage.text( timeElapsed( date.getTime() ) );
+
+  }else{
+
+    var chats = $( '.chatDom' );
+
+    for (var i = 0; i < chats.length; i++) {
+
+      if ( chats[i].id == message.id ) {
+
+        var num = chats[i].find( '.channel-badge' ).data( 'num' );
+        if ( !num ) {
+
+          chats[i].find( '.channel-badge' ).data( 'num' , 1 );
+          chats[i].find( '.channel-badge' ).addClass( 'visible' );
+          chats[i].find( '.channel-badge span' ).text(1);
+
+        }else{
+
+          chats[i].find( '.channel-badge' ).data( 'num' , ++num );
+          chats[i].find( '.channel-badge span' ).text( num );
+
+        }
+
+      }
+
+    }
 
   }
 
