@@ -27,6 +27,7 @@
   margin-left: 142px;
   width: 126px;
   margin-top: 3px;
+  display: none;
 }
 
 .new-group-button span{
@@ -95,9 +96,9 @@
   width: 30px;
 	height: 30px;
 	border-radius: 50%;
-	background-color: #60b25e;
   margin-left: 15px;
   margin-right: 10px;
+  background-size: cover;
 }
 
 .message-body{
@@ -109,6 +110,7 @@
 	box-shadow: 0 1px 4px rgba(0,0,0,.2);
   border-radius: 0 6px 6px 6px;
   min-width: 110px;
+  position: relative;
 }
 
 .dark .message-body{
@@ -322,6 +324,10 @@
   width: 203px;
 }
 
+.active .channel-name{
+  color: #fff;
+}
+
 .contact .contact-name{
   float: left;
   font-size: 15px;
@@ -351,6 +357,10 @@
   margin-top: 17px;
 }
 
+.active .channel-last-time{
+  color: #fff;
+}
+
 .dark .channel .channel-last-time{
   color: #d2dce2;
 }
@@ -361,6 +371,10 @@
   color: #889399;
   width: 215px;
   margin-top: 7px;
+}
+
+.active .channel-last-msg{
+  color: #fff;
 }
 
 .dark .channel .channel-last-msg{
@@ -375,6 +389,7 @@
   border-radius: 50%;
   margin-top: 3px;
   margin-left: 2px;
+  display: none;
 }
 
 .channel .channel-badge span{
@@ -507,6 +522,10 @@
   width: ~'calc(100% - 318px)';
   height: ~'calc(100% - 41px)';
   display: none;
+  z-index: 2;
+  position: absolute;
+  top: 41px;
+  left: 318px;
 }
 
 .dark.chat .ui-content{
@@ -527,24 +546,26 @@
   border-bottom-color: #6a7178;
 }
 
-.close-coversation {
+.close-conversation {
   float: left;
   font-size: 13px;
   color: #889399;
   padding-top: 17px;
   padding-left: 4px;
   padding-bottom: 17px;
+  width: 39px;
 }
 
-.dark .close-coversation {
+.dark .close-conversation {
   color: #d2dce2;
 }
 
 .conversation-info{
-  float: left;
+  float: right;;
   position: absolute;
-  width: 100%;
+  width: ~'calc(100% - 43px)';
   height: 100%;
+  right: 0;
 }
 
 .conversation-name {
@@ -635,6 +656,226 @@
 
 .dark .conversation-send{
   color: #d2dce2;
+}
+
+.no-content{
+  float: left;
+  position: absolute;
+  width: ~'calc(100% - 318px)';
+  height: ~'calc(100% - 41px)';
+  top: 41px;
+  left: 318px;
+  background-color: #fff;
+}
+
+.dark .no-content{
+  background-color: #2c3238;
+}
+
+.no-chat-img{
+  float: left;
+  margin-top: 182px;
+  margin-left: ~'calc(50% - 236px/2)';
+  width: 236px;
+  height: 188px;
+  background-size: 236px 188px;
+  background-image: url('@static/icono-no-chat.png');
+}
+
+.dark .no-chat-img{
+  background-image: url('@static/icono-no-chat-dark.png');
+  background-size: 236px 188px;
+}
+
+.no-chat-txt{
+  float: left;
+  margin-top: 49px;
+  width: 100%;
+  text-align: center;
+  color: #889399;
+  font-size: 19px;
+}
+
+.dark .no-chat-txt{
+  color: #d2dce2;
+}
+
+.group-menu{
+  float: left;
+  position: absolute;
+  width: ~'calc(100% - 318px)';
+  height: ~'calc(100% - 41px)';
+  top: 41px;
+  left: 318px;
+  z-index: 3;
+  display: none;
+  background-color: #fbfcfd;
+}
+
+.dark .group-menu{
+  background-color: #3f4750;
+}
+
+.group-menu .group-header {
+  float: left;
+  height: 47px;
+  margin-left: 10px;
+  margin-right: 10px;
+  width: ~'calc(100% - 20px)';
+  border-bottom: 1px solid #e5e9ea;
+  position: relative;
+}
+
+.dark .group-menu .group-header {
+  border-bottom-color: #6a7178;
+}
+
+.group-menu .back{
+  float: left;
+  width: 70px;
+  height: 100%;
+}
+
+.group-menu .back figure{
+  float: left;
+  width: 14px;
+  height: 14px;
+  margin-left: 10px;
+  background: url('@static/Back.png');
+  background-size: 14px 14px;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.dark .group-menu .back figure{
+  background: url('@static/Back-black.png');
+  background-size: 14px 14px;
+}
+
+.group-menu .back span{
+  float: left;
+  font-size: 13px;
+  color: #889399;
+  width: 39px;
+  padding-top: 17px;
+  padding-left: 7px;
+}
+
+.dark .group-menu .back span{
+  color: #d2dce2;
+}
+
+.group-menu .edit{
+  float: right;
+  font-size: 13px;
+  color: #889399;
+  width: 39px;
+  padding-top: 17px;
+  padding-right: 7px;
+}
+
+.dark .group-menu .edit{
+  color: #d2dce2;
+}
+
+.group-info{
+  float: left;
+  width: ~'calc(100% - 20px)';
+  height: 119px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.group-info .title{
+  float: left;
+  font-size: 11px;
+  margin-top: 17px;
+  color: #889399;
+  margin-left: 10px;
+  width: ~'calc(100% - 10px)';
+}
+
+.dark .group-info .title{
+  color: #d2dce2;
+}
+
+.group-avatar{
+  float: left;
+  margin-top: 17px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin-left: 5px;
+  background-color: green;
+}
+
+.group-info-names{
+  float: left;
+  margin-top: 28px;
+  margin-left: 19px;
+  width: ~'calc(100% - 85px)';
+}
+
+.group-name{
+  float: left;
+  width: 100%;
+  font-size: 15px;
+  font-weight: bold;
+  color: #545f65;
+  margin-bottom: 5px;
+}
+
+.dark .group-name{
+  color: #fff;
+}
+
+.group-members-txt{
+  float: left;
+  width: 100%;
+  font-size: 13px;
+  color: #889399;
+}
+
+.dark .group-members-txt{
+  color: #d2dce2;
+}
+
+.group-members{
+  float: left;
+  width: ~'calc(100% - 20px)';
+  height: 370px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.group-members .title{
+  float: left;
+  font-size: 11px;
+  margin-top: 17px;
+  color: #889399;
+  margin-left: 10px;
+  width: ~'calc(100% - 32px)';
+}
+
+.dark .group-members .title{
+  color: #d2dce2;
+}
+
+.member-list{
+  float: left;
+  width: 100%;
+  height: ~'calc(100% - 20px)';
+}
+
+.member{
+  float: left;
+  width: 100%;
+}
+
+.remove-group{
+  float: left;
+  width: 244px;
+  margin-left: ~'calc(50% - 244px/2)';
 }
 
 /* END CHAT BODY*/
