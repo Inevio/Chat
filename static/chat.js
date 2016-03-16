@@ -195,7 +195,7 @@ var getContacts = function(){
 
 var getChats = function(){
 
-  wql.getChannels(function( error , message ){
+  wql.getChannels( wz.system.user().id, function( error , message ){
 
     if ( error ) { console.log('ERROR: ', error ); }
 
@@ -333,7 +333,7 @@ var appendChat = function( c , user ){
         var date = new Date(lastMsg.time);
 
         chat
-            .find( '.channel-last-time' ).text( date.getHours() + ':' + date.getMinutes() );
+            .find( '.channel-last-time' ).text( getStringHour( date ) );
         chat
             .find( '.channel-last-msg' ).text( lastMsg.text );
 
@@ -693,6 +693,21 @@ var messageRecived = function( message , txt ){
   var channelActive = $( '.conversation-header' ).data( 'channel' );
   var date = new Date();
 
+  var chats = $( '.chatDom' );
+  var chat = '';
+
+  for (var i = 0; i < chats.length; i++) {
+
+    var current = chats.eq(i);
+
+    if ( current.data( 'channel' ).id == message.id ) {
+
+      chat = current;
+
+    }
+
+  }
+
   if( channelActive.id == message.id ){
 
     printMessage( txt , message.sender , date.getTime() , true );
@@ -701,31 +716,43 @@ var messageRecived = function( message , txt ){
 
   }else{
 
-    var chats = $( '.chatDom' );
+    var num = chat.find( '.channel-badge' ).data( 'num' );
+    if ( !num ) {
 
-    for (var i = 0; i < chats.length; i++) {
+      chat.find( '.channel-badge' ).data( 'num' , 1 );
+      chat.find( '.channel-badge' ).addClass( 'visible' );
+      chat.find( '.channel-badge span' ).text(1);
 
-      if ( chats[i].id == message.id ) {
+    }else{
 
-        var num = chats[i].find( '.channel-badge' ).data( 'num' );
-        if ( !num ) {
-
-          chats[i].find( '.channel-badge' ).data( 'num' , 1 );
-          chats[i].find( '.channel-badge' ).addClass( 'visible' );
-          chats[i].find( '.channel-badge span' ).text(1);
-
-        }else{
-
-          chats[i].find( '.channel-badge' ).data( 'num' , ++num );
-          chats[i].find( '.channel-badge span' ).text( num );
-
-        }
-
-      }
+      chat.find( '.channel-badge' ).data( 'num' , ++num );
+      chat.find( '.channel-badge span' ).text( num );
 
     }
 
   }
+
+  chat.insertBefore( $( '.chatDom' ).eq(0) );
+  chat.find( '.channel-last-msg' ).text( txt );
+  var date = new Date();
+  chat.find( '.channel-last-time' ).text( getStringHour( date ) );
+
+}
+
+var getStringHour = function( date ){
+
+  var hh = date.getHours();
+  var mm = date.getMinutes();
+
+  if(hh<10) {
+      hh='0'+hh
+  }
+
+  if(mm<10) {
+      mm='0'+mm
+  }
+
+  return hh + ':' + mm;
 
 }
 
