@@ -17,6 +17,7 @@ var searchBox         = $( '.chat-search input' );
 var closeChatButton   = $( '.close-coversation' );
 var newGroupButton    = $( '.new-group-button' );
 var groupMenu         = $( '.group-menu' );
+var backGroup         = $( '.group-menu .back' );
 
 // DOM Events
 app.key( 'space' , function(){
@@ -83,6 +84,12 @@ newGroupButton.on( 'click' , function(){
 
 });
 
+backGroup.on( 'click' , function(){
+
+  groupMenu.removeClass( 'visible' );
+
+});
+
 // FUNCTIONS
 var setTexts = function(){
   $( '.chat-tab-selector span' ).text(lang.chats);
@@ -124,10 +131,11 @@ var changeTab = function(tab){
       contactTab.removeClass( 'visible' );
       chatTab.addClass( 'visible' );
       newGroupButton.removeClass( 'visible' );
+      groupMenu.removeClass( 'visible' );
 
       // Insert chats in DOM
       $( '.chatDom' ).remove();
-      getChats();
+      getChats(function(){});
 
       break;
 
@@ -193,13 +201,27 @@ var getContacts = function(){
 
 }
 
-var getChats = function(){
+var getChats = function( callback ){
 
   wql.getChannels( wz.system.user().id, function( error , message ){
 
     if ( error ) { console.log('ERROR: ', error ); }
 
     $.each( message , function( i , channel ){
+
+      // No repeat chats already appended
+      var chats = $( '.chatDom' );
+      for (var i = 0; i < chats.length; i++) {
+
+        var ch = chats.eq(i).data( 'channel' );
+
+        if( ch.id == channel.id ){
+
+          return;
+
+        }
+
+      }
 
       wql.getUsersInChannel( channel.id , function( error , users ){
 
@@ -228,7 +250,11 @@ var getChats = function(){
 
                wz.channel( channel.id , function( error, channel ){
 
-                 appendChat( channel , element );
+                 appendChat( channel , element , function( chat ){
+
+                   callback( chat );
+
+                 });
 
                });
 
@@ -256,7 +282,11 @@ var getChats = function(){
 
               }
 
-              appendChat( channel , usersInGroup );
+              appendChat( channel , usersInGroup , function( chat ){
+
+                callback( chat );
+
+              });
 
             });
 
@@ -274,91 +304,117 @@ var getChats = function(){
 
 var appendContact = function( c , channel ){
 
-  var contact = contactPrototype.clone();
+  wql.getChannelSeen( c.id , function( error , notSeen ){
 
-  contact
-      .removeClass( 'wz-prototype' )
-      .addClass( 'contactDom' )
-      .find( '.contact-name' ).text( c.fullName );
-  contact
-      .find( '.contact-img' ).css( 'background-image' , 'url(' + c.avatar.big + ')' );
-  contact
-      .on( 'click' , function(){
-        selectContact( $( this ) );
-      });
-  contact
-      .data( 'contact' , c );
+    var contact = contactPrototype.clone();
 
-  if( channel != undefined ){ contact.data( 'channel' , channel ) }
+    contact
+        .removeClass( 'wz-prototype' )
+        .addClass( 'contactDom' )
+        .find( '.contact-name' ).text( c.fullName );
+    contact
+        .find( '.contact-img' ).css( 'background-image' , 'url(' + c.avatar.big + ')' );
+    contact
+        .on( 'click' , function(){
+          selectContact( $( this ) );
+        });
+    contact
+        .data( 'contact' , c );
 
-  contactList.append( contact );
+    if( channel != undefined ){ contact.data( 'channel' , channel ) }
+
+    contactList.append( contact );
+
+    if ( notSeen[0]['not_seen'] > 0 ) {
+
+      contact.data( 'notSeen' , notSeen[0]['not_seen'] );
+
+    }
+
+  });
 
 }
 
-var appendChat = function( c , user ){
+var appendChat = function( c , user , callback ){
 
   wql.getMessages( c.id , function( error, messages ){
 
-    if ( error ) { console.log('ERROR: ', error ); }
+    wql.getChannelSeen( c.id , function( error , notSeen ){
 
-    var lastMsg;
+      if ( error ) { console.log('ERROR: ', error ); }
 
-    for( var i = 0; i < messages.length; i++ ){
+      var lastMsg;
 
-      if( i+1 == messages.length ){
+      for( var i = 0; i < messages.length; i++ ){
 
-         var lastMsg = messages[i];
+        if( i+1 == messages.length ){
 
-      }
+           var lastMsg = messages[i];
 
-    }
-
-    var chat = chatPrototype.clone();
-
-    chat
-        .removeClass( 'wz-prototype' )
-        .addClass( 'chatDom' );
-
-    var isGroup = c.name != null ? true : false;
-
-    if( !isGroup ){
-
-      chat
-          .find( '.channel-name' ).text( user.fullName );
-      chat
-          .find( '.channel-img' ).css( 'background-image' , 'url(' + user.avatar.big + ')' );
-
-      if(lastMsg != undefined){
-
-        var date = new Date(lastMsg.time);
-
-        chat
-            .find( '.channel-last-time' ).text( getStringHour( date ) );
-        chat
-            .find( '.channel-last-msg' ).text( lastMsg.text );
+        }
 
       }
 
-    }
+      var chat = chatPrototype.clone();
 
-    channelList.append( chat );
+      chat
+          .removeClass( 'wz-prototype' )
+          .addClass( 'chatDom' );
 
-    chat
-        .data( 'channel' , c );
-    chat
-        .data( 'user' , user );
-    chat
-        .on( 'click' , function(){
-          selectChat( $( this ) );
-        });
+      var isGroup = c.name != null ? true : false;
 
-    setActiveChat( chat );
+      if( !isGroup ){
+
+        chat
+            .find( '.channel-name' ).text( user.fullName );
+        chat
+            .find( '.channel-img' ).css( 'background-image' , 'url(' + user.avatar.big + ')' );
+
+        if(lastMsg != undefined){
+
+          var date = new Date(lastMsg.time);
+
+          chat
+              .find( '.channel-last-time' ).text( getStringHour( date ) );
+          chat
+              .find( '.channel-last-msg' ).text( lastMsg.text );
+
+        }
+
+      }
+
+      channelList.append( chat );
+
+      chat
+          .data( 'channel' , c );
+      chat
+          .data( 'user' , user );
+      chat
+          .on( 'click' , function(){
+            selectChat( $( this ) );
+          });
+
+      if ( notSeen[0]['not_seen'] > 0 ) {
+
+        chat.data( 'notSeen' , notSeen[0]['not_seen'] );
+        chat.find( '.channel-badge' ).addClass( 'visible' );
+        chat.find( '.channel-badge span' ).text( notSeen[0]['not_seen'] );
+
+      }
+
+      setActiveChat( chat );
+
+      callback( chat );
+
+    });
 
   });
 
 }
 
 var selectContact = function( contact ){
+
+  $( '.conversation-input input' ).focus();
 
   var channel = contact.data( 'channel' );
 
@@ -373,21 +429,20 @@ var selectContact = function( contact ){
   if ( channel == undefined ) {
 
     $( '.conversation-header' ).data( 'channel' , null );
+    $( '.messageDom' ).remove();
+
 
   }else{
 
     $( '.conversation-header' ).data( 'channel' , channel );
-
-  }
-
-  // Channel already created
-  if( channel != undefined ){
-
     listMessages( channel );
 
-  }else{
+    contact.data( 'notSeen' , null );
+    wql.updateChannelSeen( [ 0 , channel.id ] , function( error , message ){
 
-    $( '.messageDom' ).remove();
+      if ( error ) { console.log('ERROR: ', error ); }
+
+    });
 
   }
 
@@ -395,14 +450,14 @@ var selectContact = function( contact ){
 
 var selectChat = function( chat ){
 
+  $( '.conversation-input input' ).focus();
+
   var channel = chat.data( 'channel' );
 
   // Make active
   $( '.chatDom.active' ).removeClass( 'active' );
   chat.addClass( 'active' );
   content.addClass( 'visible' );
-  chat.find( '.channel-badge' ).data( 'num' , null );
-  chat.find( '.channel-badge' ).removeClass( 'visible' );
 
   // Set header
   $( '.conversation-name' ).text( chat.find( '.channel-name' ).text() );
@@ -410,21 +465,21 @@ var selectChat = function( chat ){
   if ( channel == undefined ) {
 
     $( '.conversation-header' ).data( 'channel' , null );
+    $( '.messageDom' ).remove();
+
 
   }else{
 
     $( '.conversation-header' ).data( 'channel' , channel );
-
-  }
-
-  // Channel already created
-  if( channel != undefined ){
-
     listMessages( channel );
 
-  }else{
+    chat.data( 'notSeen' , null );
+    chat.find( '.channel-badge' ).removeClass( 'visible' );
+    wql.updateChannelSeen( [ 0 , channel.id ] , function( error , message ){
 
-    $( '.messageDom' ).remove();
+      if ( error ) { console.log('ERROR: ', error ); }
+
+    });
 
   }
 
@@ -695,42 +750,153 @@ var messageRecived = function( message , txt ){
 
   var chats = $( '.chatDom' );
   var chat = '';
+  var printed = false;
 
-  for (var i = 0; i < chats.length; i++) {
+  // If I am on contact tab
+  if ( contactsButton.hasClass( 'active' ) ) {
 
-    var current = chats.eq(i);
+    var contacts = $( '.contactDom' );
+    $.each( contacts , function( i , c ){
 
-    if ( current.data( 'channel' ).id == message.id ) {
+      var contact = contacts.eq(i);
 
-      chat = current;
+      wql.getUsersInChannel( message.id , function( error , users ){
 
-    }
+        var me = wz.system.user().id;
+        var you;
 
-  }
+        if( me == users[0].user ){
 
-  if( channelActive.id == message.id ){
+          you = users[1].user;
 
-    printMessage( txt , message.sender , date.getTime() , true );
+        }else{
 
-    lastMessage.text( timeElapsed( date.getTime() ) );
+          you = users[0].user;
 
+        }
+
+        // This is the contact who is speaking
+        if (  contact.data( 'contact' ).id == you ) {
+
+          wz.channel( message.id , function( error, channel ){
+
+            contact.data( 'channel' , channel );
+            console.log( 'nuevo channel al contact: ' , contact );
+
+            // If is active
+            if( contacts.eq(i).hasClass( 'active' ) ){
+
+              $( '.conversation-header' ).data( 'channel' , channel );
+              printMessage( txt , message.sender , date.getTime() , true );
+
+            // If isn't active
+            }else{
+
+              var notSeen = contact.data( 'notSeen' );
+              if ( !notSeen ) {
+
+                notSeen = 1;
+
+              }else{
+
+                notSeen = notSeen + 1;
+
+              }
+
+              contact.data( 'notSeen' , notSeen );
+              wql.updateChannelSeen( [ notSeen , channel.id ] , function( error , message ){
+
+                if ( error ) { console.log('ERROR: ', error ); }
+
+              });
+
+            }
+
+          });
+
+        }
+
+      });
+
+    });
+
+  // If I am on chat tab
   }else{
 
-    var num = chat.find( '.channel-badge' ).data( 'num' );
-    if ( !num ) {
+    // Search message's chat
+    for (var i = 0; i < chats.length; i++) {
 
-      chat.find( '.channel-badge' ).data( 'num' , 1 );
-      chat.find( '.channel-badge' ).addClass( 'visible' );
-      chat.find( '.channel-badge span' ).text(1);
+      var current = chats.eq(i);
 
+      if ( current.data( 'channel' ).id == message.id ) {
+
+        chat = current;
+
+      }
+
+    }
+
+    // The chat is not created
+    if( chat == '' ){
+
+      getChats(function( chat ){
+
+        chat.data( 'notSeen' , 1 );
+        wql.updateChannelSeen( [ notSeen , message.id ] , function( error , message ){
+
+          if ( error ) { console.log('ERROR: ', error ); }
+
+          chat.find( '.channel-badge' ).addClass( 'visible' );
+          chat.find( '.channel-badge span' ).text(1);
+
+          setChatInfo( chat , txt );
+
+        });
+
+      });
+
+    // I am on this chat
+  }else if( channelActive && channelActive.id == message.id ){
+
+        printMessage( txt , message.sender , date.getTime() , true );
+
+        lastMessage.text( timeElapsed( date.getTime() ) );
+
+        setChatInfo( chat , txt );
+
+    // I am in other chat
     }else{
 
-      chat.find( '.channel-badge' ).data( 'num' , ++num );
-      chat.find( '.channel-badge span' ).text( num );
+      var notSeen = chat.data( 'notSeen' );
+      if ( !notSeen ) {
+
+        notSeen = 1;
+
+      }else{
+
+        notSeen = notSeen + 1;
+
+      }
+
+      chat.data( 'notSeen' , notSeen );
+      wql.updateChannelSeen( [ notSeen , message.id ] , function( error , message ){
+
+        if ( error ) { console.log('ERROR: ', error ); }
+
+        chat.find( '.channel-badge' ).addClass( 'visible' );
+        chat.find( '.channel-badge span' ).text( notSeen );
+
+        setChatInfo( chat , txt );
+
+      });
 
     }
 
   }
+
+}
+
+var setChatInfo = function( chat , txt ){
 
   chat.insertBefore( $( '.chatDom' ).eq(0) );
   chat.find( '.channel-last-msg' ).text( txt );
