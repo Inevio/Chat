@@ -20,7 +20,7 @@ var groupMenu         = $( '.group-menu' );
 var backGroup         = $( '.group-menu .back' );
 
 // DOM Events
-app.key( 'space' , function(){
+app.key( 'f1' , function(){
 
  $( '.ui-window' ).toggleClass( 'dark' );
 
