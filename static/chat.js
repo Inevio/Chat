@@ -18,6 +18,24 @@ var closeChatButton   = $( '.close-coversation' );
 var newGroupButton    = $( '.new-group-button' );
 var groupMenu         = $( '.group-menu' );
 var backGroup         = $( '.group-menu .back' );
+var memberPrototype   = $( '.member.wz-prototype' );
+var memberList        = $( '.member-list' );
+var cancelNewGroup    = $( '.cancel-group' );
+var saveNewGroup      = $( '.save-group' );
+
+// COLOR PALETTE
+var colorPalette = [
+  {name: 'blue' , light: '#a6d2fa', text:'#2a77ad' , border:'#1664a5'},
+  {name: 'green' , light: '#badb95', text:'#306e0d' , border:'#3c7919'},
+  {name: 'purple' , light: '#d8ccf1', text:'#9064e1' , border:'#6742aa'},
+  {name: 'orange' , light: '#f7c97e', text:'#b45d1f' , border:'#f68738'},
+  {name: 'brown' , light: '#b2a59d', text:'#5a4638' , border:'#6e5646'},
+  {name: 'green2' , light: '#8cd0b3', text:'#0a5a36' , border:'#128a54'},
+  {name: 'red' , light: '#ec9a97', text:'#912521' , border:'#e13d35'},
+  {name: 'pink' , light: '#f7beec', text:'#9c4ba5' , border:'#b44b9f'},
+  {name: 'grey' , light: '#97a1a9', text:'#353b43' , border:'#384a59'},
+  {name: 'yellow' , light: '#fbe27d', text:'#84740b' , border:'#ffb400'},
+];
 
 // DOM Events
 app.key( 'f1' , function(){
@@ -80,7 +98,7 @@ closeChatButton.on( 'click' , function(){
 
 newGroupButton.on( 'click' , function(){
 
-  groupMenu.addClass( 'visible' );
+  newGroup();
 
 });
 
@@ -90,11 +108,24 @@ backGroup.on( 'click' , function(){
 
 });
 
+cancelNewGroup.on( 'click' , function(){
+
+  groupMenu.removeClass( 'visible' );
+
+});
+
+saveNewGroup.on( 'click' , function(){
+
+  createNewGroup();
+
+});
+
 // FUNCTIONS
 var setTexts = function(){
   $( '.chat-tab-selector span' ).text(lang.chats);
   $( '.contact-tab-selector span' ).text(lang.contacts);
   $( '.conversation-input input' ).attr('placeholder', lang.msg);
+  $( '.chat-search input' ).attr('placeholder', lang.search);;
   $( '.close-coversation' ).text(lang.close);
   $( '.conversation-send' ).text(lang.send);
   $( '.new-group-button span' ).text(lang.newGroup);
@@ -104,6 +135,10 @@ var setTexts = function(){
   $( '.group-info .title' ).text(lang.info);
   $( '.group-members .title' ).text(lang.members);
   $( '.remove-group span' ).text(lang.deleteExit);
+  $( '.group-create-txt' ).text(lang.newGroupTitle);
+  $( '.save-group span' ).text(lang.save);
+  $( '.cancel-group span' ).text(lang.cancel);
+  $( '.group-name-input input' ).attr('placeholder', lang.groupName);
 }
 
 var checkTab = function(){
@@ -203,7 +238,7 @@ var getContacts = function(){
 
 var getChats = function( callback ){
 
-  wql.getChannels( wz.system.user().id, function( error , message ){
+  wql.getChannels( wz.system.user().id , function( error , message ){
 
     if ( error ) { console.log('ERROR: ', error ); }
 
@@ -228,6 +263,7 @@ var getChats = function( callback ){
         wz.user.friendList( false, function( error, friends ){
 
           var isGroup = channel.name != null ? true : false;
+          var groupName = channel.name;
 
           if( !isGroup ){
 
@@ -250,7 +286,7 @@ var getChats = function( callback ){
 
                wz.channel( channel.id , function( error, channel ){
 
-                 appendChat( channel , element , function( chat ){
+                 appendChat( channel , element , groupName , function( chat ){
 
                    callback( chat );
 
@@ -266,13 +302,13 @@ var getChats = function( callback ){
 
             wz.channel( channel.id , function( error, channel ){
 
-              var usersInGroup = [];
+              var usersInGroup = [];
 
               for (var i = 0; i < users.length; i++) {
 
                 for (var j = 0; j < friends.length; j++) {
 
-                  if ( users[i] == friends[j].id ) {
+                  if ( users[i].user == friends[j].id ) {
 
                     usersInGroup.push( friends[j] );
 
@@ -282,7 +318,7 @@ var getChats = function( callback ){
 
               }
 
-              appendChat( channel , usersInGroup , function( chat ){
+              appendChat( channel , usersInGroup , groupName , function( chat ){
 
                 callback( chat );
 
@@ -335,7 +371,7 @@ var appendContact = function( c , channel ){
 
 }
 
-var appendChat = function( c , user , callback ){
+var appendChat = function( c , user , groupName , callback ){
 
   wql.getMessages( c.id , function( error, messages ){
 
@@ -361,14 +397,30 @@ var appendChat = function( c , user , callback ){
           .removeClass( 'wz-prototype' )
           .addClass( 'chatDom' );
 
-      var isGroup = c.name != null ? true : false;
-
-      if( !isGroup ){
+      if( groupName == null ){
 
         chat
             .find( '.channel-name' ).text( user.fullName );
         chat
             .find( '.channel-img' ).css( 'background-image' , 'url(' + user.avatar.big + ')' );
+
+        if(lastMsg != undefined){
+
+          var date = new Date(lastMsg.time);
+
+          chat
+              .find( '.channel-last-time' ).text( getStringHour( date ) );
+          chat
+              .find( '.channel-last-msg' ).text( lastMsg.text );
+
+        }
+
+      }else{
+
+        chat
+            .find( '.channel-name' ).text( groupName );
+
+        setGroupAvatar( groupName , chat.find( '.channel-img' ) );
 
         if(lastMsg != undefined){
 
@@ -389,6 +441,8 @@ var appendChat = function( c , user , callback ){
           .data( 'channel' , c );
       chat
           .data( 'user' , user );
+      chat
+          .data( 'isGroup' , groupName );
       chat
           .on( 'click' , function(){
             selectChat( $( this ) );
@@ -496,11 +550,49 @@ var listMessages = function( channel ){
 
     for( var i = 0; i < messages.length; i++ ){
 
-      printMessage( messages[ i ].text , messages[ i ].sender , messages[ i ].time );
+      if ( messages[i].sender == wz.system.user().id ) {
 
-      if( i+1 == messages.length ){
+        printMessage( messages[ i ].text , null , messages[ i ].time );
 
-        lastMessage.text( timeElapsed( messages[i].time ) );
+        if( i+1 == messages.length ){
+
+          lastMessage.text( timeElapsed( messages[i].time ) );
+
+        }
+
+      }else{
+
+        var users = $( '.chatDom.active' ).data( 'user' );
+
+        if ( !Array.isArray( users ) ) {
+
+          printMessage( messages[ i ].text , users , messages[ i ].time );
+
+          if( i+1 == messages.length ){
+
+            lastMessage.text( timeElapsed( messages[i].time ) );
+
+          }
+
+        }else{
+
+          for (var j = 0; j < users.length; j++) {
+
+            if ( users[j].id == messages[ i ].sender ) {
+
+              printMessage( messages[ i ].text , users[j] , messages[ i ].time );
+
+              if( i+1 == messages.length ){
+
+                lastMessage.text( timeElapsed( messages[i].time ) );
+
+              }
+
+            }
+
+          }
+
+        }
 
       }
 
@@ -514,7 +606,6 @@ var printMessage = function( text , sender , time , animate ){
 
   console.log( 'Mensaje' , text , sender , time );
 
-  var me = wz.system.user().id;
   var message;
   var date = new Date( time );
   var hh = date.getHours();
@@ -528,7 +619,7 @@ var printMessage = function( text , sender , time , animate ){
       mm='0'+mm
   }
 
-  if( sender == me ){
+  if( sender == null ){
 
     message = $( '.message-me.wz-prototype' ).clone();
     message
@@ -544,21 +635,23 @@ var printMessage = function( text , sender , time , animate ){
     message
           .removeClass( 'wz-prototype' )
           .addClass( 'messageDom' )
+    message
           .find( '.message-text' ).text( text );
+
+    if ( $( '.chatDom.active' ).data( 'isGroup' ) != null ) {
+
+      var senderName = sender.fullName;
+      message.find( '.sender' ).addClass( 'visible' );
+      message.find( '.sender' ).text( senderName );
+      message.find( '.sender' ).css( 'color' , colorPalette[ selectColor( senderName ) ].text );
+
+    }
+
     message
           .find( '.message-time' ).text( hh + ':' + mm );
 
-    if ( chatButton.hasClass( 'active' ) ) {
-
-      message
-            .find( '.message-avatar' ).css( 'background-image' , $( '.chatDom.active' ).find( '.channel-img' ).css( 'background-image' ) );
-
-    }else{
-
-      message
-            .find( '.message-avatar' ).css( 'background-image' , $( '.contactDom.active' ).find( '.contact-img' ).css( 'background-image' ) );
-
-    }
+    message
+          .find( '.message-avatar' ).css( 'background-image' , 'url(' + sender.avatar.big + ')' );
 
   }
 
@@ -919,6 +1012,169 @@ var getStringHour = function( date ){
   }
 
   return hh + ':' + mm;
+
+}
+
+var newGroup = function(){
+
+  // Make it visible
+  $( '.group-menu .visible' ).removeClass( 'visible' );
+  groupMenu.addClass( 'visible' ).addClass( 'group-new' );
+  $( '.group-new' ).addClass( 'visible' );
+
+  $( '.memberDom' ).remove();
+  wz.user.friendList( false, function( error, list ){
+
+    $.each( list , function( index , friend ){
+
+      var member = memberPrototype.clone();
+      member
+            .removeClass( 'wz-prototype' )
+            .addClass( 'memberDom' )
+            .find( '.member-avatar' ).css( 'background-image' , 'url(' + friend.avatar.big + ')' );
+      member
+            .find( 'span' ).text( friend.fullName );
+
+      member.find( 'span' ).on( 'click' , function(){
+
+        $( this ).parent().find( '.ui-checkbox' ).toggleClass( 'active' );
+        $( this ).parent().toggleClass( 'active' );
+
+      });
+
+      member.find( '.member-avatar' ).on( 'click' , function(){
+
+        $( this ).parent().find( '.ui-checkbox' ).toggleClass( 'active' );
+        $( this ).parent().toggleClass( 'active' );
+
+      });
+
+      member.find( '.ui-checkbox' ).on( 'click' , function(){
+
+        $( this ).parent().toggleClass( 'active' );
+
+      });
+
+      member.data( 'contact' , friend );
+
+      memberList.append( member );
+
+    });
+
+    $( '.search-members input' ).on( 'input' , function(){
+
+      filterMembers( $( this ).val() );
+
+    });
+
+  });
+
+}
+
+var filterMembers = function( filter ){
+
+  var members = $( '.memberDom' );
+  members.show();
+  var membersToShow = members.filter( startsWithMember( filter ) );
+  var membersNotToShow = members.not( membersToShow );
+  membersNotToShow.hide();
+
+}
+
+var startsWithMember = function( wordToCompare ){
+
+  return function( index , element ) {
+
+      return $( element ).find( 'span' ).text().toLowerCase().indexOf( wordToCompare.toLowerCase() ) !== -1;
+
+  }
+
+}
+
+var createNewGroup = function(){
+
+  var groupName = $( '.group-name-input input' ).val();
+
+  if (groupName != '') {
+
+    wz.channel( function( error , channel ){
+
+      if ( error ) { console.log('ERROR: ', error ); }
+
+      wql.addChannel( [ channel.id , groupName ] , function( error , message ){
+
+        if ( error ) { console.log('ERROR: ', error ); }
+
+        wql.addUserInChannel( [ channel.id , wz.system.user().id ] , function( error , message ){
+
+          if ( error ) { console.log('ERROR: ', error ); }
+
+          channel.addUser( wz.system.user().id , function(){
+
+            var members = $( '.memberDom' );
+
+            $.each( members , function( index , member ){
+
+              var contact = $( member ).data( 'contact' );
+
+              wql.addUserInChannel( [ channel.id , contact.id ] , function( error , message ){
+
+                if ( error ) { console.log('ERROR: ', error ); }
+
+                channel.addUser( contact.id , function(){
+
+
+                });
+
+              });
+
+            });
+
+          });
+
+        });
+
+      });
+
+    });
+
+  }else{
+
+    alert( lang.groupNameError );
+
+  }
+
+}
+
+var setGroupAvatar = function( groupName , avatar ){
+
+  var expNameWords = groupName.split(' ');
+
+  avatar.html( '<span>' + (expNameWords[0] || ' ')[0].toUpperCase() + (expNameWords[1] || ' ')[0].toUpperCase() + '</span>');
+
+  var colorId = selectColor( groupName );
+
+  avatar.css('background-image', 'none');
+  avatar.css('background-color', colorPalette[colorId].light);
+  avatar.css('border', '1px solid ' + colorPalette[colorId].border);
+  avatar.css('border-style', 'solid');
+  avatar.find( 'span' ).css('color', colorPalette[colorId].text);
+
+}
+
+
+var selectColor = function( string ){
+
+  var id = 0;
+
+  for (var i = 0; i < string.length; i++) {
+
+    id += string.charCodeAt(i);
+    id++;
+
+  }
+
+  return id = id%colorPalette.length;
 
 }
 

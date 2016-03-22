@@ -82,6 +82,7 @@
           <figure class="message-avatar"></figure>
           <article class="message-body">
             <figure class="message-triangle"></figure>
+            <span class="sender"></span>
             <span class="message-text"></span>
             <span class="message-time"></span>
           </article>
@@ -116,25 +117,48 @@
   </section>
   <section class="group-menu">
     <section class="group-header">
-      <section class="back">
+      <section class="back group-view group-edit">
         <figure></figure>
         <span></span>
       </section>
-      <span class="edit"></span>
+      <span class="group-create-txt group-new"></span>
+      <span class="edit group-view"></span>
+      <button class="ui-btn save-group accept group-new group-edit">
+        <span class="ellipsis"></span>
+      </button>
+      <button class="ui-btn cancel-group group-new gray group-edit">
+        <span class="ellipsis"></span>
+      </button>
     </section>
     <section class="group-info">
       <span class="title"></span>
       <figure class="group-avatar"></figure>
       <section class="group-info-names">
-        <span class="group-name">Nombre de prueba</span>
+        <span class="group-name group-view">Nombre de prueba</span>
+        <section class="ui-input group-name-input group-new">
+          <input placeholder="Regular input">
+          <figure>
+            <i></i>
+          </figure>
+        </section>
         <span class="group-members-txt">10 Miembros</span>
       </section>
     </section>
     <section class="group-members">
       <span class="title"></span>
+      <section class="ui-input-search group-new search-members">
+        <figure class="search-icon">
+          <i></i>
+        </figure>
+        <input placeholder="Search input">
+        <figure class="delete-content">
+          <i></i>
+        </figure>
+      </section>
       <section class="member-list wz-scroll">
-        <article class="member">
-          <figure></figure>
+        <article class="member wz-prototype">
+          <figure class="ui-checkbox group-new"><i></i></figure>
+          <figure class="member-avatar"></figure>
           <span></span>
         </article>
       </section>
