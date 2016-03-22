@@ -24,5 +24,11 @@
     "edit"  : "Edit",
     "info"  : "INFORMATION",
     "members"  : "MEMBERS",
-    "deleteExit" : "Delete and exit"
+    "deleteExit" : "Delete and exit",
+    "newGroupTitle"  : "New group chat",
+    "search"  : "Search here...",
+    "cancel"  : "Cancel",
+    "save"  : "Save",
+    "groupName" : "Group name",
+    "groupNameError" : "Please, introduce a group name"
 }

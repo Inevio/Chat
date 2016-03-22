@@ -24,5 +24,11 @@
     "edit"  : "Editar",
     "info"  : "INFORMACIÓN",
     "members" : "MIEMBROS",
-    "deleteExit" : "Eliminar y salir"
+    "deleteExit" : "Eliminar y salir",
+    "newGroupTitle"  : "Creación nuevo chat grupal",
+    "search"  : "Busca aquí...",
+    "cancel"  : "Cancelar",
+    "save"  : "Guardar",
+    "groupName" : "Nombre del grupo",
+    "groupNameError" : "Por favor, introduce un nombre para el grupo"
 }

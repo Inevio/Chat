@@ -88,7 +88,7 @@
 .message{
   float: left;
   width: 100%;
-  height: 56px;
+  min-height: 56px;
   margin-bottom: 3px;
 }
 
@@ -104,7 +104,7 @@
 
 .message-body{
   float: left;
-	height: 53px;
+	min-height: 53px;
 	background-color: #fff;
 	-webkit-box-shadow: 0 1px 4px rgba(0,0,0,.2);
 	-moz-box-shadow: 0 1px 4px rgba(0,0,0,.2);
@@ -116,6 +116,15 @@
 
 .dark .message-body{
   background-color: #2c3238;
+}
+
+.message-body .sender {
+  display: none;
+  margin-top: 10px;
+  float: left;
+  margin-left: 15px;
+  font-weight: bold;
+  font-size: 15px;
 }
 
 .message-triangle{
@@ -155,9 +164,8 @@
   float: left;
   color: #889399;
   font-size: 11px;
-  position: absolute;
-  left: 15px;
-  bottom: 5px;
+  margin-left: 15px;
+  margin-bottom: 5px;
 }
 
 .dark .message-time{
@@ -302,6 +310,14 @@
   margin-left: 12px;
   margin-right: 13px;
   border-radius: 50%;
+}
+
+.channel-img span{
+  float: left;
+  width: 100%;
+  text-align: center;
+  margin-top: 15px;
+  font-weight: bold;
 }
 
 .contact .contact-img{
@@ -850,7 +866,7 @@
 .group-members{
   float: left;
   width: ~'calc(100% - 20px)';
-  height: 370px;
+  height: ~'calc(100% - 212px)';
   margin-left: 10px;
   margin-right: 10px;
 }
@@ -871,7 +887,12 @@
 .member-list{
   float: left;
   width: 100%;
-  height: ~'calc(100% - 20px)';
+  height: ~'calc(100% - 35px)';
+  position: relative;
+}
+
+.group-new .member-list{
+  height: ~'calc(100% - 108px)';
 }
 
 .member{
@@ -884,5 +905,95 @@
   width: 244px;
   margin-left: ~'calc(50% - 244px/2)';
 }
+
+.group-view, .group-edit, .group-new{
+  display: none;
+}
+
+.group-create-txt{
+  float: left;
+  font-size: 13px;
+  color: #889399;
+  width: 180px;
+  padding-top: 17px;
+  padding-left: 7px;
+}
+
+.dark .group-create-txt{
+  color: #d2dce2;
+}
+
+.cancel-group{
+  float: right;
+  margin-top: 6px;
+  margin-right: 7px;
+  width: 85px;
+}
+
+.save-group{
+  float: right;
+  margin-top: 6px;
+  margin-right: 10px;
+  width: 85px;
+}
+
+.group-name-input{
+  margin-top: -5px;
+  width: 530px;
+  margin-bottom: 7px;
+}
+
+.member{
+  float: left;
+  width: ~'calc(100% - 68px)';
+  height: 40px;
+  margin-left: 58px;
+  border-bottom: 1px solid #e5e9ea;
+  margin-right: 10px;
+}
+
+.dark .member{
+  border-color: #6a7178;
+}
+
+.member .member-avatar{
+  float: left;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  margin-top: 9px;
+  margin-left: -35px;
+  background-size: cover;
+}
+
+.member span{
+  float: left;
+  margin-top: 12px;
+  width: 100%;
+  font-size: 13px;
+  font-weight: bold;
+  color: #545f65;
+}
+
+.dark .member span{
+  color: #fff;
+}
+
+.search-members{
+  float: left;
+  margin-top: 17px;
+  margin-left: 10px;
+  width: ~'calc(100% - 30px)';
+  margin-bottom: 15px;
+}
+
+.member .ui-checkbox{
+  float: left;
+  position: absolute;
+  left: 0;
+  margin-top: 14px;
+}
+
+
 
 /* END CHAT BODY*/
