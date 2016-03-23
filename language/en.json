@@ -23,12 +23,14 @@
     "back"  : "Back",
     "edit"  : "Edit",
     "info"  : "INFORMATION",
-    "members"  : "MEMBERS",
+    "MEMBERS"  : "MEMBERS",
+    "members" : "Members",
     "deleteExit" : "Delete and exit",
     "newGroupTitle"  : "New group chat",
     "search"  : "Search here...",
     "cancel"  : "Cancel",
     "save"  : "Save",
     "groupName" : "Group name",
-    "groupNameError" : "Please, introduce a group name"
+    "groupNameError" : "Please, introduce a group name",
+    "noMemberError" : "Please, select almost one group member"
 }

@@ -23,12 +23,15 @@
     "back"  : "Volver",
     "edit"  : "Editar",
     "info"  : "INFORMACIÓN",
-    "members" : "MIEMBROS",
+    "MEMBERS" : "MIEMBROS",
+    "members" : "Miembros",
     "deleteExit" : "Eliminar y salir",
     "newGroupTitle"  : "Creación nuevo chat grupal",
     "search"  : "Busca aquí...",
     "cancel"  : "Cancelar",
     "save"  : "Guardar",
     "groupName" : "Nombre del grupo",
-    "groupNameError" : "Por favor, introduce un nombre para el grupo"
+    "groupNameError" : "Por favor, introduce un nombre para el grupo",
+    "noMemberError" : "Por favor, selecciona al menos un contacto"
+
 }
