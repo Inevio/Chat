@@ -836,7 +836,7 @@
   float: left;
   margin-top: 28px;
   margin-left: 19px;
-  width: ~'calc(100% - 85px)';
+  width: ~'calc(100% - 90px)';
 }
 
 .group-name{
@@ -891,7 +891,7 @@
   position: relative;
 }
 
-.group-new .member-list{
+.group-new .member-list, .group-edit .member-list{
   height: ~'calc(100% - 108px)';
 }
 
@@ -994,6 +994,13 @@
   margin-top: 14px;
 }
 
-
+.group-avatar span{
+  float: left;
+  width: 100%;
+  text-align: center;
+  margin-top: 19px;
+  font-weight: bold;
+  font-size: 22px;
+}
 
 /* END CHAT BODY*/
