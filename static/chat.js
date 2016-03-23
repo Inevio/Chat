@@ -22,6 +22,7 @@ var memberPrototype   = $( '.member.wz-prototype' );
 var memberList        = $( '.member-list' );
 var cancelNewGroup    = $( '.cancel-group' );
 var saveNewGroup      = $( '.save-group' );
+var removeGroup       = $( '.remove-group' );
 
 // COLOR PALETTE
 var colorPalette = [
@@ -1073,6 +1074,8 @@ var newGroup = function(){
   groupMenu.addClass( 'visible' ).addClass( 'group-new' );
   $( '.group-new' ).addClass( 'visible' );
 
+  setGroupAvatar( '?' , $( '.group-avatar' ) );
+
   $( '.memberDom' ).remove();
   wz.user.friendList( false, function( error, list ){
 
@@ -1334,46 +1337,56 @@ var viewGroup = function(){
 
     });
 
+    $( '.group-header .edit' ).off( 'click' );
     $( '.group-header .edit' ).on( 'click' , function(){
 
-      $( '.group-menu .visible' ).removeClass( 'visible' );
-      groupMenu.addClass( 'visible' ).addClass( 'group-edit' );
-      $( '.group-edit' ).addClass( 'visible' );
+      editGroupMode( groupName );
 
-      $( '.group-name-input input' ).val( groupName );
+    });
 
-      $( '.memberDom' ).remove();
-      wz.user.friendList( false, function( error, list ){
+  });
 
-        $.each( list , function( index , friend ){
+}
 
-          appendMember( friend );
+var editGroupMode = function( groupName ){
 
-        });
+  console.log( 'entrando en modo edit' );
 
-        $.each( $( '.memberDom' ) , function( index , member ){
+  $( '.group-menu .visible' ).removeClass( 'visible' );
+  groupMenu.addClass( 'visible' ).addClass( 'group-edit' );
+  $( '.group-edit' ).addClass( 'visible' );
 
-          $.each( members , function( index , memberAdded ){
+  $( '.group-name-input input' ).val( groupName );
 
-              if ( $( member ).data( 'contact' ).id == memberAdded.id ) {
+  $( '.memberDom' ).remove();
 
-                $( member ).find( '.ui-checkbox' ).addClass( 'active' );
-                $( member ).addClass( 'active' );
+  wz.user.friendList( false, function( error, list ){
 
-              }
+    $.each( list , function( index , friend ){
 
-          });
+      appendMember( friend );
 
-        });
+    });
 
-        $( '.search-members input' ).off( 'input' );
-        $( '.search-members input' ).on( 'input' , function(){
+    $.each( $( '.memberDom' ) , function( index , member ){
 
-          filterMembers( $( this ).val() );
+      $.each( $( '.chatDom.active' ).data( 'user' ) , function( index , memberAdded ){
 
-        });
+          if ( $( member ).data( 'contact' ).id == memberAdded.id ) {
+
+            $( member ).find( '.ui-checkbox' ).addClass( 'active' );
+            $( member ).addClass( 'active' );
+
+          }
 
       });
+
+    });
+
+    $( '.search-members input' ).off( 'input' );
+    $( '.search-members input' ).on( 'input' , function(){
+
+      filterMembers( $( this ).val() );
 
     });
 
