@@ -11,5 +11,6 @@
     "getChannelSeen"        : "SELECT not_seen FROM channel WHERE id = ?",
     "updateChannelName"     : "UPDATE channel SET name = ? WHERE id = ?",
     "deleteUsersInChannel"  : "DELETE FROM user_in_channel WHERE id_channel = ?",
-    "deleteChannel"         : "DELETE FROM channel WHERE id = ?"
+    "deleteChannel"         : "DELETE FROM channel WHERE id = ?",
+    "deleteUserInChannel"   : "DELETE FROM user_in_channel WHERE id_channel = ? && user = ?"
 }

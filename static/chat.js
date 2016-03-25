@@ -106,18 +106,26 @@ newGroupButton.on( 'click' , function(){
 backGroup.on( 'click' , function(){
 
   groupMenu.removeClass( 'visible' );
+  removeGroup.removeClass( 'visible' );
 
 });
 
 cancelNewGroup.on( 'click' , function(){
 
   groupMenu.removeClass( 'visible' );
+  removeGroup.removeClass( 'visible' );
 
 });
 
 saveNewGroup.on( 'click' , function(){
 
   saveGroup();
+
+});
+
+removeGroup.on( 'click' , function(){
+
+  deleteOrExitGroup();
 
 });
 
@@ -135,7 +143,6 @@ var setTexts = function(){
   $( '.group-menu .edit' ).text(lang.edit);
   $( '.group-info .title' ).text(lang.info);
   $( '.group-members .title' ).text(lang.MEMBERS);
-  $( '.remove-group span' ).text(lang.deleteExit);
   $( '.group-create-txt' ).text(lang.newGroupTitle);
   $( '.save-group span' ).text(lang.save);
   $( '.cancel-group span' ).text(lang.cancel);
@@ -168,6 +175,7 @@ var changeTab = function(tab){
       chatTab.addClass( 'visible' );
       newGroupButton.removeClass( 'visible' );
       groupMenu.removeClass( 'visible' );
+      removeGroup.removeClass( 'visible' );
 
       // Insert chats in DOM
       $( '.chatDom' ).remove();
@@ -469,6 +477,9 @@ var appendChat = function( c , user , groupName , callback ){
 
 var selectContact = function( contact ){
 
+  groupMenu.removeClass( 'visible' );
+  removeGroup.removeClass( 'visible' );
+
   $( '.conversation-input input' ).focus();
 
   var channel = contact.data( 'channel' );
@@ -505,6 +516,9 @@ var selectContact = function( contact ){
 
 var selectChat = function( chat ){
 
+  groupMenu.removeClass( 'visible' );
+  removeGroup.removeClass( 'visible' );
+
   $( '.conversation-input input' ).focus();
 
   var channel = chat.data( 'channel' );
@@ -533,6 +547,7 @@ var selectChat = function( chat ){
 
     if( chat.data( 'isGroup' ) != null ){
 
+      $( '.conversation-header' ).off( 'click' );
       $( '.conversation-header' ).on( 'click' , function(){
 
         viewGroup();
@@ -1183,6 +1198,7 @@ var editGroup = function(){
                   channel.addUser( contact.id , function(){
 
                     groupMenu.removeClass( 'visible' );
+                    removeGroup.removeClass( 'visible' );
 
                   });
 
@@ -1247,6 +1263,7 @@ var createNewGroup = function(){
                 channel.addUser( contact.id , function(){
 
                   groupMenu.removeClass( 'visible' );
+                  removeGroup.removeClass( 'visible' );
 
                 });
 
@@ -1316,31 +1333,39 @@ var viewGroup = function(){
   $( '.group-name' ).text( groupName );
   $( '.group-members-txt' ).text( ( members.length + 1 ) + ' ' + lang.members );
 
+  setRemoveButton();
+
   setGroupAvatar( groupName , $( '.group-avatar' ) );
 
   wz.user( wz.system.user().id , function( error, user ){
 
     $( '.memberDom' ).remove();
 
-    appendMember( user ).addClass( 'me' );
+    $( '.chatDom.active' ).data( 'channel' ).list( function( error, users ){
 
-    $.each( members , function( index , m ){
+      var admin = users[0];
 
-      appendMember( m );
+      appendMember( user , admin ).addClass( 'me' );
 
-    });
+      $.each( members , function( index , m ){
 
-    $( '.search-members input' ).off( 'input' );
-    $( '.search-members input' ).on( 'input' , function(){
+        appendMember( m , admin );
 
-      filterMembers( $( this ).val() );
+      });
 
-    });
+      $( '.search-members input' ).off( 'input' );
+      $( '.search-members input' ).on( 'input' , function(){
 
-    $( '.group-header .edit' ).off( 'click' );
-    $( '.group-header .edit' ).on( 'click' , function(){
+        filterMembers( $( this ).val() );
 
-      editGroupMode( groupName );
+      });
+
+      $( '.group-header .edit' ).off( 'click' );
+      $( '.group-header .edit' ).on( 'click' , function(){
+
+        editGroupMode( groupName );
+
+      });
 
     });
 
@@ -1362,76 +1387,156 @@ var editGroupMode = function( groupName ){
 
   wz.user.friendList( false, function( error, list ){
 
-    $.each( list , function( index , friend ){
+    $( '.chatDom.active' ).data( 'channel' ).list( function( error, users ){
 
-      appendMember( friend );
+      var admin = users[0];
 
-    });
+      $.each( list , function( index , friend ){
 
-    $.each( $( '.memberDom' ) , function( index , member ){
+        appendMember( friend , admin );
 
-      $.each( $( '.chatDom.active' ).data( 'user' ) , function( index , memberAdded ){
+      });
 
-          if ( $( member ).data( 'contact' ).id == memberAdded.id ) {
+      $.each( $( '.memberDom' ) , function( index , member ){
 
-            $( member ).find( '.ui-checkbox' ).addClass( 'active' );
-            $( member ).addClass( 'active' );
+        $.each( $( '.chatDom.active' ).data( 'user' ) , function( index , memberAdded ){
 
-          }
+            if ( $( member ).data( 'contact' ).id == memberAdded.id ) {
+
+              $( member ).find( '.ui-checkbox' ).addClass( 'active' );
+              $( member ).addClass( 'active' );
+
+            }
+
+        });
+
+      });
+
+      $( '.search-members input' ).off( 'input' );
+      $( '.search-members input' ).on( 'input' , function(){
+
+        filterMembers( $( this ).val() );
 
       });
 
     });
 
-    $( '.search-members input' ).off( 'input' );
-    $( '.search-members input' ).on( 'input' , function(){
+  });
 
-      filterMembers( $( this ).val() );
+}
+
+var appendMember = function( user , admin ){
+
+    var member = memberPrototype.clone();
+    member
+          .removeClass( 'wz-prototype' )
+          .addClass( 'memberDom' )
+          .find( '.member-avatar' ).css( 'background-image' , 'url(' + user.avatar.big + ')' );
+
+    if( user.id == admin ){
+
+      member.find( 'span' ).text( user.fullName + ' (' + lang.admin + ')' );
+
+    }else{
+
+      member.find( 'span' ).text( user.fullName );
+
+    }
+
+    member.find( 'span' ).on( 'click' , function(){
+
+      $( this ).parent().find( '.ui-checkbox' ).toggleClass( 'active' );
+      $( this ).parent().toggleClass( 'active' );
 
     });
 
-  });
+    member.find( '.member-avatar' ).on( 'click' , function(){
+
+      $( this ).parent().find( '.ui-checkbox' ).toggleClass( 'active' );
+      $( this ).parent().toggleClass( 'active' );
+
+    });
+
+    member.find( '.ui-checkbox' ).on( 'click' , function(){
+
+      $( this ).parent().toggleClass( 'active' );
+
+    });
+
+    member.data( 'contact' , user );
+
+    memberList.append( member );
+
+    return member;
 
 }
 
-var appendMember = function( user ){
+var setRemoveButton = function(){
 
-  var member = memberPrototype.clone();
-  member
-        .removeClass( 'wz-prototype' )
-        .addClass( 'memberDom' )
-        .find( '.member-avatar' ).css( 'background-image' , 'url(' + user.avatar.big + ')' );
-  member
-        .find( 'span' ).text( user.fullName );
+  var channel = $( '.chatDom.active' ).data( 'channel' );
+  removeGroup.addClass( 'visible' );
+  removeGroup.off( 'click' );
 
-  member.find( 'span' ).on( 'click' , function(){
+  channel.list( function( error, users ){
 
-    $( this ).parent().find( '.ui-checkbox' ).toggleClass( 'active' );
-    $( this ).parent().toggleClass( 'active' );
+    var admin = users[0];
+
+    // I'm the admin
+    if ( wz.system.user().id == admin ) {
+
+      removeGroup.find( 'span' ).text(lang.deleteExit);
+
+      removeGroup.on( 'click' , function(){
+
+        wql.deleteUsersInChannel( channel.id , function( error , message ){
+
+          if ( error ) { console.log('ERROR: ', error ); }
+
+          wql.deleteChannel( channel.id , function( error , message ){
+
+            if ( error ) { console.log('ERROR: ', error ); }
+
+            channel.destroy();
+
+            groupMenu.removeClass( 'visible' );
+            removeGroup.removeClass( 'visible' );
+            $( '.chatDom.active' ).remove();
+
+          });
+
+        });
+
+      });
+
+    }else{
+
+      removeGroup.find( 'span' ).text(lang.exitGroup);
+
+      removeGroup.on( 'click' , function(){
+
+        wql.deleteUserInChannel( [ channel.id , wz.system.user().id ] , function( error , message ){
+
+          if ( error ) { console.log('ERROR: ', error ); }
+
+          channel.leave( function( error ){
+
+            if ( error ) { console.log('ERROR: ', error ); }
+
+            groupMenu.removeClass( 'visible' );
+            removeGroup.removeClass( 'visible' );
+            $( '.chatDom.active' ).remove();
+
+          });
+
+        });
+
+      });
+
+    }
 
   });
-
-  member.find( '.member-avatar' ).on( 'click' , function(){
-
-    $( this ).parent().find( '.ui-checkbox' ).toggleClass( 'active' );
-    $( this ).parent().toggleClass( 'active' );
-
-  });
-
-  member.find( '.ui-checkbox' ).on( 'click' , function(){
-
-    $( this ).parent().toggleClass( 'active' );
-
-  });
-
-  member.data( 'contact' , user );
-
-  memberList.append( member );
-
-  return member;
 
 }
-
 
 // INIT Chat
 initChat();
