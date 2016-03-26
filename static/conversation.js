@@ -106,7 +106,7 @@
 
     var sendMessage = function( message ){
 
-        channel.send( message, message.text ? { background : message.text } : null, function(){} );
+        channel.send( message, message.text ? { background : wz.system.user().name + ': ' +message.text } : null, function(){} );
 
         if( message.text ){
           wql.addMessage( [ message.text, message.sender, message.receiver ] );
