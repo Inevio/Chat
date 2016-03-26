@@ -32,6 +32,7 @@
     "save"  : "Guardar",
     "groupName" : "Nombre del grupo",
     "groupNameError" : "Por favor, introduce un nombre para el grupo",
-    "noMemberError" : "Por favor, selecciona al menos un contacto"
-
+    "noMemberError" : "Por favor, selecciona al menos un contacto",
+    "admin" : "Administrador",
+    "exitGroup" : "Salir del grupo"
 }

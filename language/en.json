@@ -32,5 +32,7 @@
     "save"  : "Save",
     "groupName" : "Group name",
     "groupNameError" : "Please, introduce a group name",
-    "noMemberError" : "Please, select almost one group member"
+    "noMemberError" : "Please, select almost one group member",
+    "admin" : "Admin",
+    "exitGroup" : "Exit group"
 }
