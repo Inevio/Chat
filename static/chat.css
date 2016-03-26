@@ -71,7 +71,7 @@
 
 .chat-search input{
   width: 240px;
-  line-height: 18px;
+  line-height: 15px;
 }
 
 .chat-body{
@@ -663,7 +663,8 @@
 
 .conversation-input input{
   height: 20px;
-  line-height: 18px;
+  line-height: 15px;
+  padding-left: 20px;
 }
 
 .conversation-send{
@@ -1002,6 +1003,10 @@
   margin-top: 19px;
   font-weight: bold;
   font-size: 22px;
+}
+
+.contactDom.conected .contact-img {
+  box-shadow: 0px 0px 17px 1px rgba(96,178,94,1);
 }
 
 /* END CHAT BODY*/
