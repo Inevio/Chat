@@ -34,5 +34,7 @@
     "groupNameError" : "Please, introduce a group name",
     "noMemberError" : "Please, select almost one group member",
     "admin" : "Admin",
-    "exitGroup" : "Exit group"
+    "exitGroup" : "Exit group",
+    "conected"  : "conected",
+    "disconected" :  "disconected"
 }
