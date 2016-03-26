@@ -120,6 +120,18 @@ saveNewGroup.on( 'click' , function(){
 
 });
 
+wz.channel.on( 'destroyed' , function( info ){
+
+  chatDeleted( info );
+
+});
+
+wz.channel.on( 'userAdded', function( info, userId ){
+
+  userAdded( info , userId );
+
+});
+
 // FUNCTIONS
 var setTexts = function(){
   $( '.chat-tab-selector span' ).text(lang.chats);
@@ -1419,6 +1431,29 @@ var appendMember = function( user ){
 
 }
 
+var chatDeleted = function( info ){
+
+  var chats = $( '.chatDom' );
+
+  $.each( chats , function( index , chat ){
+
+    var channel = $( chat ).data( 'channel' );
+
+    if ( channel.id == info.id ) {
+
+      $( chat ).remove();
+
+    }
+
+  });
+
+}
+
+var userAdded = function( info , userId ){
+
+  console.log('useradded! :', info , userId);
+
+}
 
 // INIT Chat
 initChat();
