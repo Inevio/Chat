@@ -19,7 +19,7 @@
 
             "primary" : "main",
             "unique"  : true,
-            "service" : ["webrtc.js"],
+            "service" : ["service.js"],
             "common"  : {
 
                 "css"    : [],
