@@ -239,11 +239,15 @@ var getContacts = function(){
 
 var getChats = function( callback ){
 
-  wql.getChannels( api.system.user().id , function( error , message ){
+  wql.getChannels( api.system.user().id , function( error , channels ){
 
     if ( error ) { console.log('ERROR: ', error ); }
 
-    $.each( message , function( i , channel ){
+    if( !channels.length ){
+      return contactsButton.click();
+    }
+
+    $.each( channels , function( i , channel ){
 
       // No repeat chats already appended
       var chats = $( '.chatDom' );
@@ -731,13 +735,9 @@ var printMessage = function( text , sender , time , animate ){
   $( '.message-container' ).append( message );
 
   if(animate){
-
     $( '.message-container' ).stop().clearQueue().animate( { scrollTop : message[0].offsetTop }, 400  );
-
   }else{
-
     $( '.message-container' ).scrollTop( message[0].offsetTop );
-
   }
 
 }
@@ -912,8 +912,8 @@ var setActiveChat = function( chat ){
 var messageReceived = function( message , txt ){
 
   var channelActive = $( '.conversation-header' ).data( 'channel' );
-  var date          = Date.now();
   var chat          = $( '.chatDom-' + message.id );
+  var date          = Date.now();
   var printed       = false;
 
   if( channelActive && channelActive.id === message.id ){
