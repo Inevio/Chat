@@ -188,8 +188,6 @@ var getContacts = function(){
 
     if ( error ) { console.log('ERROR: ', error ); }
 
-    console.log( 'metiendo contactos' , list );
-
     asyncEach( list , function( c , cb ){
 
       wql.getSingleChannel( [ api.system.user().id , c.id ] , function( error , message ){
@@ -237,7 +235,7 @@ var getContacts = function(){
 
 }
 
-var getChats = function( callback ){
+var getChats = function(){
 
   wql.getChannels( api.system.user().id , function( error , channels ){
 
@@ -250,16 +248,10 @@ var getChats = function( callback ){
     $.each( channels , function( i , channel ){
 
       // No repeat chats already appended
-      var chats = $( '.chatDom' );
-      for (var i = 0; i < chats.length; i++) {
+      if ( $( '.chatDom-' + channel.id ).length != 0 ) {
 
-        var ch = chats.eq(i).data( 'channel' );
-
-        if( ch.id == channel.id ){
-
-          return;
-
-        }
+        console.log('ya esta metido!');
+        return;
 
       }
 
@@ -291,11 +283,8 @@ var getChats = function( callback ){
 
                 api.channel( channel.id , function( error, channel ){
 
-                  appendChat( channel , element , groupName , function( chat ){
-
-                    callback( chat );
-
-                  });
+                  console.log('APPENDING CHAT' , channel , element , groupName);
+                  appendChat( channel , element , groupName );
 
                 });
 
@@ -323,11 +312,8 @@ var getChats = function( callback ){
 
               }
 
-              appendChat( channel , usersInGroup , groupName , function( chat ){
-
-                callback( chat );
-
-              });
+              console.log('APPENDING GROUP' , channel , usersInGroup , groupName);
+              appendChat( channel , usersInGroup , groupName );
 
             });
 
@@ -411,7 +397,9 @@ var appendContact = function( c , channel , callback ){
 
 }
 
-var appendChat = function( c , user , groupName , callback ){
+var appendChat = function( c , user , groupName ){
+
+  chatButton.click();
 
   wql.getMessages( c.id , function( error, messages ){
 
@@ -476,7 +464,17 @@ var appendChat = function( c , user , groupName , callback ){
 
       }
 
-      channelList.append( chat );
+      // No repeat chats already appended
+      if ( $( '.chatDom-' + c.id ).length != 0 ) {
+
+        console.log('ya esta metido!');
+        return;
+
+      }else{
+
+        channelList.append( chat );
+
+      }
 
       chat
       .data( 'channel' , c );
@@ -498,8 +496,6 @@ var appendChat = function( c , user , groupName , callback ){
       }
 
       setActiveChat( chat );
-
-      callback( chat );
 
     });
 
@@ -751,7 +747,7 @@ var initChat = function(){
   setTexts();
   checkTab();
   getContacts();
-  getChats(function(){});
+  getChats();
 
 }
 
@@ -787,6 +783,8 @@ var sendMessage = function(){
               $( '.contactDom.active' ).data( 'channel' , channel );
               $( '.conversation-header' ).data( 'channel' , channel );
               send( txt , channel );
+              console.log('getChat - sendMessage');
+              getChats();
 
             });
 
@@ -916,6 +914,9 @@ var messageReceived = function( message , txt ){
   var date          = Date.now();
   var printed       = false;
 
+
+  setChatInfo( chat , txt );
+
   if( channelActive && channelActive.id === message.id ){
 
     if( message.sender === api.system.user().id ){
@@ -937,8 +938,6 @@ var messageReceived = function( message , txt ){
     }
 
   }
-
-  setChatInfo( chat , txt );
 
 }
 
@@ -973,6 +972,7 @@ var newGroup = function(){
   $( '.group-menu .visible' ).removeClass( 'visible' );
   groupMenu.addClass( 'visible' ).addClass( 'group-new' );
   $( '.group-new' ).addClass( 'visible' );
+  $( '.group-name-input' ).val( '' );
 
   setGroupAvatar( '?' , $( '.group-avatar' ) );
 
@@ -1149,6 +1149,7 @@ var createNewGroup = function(){
 
                   groupMenu.removeClass( 'visible' );
                   removeGroup.removeClass( 'visible' );
+                  getChats();
 
                 });
 
@@ -1268,8 +1269,6 @@ var viewGroup = function(){
 }
 
 var editGroupMode = function( groupName ){
-
-  console.log( 'entrando en modo edit' );
 
   $( '.group-menu .visible' ).removeClass( 'visible' );
   groupMenu.addClass( 'visible' ).addClass( 'group-edit' );
@@ -1394,11 +1393,9 @@ var chatDeleted = function( info ){
 
 var userAdded = function( info , userId ){
 
-  console.log('usuario añadido!', info , userId);
+  if( info.sender != api.system.user().id && api.system.user().id == userId ){
 
-  if( api.system.user().id != info.sender ){
-
-    getChats( function(){} );
+    getChats();
 
   }
 
@@ -1434,6 +1431,7 @@ var setRemoveButton = function(){
             groupMenu.removeClass( 'visible' );
             removeGroup.removeClass( 'visible' );
             $( '.chatDom.active' ).remove();
+            content.removeClass( 'visible' );
 
           });
 
@@ -1458,6 +1456,7 @@ var setRemoveButton = function(){
             groupMenu.removeClass( 'visible' );
             removeGroup.removeClass( 'visible' );
             $( '.chatDom.active' ).remove();
+            content.removeClass( 'visible' );
 
           });
 
