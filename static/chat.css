@@ -6,6 +6,10 @@
   display: inline-block !important;
 }
 
+.chat .ui-header-brand{
+  padding-left: 21px;
+}
+
 .wz-widget{
     bottom: 0;
     right: 0;
@@ -67,6 +71,24 @@
   width: 316px;
   border-radius: 0;
   margin-top: -1px;
+  height: 40px;
+}
+
+.chat-search .search-icon{
+  margin-top: 10px;
+  padding-left: 15px;
+}
+
+.chat-search input{
+  margin-top: 11px;
+}
+
+.dark .chat-search{
+  border: 1px solid #2b3138;
+}
+
+.dark .chat-search.active{
+  border: 1px solid #60b25e;
 }
 
 .chat-search input{
@@ -76,13 +98,17 @@
 
 .chat-body{
   float: left;
-  width: ~'calc(100% - 1px)';
-  border-left: 1px solid transparent;
-  height: ~'calc(100% - 89px)';
+  width: 100%;
+  height: ~'calc(100% - 91px)';
+  background-color: #fff;
+  border: none;
 }
 
 .dark .chat-body{
   border-left-color: #2c3238;
+  background-color: #363d46;
+  border-left: 1px solid transparent;
+  width: ~'calc(100% - 1px)';
 }
 
 .message{
@@ -257,6 +283,10 @@
   left: 0;
   margin-top: -1px;
   height: 68px;
+  width: 317px;
+}
+
+.dark .channel .highlight-area{
   width: 316px;
 }
 
@@ -265,6 +295,10 @@
   left: 0;
   margin-top: -1px;
   height: 45px;
+  width: 317px;
+}
+
+.dark .contact .highlight-area{
   width: 316px;
 }
 
@@ -307,7 +341,7 @@
   background-size: cover;
   margin-top: 10px;
   margin-bottom: 11px;
-  margin-left: 12px;
+  margin-left: 10px;
   margin-right: 13px;
   border-radius: 50%;
 }
@@ -339,6 +373,7 @@
   color: #545f65;
   margin-top: 17px;
   width: 203px;
+  line-height: 16px;
 }
 
 .active .channel-name{
@@ -352,6 +387,7 @@
   color: #545f65;
   margin-top: 15px;
   width: 203px;
+  line-height: 16px;
 }
 
 .active .contact-name{
@@ -388,6 +424,7 @@
   color: #889399;
   width: 215px;
   margin-top: 7px;
+  line-height: 14px;
 }
 
 .active .channel-last-msg{
@@ -447,23 +484,23 @@
 
 .chat-tab-selector .selector-img{
   float: left;
-  margin-left: 43px;
+  margin-left: 47px;
   height: 100%;
-  margin-top: 4px;
+  margin-top: 5px;
   width: 69px;
   border-bottom: 2px solid transparent;
 }
 
 .chat-tab-selector.active .selector-img{
-  border-bottom-color: green;
+  border-bottom-color: #60b25e;
 }
 
 .chat-tab-selector span{
   float: left;
   font-size: 15px;
   color: #889399;
-  margin-top: 3px;
-  margin-left: 7px;
+  margin-top: 6px;
+  margin-left: 8px;
 }
 
 .chat-tab-selector.active span{
@@ -474,7 +511,7 @@
   float: left;
   width: 17px;
   height: 17px;
-  margin-top: 1px;
+  margin-top: 5px;
   background: url('@static/chats.png');
   background-size: 17px 17px;
 }
@@ -494,23 +531,23 @@
 
 .contact-tab-selector .selector-img{
   float: left;
-  margin-left: 30px;
+  margin-left: 28px;
   height: 100%;
-  margin-top: 4px;
+  margin-top: 5px;
   width: 100px;
   border-bottom: 2px solid transparent;
 }
 
 .contact-tab-selector.active .selector-img{
-  border-bottom-color: green;
+  border-bottom-color: #60b25e;
 }
 
 .contact-tab-selector span{
   float: left;
   font-size: 15px;
   color: #889399;
-  margin-top: 3px;
-  margin-left: 7px;
+  margin-top: 6px;
+  margin-left: 8px;
 }
 
 .contact-tab-selector.active span{
@@ -519,23 +556,22 @@
 
 .contact-tab-selector figure{
   float: left;
-  margin-top: 1px;
-  width: 17px;
-  height: 17px;
+  margin-top: 3px;
+  width: 18px;
+  height: 18px;
   background: url('@static/contacts.png');
-  background-size: 17px 17px;
+  background-size: 18px 18px;
 }
 
 .contact-tab-selector.active figure{
   background: url('@static/contacts-active.png');
-  background-size: 17px 17px;
+  background-size: 18px 18px;
 }
 
 /* END CHAT SIDEBAR */
 
 /* CHAT BODY */
 .chat .ui-content{
-  background: #fff;
   float: left;
   width: ~'calc(100% - 318px)';
   height: ~'calc(100% - 41px)';
@@ -544,10 +580,18 @@
   position: absolute;
   top: 41px;
   left: 318px;
+  background: rgba(255,255,255,1);
+  background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(247,248,250,1) 50%, rgba(247,248,250,1) 100%);
+  background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(255,255,255,1)), color-stop(50%, rgba(247,248,250,1)), color-stop(100%, rgba(247,248,250,1)));
+  background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(247,248,250,1) 50%, rgba(247,248,250,1) 100%);
+  background: -o-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(247,248,250,1) 50%, rgba(247,248,250,1) 100%);
+  background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(247,248,250,1) 50%, rgba(247,248,250,1) 100%);
+  background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(247,248,250,1) 50%, rgba(247,248,250,1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f7f8fa', GradientType=0 );
 }
 
 .dark.chat .ui-content{
-  background-color: #3f4750;
+  background: #3f4750;
 }
 
 .conversation-header {
@@ -689,11 +733,18 @@
   height: ~'calc(100% - 41px)';
   top: 41px;
   left: 318px;
-  background-color: #fff;
+  background: rgba(255,255,255,1);
+  background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(247,248,250,1) 50%, rgba(247,248,250,1) 100%);
+  background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(255,255,255,1)), color-stop(50%, rgba(247,248,250,1)), color-stop(100%, rgba(247,248,250,1)));
+  background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(247,248,250,1) 50%, rgba(247,248,250,1) 100%);
+  background: -o-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(247,248,250,1) 50%, rgba(247,248,250,1) 100%);
+  background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(247,248,250,1) 50%, rgba(247,248,250,1) 100%);
+  background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(247,248,250,1) 50%, rgba(247,248,250,1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f7f8fa', GradientType=0 );
 }
 
 .dark .no-content{
-  background-color: #2c3238;
+  background: #3f4750;
 }
 
 .no-chat-img{
@@ -1005,8 +1056,18 @@
   font-size: 22px;
 }
 
-.contactDom.conected .contact-img {
-  box-shadow: 0px 0px 17px 1px rgba(96,178,94,1);
+.conected-indicator{
+  float: right;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #889399;
+  margin-top: 20px;
+  margin-right: 12px;
+}
+
+.conected .conected-indicator{
+  background-color: #60b25e;
 }
 
 /* END CHAT BODY*/
