@@ -118,6 +118,18 @@ removeGroup.on( 'click' , function(){
   deleteOrExitGroup();
 });
 
+wz.user.on( 'connect' , function( user ){
+
+  updateContactState( $( '.user-id-' + user.id ) , true , user.id );
+
+});
+
+wz.user.on( 'disconnect' , function( user ){
+
+  updateContactState( $( '.user-id-' + user.id ) , false , user.id );
+
+});
+
 // FUNCTIONS
 var setTexts = function(){
 
@@ -350,6 +362,7 @@ var appendContact = function( c , channel , callback ){
   .data( 'contact' , c );
   contact
   .addClass( 'user-id-' + c.id );
+
   myContacts.push( { id : c.id , status : false } );
 
   if( channel != undefined ){ contact.data( 'channel' , channel ) }
@@ -378,19 +391,7 @@ var appendContact = function( c , channel , callback ){
     contactList.append( contact );
   }
 
-  if( channel ){
-
-    /*wql.getChannelSeen( [channel.id, c.id] , function( error , notSeen ){
-
-      if ( notSeen[0] != undefined && notSeen[0]['not_seen'] > 0 ) {
-        $('.chatDom' + channel.id).data( 'notSeen' , notSeen[0]['not_seen'] );
-        $('.chatDom' + channel.id).find( '.channel-badge' ).addClass('visible').find('span').text( notSeen[0]['not_seen'] );
-      }
-      //callback();
-
-    });*/
-
-  }
+  callback();
 
 }
 
