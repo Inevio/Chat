@@ -15,7 +15,7 @@ wz.channel.on( 'message' , function( info , text ){
 
     api.banner()
       .setTitle( user.fullName )
-      .setText( text )
+      .setText( text[0] )
       .setIcon( user.avatar.tiny )
       // To Do -> .sound( 'marimba' )
       .on( 'click', function(){})
