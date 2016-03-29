@@ -28,7 +28,7 @@
 
 .new-group-button{
   float: left;
-  margin-left: 142px;
+  margin-left: 137px;
   width: 126px;
   margin-top: 3px;
   display: none;
@@ -38,7 +38,7 @@
   float: left;
   font-size: 13px;
   float: left;
-  margin-top: 8px;
+  margin-top: 9px;
   margin-left: 7px;
   color: #545f65;
   max-width: 105px;
@@ -55,8 +55,8 @@
   width: 16px;
   height: 16px;
   float: left;
-  margin-top: 8px;
-  margin-bottom: 8px;
+  margin-top: 9px;
+  margin-bottom: 7px;
   margin-left: 10px;
 }
 
