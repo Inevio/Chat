@@ -27,6 +27,7 @@ var cancelNewGroup    = $( '.cancel-group' );
 var saveNewGroup      = $( '.save-group' );
 var removeGroup       = $( '.remove-group' );
 var myContactID       = api.system.user().id;
+var adminMode         = false;
 
 // COLOR PALETTE
 var colorPalette = [
@@ -45,7 +46,7 @@ var colorPalette = [
 var colors = [ '#4fb0c6' , '#d09e88' , '#fab1ce' , '#4698e0' , '#e85c5c', '#efdc05', '#5cab7d' , '#a593e0', '#fc913a' , '#58c9b9' ]
 
 // DOM Events
-app.key( 'f1' , function(){
+app.key( 'esc' , function(){
   $( '.ui-window' ).toggleClass( 'dark' );
 });
 
@@ -1138,7 +1139,11 @@ var saveGroup = function(){
 
   if ( groupMenu.hasClass( 'group-edit' ) ) {
 
-    editGroup();
+    if( adminMode ){
+      editGroup();
+    }else{
+      alert( lang.exitAdmin );
+    }
 
   }else{
 
@@ -1345,10 +1350,14 @@ var setGroupAvatar = function( groupName , avatar ){
 
   var colorId = selectColor( groupName );
 
-  avatar.css('background-image', 'none');
-  avatar.css('background-color', colorPalette[colorId].light);
-  avatar.css('border', '1px solid ' + colorPalette[colorId].border);
-  avatar.css('border-style', 'solid');
+  avatar.css({
+    'background-image'  : 'none',
+    'background-color'  : colorPalette[colorId].light,
+    'border'            : '2px solid ' + colorPalette[colorId].border,
+    'border-style'      : 'solid',
+    'width'             : '44px',
+    'height'            : '44px'
+  });
   avatar.find( 'span' ).css('color', colorPalette[colorId].text);
 
 }
@@ -1606,6 +1615,8 @@ var setRemoveButton = function(){
     if ( myContactID == admin ) {
 
       removeGroup.find( 'span' ).text(lang.deleteExit);
+      adminMode = true;
+      $('.group-header .edit').addClass('visible');
 
       removeGroup.on( 'click' , function(){
 
@@ -1632,7 +1643,9 @@ var setRemoveButton = function(){
 
     }else{
 
+      adminMode = false;
       removeGroup.find( 'span' ).text(lang.exitGroup);
+      $('.group-header .edit').removeClass('visible');
 
       removeGroup.on( 'click' , function(){
 
