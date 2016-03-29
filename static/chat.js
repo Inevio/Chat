@@ -846,7 +846,7 @@ var send = function( message , channel ){
 
       if ( error ) { console.log('ERROR: ', error ); }
 
-      channel.send(  { 'action' : 'message' , 'txt' : message , 'id' : messages.insertId } , function( error ){
+      channel.send(  { 'action' : 'message' , 'txt' : message , 'id' : messages.insertId } , { background : wz.system.user().name + ': ' + message } , function( error ){
 
         if ( error ) { console.log('ERROR: ', error ); }
 
