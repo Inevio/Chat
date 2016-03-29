@@ -209,8 +209,6 @@ var getContacts = function(){
 
       wql.getSingleChannel( [ myContactID , c.id ] , function( error , message ){
 
-        console.log( 'USR1(' , myContactID , ') USR2(' , c.id , ') CANAL=' , message );
-
         if ( error ) { console.log('ERROR: ', error ); }
 
         // Existe el canal
@@ -267,7 +265,6 @@ var getChats = function( callback ){
       // No repeat chats already appended
       if ( $( '.chatDom-' + channel.id ).length != 0 ) {
 
-        console.log('ya esta metido!');
         return;
 
       }
@@ -301,7 +298,6 @@ var getChats = function( callback ){
 
                 api.channel( channel.id , function( error, channel ){
 
-                  console.log('APPENDING CHAT' , channel , element , groupName);
                   appendChat( channel , element , groupName , cb );
 
                 });
@@ -340,7 +336,6 @@ var getChats = function( callback ){
 
               }
 
-              console.log('APPENDING GROUP' , channel , usersInGroup , groupName);
               appendChat( channel , usersInGroup , groupName , function(){
 
                 if( callback ){
@@ -420,10 +415,10 @@ var appendChat = function( c , user , groupName , callback ){
 
   wql.getMessages( c.id , function( error, messages ){
 
-    console.log([c.id, myContactID]);
+    messages = messages.reverse();
+
     wql.getLastRead( [c.id, myContactID] , function( error , lastRead ){
 
-      console.log([c.id, lastRead[0]['last_read']]);
       wql.getUnreads( [c.id, lastRead[0]['last_read']] , function( error , notSeen ){
 
         if ( error ) { console.log('ERROR: ', error ); }
@@ -488,7 +483,6 @@ var appendChat = function( c , user , groupName , callback ){
         // No repeat chats already appended
         if ( $( '.chatDom-' + c.id ).length != 0 ) {
 
-          console.log('ya esta metido!');
           if( callback ){ callback(); };
           return;
 
@@ -533,6 +527,7 @@ var selectContact = function( contact ){
   removeGroup.removeClass( 'visible' );
 
   $( '.conversation-input input' ).focus();
+  $( '.conversation-header' ).off( 'click' );
 
   var channel = contact.data( 'channel' );
 
@@ -639,6 +634,8 @@ var listMessages = function( channel ){
   $( '.messageDom' ).remove();
 
   wql.getMessages( channel.id , function( error, messages ){
+
+    messages = messages.reverse();
 
     if ( error ) { console.log('ERROR: ', error ); }
 
@@ -817,7 +814,6 @@ var sendMessage = function(){
               $( '.contactDom.active' ).data( 'channel' , channel );
               $( '.chatDom.active' ).data( 'channel' , channel );
               send( txt , channel );
-              console.log('getChat - sendMessage');
               getChats( function(){
 
                 $( '.chatDom-' + channel.id ).click();
@@ -849,7 +845,6 @@ var send = function( message , channel ){
     wql.addMessage( [ message , myContactID , channel.id ] , function( error , messages ){
 
       if ( error ) { console.log('ERROR: ', error ); }
-      console.log(arguments);
 
       channel.send(  { 'action' : 'message' , 'txt' : message , 'id' : messages.insertId } , function( error ){
 
@@ -1004,8 +999,6 @@ var messageReceived = function( message , o ){
 
   setChatInfo( chat , o );
 
-  console.log( message , o );
-
   if( channelActive && channelActive.id === message.id ){
 
     if( message.sender === myContactID ){
@@ -1018,7 +1011,6 @@ var messageReceived = function( message , o ){
     }else{
 
       var users = chat.data('user');
-      console.log( users );
 
       if( !Array.isArray( users ) ){
 
@@ -1097,7 +1089,8 @@ var newGroup = function(){
   $( '.group-menu .visible' ).removeClass( 'visible' );
   groupMenu.addClass( 'visible' ).addClass( 'group-new' );
   $( '.group-new' ).addClass( 'visible' );
-  $( '.group-name-input' ).val( '' );
+  $( '.group-name-input input' ).val( '' );
+  $( '.search-members input' ).val( '' );
 
   setGroupAvatar( '?' , $( '.group-avatar' ) );
 
@@ -1429,8 +1422,6 @@ var viewGroup = function(){
 
       });
 
-      console.log(groupMembers);
-
       $( '.search-members input' ).off( 'input' );
       $( '.search-members input' ).on( 'input' , function(){
 
@@ -1596,8 +1587,6 @@ var chatDeleted = function( info ){
 
 var userAdded = function( info , userId ){
 
-  console.log('user added!!' , info , userId);
-
   if( info.sender != myContactID && myContactID == userId ){
 
     getChats();
@@ -1744,7 +1733,6 @@ var asyncEach = function( list, step, callback ){
 
   list.forEach( function( item ){
     step( item, checkEnd );
-    console.log( position );
   });
 
 };

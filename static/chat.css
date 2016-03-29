@@ -638,6 +638,11 @@
   border-bottom: 1px solid #e5e9ea;
   position: relative;
   padding-bottom: 10px;
+  cursor: pointer;
+}
+
+.conversation-header *{
+  cursor: pointer;
 }
 
 .dark .conversation-header {
@@ -728,6 +733,14 @@
   width: ~'calc(100% - 96px)';
 }
 
+.dark .conversation-input{
+  border-color: #282d32;
+}
+
+.dark .conversation-input.active{
+  border-color: #60b25e;
+}
+
 .conversation-input .search-icon i{
   background-image: url('@static/sprite.png');
   background-size: 118px 18px;
@@ -755,6 +768,7 @@
   padding-right: 21px;
   padding-bottom: 17px;
   width: 43px;
+  cursor: pointer;
 }
 
 .dark .conversation-send{
@@ -844,6 +858,11 @@
   float: left;
   width: 70px;
   height: 100%;
+  cursor: pointer;
+}
+
+.group-menu .back *{
+  cursor: pointer;
 }
 
 .group-menu .back figure{
@@ -882,10 +901,21 @@
   width: 39px;
   padding-top: 17px;
   padding-right: 7px;
+  cursor: pointer;
+}
+
+.group-menu .edit:hover{
+  color: #545f65;
+  text-decoration: underline;
 }
 
 .dark .group-menu .edit{
   color: #d2dce2;
+}
+
+.dark .group-menu .edit:hover{
+  color: #fff;
+  text-decoration: underline;
 }
 
 .group-info{
@@ -985,6 +1015,11 @@
 .member{
   float: left;
   width: 100%;
+  cursor: pointer;
+}
+
+.member *{
+  cursor: pointer;
 }
 
 .remove-group{
