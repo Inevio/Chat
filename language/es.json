@@ -36,5 +36,6 @@
     "admin" : "Administrador",
     "exitGroup" : "Salir del grupo",
     "conected"  : "conectado",
-    "disconected" :  "desconectado"
+    "disconected" :  "desconectado",
+    "exitAdmin" : "No puedes echar al administrador del grupo"
 }

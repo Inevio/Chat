@@ -36,5 +36,6 @@
     "admin" : "Admin",
     "exitGroup" : "Exit group",
     "conected"  : "conected",
-    "disconected" :  "disconected"
+    "disconected" :  "disconected",
+    "exitAdmin" : "You can't drop de admin from the group"
 }
