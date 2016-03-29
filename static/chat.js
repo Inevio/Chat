@@ -43,7 +43,7 @@ var colorPalette = [
   {name: 'yellow' , light: '#fbe27d', text:'#84740b' , border:'#ffb400'},
 ];
 
-var colors = [ '#4fb0c6' , '#d09e88' , '#fab1ce' , '#4698e0' , '#e85c5c', '#efdc05', '#5cab7d' , '#a593e0', '#fc913a' , '#58c9b9' ]
+var colors = [ '#4fb0c6' , '#d09e88' , '#fab1ce' , '#4698e0' , '#e85c5c', '#ebab10', '#5cab7d' , '#a593e0', '#fc913a' , '#58c9b9' ]
 
 // DOM Events
 app.key( 'esc' , function(){
@@ -624,6 +624,10 @@ var selectChat = function( chat ){
 
     }
 
+  }else{
+
+    lastMessage.text( ( contact.length + 1 ) + ' ' + lang.members );
+
   }
 
 }
@@ -756,6 +760,7 @@ var printMessage = function( text , sender , time , animate ){
 
   }
 
+  message.addClass( 'messageDom' );
   $( '.message-container' ).append( message );
 
   if(animate){
