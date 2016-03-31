@@ -37,5 +37,9 @@
     "exitGroup" : "Salir del grupo",
     "conected"  : "conectado",
     "disconected" :  "desconectado",
-    "exitAdmin" : "No puedes echar al administrador del grupo"
+    "exitAdmin" : "No puedes echar al administrador del grupo",
+    "last"   : "Hace",
+    "lastYear" : "Hace un año",
+    "lastMonth" : "El mes pasado",
+    "lastDay"  : "Ayer"
 }
