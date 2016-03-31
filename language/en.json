@@ -37,5 +37,9 @@
     "exitGroup" : "Exit group",
     "conected"  : "conected",
     "disconected" :  "disconected",
-    "exitAdmin" : "You can't drop de admin from the group"
+    "exitAdmin" : "You can't drop de admin from the group",
+    "last"   : "",
+    "lastYear" : "Last year",
+    "lastMonth" : "Last month",
+    "lastDay"  : "Yesterday"
 }

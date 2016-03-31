@@ -17,6 +17,7 @@ var sendButton        = $( '.conversation-send' );
 var content           = $( '.ui-content' );
 var lastMessage       = $( '.conversation-moreinfo' );
 var searchBox         = $( '.chat-search input' );
+var searchBoxDelete   = $( '.chat-search .delete-content' );
 var closeChatButton   = $( '.close-coversation' );
 var newGroupButton    = $( '.new-group-button' );
 var groupMenu         = $( '.group-menu' );
@@ -26,6 +27,7 @@ var memberList        = $( '.member-list' );
 var cancelNewGroup    = $( '.cancel-group' );
 var saveNewGroup      = $( '.save-group' );
 var removeGroup       = $( '.remove-group' );
+var conversationDel   = $( '.conversation-input .delete-content' );
 var myContactID       = api.system.user().id;
 var adminMode         = false;
 
@@ -48,6 +50,7 @@ var colors = [ '#4fb0c6' , '#d09e88' , '#fab1ce' , '#4698e0' , '#e85c5c', '#ebab
 // DOM Events
 app.key( 'esc' , function(){
   $( '.ui-window' ).toggleClass( 'dark' );
+  $( '.conversation-input input' ).val('');
 });
 
 chatButton.on( 'click' , function(){
@@ -66,9 +69,15 @@ app.key( 'enter' , function(){
   sendMessage();
 });
 
+searchBoxDelete.on( 'click' , function(){
+  filterElements( '' );
+});
+
 searchBox.on( 'input' , function(){
   filterElements( $( this ).val() );
 });
+
+
 
 api.channel.on( 'message' , function( message , text ){
   messageReceived( message , text );
@@ -122,14 +131,20 @@ removeGroup.on( 'click' , function(){
 
 wz.user.on( 'connect' , function( user ){
 
+  console.log( 'se ha conectado un usr! ' , user.id , myContacts );
   updateContactState( $( '.user-id-' + user.id ) , true , user.id );
 
 });
 
 wz.user.on( 'disconnect' , function( user ){
 
+  console.log( 'se ha conectado un usr! ' , user.id , myContacts );
   updateContactState( $( '.user-id-' + user.id ) , false , user.id );
 
+});
+
+conversationDel.on( 'click' , function(){
+  $( '.conversation-input input' ).val('');
 });
 
 // FUNCTIONS
@@ -238,6 +253,7 @@ var getContacts = function(){
 
           var friend = $( '.user-id-' + friendId );
 
+          console.log( 'estableciendo como conectados' , myContacts );
           updateContactState( friend , true , friendId );
 
         });
@@ -378,6 +394,7 @@ var appendContact = function( c , channel , callback ){
   .addClass( 'user-id-' + c.id );
 
   myContacts.push( { id : c.id , status : false } );
+  console.log( 'lista de conectados actualizada' , myContacts );
 
   if( channel != undefined ){ contact.data( 'channel' , channel ) }
 
@@ -454,7 +471,7 @@ var appendChat = function( c , user , groupName , callback ){
             var date = new Date(lastMsg.time);
 
             chat
-            .find( '.channel-last-time' ).text( getStringHour( date ) );
+            .find( '.channel-last-time' ).text( timeElapsed( date ) );
             chat
             .find( '.channel-last-msg' ).text( lastMsg.text );
 
@@ -472,7 +489,7 @@ var appendChat = function( c , user , groupName , callback ){
             var date = new Date(lastMsg.time);
 
             chat
-            .find( '.channel-last-time' ).text( getStringHour( date ) );
+            .find( '.channel-last-time' ).text( timeElapsed( date ) );
             chat
             .find( '.channel-last-msg' ).text( lastMsg.text );
 
@@ -488,7 +505,7 @@ var appendChat = function( c , user , groupName , callback ){
 
         }else{
 
-          channelList.append( chat );
+          appendChatInOrder( chat , new Date( lastMsg.time ) );
           if ( notSeen[0] != undefined && notSeen[0]['COUNT(*)'] > 0 ) {
 
             $('.chatDom-' + c.id).data( 'notSeen' , notSeen[0]['COUNT(*)'] );
@@ -504,6 +521,8 @@ var appendChat = function( c , user , groupName , callback ){
         .data( 'user' , user );
         chat
         .data( 'isGroup' , groupName );
+        chat
+        .data( 'time' , new Date( lastMsg.time ) );
         chat
         .on( 'click' , function(){
           selectChat( $( this ) );
@@ -521,6 +540,33 @@ var appendChat = function( c , user , groupName , callback ){
 
 }
 
+var appendChatInOrder = function( chat , time ){
+
+  var chats = $( '.chatDom' );
+  var appended = false;
+
+  if ( chats.length == 0 ) {
+    channelList.append( chat );
+  }
+
+  $.each( chats , function( i , c ){
+
+    var chatInCourse = $(c);
+    var timeInCourse = chatInCourse.data( 'time' );
+
+    if( time > timeInCourse && !appended ){
+      chatInCourse.before( chat );
+      appended = true;
+    }
+
+  });
+
+  if ( !appended ) {
+    chats.eq( chats.length - 1 ).after( chat );
+  }
+
+}
+
 var selectContact = function( contact ){
 
   groupMenu.removeClass( 'visible' );
@@ -530,6 +576,7 @@ var selectContact = function( contact ){
   $( '.conversation-header' ).off( 'click' );
 
   var channel = contact.data( 'channel' );
+  //console.log( 'contacto seleccionado:' , contact , channel );
 
   // Make active
   $( '.contactDom.active' ).removeClass( 'active' );
@@ -541,17 +588,18 @@ var selectContact = function( contact ){
 
   if ( channel == undefined ) {
 
-    //$( '.conversation-header' ).data( 'channel' , null );
     $( '.messageDom' ).remove();
     $( '.chatDom.active' ).removeClass( 'active' );
 
   }else{
 
-    //$( '.conversation-header' ).data( 'channel' , channel );
+    $( '.chatDom.active' ).removeClass( 'active' );
+    $( '.chatDom-' + channel.id ).addClass( 'active' );;
     listMessages( channel );
 
   }
 
+  console.log( 'miro si esta conectado por la clase del contacto' , contact );
   if ( contact.hasClass( 'conected' ) ) {
 
     lastMessage.text( lang.conected );
@@ -569,15 +617,16 @@ var selectChat = function( chat ){
   groupMenu.removeClass( 'visible' );
   removeGroup.removeClass( 'visible' );
 
-  $( '.conversation-input input' ).focus();
-
   var channel = chat.data( 'channel' );
   var contact = chat.data( 'user' );
+
+  //console.log( 'chat seleccionado:' , contact , channel );
 
   // Make active
   $( '.chatDom.active' ).removeClass( 'active' );
   chat.addClass( 'active' );
   content.addClass( 'visible' );
+  $( '.conversation-input input' ).focus();
 
   // Set header
   $( '.conversation-name' ).text( chat.find( '.channel-name' ).text() );
@@ -618,6 +667,7 @@ var selectChat = function( chat ){
       lastMessage.text( lang.disconected );
 
     }
+    console.log( 'pregunto conectados con isConecteed' , contact.id , myContacts );
 
   }else{
 
@@ -693,7 +743,7 @@ var isConected = function( user ){
 
   for (var i = 0; i < myContacts.length; i++) {
 
-    if ( myContacts[i].id = user && myContacts[i].status ) {
+    if ( myContacts[i].id == user && myContacts[i].status ) {
 
       conected = true;
 
@@ -788,6 +838,8 @@ var sendMessage = function(){
 
   var contactApi = $( '.contactDom.active' ).data( 'contact' );
 
+  //console.log( 'send message:' , contactApi , channel );
+
   // Clean sender
   $( '.conversation-input input' ).val('');
 
@@ -862,28 +914,51 @@ var timeElapsed = function( lastTime ){
 
   var now = new Date();
   var last = new Date( lastTime );
+  var message;
 
   if( now.getFullYear() > last.getFullYear() ){
 
-    return lang.last + ' ' + ( now.getFullYear() - last.getFullYear() ) + ' ' + lang.years;
+    //return lang.last + ' ' + ( now.getFullYear() - last.getFullYear() ) + ' ' + lang.years;
+
+    var years = now.getFullYear() - last.getFullYear();
+
+    if ( years === 1 ) {
+      message = lang.lastYear;
+    }else{
+      message = lang.last + ' ' + years + ' ' + lang.years;
+    }
 
   }else if( now.getMonth() > last.getMonth() ){
 
-    return lang.last + ' ' + ( now.getMonth() - last.getMonth() ) + ' ' + lang.months;
+    //return lang.last + ' ' + ( now.getMonth() - last.getMonth() ) + ' ' + lang.months;
+
+    var months = now.getMonth() - last.getMonth();
+
+    if ( months === 1 ) {
+      message = lang.lastMonth;
+    }else{
+      message = lang.last + ' ' + month + ' ' + lang.months;
+    }
 
   }else if( now.getDate() > last.getDate() ){
 
-    return lang.last + ' ' + ( now.getDate() - last.getDate() ) + ' ' + lang.days;
+    //return lang.last + ' ' + ( now.getDate() - last.getDate() ) + ' ' + lang.days;
 
-  }else if( now.getHours() > last.getHours() ){
+    var days = now.getDate() - last.getDate();
 
-    return lang.last + ' ' + ( now.getHours() - last.getHours() ) + ' ' + lang.hours;
+    if ( days === 1 ) {
+      message = lang.lastDay;
+    }else{
+      message = lang.last + ' ' + days + ' ' + lang.days;
+    }
 
   }else{
 
-    return lang.last + ' ' + ( now.getMinutes() - last.getMinutes() ) + ' ' + lang.minutes;
+    message = getStringHour( lastTime );
 
   }
+
+  return message;
 
 }
 
@@ -948,6 +1023,8 @@ var messageReceived = function( message , o ){
   var date          = Date.now();
   var printed       = false;
 
+  //console.log( 'message recived' , channelActive );
+
   // USER REMOVED
   if( o.action == 'userRemoved' ){
 
@@ -997,8 +1074,8 @@ var messageReceived = function( message , o ){
     return;
   }
 
+  // MESSAGE
   setChatInfo( chat , o );
-
   if( channelActive && channelActive.id === message.id ){
 
     if( message.sender === myContactID ){
@@ -1026,8 +1103,13 @@ var messageReceived = function( message , o ){
           if ( user.id === message.sender ) {
 
             wql.updateLastRead( [ o.id , channelActive.id, myContactID ] , function( error , message ){
+
               if ( error ) { console.log('ERROR: ', error ); }
+
+              $( '.user-id-' + user.id ).data( 'channel' , channelActive );
+
               printMessage( o.txt , user , date , true );
+
             });
 
           }
@@ -1062,11 +1144,13 @@ var setChatInfo = function( chat , o ){
 
   chat.insertBefore( $( '.chatDom' ).eq(0) );
   chat.find( '.channel-last-msg' ).text( o.txt );
-  chat.find( '.channel-last-time' ).text( getStringHour( new Date() ) );
+  chat.find( '.channel-last-time' ).text( timeElapsed( new Date() ) );
 
 }
 
 var getStringHour = function( date ){
+
+  var now = new Date();
 
   var hh = date.getHours();
   var mm = date.getMinutes();
@@ -1078,6 +1162,8 @@ var getStringHour = function( date ){
   if(mm<10) {
     mm='0'+mm
   }
+
+
 
   return hh + ':' + mm;
 
