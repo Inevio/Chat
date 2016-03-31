@@ -199,7 +199,8 @@
   margin-bottom: 3px;
   margin-left: 13px;
   margin-right: 15px;
-}
+  word-wrap: break-word;
+  }
 
 .sender-group .message-text{
   float: left;
@@ -1138,6 +1139,10 @@
 
 .conected .conected-indicator{
   background-color: #60b25e;
+}
+
+.message-other{
+  margin-top: 4px;
 }
 
 /* END CHAT BODY*/

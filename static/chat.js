@@ -77,8 +77,6 @@ searchBox.on( 'input' , function(){
   filterElements( $( this ).val() );
 });
 
-
-
 api.channel.on( 'message' , function( message , text ){
   messageReceived( message , text );
 });
@@ -131,15 +129,15 @@ removeGroup.on( 'click' , function(){
 
 wz.user.on( 'connect' , function( user ){
 
-  console.log( 'se ha conectado un usr! ' , user.id , myContacts );
   updateContactState( $( '.user-id-' + user.id ) , true , user.id );
+  updateState( user.id , true );
 
 });
 
 wz.user.on( 'disconnect' , function( user ){
 
-  console.log( 'se ha conectado un usr! ' , user.id , myContacts );
   updateContactState( $( '.user-id-' + user.id ) , false , user.id );
+  updateState( user.id , false );
 
 });
 
@@ -468,7 +466,7 @@ var appendChat = function( c , user , groupName , callback ){
 
           if(lastMsg != undefined){
 
-            var date = new Date(lastMsg.time);
+            var date = new Date( lastMsg.time );
 
             chat
             .find( '.channel-last-time' ).text( timeElapsed( date ) );
@@ -505,7 +503,16 @@ var appendChat = function( c , user , groupName , callback ){
 
         }else{
 
-          appendChatInOrder( chat , new Date( lastMsg.time ) );
+          if (lastMsg) {
+            appendChatInOrder( chat , new Date( lastMsg.time ) );
+            chat
+            .data( 'time' , new Date( lastMsg.time ) );
+          }else{
+            appendChatInOrder( chat , new Date() );
+            chat
+            .data( 'time' , new Date() );
+          }
+
           if ( notSeen[0] != undefined && notSeen[0]['COUNT(*)'] > 0 ) {
 
             $('.chatDom-' + c.id).data( 'notSeen' , notSeen[0]['COUNT(*)'] );
@@ -521,8 +528,6 @@ var appendChat = function( c , user , groupName , callback ){
         .data( 'user' , user );
         chat
         .data( 'isGroup' , groupName );
-        chat
-        .data( 'time' , new Date( lastMsg.time ) );
         chat
         .on( 'click' , function(){
           selectChat( $( this ) );
@@ -1606,6 +1611,13 @@ var appendMember = function( user , admin ){
 
   });
 
+  member.on( 'click' , function(){
+
+    $( this ).find( '.ui-checkbox' ).toggleClass( 'active' );
+    $( this ).toggleClass( 'active' );
+
+  });
+
   if( user.id == admin ){
 
     member.find( 'span' ).text( user.fullName + ' (' + lang.admin + ')' );
@@ -1618,6 +1630,13 @@ var appendMember = function( user , admin ){
 
     member.find( '.member-avatar' ).off( 'click' );
     member.find( '.member-avatar' ).on( 'click' , function(){
+
+      alert( lang.exitAdmin );
+
+    });
+
+    member.off( 'click' );
+    member.on( 'click' , function(){
 
       alert( lang.exitAdmin );
 
@@ -1845,6 +1864,27 @@ var arrDiff = function (a1, a2) {
 
   return diff;
 };
+
+var updateState = function( userId , state ){
+
+  var chats = $( '.chatDom' );
+
+  $.each( chats , function( i , chat ){
+
+    var chatUser = $( chat ).data( 'user' );
+    if ( chatUser && chatUser.id == userId ) {
+
+      if ( state ) {
+        lastMessage.text( lang.conected );
+      }else{
+        lastMessage.text( lang.disconected );
+      }
+
+    }
+
+  });
+
+}
 
 // INIT Chat
 initChat();
