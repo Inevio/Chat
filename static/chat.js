@@ -920,46 +920,39 @@ var timeElapsed = function( lastTime ){
   var now = new Date();
   var last = new Date( lastTime );
   var message;
+  var calculated = false;
 
-  if( now.getFullYear() > last.getFullYear() ){
+  if( now.getFullYear() === last.getFullYear() ){
 
-    //return lang.last + ' ' + ( now.getFullYear() - last.getFullYear() ) + ' ' + lang.years;
+    if( now.getDate() === last.getDate() ){
 
-    var years = now.getFullYear() - last.getFullYear();
+      message = getStringHour( lastTime );
+      calculated = true;
 
-    if ( years === 1 ) {
-      message = lang.lastYear;
-    }else{
-      message = lang.last + ' ' + years + ' ' + lang.years;
-    }
+    }else if( new Date ( now.setDate( now.getDate() - 1 ) ).getDate() === last.getDate() ){
 
-  }else if( now.getMonth() > last.getMonth() ){
-
-    //return lang.last + ' ' + ( now.getMonth() - last.getMonth() ) + ' ' + lang.months;
-
-    var months = now.getMonth() - last.getMonth();
-
-    if ( months === 1 ) {
-      message = lang.lastMonth;
-    }else{
-      message = lang.last + ' ' + month + ' ' + lang.months;
-    }
-
-  }else if( now.getDate() > last.getDate() ){
-
-    //return lang.last + ' ' + ( now.getDate() - last.getDate() ) + ' ' + lang.days;
-
-    var days = now.getDate() - last.getDate();
-
-    if ( days === 1 ) {
       message = lang.lastDay;
-    }else{
-      message = lang.last + ' ' + days + ' ' + lang.days;
+      calculated = true;
+
     }
 
-  }else{
+  }
 
-    message = getStringHour( lastTime );
+  if ( !calculated ) {
+
+    var day = last.getDate();
+    var month = last.getMonth();
+
+    if(day<10) {
+      day='0'+day
+    }
+
+    if(month<10) {
+      month='0'+month
+    }
+
+    message = day + '/' + month + '/' + last.getFullYear().toString().substring( 2 , 4 );
+    calculated = true;
 
   }
 
