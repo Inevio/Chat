@@ -153,7 +153,7 @@ var setTexts = function(){
   $( '.conversation-input input' ).attr('placeholder', lang.msg);
   $( '.chat-search input' ).attr('placeholder', lang.search);;
   $( '.close-coversation' ).text(lang.close);
-  $( '.conversation-send' ).text(lang.send);
+  $( '.send-txt' ).text(lang.send);
   $( '.new-group-button span' ).text(lang.newGroup);
   $( '.no-chat-txt' ).text(lang.noChat);
   $( '.group-menu .back span' ).text(lang.back);
