@@ -59,13 +59,10 @@ chatButton.on( 'click' , function(){
 
 contactsButton.on( 'click' , function(){
   changeTab('contact');
+  searchBox.focus();
 });
 
 sendButton.on( 'click' , function(){
-  sendMessage();
-});
-
-app.key( 'enter' , function(){
   sendMessage();
 });
 
@@ -142,15 +139,45 @@ wz.user.on( 'disconnect' , function( user ){
 });
 
 conversationDel.on( 'click' , function(){
-  $( '.conversation-input input' ).val('');
+
+  $( '.conversation-input textarea' ).val('');
+
 });
+
+content.on( 'click' , function(){
+
+  $( '.conversation-input textarea' ).focus();
+
+});
+
+app.on( 'keypress', function( e ){
+
+  if( e.which === 13 ){
+
+    if ( !e.shiftKey ) {
+
+      e.preventDefault();
+      sendMessage();
+
+    }else{
+
+      //var newHeight = parseInt( $( '.conversation-footer' ).css( 'height' ) );
+      //$( '.conversation-footer' ).css( 'height' ,  + ( newHeight + 20 ) + 'px' );
+
+    }
+
+  }
+
+});
+
+$( '.conversation-input textarea' ).textareaAutoSize();
 
 // FUNCTIONS
 var setTexts = function(){
 
   $( '.chat-tab-selector span' ).text(lang.chats);
   $( '.contact-tab-selector span' ).text(lang.contacts);
-  $( '.conversation-input input' ).attr('placeholder', lang.msg);
+  $( '.conversation-input textarea' ).attr('placeholder', lang.msg);
   $( '.chat-search input' ).attr('placeholder', lang.search);;
   $( '.close-coversation' ).text(lang.close);
   $( '.send-txt' ).text(lang.send);
@@ -577,7 +604,7 @@ var selectContact = function( contact ){
   groupMenu.removeClass( 'visible' );
   removeGroup.removeClass( 'visible' );
 
-  $( '.conversation-input input' ).focus();
+  $( '.conversation-input textarea' ).focus();
   $( '.conversation-header' ).off( 'click' );
 
   var channel = contact.data( 'channel' );
@@ -607,10 +634,12 @@ var selectContact = function( contact ){
   console.log( 'miro si esta conectado por la clase del contacto' , contact );
   if ( contact.hasClass( 'conected' ) ) {
 
+    lastMessage.addClass( 'conected' );
     lastMessage.text( lang.conected );
 
   }else{
 
+    lastMessage.removeClass( 'conected' );
     lastMessage.text( lang.disconected );
 
   }
@@ -625,13 +654,13 @@ var selectChat = function( chat ){
   var channel = chat.data( 'channel' );
   var contact = chat.data( 'user' );
 
-  //console.log( 'chat seleccionado:' , contact , channel );
+  lastMessage.removeClass( 'conected' );
 
   // Make active
   $( '.chatDom.active' ).removeClass( 'active' );
   chat.addClass( 'active' );
   content.addClass( 'visible' );
-  $( '.conversation-input input' ).focus();
+  $( '.conversation-input textarea' ).focus();
 
   // Set header
   $( '.conversation-name' ).text( chat.find( '.channel-name' ).text() );
@@ -665,10 +694,12 @@ var selectChat = function( chat ){
 
     if ( isConected( contact.id ) ) {
 
+      lastMessage.addClass( 'conected' );
       lastMessage.text( lang.conected );
 
     }else {
 
+      lastMessage.removeClass( 'conected' );
       lastMessage.text( lang.disconected );
 
     }
@@ -767,6 +798,30 @@ var printMessage = function( text , sender , time , animate ){
   var hh = date.getHours();
   var mm = date.getMinutes();
 
+  if ( text ) {
+
+    textProcessed = text.replace( /((http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*))/ig, '<a href="$1" target="_blank">$1</a>' );
+    textProcessed = textProcessed.replace(/\n/g, "<br />");
+
+  }else{
+
+    textProcessed = text;
+
+  }
+
+  textProcessed = $('<div></div>').html( textProcessed );
+
+  textProcessed.find('a').each( function(){
+
+    if( !(/^http(s)?:\/\//i).test( $(this).attr('href') ) ){
+      $(this).attr( 'href', 'http://' + $(this).attr('href') );
+    }
+
+  });
+
+  textProcessed = textProcessed.html();
+
+
   if(hh<10) {
     hh='0'+hh
   }
@@ -781,7 +836,7 @@ var printMessage = function( text , sender , time , animate ){
     message
     .removeClass( 'wz-prototype' )
     .addClass( 'messageDom' )
-    .find( '.message-text' ).text( text );
+    .find( '.message-text' ).html( textProcessed );
     message
     .find( '.message-time' ).text( hh + ':' + mm );
 
@@ -792,7 +847,7 @@ var printMessage = function( text , sender , time , animate ){
     .removeClass( 'wz-prototype' )
     .addClass( 'messageDom' )
     message
-    .find( '.message-text' ).text( text );
+    .find( '.message-text' ).html( textProcessed );
 
     if ( $( '.chatDom.active' ).data( 'isGroup' ) != null ) {
 
@@ -838,7 +893,7 @@ getChats();
 
 var sendMessage = function(){
 
-  var txt = $( '.conversation-input input' ).val();
+  var txt = $( '.conversation-input textarea' ).val();
   var channel = $( '.chatDom.active' ).data( 'channel' );
 
   var contactApi = $( '.contactDom.active' ).data( 'contact' );
@@ -846,7 +901,7 @@ var sendMessage = function(){
   //console.log( 'send message:' , contactApi , channel );
 
   // Clean sender
-  $( '.conversation-input input' ).val('');
+  $( '.conversation-input textarea' ).val('');
 
   if ( channel == null ) {
 
@@ -1604,43 +1659,9 @@ var appendMember = function( user , admin ){
 
   });
 
-  member.on( 'click' , function(){
-
-    $( this ).find( '.ui-checkbox' ).toggleClass( 'active' );
-    $( this ).toggleClass( 'active' );
-
-  });
-
   if( user.id == admin ){
 
     member.find( 'span' ).text( user.fullName + ' (' + lang.admin + ')' );
-    member.find( 'span' ).off( 'click' );
-    member.find( 'span' ).on( 'click' , function(){
-
-      alert( lang.exitAdmin );
-
-    });
-
-    member.find( '.member-avatar' ).off( 'click' );
-    member.find( '.member-avatar' ).on( 'click' , function(){
-
-      alert( lang.exitAdmin );
-
-    });
-
-    member.off( 'click' );
-    member.on( 'click' , function(){
-
-      alert( lang.exitAdmin );
-
-    });
-
-    member.find( '.ui-checkbox' ).on( 'click' , function(){
-
-      $(this).toggleClass( 'active' );
-      alert( lang.exitAdmin );
-
-    });
 
   }else{
 
@@ -1865,11 +1886,13 @@ var updateState = function( userId , state ){
   $.each( chats , function( i , chat ){
 
     var chatUser = $( chat ).data( 'user' );
-    if ( chatUser && chatUser.id == userId ) {
+    if ( chatUser && chatUser.id == userId && $( chat ).hasClass( 'active' ) ) {
 
       if ( state ) {
+        lastMessage.addClass( 'conected' );
         lastMessage.text( lang.conected );
       }else{
+        lastMessage.removeClass( 'conected' );
         lastMessage.text( lang.disconected );
       }
 
