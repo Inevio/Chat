@@ -3,7 +3,7 @@
     "addChannel"            : "INSERT INTO channel SET id = ?, name = ?",
     "addUserInChannel"      : "INSERT INTO user_in_channel SET id_channel = ?, user = ?",
     "getChannels"           : "SELECT t1.id, t1.name FROM channel AS t1 INNER JOIN user_in_channel t2 ON t2.id_channel = t1.id WHERE t2.user = ?",
-    "getSingleChannel"      : "SELECT id_channel FROM ( SELECT id_channel, COUNT(user) AS counter FROM user_in_channel, channel WHERE ( user = ? OR user = ? ) AND user_in_channel.id_channel = channel.id AND channel.name IS NULL GROUP BY id_channel ) AS channels WHERE counter > 1",
+    "getSingleChannel"      : "SELECT id_channel, user FROM user_in_channel WHERE id_channel IN ( SELECT id_channel FROM user_in_channel, channel WHERE user = ? AND user_in_channel.id_channel = channel.id AND channel.name IS NULL ) AND user != ?",
     "addMessage"            : "INSERT INTO message SET text = ?, sender = ?, channel = ?, time = UNIX_TIMESTAMP() * 1000",
     "getMessages"           : "SELECT * FROM message WHERE channel = ? ORDER BY id DESC LIMIT 50",
     "getUsersInChannel"     : "SELECT user FROM user_in_channel WHERE id_channel = ?",

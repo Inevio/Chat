@@ -241,36 +241,54 @@ var changeTab = function(tab){
 
 var getContacts = function(){
 
+  var friends  = $.Deferred();
+  var channels = $.Deferred();
+
   api.user.friendList( false, function( error, list ){
+    friends.resolve( list );
+  });
 
-    if ( error ) { console.log('ERROR: ', error ); }
+  wql.getSingleChannel( [ myContactID, myContactID ], function( error, list ){
 
-    asyncEach( list , function( c , cb ){
+    var res = [];
 
-      wql.getSingleChannel( [ myContactID , c.id ] , function( error , message ){
+    asyncEach( list, function( channel, callback ){
 
-        if ( error ) { console.log('ERROR: ', error ); }
+      api.channel( channel.id_channel, function( error, chn ){
 
-        // Existe el canal
-        if (message.length > 0) {
+        chn.user = channel.user;
 
-          api.channel( message[0][ 'id_channel' ] , function( error, channel ){
-
-            if ( error ) { console.log('ERROR: ', error ); }
-
-            appendContact( c , channel , cb );
-
-          });
-
-        }
-        // No existe el canal
-        else{
-          appendContact( c , null , cb );
-        }
+        res.push( chn );
+        callback();
 
       });
 
-    } , function(){
+    }, function(){
+      channels.resolve( res );
+    });
+
+  });
+
+  $.when( friends, channels ).done( function( friends, channels ){
+
+    asyncEach( friends, function( friend, callback ){
+
+      var channel = channels.filter( function( item ){ return item.user === friend.id; })[ 0 ];
+
+      // Existe el canal
+      if( channel ){
+
+        delete channel.user;
+        console.log( friend, channel );
+        appendContact( friend , channel , callback );
+
+      }
+      // No existe el canal
+      else{
+        appendContact( friend , null , callback );
+      }
+
+    }, function(){
 
       api.user.connectedFriends( true, function( error, list ){
 
