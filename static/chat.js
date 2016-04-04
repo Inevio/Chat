@@ -1,3 +1,5 @@
+// CHAT 2.0
+
 var myContacts = [];
 var groupMembers = [];
 
