@@ -19,7 +19,7 @@
 
             "primary" : "main",
             "unique"  : true,
-            "service" : ["webrtc.js"],
+            "service" : ["service.js"],
             "common"  : {
 
                 "css"    : [],
@@ -31,54 +31,31 @@
             "view" : {
 
                 "main" : {
-                    
-                    "template" : "main.html",
 
-                    "maxizable" : false,
-                    "resizable" : false,
+                    "template" : "chat.html",
+
+                    "maxizable" : true,
+                    "resizable" : true,
 
                     "width"  : {
 
-                        "default" : 700,
-                        "min"     : 0,
+                        "default" : 996,
+                        "min"     : 880,
                         "max"     : 0
 
                     },
 
                     "height" : {
 
-                        "default" : 525,
-                        "min"     : 0,
+                        "default" : 638,
+                        "min"     : 450,
                         "max"     : 0
 
                     },
 
-                    "css"    : ["wzstyle.css", "style.css"],
-                    "script" : ["script.js"]
-
-                }
-
-            },
-
-            "widget" : {
-
-                "list" : {
-                    
-                    "template" : "list.html",
-                    "css"      : ["list.css"],
-                    "script"   : ["list.js"],
-
-                    "alwaysInFront" : true
-
-                },
-
-                "conversation" : {
-                    
-                    "template" : "conversation.html",
-                    "css"      : ["conversation.css"],
-                    "script"   : ["conversation.js"],
-
-                    "alwaysInFront" : true
+                    "css"    : ["chat.css"],
+                    "script" : ["chat.js"],
+                    "start"  : []
 
                 }
 
