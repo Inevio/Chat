@@ -1,0 +1,183 @@
+<section class="ui-window dark chat">
+  <section class="ui-header wz-dragger">
+    <section class="ui-header-brand">
+      <span>Chat</span>
+    </section>
+    <section class="new-group-button ui-btn">
+      <i></i>
+      <span></span>
+    </section>
+    <section class="ui-header-buttons">
+      <figure class="ui-minimize"><i></i></figure>
+      <figure class="ui-maximize window"><i></i></figure>
+      <figure class="ui-close"><i></i></figure>
+    </section>
+  </section>
+  <section class="ui-navbar">
+
+    <section class="ui-input-search chat-search">
+      <figure class="search-icon">
+        <i></i>
+      </figure>
+      <input placeholder="Search input">
+      <figure class="delete-content">
+        <i></i>
+      </figure>
+    </section>
+
+    <section class="chat-body">
+      <section class="chat-tab">
+        <section class="channel-list wz-scroll">
+          <article class="channel wz-prototype">
+            <section class="highlight-area">
+              <figure class="channel-img"></figure>
+              <span class="channel-name ellipsis"></span>
+              <span class="channel-last-time"></span>
+              <span class="channel-last-msg ellipsis"></span>
+              <figure class="channel-badge"><span></span></figure>
+            </section>
+          </article>
+        </section>
+      </section>
+      <section class="contact-tab">
+        <section class="contact-list wz-scroll">
+          <article class="contact wz-prototype">
+            <section class="highlight-area">
+              <figure class="contact-img"></figure>
+              <span class="contact-name ellipsis"></span>
+              <i class="conected-indicator"></i>
+            </section>
+          </article>
+        </section>
+      </section>
+    </section>
+
+    <section class="chat-footer">
+      <section class="chat-tab-selector active">
+        <section class="selector-img">
+          <figure></figure>
+          <span></span>
+        </section>
+      </section>
+      <section class="contact-tab-selector">
+        <section class="selector-img">
+          <figure></figure>
+          <span></span>
+        </section>
+      </section>
+    </section>
+  </section>
+  <section class="ui-content">
+    <section class="header">
+      <section class="conversation-header">
+        <span class="close-conversation"></span>
+        <section class="conversation-info">
+          <span class="conversation-name"></span>
+          <span class="conversation-moreinfo"></span>
+        </section>
+      </section>
+    </section>
+
+    <section class="container-conversation">
+    <section class="conversation-body">
+      <section class="message-container wz-scroll">
+
+        <article class="message message-other wz-prototype">
+          <figure class="message-avatar"></figure>
+          <article class="message-body">
+            <figure class="message-triangle"></figure>
+            <span class="sender"></span>
+            <span class="message-text wz-selectable"></span>
+            <span class="message-time"></span>
+          </article>
+        </article>
+
+        <article class="message message-me wz-prototype">
+          <article class="message-body">
+            <figure class="message-triangle"></figure>
+            <span class="message-text wz-selectable"></span>
+            <span class="message-time"></span>
+          </article>
+        </article>
+
+      </section>
+    </section>
+    <section class="conversation-footer">
+      <section class="ui-input-search conversation-input">
+
+        <!--
+        <figure class="search-icon">
+          <i></i>
+        </figure>
+        -->
+
+        <input placeholder="Search input">
+        <figure class="delete-content">
+          <i></i>
+        </figure>
+      </section>
+
+      <button class="conversation-send">
+        <span class="send-txt"></span>
+      </button>
+
+    </section>
+  </section>
+  </section>
+  <section class="no-content">
+    <figure class="no-chat-img"></figure>
+    <span class="no-chat-txt"></span>
+  </section>
+  <section class="group-menu">
+    <section class="group-header">
+      <section class="back group-view group-edit">
+        <figure></figure>
+        <span></span>
+      </section>
+      <span class="group-create-txt group-new"></span>
+      <span class="edit group-view"></span>
+      <button class="ui-btn save-group accept group-new group-edit">
+        <span class="ellipsis"></span>
+      </button>
+      <button class="ui-btn cancel-group group-new gray group-edit">
+        <span class="ellipsis"></span>
+      </button>
+    </section>
+    <section class="group-info">
+      <span class="title"></span>
+      <figure class="group-avatar"></figure>
+      <section class="group-info-names">
+        <span class="group-name group-view"></span>
+        <section class="ui-input group-name-input group-new group-edit">
+          <input placeholder="Regular input">
+          <figure>
+            <i></i>
+          </figure>
+        </section>
+        <span class="group-members-txt"></span>
+      </section>
+    </section>
+    <section class="group-members">
+      <span class="title"></span>
+      <section class="ui-input-search group-new group-edit search-members">
+        <figure class="search-icon">
+          <i></i>
+        </figure>
+        <input placeholder="Search input">
+        <figure class="delete-content">
+          <i></i>
+        </figure>
+      </section>
+      <section class="member-list wz-scroll">
+        <article class="member wz-prototype">
+          <figure class="ui-checkbox group-new group-edit"><i></i></figure>
+          <figure class="member-avatar"></figure>
+          <span></span>
+        </article>
+      </section>
+    </section>
+    <button class="ui-btn remove-group cancel">
+      <span class="ellipsis"></span>
+    </button>
+  </section>
+</section>
