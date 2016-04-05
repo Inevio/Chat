@@ -516,6 +516,10 @@
   display: none;
 }
 
+.active .channel-badge{
+  background-color: #fff;
+}
+
 .channel .channel-badge span{
   float: left;
   color: #fff;
@@ -524,6 +528,10 @@
   width: 100%;
   text-align: center;
   margin-top: 4px;
+}
+
+.active .channel-badge span{
+  color: #60b25e;
 }
 
 .chat-footer{
@@ -889,7 +897,7 @@
   color: #fff;
   width: 100%;
   text-align: center;
-  margin-top: -1px;
+  margin-top: 8px;
 }
 
 .no-content{

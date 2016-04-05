@@ -13,5 +13,7 @@
     "updateChannelName"     : "UPDATE channel SET name = ? WHERE id = ?",
     "deleteUsersInChannel"  : "DELETE FROM user_in_channel WHERE id_channel = ?",
     "deleteChannel"         : "DELETE FROM channel WHERE id = ?",
-    "deleteUserInChannel"   : "DELETE FROM user_in_channel WHERE id_channel = ? && user = ?"
+    "deleteUserInChannel"   : "DELETE FROM user_in_channel WHERE id_channel = ? && user = ?",
+    "getUserPreference"     : "SELECT * FROM user_preference WHERE user = ?",
+    "updateUserPreference"  : "INSERT INTO user_preference (user, width, height, dark, x, y) VALUES(?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE width=?, height=?, dark=?, x=?, y=?"
 }
