@@ -1,3 +1,5 @@
+// CHAT 3.0
+
 var myContacts = [];
 var groupMembers = [];
 var me;
@@ -322,7 +324,6 @@ var getContacts = function(){
         if( channel ){
 
           delete channel.user;
-          console.log( friend, channel );
           appendContact( friend , channel , callback );
 
         }
@@ -684,7 +685,6 @@ var selectContact = function( contact ){
   $( '.conversation-header' ).off( 'click' );
 
   var channel = contact.data( 'channel' );
-  //console.log( 'contacto seleccionado:' , contact , channel );
 
   // Make active
   $( '.contactDom.active' ).removeClass( 'active' );
@@ -707,7 +707,6 @@ var selectContact = function( contact ){
 
   }
 
-  console.log( 'miro si esta conectado por la clase del contacto' , contact );
   if ( contact.hasClass( 'conected' ) ) {
 
     lastMessage.addClass( 'conected' );
