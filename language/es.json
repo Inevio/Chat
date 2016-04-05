@@ -41,5 +41,6 @@
     "last"   : "Hace",
     "lastYear" : "Hace un año",
     "lastMonth" : "El mes pasado",
-    "lastDay"  : "Ayer"
+    "lastDay"  : "Ayer",
+    "noContacts"  : "Aun no tienes contactos, busca y agrega tus contactos!"
 }
