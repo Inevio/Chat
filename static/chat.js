@@ -1,4 +1,4 @@
-// CHAT 3.0
+// CHAT 1
 
 var myContacts = [];
 var groupMembers = [];
