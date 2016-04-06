@@ -66,6 +66,7 @@ contactsButton.on( 'click' , function(){
 });
 
 sendButton.on( 'click' , function(){
+  $( '.conversation-input textarea' ).css('height','24px');
   sendMessage();
 });
 
@@ -172,8 +173,6 @@ app.on( 'keypress', function( e ){
   }
 
 });
-
-$( '.conversation-input textarea' ).textareaAutoSize();
 
 app.on( 'ui-view-focus', function(){
 
@@ -546,8 +545,8 @@ var appendChat = function( c , user , groupName , callback ){
         .addClass( 'chatDom' )
         .addClass( 'chatDom-' + c.id );
 
-        var name;
-        if (lastMsg.sender != myContactID) {
+        var name = '';
+        if (lastMsg && lastMsg.sender != myContactID) {
           $.each( myContacts , function( i , contact ){
 
             if (contact.id === lastMsg.sender) {
@@ -993,6 +992,8 @@ var initChat = function(){
       getContacts();
       getChats();
 
+      $( '.conversation-input textarea' ).textareaAutoSize();
+
     });
 
   });
@@ -1003,7 +1004,7 @@ var sendMessage = function(){
 
   var txt = $( '.conversation-input textarea' ).val();
   var channel = $( '.chatDom.active' ).data( 'channel' );
-
+  var channelDom = $( '.chatDom.active' );
   var contactApi = $( '.contactDom.active' ).data( 'contact' );
 
   // Clean sender
@@ -1031,7 +1032,7 @@ var sendMessage = function(){
 
               $( '.contactDom.active' ).data( 'channel' , channel );
               $( '.chatDom.active' ).data( 'channel' , channel );
-              send( txt , channel );
+              send( txt , channel , channelDom );
               getChats( function(){
 
                 $( '.chatDom-' + channel.id ).click();
@@ -1050,13 +1051,13 @@ var sendMessage = function(){
 
   }else{
 
-    send( txt , channel );
+    send( txt , channel , channelDom );
 
   }
 
 }
 
-var send = function( message , channel ){
+var send = function( message , channel , channelDom ){
 
   if( message != '' ){
 
@@ -1064,7 +1065,18 @@ var send = function( message , channel ){
 
       if ( error ) { console.log('ERROR: ', error ); }
 
-      channel.send(  { 'action' : 'message' , 'txt' : message , 'id' : messages.insertId } , { background : wz.system.user().name + ': ' + message } , function( error ){
+      var groupName = $(channelDom).data('isGroup');
+      var myName = wz.system.user().name;
+      var sender = ( groupName ? ( groupName + ' - ' + myName ) : myName ).trim() + ':\n';
+
+      channel.send(  {
+
+        'action' : 'message' ,
+        'txt' : message ,
+        'id' : messages.insertId ,
+        'groupName' : groupName
+
+      } , { background : sender + message } , function( error ){
 
         if ( error ) { console.log('ERROR: ', error ); }
 
@@ -1181,6 +1193,7 @@ var messageReceived = function( message , o ){
   var chat          = $( '.chatDom-' + message.id );
   var date          = Date.now();
   var printed       = false;
+  var messageRec    = message;
 
   // USER REMOVED
   if( o.action == 'userRemoved' ){
@@ -1233,7 +1246,7 @@ var messageReceived = function( message , o ){
 
   // MESSAGE
   setChatInfo( chat , o , message.sender );
-  if( channelActive && channelActive.id === message.id && app.parent().hasClass( 'wz-app-focus' ) ){
+  if( channelActive && channelActive.id === message.id ){
 
     if( message.sender === myContactID ){
 
@@ -1248,10 +1261,19 @@ var messageReceived = function( message , o ){
 
       if( !Array.isArray( users ) ){
 
-        wql.updateLastRead( [ o.id , channelActive.id, myContactID ] , function( error , message ){
-          if ( error ) { console.log('ERROR: ', error ); }
+        if (!app.parent().hasClass( 'wz-app-focus' )) {
+
+          messageNotReaded( messageRec );
           printMessage( o.txt , users , date , true );
-        });
+
+        }else{
+
+          wql.updateLastRead( [ o.id , channelActive.id, myContactID ] , function( error , message ){
+            if ( error ) { console.log('ERROR: ', error ); }
+            printMessage( o.txt , users , date , true );
+          });
+
+        }
 
       }else{
 
@@ -1259,43 +1281,60 @@ var messageReceived = function( message , o ){
 
           if ( user.id === message.sender ) {
 
-            wql.updateLastRead( [ o.id , channelActive.id, myContactID ] , function( error , message ){
+            if (!app.parent().hasClass( 'wz-app-focus' )) {
 
-              if ( error ) { console.log('ERROR: ', error ); }
-
-              $( '.user-id-' + user.id ).data( 'channel' , channelActive );
-
+              messageNotReaded( messageRec );
               printMessage( o.txt , user , date , true );
 
-            });
+            }else{
+
+              wql.updateLastRead( [ o.id , channelActive.id, myContactID ] , function( error , message ){
+
+                if ( error ) { console.log('ERROR: ', error ); }
+
+                $( '.user-id-' + user.id ).data( 'channel' , channelActive );
+
+                printMessage( o.txt , user , date , true );
+
+              });
+
+
+            }
 
           }
 
         });
 
       }
+
     }
 
   }else{
 
-    updateBadge( 1 , true );
+    messageNotReaded( messageRec );
 
-    wql.getLastRead( [message.id, myContactID] , function( error , lastRead ){
+  }
 
-      wql.getUnreads( [message.id, lastRead[0]['last_read'] ] , function( error , notSeen ){
+}
 
-        if ( notSeen[0] != undefined && notSeen[0]['COUNT(*)'] > 0 ) {
+var messageNotReaded = function( message ){
 
-          $('.chatDom-' + message.id).data( 'notSeen' , notSeen[0]['COUNT(*)'] );
-          $('.chatDom-' + message.id).find( '.channel-badge' ).addClass('visible').find('span').text( notSeen[0]['COUNT(*)'] );
+  updateBadge( 1 , true );
 
-        }
+  wql.getLastRead( [message.id, myContactID] , function( error , lastRead ){
 
-      });
+    wql.getUnreads( [message.id, lastRead[0]['last_read'] ] , function( error , notSeen ){
+
+      if ( notSeen[0] != undefined && notSeen[0]['COUNT(*)'] > 0 ) {
+
+        $('.chatDom-' + message.id).data( 'notSeen' , notSeen[0]['COUNT(*)'] );
+        $('.chatDom-' + message.id).find( '.channel-badge' ).addClass('visible').find('span').text( notSeen[0]['COUNT(*)'] );
+
+      }
 
     });
 
-  }
+  });
 
 }
 

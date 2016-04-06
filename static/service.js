@@ -14,8 +14,10 @@ wz.channel.on( 'message' , function( info , o ){
       return;
     }
 
+    var name = o.groupName ? o.groupName : user.fullName;
+
     api.banner()
-      .setTitle( user.fullName )
+      .setTitle( name )
       .setText( o.txt )
       .setIcon( user.avatar.tiny )
       // To Do -> .sound( 'marimba' )
@@ -57,10 +59,14 @@ wql.getChannels( myContactID , function( error , channels ){
 
 });
 
-api.channel.on( 'message', function(){
+api.channel.on( 'message', function( message , text ){
 
-  if (wz.app.getViews().length === 0) {
-    updateBadge( 1 , true );
+  if ( text.action === 'message' ) {
+
+    if (wz.app.getViews().length === 0) {
+      updateBadge( 1 , true );
+    }
+
   }
 
 });
