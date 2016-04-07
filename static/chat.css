@@ -666,16 +666,32 @@
   position: absolute;
   top: 41px;
   left: 318px;
+  background-size: 550px 999px;
   background-image: url( '@static/pattern.png' );
 }
 
 .dark.chat .ui-content{
   background-image: url( '@static/pattern-dark.png' );
+  background-size: 550px 999px;
   width: ~'calc(100% - 319px)';
   height: ~'calc(100% - 42px)';
   border-radius: 0 0 6px 0;
   border-right: 1px solid #2c3238;
   border-bottom: 1px solid #2c3238;
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi) {
+
+  .chat .ui-content{
+    background-size: 366.5px 666px;
+    background-image: url( '@static/pattern.png' );
+  }
+
+  .dark.chat .ui-content{
+    background-image: url( '@static/pattern-dark.png' );
+    background-size: 366.5px 666px;
+  }
+
 }
 
 .header{
