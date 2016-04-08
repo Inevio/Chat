@@ -2,29 +2,41 @@
 
 var myContactID  = api.system.user().id;
 
-wz.channel.on( 'message' , function( info , o ){
+api.channel.on( 'message' , function( info , o ){
 
-  if( info.sender === api.system.user().id ){
+  // The app is oppened, so don't show the banner
+  if (wz.app.getViews().length != 0) {
     return;
   }
 
-  wz.user( info.sender, function( error, user ){
+  // If recieved is a message increment Badge, and show the banner
+  if ( o.action === 'message' ) {
 
-    if( error ){
-      return;
-    }
+    updateBadge( 1 , true );
 
-    var name = o.groupName ? o.groupName : user.fullName;
+    wz.user( info.sender, function( error, user ){
 
-    api.banner()
-      .setTitle( name )
-      .setText( o.txt )
-      .setIcon( user.avatar.tiny )
-      // To Do -> .sound( 'marimba' )
-      .on( 'click', function(){})
-      .render();
+      if( error ){
+        return;
+      }
 
-  });
+      var name = o.groupName ? o.groupName : user.fullName;
+
+      api.banner()
+        .setTitle( name )
+        .setText( o.txt )
+        .setIcon( user.avatar.tiny )
+        // To Do -> .sound( 'marimba' )
+        .on( 'click', function(){
+
+          wz.app.openApp( 232 , info.id , function(o){});
+
+        })
+        .render();
+
+    });
+
+  }
 
 });
 
@@ -56,17 +68,5 @@ wql.getChannels( myContactID , function( error , channels ){
     });
 
   });
-
-});
-
-api.channel.on( 'message', function( message , text ){
-
-  if ( text.action === 'message' ) {
-
-    if (wz.app.getViews().length === 0) {
-      updateBadge( 1 , true );
-    }
-
-  }
 
 });
