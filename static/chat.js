@@ -1,4 +1,4 @@
-// CHAT 1.0.1
+// CHAT 1.0.2
 
 var myContacts = [];
 var groupMembers = [];
@@ -55,7 +55,7 @@ var colors = [ '#4fb0c6' , '#d09e88' , '#fab1ce' , '#4698e0' , '#e85c5c', '#ebab
 // --- EVENTS ---
 // SERVER EVENTS
 api.channel.on( 'message' , function( message , text ){
-  messageReceived( message , text );
+  objectRecieved( message , text );
 });
 
 api.channel.on( 'destroyed' , function( info ){
@@ -341,6 +341,16 @@ app
     });
 
   });
+
+})
+
+.on( 'app-param', function( e, params ){
+
+  var interval = setInterval(function(){
+    console.log(params, $( '.chatDom-' + params ) );
+    $( '.chatDom-' + params ).click();
+    clearInterval(interval);
+  }, 1000);
 
 })
 
@@ -1100,28 +1110,6 @@ var printMessage = function( text , sender , time , animate ){
 
 var initChat = function(){
 
-  wql.getUserPreference( myContactID , function( error , preferences ){
-
-    if ( preferences.length > 0 ) {
-
-      preferences = preferences[0];
-      app.css(
-        {
-          "width"  : preferences.width + 'px',
-          "height" : preferences.height + 'px'
-        }
-      );
-
-      if ( preferences.dark ) {
-        $( '.ui-window' ).addClass( 'dark' );
-      }
-
-    }
-
-    app.css({'border-radius'    : '6px',
-    'background-color' : '#2c3238'
-  });
-
   api.user( myContactID , function( error, user ){
 
     me = user;
@@ -1134,8 +1122,6 @@ var initChat = function(){
     $( '.conversation-input textarea' ).textareaAutoSize();
 
   });
-
-});
 
 }
 
@@ -1326,65 +1312,74 @@ var setActiveChat = function( chat ){
 
 }
 
-var messageReceived = function( message , o ){
+var objectRecieved = function( message , o ){
 
   var channelActive = $( '.chatDom.active' ).data( 'channel' );
+
+  switch ( o.action ) {
+
+    // USER REMOVED
+    case 'userRemoved':
+
+      var active = $( '.chatDom-' + o.id );
+
+      if ( o.userId == myContactID ) {
+
+        if( channelActive && o.id == channelActive.id ) {
+
+          active.remove();
+          content.removeClass( 'visible' );
+
+        }else{
+
+          active.remove();
+
+        }
+      }
+
+      break;
+
+
+    // GROUP NAME CHANGE
+    case 'nameChange':
+
+      var active = $( '.chatDom-' + o.id );
+
+      if ( o.userId == myContactID ) {
+
+        if( channelActive && o.id == channelActive.id ) {
+
+          active.remove();
+          content.removeClass( 'visible' );
+
+        }else{
+
+          active.remove();
+
+        }
+      }
+
+      break;
+
+    // MESSAGE
+    case 'message':
+
+      messageRecieved( message , o , channelActive );
+      break;
+
+  }
+
+}
+
+var messageRecieved = function( message , o , channelActive ){
+
   var chat          = $( '.chatDom-' + message.id );
   var date          = Date.now();
   var printed       = false;
   var messageRec    = message;
 
-  // USER REMOVED
-  if( o.action == 'userRemoved' ){
-
-    var active = $( '.chatDom-' + o.id );
-
-    if ( o.userId == myContactID ) {
-
-      if( channelActive && o.id == channelActive.id ) {
-
-        active.remove();
-        content.removeClass( 'visible' );
-
-      }else{
-
-        active.remove();
-
-      }
-
-    }
-    return;
-  }
-
-  // GROUP NAME CHANGE
-  if( o.action == 'nameChange' ){
-
-    var active = $( '.chatDom-' + o.id );
-
-    if ( o.userId != myContactID ) {
-
-      if( channelActive && o.id == channelActive.id ){
-
-        active.remove();
-
-        getChats( function(){
-
-          $( '.chatDom-' + channelActive.id ).click();
-
-        });
-
-      }else{
-        active.remove();
-        getChats();
-      }
-
-    }
-
-    return;
-  }
-
-  // MESSAGE
   setChatInfo( chat , o , message.sender );
+
   if( channelActive && channelActive.id === message.id ){
 
     if( message.sender === myContactID ){
@@ -1404,6 +1399,12 @@ var messageReceived = function( message , o ){
 
           messageNotReaded( messageRec );
           printMessage( o.txt , users , date , true );
+          launchBanner( users.fullName , o.txt , users.avatar.tiny , function(){
+
+            $( '.chatDom-' + message.id ).click();
+            wz.app.viewToFront( app );
+
+          });
 
         }else{
 
@@ -1424,6 +1425,17 @@ var messageReceived = function( message , o ){
 
               messageNotReaded( messageRec );
               printMessage( o.txt , user , date , true );
+              wz.user( message.sender, function( error, user ){
+
+                launchBanner( user.fullName , o.txt , user.avatar.tiny , function(){
+
+                  $( '.chatDom-' + message.id ).click();
+                  wz.app.viewToFront( app );
+
+                });
+
+              });
+
 
             }else{
 
@@ -1451,10 +1463,21 @@ var messageReceived = function( message , o ){
   }else{
 
     messageNotReaded( messageRec );
+    wz.user( message.sender, function( error, user ){
+
+      launchBanner( user.fullName , o.txt , user.avatar.tiny , function(){
+
+        $( '.chatDom-' + message.id ).click();
+        wz.app.viewToFront( app );
+
+      });
+
+    });
 
   }
 
 }
+
 
 var messageNotReaded = function( message ){
 
@@ -1477,14 +1500,14 @@ var messageNotReaded = function( message ){
 
 }
 
-var setChatInfo = function( chat , o , user ){
+var setChatInfo = function( chat , o , sender ){
 
   var name;
 
-  if (user != myContactID) {
+  if (sender != myContactID) {
     $.each( myContacts , function( i , contact ){
 
-      if (contact.id === user) {
+      if (contact.id === sender) {
 
         name = contact.name;
 
@@ -1494,7 +1517,6 @@ var setChatInfo = function( chat , o , user ){
   }else{
     name = me.name;
   }
-
 
   chat.insertBefore( $( '.chatDom' ).eq(0) );
   chat.find( '.channel-last-msg' ).text( name + ': ' + o.txt );
@@ -2126,6 +2148,18 @@ var updateBadge = function( num , add ){
 
 
 };
+
+var launchBanner = function( name , text , avatar , callback ){
+
+  api.banner()
+    .setTitle( name )
+    .setText( text )
+    .setIcon( avatar)
+    // To Do -> .sound( 'marimba' )
+    .on( 'click', callback )
+    .render()
+
+}
 
 // INIT Chat
 initChat();
