@@ -234,19 +234,29 @@
   margin-right: 15px;
 }
 
-.readed .check{
+.check{
   background: url('@static/sprite-ticks.png');
   position: absolute;
   background-size: 77px 10px;
-  width: 14px;
   height: 10px;
   bottom: 10px;
-  left: 43px;
-  background-position: 61px 0;
+  left: 48px;
+  width: 9px;
+  background-position: 47px 0;
 }
 
 .dark .check{
-  background-position: 99px 0
+  background-position: 47px 0;
+}
+
+.readed .check{
+  background-position: 61px 0;
+  width: 14px;
+}
+
+.dark .readed .check{
+  background-position: 99px 0;
+  width: 14px;
 }
 
 .message-time{
