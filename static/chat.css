@@ -234,6 +234,21 @@
   margin-right: 15px;
 }
 
+.readed .check{
+  background: url('@static/sprite-ticks.png');
+  position: absolute;
+  background-size: 77px 10px;
+  width: 14px;
+  height: 10px;
+  bottom: 10px;
+  left: 43px;
+  background-position: 61px 0;
+}
+
+.dark .check{
+  background-position: 99px 0
+}
+
 .message-time{
   float: left;
   color: #889399;
@@ -497,12 +512,25 @@
   letter-spacing: 0.025em;
 }
 
+.channel-last-msg i{
+  font-weight: bold;
+  color: #545f65;
+}
+
 .active .channel-last-msg{
+  color: #fff;
+}
+
+.active .channel-last-msg i{
   color: #fff;
 }
 
 .dark .channel .channel-last-msg{
   color: #d2dce2;
+}
+
+.dark .channel-last-msg i{
+  color: #fff;
 }
 
 .channel .channel-badge{
@@ -594,13 +622,12 @@
   width: 17px;
   height: 17px;
   margin-top: 5px;
-  background: url('@static/chats.png');
-  background-size: 17px 17px;
+  background: url('@static/sprite.png');
+  background-size: 118px 18px;
 }
 
 .chat-tab-selector.active figure{
-  background: url('@static/chats-active.png');
-  background-size: 17px 17px;
+  background-position: -17px 0px;
 }
 
 .contact-tab-selector{
@@ -645,13 +672,13 @@
   margin-top: 3px;
   width: 18px;
   height: 18px;
-  background: url('@static/contacts.png');
-  background-size: 18px 18px;
+  background: url('@static/sprite.png');
+  background-size: 118px 18px;
+  background-position: 84px 0;
 }
 
 .contact-tab-selector.active figure{
-  background: url('@static/contacts-active.png');
-  background-size: 18px 18px;
+  background-position: 66px 0;
 }
 
 /* END CHAT SIDEBAR */
