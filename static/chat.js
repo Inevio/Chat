@@ -1,5 +1,8 @@
+// CHAT 1.0.3
+
 var myContacts = [];
 var groupMembers = [];
+var me;
 
 // Local Variables
 var app               = $( this );
@@ -28,6 +31,8 @@ var cancelNewGroup    = $( '.cancel-group' );
 var saveNewGroup      = $( '.save-group' );
 var removeGroup       = $( '.remove-group' );
 var conversationDel   = $( '.conversation-input .delete-content' );
+var closeApp          = $( '.ui-close' );
+var searchMembers     = $( '.search-members input' );
 var myContactID       = api.system.user().id;
 var adminMode         = false;
 
@@ -47,25 +52,48 @@ var colorPalette = [
 
 var colors = [ '#4fb0c6' , '#d09e88' , '#fab1ce' , '#4698e0' , '#e85c5c', '#ebab10', '#5cab7d' , '#a593e0', '#fc913a' , '#58c9b9' ]
 
-// DOM Events
-app.key( 'esc' , function(){
-  $( '.ui-window' ).toggleClass( 'dark' );
-  $( '.conversation-input input' ).val('');
+// --- EVENTS ---
+// SERVER EVENTS
+api.channel.on( 'message' , function( message , text ){
+  messageReceived( message , text );
 });
 
-chatButton.on( 'click' , function(){
+api.channel.on( 'destroyed' , function( info ){
+  chatDeleted( info );
+});
+
+api.channel.on( 'userAdded', function( info, userId ){
+  userAdded( info , userId );
+});
+
+wz.user.on( 'connect' , function( user ){
+
+  updateContactState( $( '.user-id-' + user.id ) , true , user.id );
+  updateState( user.id , true );
+
+});
+
+wz.user.on( 'disconnect' , function( user ){
+
+  updateContactState( $( '.user-id-' + user.id ) , false , user.id );
+  updateState( user.id , false );
+
+});
+// END SERVER EVENTS
+
+
+// UI EVENTS
+chatButton.on( 'click' , function(e){
   changeTab('chat');
 });
 
 contactsButton.on( 'click' , function(){
   changeTab('contact');
+  searchBox.focus();
 });
 
 sendButton.on( 'click' , function(){
-  sendMessage();
-});
-
-app.key( 'enter' , function(){
+  $( '.conversation-input textarea' ).css('height','24px');
   sendMessage();
 });
 
@@ -75,10 +103,6 @@ searchBoxDelete.on( 'click' , function(){
 
 searchBox.on( 'input' , function(){
   filterElements( $( this ).val() );
-});
-
-api.channel.on( 'message' , function( message , text ){
-  messageReceived( message , text );
 });
 
 closeChatButton.on( 'click' , function(){
@@ -115,42 +139,225 @@ saveNewGroup.on( 'click' , function(){
   saveGroup();
 });
 
-api.channel.on( 'destroyed' , function( info ){
-  chatDeleted( info );
-});
-
-api.channel.on( 'userAdded', function( info, userId ){
-  userAdded( info , userId );
-});
-
 removeGroup.on( 'click' , function(){
   deleteOrExitGroup();
 });
 
-wz.user.on( 'connect' , function( user ){
-
-  updateContactState( $( '.user-id-' + user.id ) , true , user.id );
-  updateState( user.id , true );
-
-});
-
-wz.user.on( 'disconnect' , function( user ){
-
-  updateContactState( $( '.user-id-' + user.id ) , false , user.id );
-  updateState( user.id , false );
-
-});
-
 conversationDel.on( 'click' , function(){
-  $( '.conversation-input input' ).val('');
+
+  $( '.conversation-input textarea' ).val('');
+
 });
+
+closeApp.on( 'click' , function(){
+
+  var position = wz.view.getPosition();
+
+  wql.updateUserPreference( [ myContactID , app.width() , app.height() , $( '.ui-window' ).hasClass('dark') , position.x , position.y , app.width() , app.height() , $( '.ui-window' ).hasClass('dark') , position.x , position.y ] , function( error , message ){
+
+    console.log(error, message);
+
+  });
+
+});
+
+searchMembers.on( 'input' , function(){
+
+  filterMembers( $( this ).val() );
+
+});
+
+content.on( 'click' , function(){
+
+  var selection = $(this).selection();
+  if (!selection || selection.width === 0) {
+    $( '.conversation-input textarea' ).focus();
+  }
+
+});
+
+
+// END UI EVENTS
+
+// APP EVENTS
+app
+.on( 'contextmenu', '.chatDom', function(e){
+
+  var menu = api.menu();
+  var channelNotFound = true;
+  var channelDom = $( e.target );
+
+  while (channelNotFound) {
+
+    if( channelDom.hasClass( 'chatDom' ) ){
+      channelNotFound = false;
+    }else{
+      channelDom = channelDom.parent();
+    }
+
+  }
+
+  var channel = channelDom.data( 'channel' );
+  var user = channelDom.data('user').id;
+
+  if ( !channelDom.data('isGroup') ) {
+
+    menu.addOption( lang.deleteChat , function(){
+
+        wql.deleteUsersInChannel( channel.id , function( error , message ){
+
+          if ( error ) { console.log('ERROR: ', error ); }
+
+          wql.deleteChannel( channel.id , function( error , message ){
+
+            if ( error ) { console.log('ERROR: ', error ); }
+
+            channel.destroy();
+
+            $( '.chatDom.active' ).remove();
+            content.removeClass( 'visible' );
+            $( '.user-id-' + user ).data( 'channel' , null );
+
+          });
+
+        });
+
+    });
+  }
+
+  menu.render();
+
+})
+
+.on( 'click' , '.chatDom' , function(){
+
+  selectChat( $( this ) );
+
+})
+
+.on( 'ui-view-focus', function(){
+
+  var chatActive = $( '.chatDom.active' );
+  if (chatActive.length > 0) {
+    selectChat( chatActive );
+  }
+
+})
+
+.on( 'keypress', function( e ){
+
+  if( e.which === 13 ){
+
+    if ( !e.shiftKey ) {
+
+      e.preventDefault();
+      sendMessage();
+
+    }
+
+  }
+})
+
+.on( 'click' , '.viewGroup' , function(){
+
+  viewGroup();
+
+})
+
+.on( 'click' , '.contactDom' , function(){
+
+  selectContact( $( this ) );
+
+})
+
+.on( 'click' , '.group-header .edit' , function(){
+
+  editGroupMode( $( '.chatDom.active' ).data( 'isGroup' ) );
+
+})
+
+.on( 'click' , '.memberDom span' , function(){
+
+  $( this ).parent().find( '.ui-checkbox' ).toggleClass( 'active' );
+  $( this ).parent().toggleClass( 'active' );
+
+})
+
+.on( 'click' , '.memberDom .member-avatar' , function(){
+
+  $( this ).parent().find( '.ui-checkbox' ).toggleClass( 'active' );
+  $( this ).parent().toggleClass( 'active' );
+
+})
+
+.on( 'click', '.memberDom .ui-checkbox' , function(){
+
+  $( this ).parent().toggleClass( 'active' );
+
+})
+
+.on( 'click' , '.removeGroup' , function(){
+
+  var channel = $( '.chatDom.active' ).data( 'channel' );
+
+  wql.deleteUsersInChannel( channel.id , function( error , message ){
+
+    if ( error ) { console.log('ERROR: ', error ); }
+
+    wql.deleteChannel( channel.id , function( error , message ){
+
+      if ( error ) { console.log('ERROR: ', error ); }
+
+      channel.destroy();
+
+      groupMenu.removeClass( 'visible' );
+      removeGroup.removeClass( 'visible' );
+      $( '.chatDom.active' ).remove();
+      content.removeClass( 'visible' );
+
+    });
+
+  });
+
+})
+
+.on( 'click' , '.exitGroup' , function(){
+
+  var channel = $( '.chatDom.active' ).data( 'channel' );
+
+  wql.deleteUserInChannel( [ channel.id , myContactID ] , function( error , message ){
+
+    if ( error ) { console.log('ERROR: ', error ); }
+
+    channel.leave( function( error ){
+
+      if ( error ) { console.log('ERROR: ', error ); }
+
+      groupMenu.removeClass( 'visible' );
+      removeGroup.removeClass( 'visible' );
+      $( '.chatDom.active' ).remove();
+      content.removeClass( 'visible' );
+
+    });
+
+  });
+
+})
+
+.key( 'esc' , function(){
+
+  $( '.ui-window' ).toggleClass( 'dark' );
+  $( '.conversation-input input' ).val('');
+
+});
+// END APP EVENTS
 
 // FUNCTIONS
 var setTexts = function(){
 
   $( '.chat-tab-selector span' ).text(lang.chats);
   $( '.contact-tab-selector span' ).text(lang.contacts);
-  $( '.conversation-input input' ).attr('placeholder', lang.msg);
+  $( '.conversation-input textarea' ).attr('placeholder', lang.msg);
   $( '.chat-search input' ).attr('placeholder', lang.search);;
   $( '.close-coversation' ).text(lang.close);
   $( '.send-txt' ).text(lang.send);
@@ -214,51 +421,90 @@ var changeTab = function(tab){
 
 var getContacts = function(){
 
+  var friends  = $.Deferred();
+  var channels = $.Deferred();
+
   api.user.friendList( false, function( error, list ){
+    friends.resolve( list );
+  });
 
-    if ( error ) { console.log('ERROR: ', error ); }
+  wql.getSingleChannel( [ myContactID, myContactID ], function( error, list ){
 
-    asyncEach( list , function( c , cb ){
+    var res = [];
 
-      wql.getSingleChannel( [ myContactID , c.id ] , function( error , message ){
+    asyncEach( list, function( channel, callback ){
 
-        if ( error ) { console.log('ERROR: ', error ); }
+      api.channel( channel.id_channel, function( error, chn ){
+
+        chn.user = channel.user;
+
+        res.push( chn );
+        callback();
+
+      });
+
+    }, function(){
+      channels.resolve( res );
+    });
+
+  });
+
+  $.when( friends, channels ).done( function( friends, channels ){
+
+    if ( friends.length === 0 ) {
+
+      $( '.no-content' ).css(
+        {
+          'width' : '100%',
+          'left'   : '0'
+        }
+      );
+
+      $( '.new-group-button' ).remove();
+      searchBox.remove();
+
+      confirm( lang.noContacts , function(o){
+        if(o){
+          wz.app.removeView( app );
+          wz.app.openApp( 2 , function(o){} );
+        }
+      });
+
+    }else{
+
+      asyncEach( friends, function( friend, callback ){
+
+        var channel = channels.filter( function( item ){ return item.user === friend.id; })[ 0 ];
 
         // Existe el canal
-        if (message.length > 0) {
+        if( channel ){
 
-          api.channel( message[0][ 'id_channel' ] , function( error, channel ){
-
-            if ( error ) { console.log('ERROR: ', error ); }
-
-            appendContact( c , channel , cb );
-
-          });
+          delete channel.user;
+          appendContact( friend , channel , callback );
 
         }
         // No existe el canal
         else{
-          appendContact( c , null , cb );
+          appendContact( friend , null , callback );
         }
 
-      });
+      }, function(){
 
-    } , function(){
+        api.user.connectedFriends( true, function( error, list ){
 
-      api.user.connectedFriends( true, function( error, list ){
+          $.each( list , function( i , friendId ){
 
-        $.each( list , function( i , friendId ){
+            var friend = $( '.user-id-' + friendId );
 
-          var friend = $( '.user-id-' + friendId );
+            updateContactState( friend , true , friendId );
 
-          console.log( 'estableciendo como conectados' , myContacts );
-          updateContactState( friend , true , friendId );
+          });
 
         });
 
       });
 
-    });
+    }
 
   });
 
@@ -377,22 +623,18 @@ var appendContact = function( c , channel , callback ){
   var contact = contactPrototype.clone();
 
   contact
-  .removeClass( 'wz-prototype' )
-  .addClass( 'contactDom' )
-  .find( '.contact-name' ).text( c.fullName );
-  contact
-  .find( '.contact-img' ).css( 'background-image' , 'url(' + c.avatar.big + ')' );
-  contact
-  .on( 'click' , function(){
-    selectContact( $( this ) );
-  });
+    .removeClass( 'wz-prototype' )
+    .addClass( 'contactDom' )
+    .find( '.contact-name' ).text( c.fullName );
+
+  contact.find( '.contact-img' ).css( 'background-image' , 'url(' + c.avatar.big + ')' );
+
   contact
   .data( 'contact' , c );
   contact
   .addClass( 'user-id-' + c.id );
 
-  myContacts.push( { id : c.id , status : false } );
-  console.log( 'lista de conectados actualizada' , myContacts );
+  myContacts.push( { id : c.id , status : false , name: c.name } );
 
   if( channel != undefined ){ contact.data( 'channel' , channel ) }
 
@@ -457,28 +699,38 @@ var appendChat = function( c , user , groupName , callback ){
         .addClass( 'chatDom' )
         .addClass( 'chatDom-' + c.id );
 
+        var name = '';
+        if (lastMsg && lastMsg.sender != myContactID) {
+          $.each( myContacts , function( i , contact ){
+
+            if (contact.id === lastMsg.sender) {
+
+              name = contact.name;
+
+            }
+
+          });
+        }else{
+          name = me.name;
+        }
+
         if( groupName == null ){
 
-          chat
-          .find( '.channel-name' ).text( user.fullName );
-          chat
-          .find( '.channel-img' ).css( 'background-image' , 'url(' + user.avatar.big + ')' );
+          chat.find( '.channel-name' ).text( user.fullName );
+          chat.find( '.channel-img' ).css( 'background-image' , 'url(' + user.avatar.big + ')' );
 
           if(lastMsg != undefined){
 
             var date = new Date( lastMsg.time );
 
-            chat
-            .find( '.channel-last-time' ).text( timeElapsed( date ) );
-            chat
-            .find( '.channel-last-msg' ).text( lastMsg.text );
+            chat.find( '.channel-last-time' ).text( timeElapsed( date ) );
+            chat.find( '.channel-last-msg' ).text( name + ': ' + lastMsg.text );
 
           }
 
         }else{
 
-          chat
-          .find( '.channel-name' ).text( groupName );
+          chat.find( '.channel-name' ).text( groupName );
 
           setGroupAvatar( groupName , chat.find( '.channel-img' ) );
 
@@ -486,10 +738,8 @@ var appendChat = function( c , user , groupName , callback ){
 
             var date = new Date(lastMsg.time);
 
-            chat
-            .find( '.channel-last-time' ).text( timeElapsed( date ) );
-            chat
-            .find( '.channel-last-msg' ).text( lastMsg.text );
+            chat.find( '.channel-last-time' ).text( timeElapsed( date ) );
+            chat.find( '.channel-last-msg' ).text( name + ': ' + lastMsg.text );
 
           }
 
@@ -522,26 +772,19 @@ var appendChat = function( c , user , groupName , callback ){
 
         }
 
-        chat
-        .data( 'channel' , c );
-        chat
-        .data( 'user' , user );
-        chat
-        .data( 'isGroup' , groupName );
-        chat
-        .on( 'click' , function(){
-          selectChat( $( this ) );
-        });
+        chat.data( 'channel' , c );
+        chat.data( 'user' , user );
+        chat.data( 'isGroup' , groupName );
 
-      setActiveChat( chat );
+        setActiveChat( chat );
 
-      if( callback ){ callback(); };
+        if( callback ){ callback(); };
+
+      });
 
     });
 
   });
-
-});
 
 }
 
@@ -577,11 +820,9 @@ var selectContact = function( contact ){
   groupMenu.removeClass( 'visible' );
   removeGroup.removeClass( 'visible' );
 
-  $( '.conversation-input input' ).focus();
   $( '.conversation-header' ).off( 'click' );
 
   var channel = contact.data( 'channel' );
-  //console.log( 'contacto seleccionado:' , contact , channel );
 
   // Make active
   $( '.contactDom.active' ).removeClass( 'active' );
@@ -595,22 +836,25 @@ var selectContact = function( contact ){
 
     $( '.messageDom' ).remove();
     $( '.chatDom.active' ).removeClass( 'active' );
+    $( '.conversation-input textarea' ).focus();
 
   }else{
 
     $( '.chatDom.active' ).removeClass( 'active' );
     $( '.chatDom-' + channel.id ).addClass( 'active' );;
     listMessages( channel );
+    $( '.conversation-input textarea' ).focus();
 
   }
 
-  console.log( 'miro si esta conectado por la clase del contacto' , contact );
   if ( contact.hasClass( 'conected' ) ) {
 
+    lastMessage.addClass( 'conected' );
     lastMessage.text( lang.conected );
 
   }else{
 
+    lastMessage.removeClass( 'conected' );
     lastMessage.text( lang.disconected );
 
   }
@@ -625,13 +869,15 @@ var selectChat = function( chat ){
   var channel = chat.data( 'channel' );
   var contact = chat.data( 'user' );
 
-  //console.log( 'chat seleccionado:' , contact , channel );
+  lastMessage.removeClass( 'conected' );
 
   // Make active
   $( '.chatDom.active' ).removeClass( 'active' );
   chat.addClass( 'active' );
+
   content.addClass( 'visible' );
-  $( '.conversation-input input' ).focus();
+
+  $( '.conversation-input textarea' ).focus();
 
   // Set header
   $( '.conversation-name' ).text( chat.find( '.channel-name' ).text() );
@@ -648,45 +894,60 @@ var selectChat = function( chat ){
     listMessages( channel );
 
     chat.data( 'notSeen' , null );
+    if ( chat.find( '.channel-badge' ).hasClass( 'visible' ) ) {
+      updateBadge( parseInt(chat.find( '.channel-badge span' ).text()) , false );
+    }
     chat.find( '.channel-badge' ).removeClass( 'visible' );
+
     $( '.conversation-header' ).off( 'click' );
 
     if( chat.data( 'isGroup' ) != null ){
 
-      $( '.conversation-header' ).on( 'click' , function(){
+      $( '.conversation-header' ).addClass( 'viewGroup' );
 
-        viewGroup();
+    }else{
 
-      });
-
-    }
-
-  if ( chat.data( 'isGroup' ) == null ) {
-
-    if ( isConected( contact.id ) ) {
-
-      lastMessage.text( lang.conected );
-
-    }else {
-
-      lastMessage.text( lang.disconected );
+      $( '.conversation-header' ).removeClass( 'viewGroup' );
 
     }
-    console.log( 'pregunto conectados con isConecteed' , contact.id , myContacts );
 
-  }else{
+    if ( chat.data( 'isGroup' ) == null ) {
 
-    lastMessage.text( ( contact.length + 1 ) + ' ' + lang.members );
+      if ( isConected( contact.id ) ) {
+
+        lastMessage.addClass( 'conected' );
+        lastMessage.text( lang.conected );
+
+      }else {
+
+        lastMessage.removeClass( 'conected' );
+        lastMessage.text( lang.disconected );
+
+      }
+
+    }else{
+
+      lastMessage.text( ( contact.length + 1 ) + ' ' + lang.members );
+
+    }
 
   }
-
-}
 
 }
 
 var listMessages = function( channel ){
 
   $( '.messageDom' ).remove();
+
+  var isGroup = false;
+
+  var users = $( '.chatDom.active' ).data( 'user' );
+
+  if ( Array.isArray( users ) ) {
+
+    isGroup = true;
+
+  }
 
   wql.getMessages( channel.id , function( error, messages ){
 
@@ -698,15 +959,15 @@ var listMessages = function( channel ){
 
       if ( messages[i].sender == myContactID ) {
 
-        printMessage( messages[ i ].text , null , messages[ i ].time );
+        printMessage( messages[ i ] , null , messages[ i ].time );
 
       }else{
 
         var users = $( '.chatDom.active' ).data( 'user' );
 
-        if ( !Array.isArray( users ) ) {
+        if ( !isGroup ) {
 
-          printMessage( messages[ i ].text , users , messages[ i ].time );
+          printMessage( messages[ i ] , users , messages[ i ].time );
 
         }else{
 
@@ -714,7 +975,7 @@ var listMessages = function( channel ){
 
             if ( users[j].id == messages[ i ].sender ) {
 
-              printMessage( messages[ i ].text , users[j] , messages[ i ].time );
+              printMessage( messages[ i ] , users[j] , messages[ i ].time );
 
             }
 
@@ -732,7 +993,23 @@ var listMessages = function( channel ){
 
         if ( error ) { console.log('ERROR: ', error ); }
         $('.chatDom.active').data( 'notSeen' , 0 );
-        $('.chatDom.active').find('.channel-badge').removeClass('visible').find('span').text(0);
+
+        if ( !isGroup ) {
+
+          wql.getLastRead( [ channel.id , users.id ] , function( error , lastRead ){
+
+            var lastMsgRead = $( '.msg-id-' + lastRead[0].last_read);
+            var index = lastMsgRead.index();
+
+            lastMsgRead.parent().find( '.message' ).slice( 0 , ++index ).addClass( 'readed' );
+
+          });
+
+          channel.send(  { 'action' : 'updateRead' , 'id' : channel.id } , function( error ){
+
+          });
+
+        }
 
       });
 
@@ -760,12 +1037,41 @@ var isConected = function( user ){
 
 }
 
-var printMessage = function( text , sender , time , animate ){
+var printMessage = function( msg , sender , time , animate ){
 
   var message;
   var date = new Date( time );
   var hh = date.getHours();
   var mm = date.getMinutes();
+  var text = msg.text;
+
+  if (!text) { text = msg.txt };
+
+  console.log(msg);
+
+  if ( text ) {
+
+    textProcessed = text.replace( /((http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*))/ig, '<a href="$1" target="_blank">$1</a>' );
+    textProcessed = textProcessed.replace(/\n/g, "<br />");
+
+  }else{
+
+    textProcessed = text;
+
+  }
+
+  textProcessed = $('<div></div>').html( textProcessed );
+
+  textProcessed.find('a').each( function(){
+
+    if( !(/^http(s)?:\/\//i).test( $(this).attr('href') ) ){
+      $(this).attr( 'href', 'http://' + $(this).attr('href') );
+    }
+
+  });
+
+  textProcessed = textProcessed.html();
+
 
   if(hh<10) {
     hh='0'+hh
@@ -781,7 +1087,7 @@ var printMessage = function( text , sender , time , animate ){
     message
     .removeClass( 'wz-prototype' )
     .addClass( 'messageDom' )
-    .find( '.message-text' ).text( text );
+    .find( '.message-text' ).html( textProcessed );
     message
     .find( '.message-time' ).text( hh + ':' + mm );
 
@@ -792,7 +1098,7 @@ var printMessage = function( text , sender , time , animate ){
     .removeClass( 'wz-prototype' )
     .addClass( 'messageDom' )
     message
-    .find( '.message-text' ).text( text );
+    .find( '.message-text' ).html( textProcessed );
 
     if ( $( '.chatDom.active' ).data( 'isGroup' ) != null ) {
 
@@ -812,7 +1118,7 @@ var printMessage = function( text , sender , time , animate ){
 
   }
 
-  message.addClass( 'messageDom' );
+  message.addClass( 'messageDom' ).addClass( 'msg-id-' + msg.id );
   $( '.message-container' ).append( message );
 
   if(animate){
@@ -825,28 +1131,54 @@ var printMessage = function( text , sender , time , animate ){
 
 var initChat = function(){
 
-  app.css({'border-radius'    : '6px',
-  'background-color' : '#2c3238'
-});
+  wql.getUserPreference( myContactID , function( error , preferences ){
 
-setTexts();
-checkTab();
-getContacts();
-getChats();
+    if ( preferences.length > 0 ) {
+
+      preferences = preferences[0];
+      app.css(
+        {
+          "width"  : preferences.width + 'px',
+          "height" : preferences.height + 'px'
+        }
+      );
+
+      if ( preferences.dark ) {
+        $( '.ui-window' ).addClass( 'dark' );
+      }
+
+    }
+
+    app.css({'border-radius'    : '6px',
+    'background-color' : '#2c3238'
+  });
+
+  api.user( myContactID , function( error, user ){
+
+    me = user;
+
+    setTexts();
+    checkTab();
+    getContacts();
+    getChats();
+
+    $( '.conversation-input textarea' ).textareaAutoSize();
+
+  });
+
+});
 
 }
 
 var sendMessage = function(){
 
-  var txt = $( '.conversation-input input' ).val();
+  var txt = $( '.conversation-input textarea' ).val();
   var channel = $( '.chatDom.active' ).data( 'channel' );
-
+  var channelDom = $( '.chatDom.active' );
   var contactApi = $( '.contactDom.active' ).data( 'contact' );
 
-  //console.log( 'send message:' , contactApi , channel );
-
   // Clean sender
-  $( '.conversation-input input' ).val('');
+  $( '.conversation-input textarea' ).val('');
 
   if ( channel == null ) {
 
@@ -870,7 +1202,7 @@ var sendMessage = function(){
 
               $( '.contactDom.active' ).data( 'channel' , channel );
               $( '.chatDom.active' ).data( 'channel' , channel );
-              send( txt , channel );
+              send( txt , channel , channelDom );
               getChats( function(){
 
                 $( '.chatDom-' + channel.id ).click();
@@ -889,13 +1221,13 @@ var sendMessage = function(){
 
   }else{
 
-    send( txt , channel );
+    send( txt , channel , channelDom );
 
   }
 
 }
 
-var send = function( message , channel ){
+var send = function( message , channel , channelDom ){
 
   if( message != '' ){
 
@@ -903,7 +1235,18 @@ var send = function( message , channel ){
 
       if ( error ) { console.log('ERROR: ', error ); }
 
-      channel.send(  { 'action' : 'message' , 'txt' : message , 'id' : messages.insertId } , { background : wz.system.user().name + ': ' + message } , function( error ){
+      var groupName = $(channelDom).data('isGroup');
+      var myName = wz.system.user().name;
+      var sender = ( groupName ? ( groupName + ' - ' + myName ) : myName ).trim() + ':\n';
+
+      channel.send(  {
+
+        'action' : 'message' ,
+        'txt' : message ,
+        'id' : messages.insertId ,
+        'groupName' : groupName
+
+      } , { background : sender + message } , function( error ){
 
         if ( error ) { console.log('ERROR: ', error ); }
 
@@ -1020,8 +1363,7 @@ var messageReceived = function( message , o ){
   var chat          = $( '.chatDom-' + message.id );
   var date          = Date.now();
   var printed       = false;
-
-  //console.log( 'message recived' , channelActive );
+  var messageRec    = message;
 
   // USER REMOVED
   if( o.action == 'userRemoved' ){
@@ -1073,15 +1415,26 @@ var messageReceived = function( message , o ){
   }
 
   // MESSAGE
-  setChatInfo( chat , o );
   if( channelActive && channelActive.id === message.id ){
 
     if( message.sender === myContactID ){
 
       wql.updateLastRead( [ o.id , channelActive.id, myContactID ] , function( error , message ){
         if ( error ) { console.log('ERROR: ', error ); }
-        printMessage( o.txt , null , date , true );
+        printMessage( o , null , date , true );
       });
+
+      var users = chat.data('user');
+
+      if( !Array.isArray( users ) ){
+
+        setChatInfo( chat , o , message.sender , false );
+
+      }else{
+
+        setChatInfo( chat , o , message.sender , true );
+
+      }
 
     }else{
 
@@ -1089,59 +1442,147 @@ var messageReceived = function( message , o ){
 
       if( !Array.isArray( users ) ){
 
-        wql.updateLastRead( [ o.id , channelActive.id, myContactID ] , function( error , message ){
-          if ( error ) { console.log('ERROR: ', error ); }
-          printMessage( o.txt , users , date , true );
-        });
+        setChatInfo( chat , o , message.sender , false );
+
+        if (!app.parent().hasClass( 'wz-app-focus' )) {
+
+          messageNotReaded( messageRec );
+          printMessage( o , users , date , true );
+
+        }else{
+
+          wql.updateLastRead( [ o.id , channelActive.id, myContactID ] , function( error , message ){
+            if ( error ) { console.log('ERROR: ', error ); }
+            printMessage( o , users , date , true );
+          });
+
+        }
 
       }else{
+
+        setChatInfo( chat , o , message.sender , true );
 
         $.each( users , function( i , user ){
 
           if ( user.id === message.sender ) {
 
-            wql.updateLastRead( [ o.id , channelActive.id, myContactID ] , function( error , message ){
+            if (!app.parent().hasClass( 'wz-app-focus' )) {
 
-              if ( error ) { console.log('ERROR: ', error ); }
+              messageNotReaded( messageRec );
+              printMessage( o , user , date , true );
 
-              $( '.user-id-' + user.id ).data( 'channel' , channelActive );
+            }else{
 
-              printMessage( o.txt , user , date , true );
+              wql.updateLastRead( [ o.id , channelActive.id, myContactID ] , function( error , message ){
 
-            });
+                if ( error ) { console.log('ERROR: ', error ); }
+
+                $( '.user-id-' + user.id ).data( 'channel' , channelActive );
+
+                printMessage( o , user , date , true );
+
+              });
+
+
+            }
 
           }
 
         });
 
       }
+
     }
 
   }else{
 
-    wql.getLastRead( [message.id, myContactID] , function( error , lastRead ){
+    var users = chat.data('user');
 
-      wql.getUnreads( [message.id, lastRead[0]['last_read'] ] , function( error , notSeen ){
+    if( !Array.isArray( users ) ){
 
-        if ( notSeen[0] != undefined && notSeen[0]['COUNT(*)'] > 0 ) {
+      setChatInfo( chat , o , message.sender , false );
 
-          $('.chatDom-' + message.id).data( 'notSeen' , notSeen[0]['COUNT(*)'] );
-          $('.chatDom-' + message.id).find( '.channel-badge' ).addClass('visible').find('span').text( notSeen[0]['COUNT(*)'] );
+    }else{
 
-        }
+      setChatInfo( chat , o , message.sender , true );
 
-      });
+    }
 
-    });
+    messageNotReaded( messageRec );
 
   }
 
 }
 
-var setChatInfo = function( chat , o ){
+var messageNotReaded = function( message ){
+
+  updateBadge( 1 , true );
+
+  wql.getLastRead( [message.id, myContactID] , function( error , lastRead ){
+
+    wql.getUnreads( [message.id, lastRead[0]['last_read'] ] , function( error , notSeen ){
+
+      if ( notSeen[0] != undefined && notSeen[0]['COUNT(*)'] > 0 ) {
+
+        $('.chatDom-' + message.id).data( 'notSeen' , notSeen[0]['COUNT(*)'] );
+        $('.chatDom-' + message.id).find( '.channel-badge' ).addClass('visible').find('span').text( notSeen[0]['COUNT(*)'] );
+
+      }
+
+    });
+
+  });
+
+}
+
+var setChatInfo = function( chat , o , user , isGroup ){
+
+  var name;
+  var isMe = false;
+
+  if (user != myContactID) {
+    $.each( myContacts , function( i , contact ){
+
+      if (contact.id === user) {
+
+        name = contact.name;
+
+      }
+
+    });
+  }else{
+    isMe = true;
+    name = me.name;
+  }
+
+
+  if ( isGroup ) {
+
+    if ( isMe ) {
+
+      chat.find( '.channel-last-msg' ).html( '<i>' + lang.you + '</i>' + ': ' + o.txt );
+
+    }else {
+
+      chat.find( '.channel-last-msg' ).html( '<i>' + name + '</i>' + ': ' + o.txt );
+
+    }
+
+  }else{
+
+    if ( isMe ) {
+
+      chat.find( '.channel-last-msg' ).html( '<i>' + lang.you + '</i>' + ': ' + o.txt );
+
+    }else {
+
+      chat.find( '.channel-last-msg' ).text( o.txt );
+
+    }
+
+  }
 
   chat.insertBefore( $( '.chatDom' ).eq(0) );
-  chat.find( '.channel-last-msg' ).text( o.txt );
   chat.find( '.channel-last-time' ).text( timeElapsed( new Date() ) );
 
 }
@@ -1184,12 +1625,6 @@ var newGroup = function(){
     $.each( list , function( index , friend ){
 
       appendMember( friend );
-
-    });
-
-    $( '.search-members input' ).on( 'input' , function(){
-
-      filterMembers( $( this ).val() );
 
     });
 
@@ -1506,20 +1941,6 @@ var viewGroup = function(){
 
       });
 
-      $( '.search-members input' ).off( 'input' );
-      $( '.search-members input' ).on( 'input' , function(){
-
-        filterMembers( $( this ).val() );
-
-      });
-
-      $( '.group-header .edit' ).off( 'click' );
-      $( '.group-header .edit' ).on( 'click' , function(){
-
-        editGroupMode( groupName );
-
-      });
-
     });
 
   });
@@ -1563,13 +1984,6 @@ var editGroupMode = function( groupName ){
 
       });
 
-      $( '.search-members input' ).off( 'input' );
-      $( '.search-members input' ).on( 'input' , function(){
-
-        filterMembers( $( this ).val() );
-
-      });
-
     });
 
   });
@@ -1584,63 +1998,9 @@ var appendMember = function( user , admin ){
   .addClass( 'memberDom' )
   .find( '.member-avatar' ).css( 'background-image' , 'url(' + user.avatar.big + ')' );
 
-  member.find( 'span' ).on( 'click' , function(){
-
-    $( this ).parent().find( '.ui-checkbox' ).toggleClass( 'active' );
-    $( this ).parent().toggleClass( 'active' );
-
-  });
-
-  member.find( '.member-avatar' ).on( 'click' , function(){
-
-    $( this ).parent().find( '.ui-checkbox' ).toggleClass( 'active' );
-    $( this ).parent().toggleClass( 'active' );
-
-  });
-
-  member.find( '.ui-checkbox' ).on( 'click' , function(){
-
-    $( this ).parent().toggleClass( 'active' );
-
-  });
-
-  member.on( 'click' , function(){
-
-    $( this ).find( '.ui-checkbox' ).toggleClass( 'active' );
-    $( this ).toggleClass( 'active' );
-
-  });
-
   if( user.id == admin ){
 
     member.find( 'span' ).text( user.fullName + ' (' + lang.admin + ')' );
-    member.find( 'span' ).off( 'click' );
-    member.find( 'span' ).on( 'click' , function(){
-
-      alert( lang.exitAdmin );
-
-    });
-
-    member.find( '.member-avatar' ).off( 'click' );
-    member.find( '.member-avatar' ).on( 'click' , function(){
-
-      alert( lang.exitAdmin );
-
-    });
-
-    member.off( 'click' );
-    member.on( 'click' , function(){
-
-      alert( lang.exitAdmin );
-
-    });
-
-    member.find( '.ui-checkbox' ).on( 'click' , function(){
-
-      $(this).toggleClass( 'active' );
-      alert( lang.exitAdmin );
-
-    });
 
   }else{
 
@@ -1709,56 +2069,14 @@ var setRemoveButton = function(){
       removeGroup.find( 'span' ).text(lang.deleteExit);
       adminMode = true;
       $('.group-header .edit').addClass('visible');
-
-      removeGroup.on( 'click' , function(){
-
-        wql.deleteUsersInChannel( channel.id , function( error , message ){
-
-          if ( error ) { console.log('ERROR: ', error ); }
-
-          wql.deleteChannel( channel.id , function( error , message ){
-
-            if ( error ) { console.log('ERROR: ', error ); }
-
-            channel.destroy();
-
-            groupMenu.removeClass( 'visible' );
-            removeGroup.removeClass( 'visible' );
-            $( '.chatDom.active' ).remove();
-            content.removeClass( 'visible' );
-
-          });
-
-        });
-
-      });
+      removeGroup.addClass( 'removeGroup' );
 
     }else{
 
       adminMode = false;
       removeGroup.find( 'span' ).text(lang.exitGroup);
       $('.group-header .edit').removeClass('visible');
-
-      removeGroup.on( 'click' , function(){
-
-        wql.deleteUserInChannel( [ channel.id , myContactID ] , function( error , message ){
-
-          if ( error ) { console.log('ERROR: ', error ); }
-
-          channel.leave( function( error ){
-
-            if ( error ) { console.log('ERROR: ', error ); }
-
-            groupMenu.removeClass( 'visible' );
-            removeGroup.removeClass( 'visible' );
-            $( '.chatDom.active' ).remove();
-            content.removeClass( 'visible' );
-
-          });
-
-        });
-
-      });
+      removeGroup.addClass( 'exitGroup' );
 
     }
 
@@ -1865,11 +2183,13 @@ var updateState = function( userId , state ){
   $.each( chats , function( i , chat ){
 
     var chatUser = $( chat ).data( 'user' );
-    if ( chatUser && chatUser.id == userId ) {
+    if ( chatUser && chatUser.id == userId && $( chat ).hasClass( 'active' ) ) {
 
       if ( state ) {
+        lastMessage.addClass( 'conected' );
         lastMessage.text( lang.conected );
       }else{
+        lastMessage.removeClass( 'conected' );
         lastMessage.text( lang.disconected );
       }
 
@@ -1878,6 +2198,19 @@ var updateState = function( userId , state ){
   });
 
 }
+
+var updateBadge = function( num , add ){
+
+  var actualBadge = wz.app.getBadge();
+
+  if ( add ) {
+    wz.app.setBadge( parseInt(actualBadge) + num );
+  }else{
+    wz.app.setBadge( parseInt(actualBadge) - num );
+  }
+
+
+};
 
 // INIT Chat
 initChat();
