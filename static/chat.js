@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 // CHAT 1.0.3
-=======
-// CHAT 1.0.2
->>>>>>> origin/master
 
 var myContacts = [];
 var groupMembers = [];
