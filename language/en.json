@@ -43,5 +43,6 @@
     "lastMonth" : "Last month",
     "lastDay"  : "Yesterday",
     "noContacts"  : "You don't hace contacts, search and add your contacts!",
-    "deleteChat"  : "Delete chat"
+    "deleteChat"  : "Delete chat",
+    "you" : "You"
 }
