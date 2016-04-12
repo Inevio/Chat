@@ -9,6 +9,11 @@ api.channel.on( 'message' , function( info , o ){
     return;
   }
 
+  // I am the sender , so don't show the banner
+  if (info.sender == myContactID) {
+    return;
+  }
+
   // If recieved is a message increment Badge, and show the banner
   if ( o.action === 'message' ) {
 
