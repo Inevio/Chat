@@ -44,5 +44,8 @@
     "lastDay"  : "Yesterday",
     "noContacts"  : "You don't hace contacts, search and add your contacts!",
     "deleteChat"  : "Delete chat",
-    "you" : "You"
+    "you" : "You",
+    "writing" : "writing...",
+    "dark" : "Dark",
+    "white" : "White"
 }

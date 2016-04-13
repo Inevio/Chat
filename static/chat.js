@@ -1,8 +1,11 @@
-// CHAT 1.0.4
+// CHAT 1.0.5
 
 var myContacts = [];
 var groupMembers = [];
 var me;
+var lastMsg;
+var warnWritingTimeOut = false;
+var listenWritingTimeOut = false;
 
 // Local Variables
 var app               = $( this );
@@ -33,6 +36,8 @@ var removeGroup       = $( '.remove-group' );
 var conversationDel   = $( '.conversation-input .delete-content' );
 var closeApp          = $( '.ui-close' );
 var searchMembers     = $( '.search-members input' );
+var msgInput          = $( '.conversation-input textarea' );
+var colorChange       = $( '.app-color' );
 var myContactID       = api.system.user().id;
 var adminMode         = false;
 
@@ -79,6 +84,14 @@ wz.user.on( 'disconnect' , function( user ){
   updateState( user.id , false );
 
 });
+
+wz.user.on( 'friendAdded', function( user ){
+  getContacts();
+});
+
+wz.user.on( 'friendRemoved', function( user ){
+  getContacts();
+});
 // END SERVER EVENTS
 
 
@@ -93,7 +106,7 @@ contactsButton.on( 'click' , function(){
 });
 
 sendButton.on( 'click' , function(){
-  $( '.conversation-input textarea' ).css('height','24px');
+  msgInput.css('height','24px');
   sendMessage();
 });
 
@@ -145,7 +158,7 @@ removeGroup.on( 'click' , function(){
 
 conversationDel.on( 'click' , function(){
 
-  $( '.conversation-input textarea' ).val('');
+  msgInput.val('');
 
 });
 
@@ -171,12 +184,45 @@ content.on( 'click' , function(){
 
   var selection = $(this).selection();
   if (!selection || selection.width === 0) {
-    $( '.conversation-input textarea' ).focus();
+    msgInput.focus();
   }
 
 });
 
+msgInput.on( 'keydown' , function(){
 
+  if ( !warnWritingTimeOut ) {
+
+    warnWriting();
+
+  }
+
+});
+
+colorChange.on( 'click' , function(){
+
+  if ( $( '.ui-window' ).hasClass( 'dark' ) ) {
+
+    $(this).find('i').stop().clearQueue().transition({
+
+      'margin-left' : '18px'
+
+    }, 250);
+
+  }else{
+
+    $(this).find('i').stop().clearQueue().transition({
+
+      'margin-left' : '2px'
+
+    }, 250);
+
+  }
+
+  $( '.ui-window' ).toggleClass( 'dark' );
+  $( '.conversation-input input' ).val('');
+
+});
 // END UI EVENTS
 
 // APP EVENTS
@@ -347,17 +393,9 @@ app
 .on( 'app-param', function( e, params ){
 
   var interval = setInterval(function(){
-    console.log(params, $( '.chatDom-' + params ) );
     $( '.chatDom-' + params ).click();
     clearInterval(interval);
   }, 1000);
-
-})
-
-.key( 'esc' , function(){
-
-  $( '.ui-window' ).toggleClass( 'dark' );
-  $( '.conversation-input input' ).val('');
 
 });
 // END APP EVENTS
@@ -367,7 +405,7 @@ var setTexts = function(){
 
   $( '.chat-tab-selector span' ).text(lang.chats);
   $( '.contact-tab-selector span' ).text(lang.contacts);
-  $( '.conversation-input textarea' ).attr('placeholder', lang.msg);
+  msgInput.attr('placeholder', lang.msg);
   $( '.chat-search input' ).attr('placeholder', lang.search);;
   $( '.close-coversation' ).text(lang.close);
   $( '.send-txt' ).text(lang.send);
@@ -381,7 +419,8 @@ var setTexts = function(){
   $( '.save-group span' ).text(lang.save);
   $( '.cancel-group span' ).text(lang.cancel);
   $( '.group-name-input input' ).attr('placeholder', lang.groupName);
-
+  $( '.app-color .white' ).text(lang.white);
+  $( '.app-color .dark' ).text(lang.dark);
 }
 
 var checkTab = function(){
@@ -409,6 +448,7 @@ var changeTab = function(tab){
     contactTab.removeClass( 'visible' );
     chatTab.addClass( 'visible' );
     newGroupButton.removeClass( 'visible' );
+    colorChange.addClass( 'visible' );
     groupMenu.removeClass( 'visible' );
     removeGroup.removeClass( 'visible' );
 
@@ -422,6 +462,8 @@ var changeTab = function(tab){
     chatTab.removeClass( 'visible' );
     contactTab.addClass( 'visible' );
     newGroupButton.addClass( 'visible' );
+    colorChange.removeClass( 'visible' );
+
 
     break;
 
@@ -431,11 +473,16 @@ var changeTab = function(tab){
 
 var getContacts = function(){
 
-  var friends  = $.Deferred();
-  var channels = $.Deferred();
+  var friends   = $.Deferred();
+  var connected = $.Deferred();
+  var channels  = $.Deferred();
 
   api.user.friendList( false, function( error, list ){
     friends.resolve( list );
+  });
+
+  api.user.connectedFriends( true, function( error, list ){
+    connected.resolve( list );
   });
 
   wql.getSingleChannel( [ myContactID, myContactID ], function( error, list ){
@@ -459,7 +506,7 @@ var getContacts = function(){
 
   });
 
-  $.when( friends, channels ).done( function( friends, channels ){
+  $.when( friends, connected, channels ).done( function( friends, connected, channels ){
 
     if ( friends.length === 0 ) {
 
@@ -480,41 +527,46 @@ var getContacts = function(){
         }
       });
 
-    }else{
+      return;
 
-      asyncEach( friends, function( friend, callback ){
+    }
 
-        var channel = channels.filter( function( item ){ return item.user === friend.id; })[ 0 ];
+    asyncEach( friends, function( friend, callback ){
 
-        // Existe el canal
-        if( channel ){
+      var channel     = channels.filter( function( item ){ return item.user === friend.id; })[ 0 ];
+      var isConnected = connected.filter( function( id ){ return id === friend.id; })[ 0 ];
 
-          delete channel.user;
-          appendContact( friend , channel , callback );
+      // Existe el canal
+      if( channel ){
 
-        }
-        // No existe el canal
-        else{
-          appendContact( friend , null , callback );
-        }
+        delete channel.user;
+        appendContact( friend , channel , callback );
+        updateContactState( $( '.user-id-' + friend.id ) , isConnected , friend.id );
 
-      }, function(){
+      }
+      // No existe el canal
+      else{
+        appendContact( friend , null , callback );
+        updateContactState( $( '.user-id-' + friend.id ) , isConnected , friend.id );
+      }
 
-        api.user.connectedFriends( true, function( error, list ){
+    }, function(){
 
-          $.each( list , function( i , friendId ){
+      /*
+      api.user.connectedFriends( true, function( error, list ){
 
-            var friend = $( '.user-id-' + friendId );
+        $.each( list , function( i , friendId ){
 
-            updateContactState( friend , true , friendId );
+          var friend = $( '.user-id-' + friendId );
 
-          });
+          updateContactState( friend , true , friendId );
 
         });
 
       });
+      */
 
-    }
+    });
 
   });
 
@@ -648,12 +700,35 @@ var appendContact = function( c , channel , callback ){
 
   if( channel != undefined ){ contact.data( 'channel' , channel ) }
 
-  var list = $( '.contactDom' );
+  contactList.append( $( '.contactDom' ).add( contact ).sort( function( a, b ){
 
+    a = $(a).data('contact');
+    b = $(b).data('contact');
+
+    if( isConected( a.id ) === isConected( b.id ) ){
+      return a.fullName.localeCompare( b.fullName );
+    }
+
+    if( isConected( a.id ) ){
+      return -1;
+    }
+
+    return 1;
+
+  }) );
+
+  /*
   if ( list.length > 0 ) {
 
     var inserted = false;
     $.each( list , function( i , o ){
+
+      var contact = o.data( 'contact' );
+
+      if ( isConected() ) {
+
+      }
+
 
       if( !inserted && c.fullName.localeCompare( $(o).find( '.contact-name' ).text() ) === -1 ){
 
@@ -671,6 +746,7 @@ var appendContact = function( c , channel , callback ){
   }else{
     contactList.append( contact );
   }
+  */
 
   callback();
 
@@ -865,14 +941,14 @@ var selectContact = function( contact ){
 
     $( '.messageDom' ).remove();
     $( '.chatDom.active' ).removeClass( 'active' );
-    $( '.conversation-input textarea' ).focus();
+    msgInput.focus();
 
   }else{
 
     $( '.chatDom.active' ).removeClass( 'active' );
     $( '.chatDom-' + channel.id ).addClass( 'active' );;
     listMessages( channel );
-    $( '.conversation-input textarea' ).focus();
+    msgInput.focus();
 
   }
 
@@ -906,7 +982,7 @@ var selectChat = function( chat ){
 
   content.addClass( 'visible' );
 
-  $( '.conversation-input textarea' ).focus();
+  msgInput.focus();
 
   // Set header
   $( '.conversation-name' ).text( chat.find( '.channel-name' ).text() );
@@ -1220,7 +1296,7 @@ var initChat = function(){
     getContacts();
     getChats();
 
-    $( '.conversation-input textarea' ).textareaAutoSize();
+    msgInput.textareaAutoSize();
 
   });
 
@@ -1228,13 +1304,13 @@ var initChat = function(){
 
 var sendMessage = function(){
 
-  var txt = $( '.conversation-input textarea' ).val();
+  var txt = msgInput.val();
   var channel = $( '.chatDom.active' ).data( 'channel' );
   var channelDom = $( '.chatDom.active' );
   var contactApi = $( '.contactDom.active' ).data( 'contact' );
 
   // Clean sender
-  $( '.conversation-input textarea' ).val('');
+  msgInput.val('');
 
   if ( channel == null ) {
 
@@ -1478,6 +1554,15 @@ var objectRecieved = function( message , o ){
         var index = lastMsgRead.index();
 
         lastMsgRead.parent().find( '.messageDom' ).slice( 0 , ++index ).addClass( 'readed' );
+
+      }
+      break;
+
+    case 'writing':
+
+      if ( channelActive && message.id == channelActive.id && message.sender != myContactID ) {
+
+        listenWriting();
 
       }
       break;
@@ -2348,6 +2433,39 @@ var launchBanner = function( name , text , avatar , callback ){
     // To Do -> .sound( 'marimba' )
     .on( 'click', callback )
     .render()
+
+}
+
+var warnWriting = function(){
+
+  lastMsg = Date.now();
+  var channel = $( '.active.chatDom' ).data( 'channel' );
+
+  warnWritingTimeOut = setTimeout(function(){
+
+    if ( ( Date.now() - lastMsg ) > 500  ) {
+
+      channel.send(  { 'action' : 'writing' , 'id' : channel.id } , function( error ){});
+
+    }
+
+    warnWritingTimeOut = false;
+
+  }, 500);
+
+}
+
+var listenWriting = function(){
+
+  lastMessage.text( lang.writing );
+
+  clearTimeout( listenWritingTimeOut );
+
+  listenWritingTimeOut = setTimeout(function(){
+
+    lastMessage.text( lang.conected );
+
+  }, 1000);
 
 }
 
