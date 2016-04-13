@@ -1401,3 +1401,76 @@
     width: 5px;
     background: rgba( 0, 0, 0, 0.2 );
 }
+
+.app-color{
+  float: left;
+  margin-left: 157px;
+  margin-top: 13px;
+  margin-bottom: 12px;
+  display: none;
+}
+
+.app-color .dark{
+  float: left;
+  color: #889399;
+  font-size: 13px;
+  margin-top: 1px;
+  margin-right: 5px;
+}
+
+.app-color .white{
+  color: #545f65;
+  font-weight: bold;
+  float: left;
+  font-size: 13px;
+  margin-top: 1px;
+  margin-left: 5px;
+}
+
+.dark .app-color .white{
+  float: left;
+  color: #d2dce2;
+  font-size: 13px;
+  margin-top: 1px;
+  margin-left: 5px;
+}
+
+.dark .app-color .dark{
+  color: #fff;
+  font-weight: bold;
+  float: left;
+  font-size: 13px;
+  margin-top: 1px;
+  margin-right: 5px;
+}
+
+.app-color .selector{
+  float: left;
+  width: 31px;
+	height: 15px;
+	border-radius: 8.5px;
+	background-color: #fff;
+	border: solid 1px #ccd3d5;
+}
+
+.dark .app-color .selector{
+  width: 31px;
+	height: 15px;
+	border-radius: 8.5px;
+	background-color: #3f4750;
+  border: solid 1px transparent;
+}
+
+.app-color .selector i{
+  float: left;
+  width: 11px;
+	height: 11px;
+	background-color: #60b25e;
+  border-radius: 50%;
+  margin-top: 2px;
+  margin-left: 18px;
+}
+
+.dark .app-color .selector i{
+  margin-left: 2px;
+}
