@@ -1,4 +1,4 @@
-// CHAT 1.0.5
+// CHAT 1.0.6
 
 var myContacts = [];
 var groupMembers = [];
@@ -6,6 +6,7 @@ var me;
 var lastMsg;
 var warnWritingTimeOut = false;
 var listenWritingTimeOut = false;
+var loadingMsgs = false;
 
 // Local Variables
 var app               = $( this );
@@ -38,6 +39,7 @@ var closeApp          = $( '.ui-close' );
 var searchMembers     = $( '.search-members input' );
 var msgInput          = $( '.conversation-input textarea' );
 var colorChange       = $( '.app-color' );
+var msgContainer      = $( '.message-container' );
 var myContactID       = api.system.user().id;
 var adminMode         = false;
 
@@ -221,6 +223,16 @@ colorChange.on( 'click' , function(){
 
   $( '.ui-window' ).toggleClass( 'dark' );
   $( '.conversation-input input' ).val('');
+
+});
+
+msgContainer.on( 'scroll' , function(){
+
+  if ( $(this).scrollTop() < 100 ) {
+
+    loadMoreMsgs();
+
+  }
 
 });
 // END UI EVENTS
@@ -1171,7 +1183,7 @@ var isConected = function( user ){
 
 }
 
-var printMessage = function( msg , sender , time , animate ){
+var printMessage = function( msg , sender , time , animate , byScroll ){
 
   var message;
   var date = new Date( time );
@@ -1275,12 +1287,22 @@ var printMessage = function( msg , sender , time , animate ){
   }
 
   message.addClass( 'messageDom' ).addClass( 'msg-id-' + msg.id );
-  $( '.message-container' ).append( message );
+  message.data( 'id' , msg.id );
+
+  if (byScroll) {
+
+    $( '.messageDom' ).eq(0).before( message );
+
+  }else{
+
+    msgContainer.append( message );
+
+  }
 
   if(animate){
-    $( '.message-container' ).stop().clearQueue().animate( { scrollTop : message[0].offsetTop }, 400  );
+    msgContainer.stop().clearQueue().animate( { scrollTop : message[0].offsetTop }, 400  );
   }else{
-    $( '.message-container' ).scrollTop( message[0].offsetTop );
+    msgContainer.scrollTop( message[0].offsetTop );
   }
 
 }
@@ -2466,6 +2488,49 @@ var listenWriting = function(){
     lastMessage.text( lang.conected );
 
   }, 1000);
+
+}
+
+var loadMoreMsgs = function(){
+
+  if (loadingMsgs) {
+    return;
+  }
+
+  loadingMsgs = true;
+
+  var firstMsg = $( '.messageDom' ).eq(0);
+  var channel = $( '.active.chatDom' ).data( 'channel' );
+  var users = $( '.active.chatDom' ).data( 'user' );
+
+  wql.getMessagesFrom( [ channel.id , firstMsg.data( 'id' ) ] , function( error , messages ){
+
+    $.each( messages , function( i, msg ){
+
+      if( msg.sender === myContactID ){
+
+        var user = null;
+
+      }else if ( Array.isArray( users ) ) {
+
+        var user = users.find(function( u ){
+          return u.id === msg.sender;
+        });
+
+      }else{
+        var user = users;
+      }
+
+      printMessage( msg , user , msg.time , false , true );
+
+    });
+
+    loadingMsgs = false;
+    if ( firstMsg[0] ) {
+      msgContainer.scrollTop( firstMsg[0].offsetTop - 4 );
+    }
+
+  });
 
 }
 
