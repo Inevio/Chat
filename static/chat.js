@@ -1438,7 +1438,7 @@ var timeElapsed = function( lastTime ){
   if ( !calculated ) {
 
     var day = last.getDate();
-    var month = last.getMonth();
+    var month = last.getMonth()+1;
 
     if(day<10) {
       day='0'+day
