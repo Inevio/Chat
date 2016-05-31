@@ -846,6 +846,29 @@
   box-shadow: inset 1px 0px 0px 0px #2c3238;
 }
 
+.separator{
+  float: left;
+  width: 100%;
+  height: 50px;
+}
+
+.separator span{
+  float: left;
+  font-size: 13px;
+  color: #889399;
+  background-color: rgba(255,255,255,0.9);
+  border-radius: 14px;
+  width: 100px;
+  padding: 7px 0;
+  margin: 10px ~'calc(50% - 50px)';
+  text-align: center;
+}
+
+.dark .separator span{
+  color: #d2dce2;
+  background-color: rgba(54, 61, 70, 0.9);
+}
+
 .message-container{
   float: left;
   position: absolute;

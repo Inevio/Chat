@@ -1,4 +1,4 @@
-// CHAT 1.0.8
+// CHAT 1.0.9
 
 var myContacts = [];
 var groupMembers = [];
@@ -7,6 +7,8 @@ var lastMsg;
 var warnWritingTimeOut = false;
 var listenWritingTimeOut = false;
 var loadingMsgs = false;
+var currentDate;
+var firstLoad;
 
 // Local Variables
 var app               = $( this );
@@ -40,6 +42,7 @@ var searchMembers     = $( '.search-members input' );
 var msgInput          = $( '.conversation-input textarea' );
 var colorChange       = $( '.app-color' );
 var msgContainer      = $( '.message-container' );
+var separatorPrototype = $( '.separator.wz-prototype' );
 var myContactID       = api.system.user().id;
 var adminMode         = false;
 
@@ -226,9 +229,13 @@ colorChange.on( 'click' , function(){
 
 });
 
-msgContainer.on( 'scroll' , function(){
+msgContainer.on( 'scroll' , function( e ){
 
-  if ( $(this).scrollTop() < 100 ) {
+  if ( loadingMsgs ) {
+    e.preventDefault();
+  }
+
+  if ( $(this).scrollTop() < 200 ) {
 
     loadMoreMsgs();
 
@@ -901,6 +908,7 @@ var selectContact = function( contact ){
   if ( channel == undefined ) {
 
     $( '.messageDom' ).remove();
+    $( '.separatorDom' ).remove();
     $( '.chatDom.active' ).removeClass( 'active' );
     msgInput.focus();
 
@@ -952,6 +960,7 @@ var selectChat = function( chat ){
 
     //$( '.conversation-header' ).data( 'channel' , null );
     $( '.messageDom' ).remove();
+    $( '.separatorDom' ).remove();
 
 
   }else{
@@ -1004,6 +1013,7 @@ var selectChat = function( chat ){
 var listMessages = function( channel ){
 
   $( '.messageDom' ).remove();
+  $( '.separatorDom' ).remove();
 
   var isGroup = false;
 
@@ -1237,6 +1247,7 @@ var printMessage = function( msg , sender , time , animate , byScroll , checked 
 
   message.addClass( 'messageDom' ).addClass( 'msg-id-' + msg.id );
   message.data( 'id' , msg.id );
+  message.data( 'date' , date );
 
   if (byScroll) {
 
@@ -1257,6 +1268,37 @@ var printMessage = function( msg , sender , time , animate , byScroll , checked 
   if ( checked ) {
     message.addClass( 'readed' );
   }
+
+  var now = new Date();
+  var yesterday = new Date();
+  yesterday.setDate( now.getDate() - 1 );
+
+  var separator = separatorPrototype.clone();
+  separator.removeClass( 'wz-prototype' ).addClass( 'separatorDom' );
+
+  if ( byScroll && firstLoad ) {
+    currentDate = $( '.messageDom' ).eq(0).data( 'date' );
+    firstLoad = false;
+  }
+
+  if( !byScroll && currentDate && ( date.getDate() > currentDate.getDate() || date.getMonth() > currentDate.getMonth() || date.getFullYear() > currentDate.getFullYear() )){
+
+    if ( date.getFullYear() == now.getFullYear() && date.getMonth() == now.getMonth() && date.getDate() == now.getDate() ) {
+      separator.find('span').text('Ayer');
+    }else{
+      separator.find('span').text(timeElapsed(currentDate));
+    }
+
+    message.before( separator );
+
+  }else if( byScroll && currentDate && ( date.getDate() < currentDate.getDate() || date.getMonth() < currentDate.getMonth() || date.getFullYear() < currentDate.getFullYear() )){
+
+    separator.find('span').text(timeElapsed(currentDate));
+    message.after( separator );
+
+  }
+
+  currentDate = date;
 
 }
 
@@ -2434,6 +2476,7 @@ var loadMoreMsgs = function(){
   }
 
   loadingMsgs = true;
+  firstLoad = true;
 
   var firstMsg = $( '.messageDom' ).eq(0);
   var channel = $( '.active.chatDom' ).data( 'channel' );
@@ -2461,10 +2504,13 @@ var loadMoreMsgs = function(){
 
     });
 
-    loadingMsgs = false;
-    if ( firstMsg[0] ) {
+    console.log(messages.length);
+    if ( firstMsg[0] && messages.length > 0) {
       msgContainer.scrollTop( firstMsg[0].offsetTop - 4 );
     }
+
+    loadingMsgs = false;
+
 
   });
 
