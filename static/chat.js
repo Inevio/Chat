@@ -1,4 +1,4 @@
-// CHAT 1.0.9
+// CHAT 1.0.10
 
 var myContacts = [];
 var groupMembers = [];
@@ -297,6 +297,7 @@ app
 .on( 'click' , '.chatDom' , function(){
 
   selectChat( $( this ) );
+  setTimeout(function(){ $( '.message-container' ).scrollTop(9999999); }, 100);
 
 })
 
@@ -415,6 +416,12 @@ app
     $( '.chatDom-' + params ).click();
     clearInterval(interval);
   }, 1000);
+
+})
+
+.on( 'ui-view-resize ui-view-maximize ui-view-unmaximize', function(){
+
+  $( '.message-container' ).scrollTop(9999999);
 
 });
 // END APP EVENTS
@@ -939,6 +946,7 @@ var selectChat = function( chat ){
 
   groupMenu.removeClass( 'visible' );
   removeGroup.removeClass( 'visible' );
+  currentDate = null;
 
   var channel = chat.data( 'channel' );
   var contact = chat.data( 'user' );
@@ -1281,21 +1289,45 @@ var printMessage = function( msg , sender , time , animate , byScroll , checked 
     firstLoad = false;
   }
 
+  console.log('msg',date);
   if( !byScroll && currentDate && ( date.getDate() > currentDate.getDate() || date.getMonth() > currentDate.getMonth() || date.getFullYear() > currentDate.getFullYear() )){
 
-    if ( date.getFullYear() == now.getFullYear() && date.getMonth() == now.getMonth() && date.getDate() == now.getDate() ) {
+    if ( currentDate.getFullYear() == yesterday.getFullYear() && currentDate.getMonth() == yesterday.getMonth() && currentDate.getDate() == yesterday.getDate() ) {
       separator.find('span').text('Ayer');
     }else{
       separator.find('span').text(timeElapsed(currentDate));
     }
 
     message.before( separator );
+    console.log('insertsep before',separator.find('span').text());
 
   }else if( byScroll && currentDate && ( date.getDate() < currentDate.getDate() || date.getMonth() < currentDate.getMonth() || date.getFullYear() < currentDate.getFullYear() )){
 
     separator.find('span').text(timeElapsed(currentDate));
-    message.after( separator );
+    message.before( separator );
+    console.log('insertsep before',separator.find('span').text());
 
+  }
+
+  if ( !byScroll && currentDate && ( date.getFullYear() != now.getFullYear() || date.getMonth() != now.getMonth() || date.getDate() != now.getDate() ) ) {
+
+    var sep = separatorPrototype.clone();
+    sep.removeClass( 'wz-prototype' ).addClass( 'separatorDom final-separator' );
+
+    if ( date.getFullYear() == yesterday.getFullYear() && date.getMonth() == yesterday.getMonth() && date.getDate() == yesterday.getDate() ) {
+      sep.find('span').text('Ayer');
+    }else{
+      sep.find('span').text(timeElapsed(currentDate));
+    }
+
+    message.after( sep );
+
+  }
+
+  if ( message.prev().hasClass('final-separator') ) {
+    message.prev().remove();
+  }else if ( message.prev().prev().hasClass('final-separator') ) {
+    message.prev().prev().remove();
   }
 
   currentDate = date;
@@ -2504,7 +2536,6 @@ var loadMoreMsgs = function(){
 
     });
 
-    console.log(messages.length);
     if ( firstMsg[0] && messages.length > 0) {
       msgContainer.scrollTop( firstMsg[0].offsetTop - 4 );
     }
