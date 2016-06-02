@@ -516,7 +516,7 @@
   float: left;
   font-size: 13px;
   color: #889399;
-  width: 215px;
+  width: 200px;
   margin-top: 6px;
   line-height: 14px;
   letter-spacing: 0.025em;
@@ -545,31 +545,30 @@
 
 .channel .channel-badge{
   float: right;
-  width: 18px;
-  height: 18px;
-  background-color: #60b25e;
-  border-radius: 50%;
-  margin-top: 2px;
-  margin-right: 9px;
+  margin-right: 7px;
+  margin-top: 5px;
   display: none;
 }
 
-.active .channel-badge{
-  background-color: #fff;
+.active .channel-badge span{
+  background-color: #fff !important;
+  color: #60b25e !important;
+}
+
+.dark .active .channel-badge span{
+  background-color: #60b25e !important;
+  color: #fff !important;
 }
 
 .channel .channel-badge span{
   float: left;
   color: #fff;
+  padding: 3px 5px;
+  background-color: #60b25e;
   font-size: 11px;
+  border-radius: 9px;
   font-weight: bold;
-  width: 100%;
   text-align: center;
-  margin-top: 4px;
-}
-
-.active .channel-badge span{
-  color: #60b25e;
 }
 
 .chat-footer{
@@ -703,13 +702,13 @@
   position: absolute;
   top: 41px;
   left: 318px;
-  background-size: 550px 999px;
+  background-size: 800px 600px;
   background-image: url( '@static/pattern.png' );
 }
 
 .dark.chat .ui-content{
   background-image: url( '@static/pattern-dark.png' );
-  background-size: 550px 999px;
+  background-size: 800px 600px;
   width: ~'calc(100% - 319px)';
   height: ~'calc(100% - 42px)';
   border-radius: 0 0 6px 0;
@@ -720,13 +719,13 @@
 @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi) {
 
   .chat .ui-content{
-    background-size: 366.5px 666px;
+    background-size: 532.8px 399px;
     background-image: url( '@static/pattern.png' );
   }
 
   .dark.chat .ui-content{
     background-image: url( '@static/pattern-dark.png' );
-    background-size: 366.5px 666px;
+    background-size: 532.8px 399px;
   }
 
 }
