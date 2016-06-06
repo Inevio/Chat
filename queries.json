@@ -16,5 +16,6 @@
     "deleteUserInChannel"   : "DELETE FROM user_in_channel WHERE id_channel = ? && user = ?",
     "getUserPreference"     : "SELECT * FROM user_preference WHERE user = ?",
     "updateUserPreference"  : "INSERT INTO user_preference (user, width, height, dark, x, y) VALUES(?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE width=?, height=?, dark=?, x=?, y=?",
-    "getMessagesFrom"       : "SELECT * FROM message WHERE ( channel = ? AND id < ? ) ORDER BY id DESC LIMIT 50"
+    "getMessagesFrom"       : "SELECT * FROM message WHERE ( channel = ? AND id < ? ) ORDER BY id DESC LIMIT 50",
+    "addWorldChannel"       : "INSERT INTO channel SET id = ?, name = ? , world_id = ?"
 }
