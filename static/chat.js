@@ -242,6 +242,55 @@ msgContainer.on( 'scroll' , function( e ){
   }
 
 });
+
+app.on( 'app-param', function( e, params ){
+
+  var action = params[0];
+  var world = params[1];
+  var callback = params[2];
+
+  if (!world.owner) {
+    return;
+  }
+
+  switch (action) {
+
+    case 'new-chat':
+
+
+    api.channel( function( error , channel ){
+
+      if ( error ) { console.log('ERROR: ', error ); }
+
+      wql.addWorldChannel( [ channel.id , world.name , world.id ] , function( error , message ){
+
+        if ( error ) { console.log('ERROR: ', error ); }
+
+        wql.addUserInChannel( [ channel.id , myContactID ] , function( error , message ){
+
+          if ( error ) { console.log('ERROR: ', error ); }
+
+          channel.addUser( myContactID , function( error ){
+
+            if ( error ) { console.log('ERROR: ', error ); }
+
+            callback( 'chat generado, todo ok!' );
+            wz.app.removeView(app);
+
+          });
+
+        });
+
+      });
+
+    });
+    break;
+
+
+  }
+
+});
+
 // END UI EVENTS
 
 // APP EVENTS
