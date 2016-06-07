@@ -1,23 +1,31 @@
 var app  = $( this );
+var mobile = true;
 
-wql.getUserPreference( api.system.user().id , function( error , preferences ){
+if( !mobile ){
 
-  if ( preferences.length > 0 ) {
+  wql.getUserPreference( api.system.user().id , function( error , preferences ){
 
-    preferences = preferences[0];
+    if ( preferences.length > 0 ) {
 
-    wz.view.setSize( preferences.width , preferences.height );
+      preferences = preferences[0];
+      wz.view.setSize( preferences.width , preferences.height );
 
-    if ( preferences.dark ) {
-      $( '.ui-window' ).addClass( 'dark' );
+      if ( preferences.dark ) {
+        $( '.ui-window' ).addClass( 'dark' );
+      }
+
     }
 
-  }
-
-  app.css({'border-radius'    : '6px',
-  'background-color' : '#2c3238'
   });
 
-  start();
+}else{
+  app.addClass('mobile');
+  $( '.ui-window' ).addClass( 'dark' );
+}
 
+app.css({'border-radius'    : '6px',
+'background-color' : '#2c3238'
 });
+
+
+start();
