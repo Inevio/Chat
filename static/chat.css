@@ -439,6 +439,11 @@
   border-radius: 50%;
 }
 
+.channel .channel-img.group{
+  height: 44px;
+  width: 44px;
+}
+
 .channel-img span{
   float: left;
   width: 100%;
@@ -1495,4 +1500,95 @@
 
 .dark .app-color .selector i{
   margin-left: 2px;
+}
+
+.wz-view.mobile{
+
+  .app-color{
+    margin-left: 52px;
+  }
+
+  .ui-window.chat{
+    overflow: hidden;
+  }
+
+  .chat .ui-navbar{
+    width: 100%;
+    float: none;
+    position: absolute;
+    top: 41px;
+    left: 0px;
+  }
+
+  .chat-search{
+    width: ~'calc(100% - 2px)';
+  }
+
+  .chat-body{
+    border-left: none;
+    width: 100%;
+  }
+
+  .channel-list{
+    width: 100%;
+  }
+
+  .channel{
+    width: ~'calc(100% - 80px)';
+    height: 76px;
+  }
+
+  .channel .highlight-area{
+    width: 100%;
+    height: 77px;
+  }
+
+  .channel .channel-img{
+    height: 62px;
+    width: 62px;
+    margin-top: 7px;
+    margin-bottom: 7px;
+    margin-right: 10px;
+  }
+
+  .channel .channel-img.group{
+    height: 58px;
+    width: 58px;
+  }
+
+  .channel .channel-img span{
+    margin-top: 22px;
+  }
+
+  .channel .channel-name{
+    margin-top: 21px;
+  }
+
+  .chat-tab-selector, .chat-tab-selector{
+    width: 50%;
+    text-align: center;
+    border-right: none;
+  }
+
+  .chat-tab-selector .selector-img, .chat-tab-selector .selector-img{
+    margin: 5px auto 0;
+    float: none;
+  }
+
+  .chat .ui-content{
+    width: 100%;
+    left: 367px;
+    float: none;
+  }
+
+  .chat .no-content{
+    width: 100%;
+    left: 100%;
+    display: none;
+  }
+
+  .app-color{
+    margin-left: 52px;
+  }
+
 }

@@ -1,4 +1,5 @@
 // CHAT 1.0.11
+var mobile = true;
 
 var myContacts = [];
 var groupMembers = [];
@@ -1006,7 +1007,18 @@ var selectChat = function( chat ){
   $( '.chatDom.active' ).removeClass( 'active' );
   chat.addClass( 'active' );
 
-  content.addClass( 'visible' );
+  if( !mobile ){
+    content.addClass( 'visible' );
+  }else{
+
+    /*content.show().transition({
+      'left' : 0
+    },1000);*/
+
+    content.show();
+
+  }
+
 
   msgInput.focus();
 
@@ -2173,13 +2185,11 @@ var setGroupAvatar = function( groupName , avatar ){
 
   var colorId = selectColor( groupName );
 
-  avatar.css({
+  avatar.addClass('group').css({
     'background-image'  : 'none',
     'background-color'  : colorPalette[colorId].light,
     'border'            : '2px solid ' + colorPalette[colorId].border,
-    'border-style'      : 'solid',
-    'width'             : '44px',
-    'height'            : '44px'
+    'border-style'      : 'solid'
   });
   avatar.find( 'span' ).css('color', colorPalette[colorId].text);
 
