@@ -257,7 +257,6 @@ app.on( 'app-param', function( e, params ){
 
     case 'new-chat':
 
-
     api.channel( function( error , channel ){
 
       if ( error ) { console.log('ERROR: ', error ); }
@@ -286,6 +285,55 @@ app.on( 'app-param', function( e, params ){
     });
     break;
 
+    case 'open-chat':
+
+    wql.getWorldChannel( world.id , function( error , obj ){
+
+      if ( error ) { console.log('ERROR: ', error ); }
+
+      var chatId = obj[0].id;
+
+      var timeout = setTimeout(function(){
+        $( '.chatDom-' + chatId ).click();
+        timeout.clearTimeout();
+      }, 1000);
+
+      callback( 'chat abierto, todo ok!' );
+
+    });
+
+    break;
+
+    case 'remove-chat':
+
+    wql.getWorldChannel( world.id , function( error , obj ){
+
+      if ( error ) { console.log('ERROR: ', error ); }
+
+      var chatId = obj[0].id;
+
+      wz.channel( chatId , function( error, channel ){
+
+        wql.deleteUsersInChannel( channel.id , function( error , message ){
+
+          if ( error ) { console.log('ERROR: ', error ); }
+
+          wql.deleteChannel( channel.id , function( error , message ){
+
+            if ( error ) { console.log('ERROR: ', error ); }
+
+            callback( 'chat borrado, todo ok!' );
+            wz.app.removeView(app);
+
+          });
+
+        });
+
+      });
+
+    });
+
+    break;
 
   }
 
@@ -459,14 +507,6 @@ app
 
 })
 
-.on( 'app-param', function( e, params ){
-
-  var interval = setInterval(function(){
-    $( '.chatDom-' + params ).click();
-    clearInterval(interval);
-  }, 1000);
-
-})
 
 .on( 'ui-view-resize ui-view-maximize ui-view-unmaximize', function(){
 
