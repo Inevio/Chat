@@ -1011,11 +1011,11 @@ var selectChat = function( chat ){
     content.addClass( 'visible' );
   }else{
 
-    /*content.show().transition({
+    content.show().transition({
       'left' : 0
-    },1000);*/
+    },1000);
 
-    content.show();
+    //content.show();
 
   }
 

@@ -1564,13 +1564,13 @@
     margin-top: 21px;
   }
 
-  .chat-tab-selector, .chat-tab-selector{
+  .chat-tab-selector, .contact-tab-selector{
     width: 50%;
     text-align: center;
     border-right: none;
   }
 
-  .chat-tab-selector .selector-img, .chat-tab-selector .selector-img{
+  .chat-tab-selector .selector-img, .contact-tab-selector .selector-img{
     margin: 5px auto 0;
     float: none;
   }
@@ -1589,6 +1589,15 @@
 
   .app-color{
     margin-left: 52px;
+  }
+
+  .group-menu{
+    width: 100%;
+    left: 0px;
+  }
+
+  .group-avatar span{
+    margin-top: 19px;
   }
 
 }
