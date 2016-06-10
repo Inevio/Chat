@@ -1015,8 +1015,6 @@ var selectChat = function( chat ){
       'left' : 0
     },1000);
 
-    //content.show();
-
   }
 
 
