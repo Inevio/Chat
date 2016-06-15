@@ -1589,8 +1589,17 @@
 
   .chat .ui-content{
     width: 100%;
-    left: 367px;
+    left: 100%;
+    border-right: none;
     float: none;
+  }
+
+  .chat .ui-content .header{
+    border-left: none;
+  }
+
+  .chat .ui-content .conversation-body{
+    box-shadow: none;
   }
 
   .chat .no-content{
@@ -1606,10 +1615,12 @@
   .group-menu{
     width: 100%;
     left: 0px;
+    border-left: none;
   }
 
   .group-avatar span{
-    margin-top: 19px;
+    margin-top: 15px;
+    font-size: 32px;
   }
 
   .message-me .message-body{
@@ -1654,6 +1665,10 @@
 
   .remove-group{
     border-radius: 18px;
+  }
+
+  .message-avatar{
+    margin-left: 5px;
   }
 
 }
