@@ -1521,13 +1521,24 @@
   }
 
   .chat-search{
-    width: ~'calc(100% - 2px)';
+    width: ~'calc(100% - 12px)';
+    border: none;
+    float: none;
+    margin: 8px auto;
+    border-radius: 20px;
   }
 
   .chat-body{
     border-left: none;
     width: 100%;
     overflow: hidden;
+    height: ~'calc(100% - 106px)';
+  }
+
+  .chat-footer{
+    float: none;
+    position: absolute;
+    bottom: 0px;
   }
 
   .channel-list{
