@@ -957,7 +957,16 @@ var selectContact = function( contact ){
   // Make active
   $( '.contactDom.active' ).removeClass( 'active' );
   contact.addClass( 'active' );
-  content.addClass( 'visible' );
+  
+  if( !mobile ){
+    content.addClass( 'visible' );
+  }else{
+
+    content.show().transition({
+      'left' : 0
+    },1000);
+
+  }
 
   // Set header
   $( '.conversation-name' ).text( contact.find( '.contact-name' ).text() );
