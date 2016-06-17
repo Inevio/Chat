@@ -1509,6 +1509,8 @@
   }
 
   .ui-window.chat{
+    left: 0px;
+    position: absolute;
     overflow: hidden;
   }
 
@@ -1526,6 +1528,7 @@
     float: none;
     margin: 8px auto;
     border-radius: 20px;
+    border: 1px solid transparent !important;
   }
 
   .chat-body{
@@ -1689,10 +1692,6 @@
 
   .message-avatar{
     margin-left: 5px;
-  }
-
-  .contact-tab{
-    margin-top: 5px;
   }
 
   .contact{
