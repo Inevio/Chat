@@ -1,5 +1,6 @@
 // CHAT 1.0.11
 var mobile = true;
+var animationDuration = 1000;
 
 var myContacts = [];
 var groupMembers = [];
@@ -957,14 +958,17 @@ var selectContact = function( contact ){
   // Make active
   $( '.contactDom.active' ).removeClass( 'active' );
   contact.addClass( 'active' );
-  
+
   if( !mobile ){
     content.addClass( 'visible' );
+    msgInput.focus();
   }else{
 
     content.show().transition({
       'left' : 0
-    },1000);
+    },animationDuration, function(){
+      msgInput.focus();
+    });
 
   }
 
@@ -976,14 +980,12 @@ var selectContact = function( contact ){
     $( '.messageDom' ).remove();
     $( '.separatorDom' ).remove();
     $( '.chatDom.active' ).removeClass( 'active' );
-    msgInput.focus();
 
   }else{
 
     $( '.chatDom.active' ).removeClass( 'active' );
     $( '.chatDom-' + channel.id ).addClass( 'active' );;
     listMessages( channel );
-    msgInput.focus();
 
   }
 
@@ -1018,16 +1020,16 @@ var selectChat = function( chat ){
 
   if( !mobile ){
     content.addClass( 'visible' );
+    msgInput.focus();
   }else{
 
     content.show().transition({
       'left' : 0
-    },1000);
+    },animationDuration, function(){
+      msgInput.focus();
+    });
 
   }
-
-
-  msgInput.focus();
 
   // Set header
   $( '.conversation-name' ).text( chat.find( '.channel-name' ).text() );
