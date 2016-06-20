@@ -1723,4 +1723,48 @@
     margin-top: 22px;
   }
 
+  .chat-tab-selector .selector-img{
+    width: 71px;
+  }
+
+  .chat-tab-selector figure{
+    width: 24px;
+    height: 20px;
+    background: url('@static/mobile/sprite.png');
+    background-size: 171px 31px;
+    background-position: 0px -5px;
+    margin-top: 3px;
+  }
+
+  .chat-tab-selector.active figure{
+    background-position: -24px -5px;
+  }
+
+  .contact-tab-selector .selector-img{
+    width: 102px;
+  }
+
+  .contact-tab-selector figure{
+    width: 26px;
+    height: 20px;
+    background: url('@static/mobile/sprite.png');
+    background-size: 171px 31px;
+    background-position: -48px -5px;
+    margin-top: 3px;
+  }
+
+  .contact-tab-selector.active figure{
+    background-position: -75px -5px;
+  }
+
+  .group-name-input{
+    width: ~'calc(100% - 26px)';
+    border-radius: 14px;
+  }
+
+  .ui-input input{
+    margin-top: 6px;
+    padding-top: 0px;
+  }
+
 }
