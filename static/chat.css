@@ -6,15 +6,20 @@
   display: inline-block !important;
 }
 
+.ui-header-mobile{
+  text-align: center;
+  display: none;
+}
+
 .chat .ui-header-brand{
   padding-left: 21px;
 }
 
 .wz-widget{
-    bottom: 0;
-    right: 0;
-    height: 41px;
-    width: 39px;
+  bottom: 0;
+  right: 0;
+  height: 41px;
+  width: 39px;
 }
 
 .ui-window.chat{
@@ -1504,8 +1509,48 @@
 
 .wz-view.mobile{
 
-  .app-color{
-    margin-left: 52px;
+  .ui-header-desktop{
+    display: none;
+  }
+
+  .ui-header-mobile{
+    display: block;
+  }
+
+  .window-title{
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    margin-top: 12px;
+    display: inline-block;
+    position: absolute;
+    left: 0;
+    right: 0;
+  }
+
+  .back-button{
+    width: 16px;
+    height: 15px;
+    background: url('@static/mobile/sprite.png');
+    background-size: 171px 31px;
+    background-position: -101px -9px;
+    float: left;
+    display: inline-block;
+    margin: 15px;
+    cursor: pointer;
+  }
+
+  .more-button{
+    width: 4px;
+    height: 18px;
+    background: url('@static/mobile/sprite.png');
+    background-size: 171px 31px;
+    background-position: -117px -7px;
+    float: right;
+    display: inline-block;
+    margin: 13px;
+    cursor: pointer;
   }
 
   .ui-window.chat{
