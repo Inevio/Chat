@@ -1533,8 +1533,8 @@
     width: 16px;
     height: 15px;
     background: url('@static/mobile/sprite.png');
-    background-size: 171px 31px;
-    background-position: -101px -9px;
+    background-size: 170px 31px;
+    background-position: -100px 0px;
     float: left;
     display: inline-block;
     margin: 15px;
@@ -1545,8 +1545,8 @@
     width: 4px;
     height: 18px;
     background: url('@static/mobile/sprite.png');
-    background-size: 171px 31px;
-    background-position: -117px -7px;
+    background-size: 170px 31px;
+    background-position: -116px 0px;
     float: right;
     display: inline-block;
     margin: 13px;
@@ -1776,13 +1776,13 @@
     width: 24px;
     height: 20px;
     background: url('@static/mobile/sprite.png');
-    background-size: 171px 31px;
-    background-position: 0px -5px;
+    background-size: 170px 31px;
+    background-position: 0px 0px;
     margin-top: 3px;
   }
 
   .chat-tab-selector.active figure{
-    background-position: -24px -5px;
+    background-position: -24px 0px;
   }
 
   .contact-tab-selector .selector-img{
@@ -1793,13 +1793,13 @@
     width: 26px;
     height: 20px;
     background: url('@static/mobile/sprite.png');
-    background-size: 171px 31px;
-    background-position: -48px -5px;
+    background-size: 170px 31px;
+    background-position: -48px 0px;
     margin-top: 3px;
   }
 
   .contact-tab-selector.active figure{
-    background-position: -75px -5px;
+    background-position: -75px 0px;
   }
 
   .group-name-input{
