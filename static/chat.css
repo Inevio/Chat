@@ -1540,6 +1540,7 @@
     display: inline-block;
     margin: 15px 15px 11px;
     cursor: pointer;
+    display: none;
   }
 
   .more-button{
