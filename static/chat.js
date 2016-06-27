@@ -45,6 +45,7 @@ var msgInput          = $( '.conversation-input textarea' );
 var colorChange       = $( '.app-color' );
 var msgContainer      = $( '.message-container' );
 var separatorPrototype = $( '.separator.wz-prototype' );
+var backButton        = $( '.back-button' );
 var myContactID       = api.system.user().id;
 var adminMode         = false;
 
@@ -969,6 +970,7 @@ var selectContact = function( contact ){
     },animationDuration, function(){
       $(this).addClass( 'visible' );
       msgInput.focus();
+      backButton.show();
     });
 
   }
@@ -1029,6 +1031,7 @@ var selectChat = function( chat ){
     },animationDuration, function(){
       $(this).addClass( 'visible' );
       msgInput.focus();
+      backButton.show();
     });
 
   }
@@ -2623,7 +2626,8 @@ app.on('click','.back-button', function(){
 
     if( content.hasClass('visible') ){
 
-      content.transition({
+      backButton.hide();
+      content.stop().clearQueue().transition({
         'left' : '100%'
       },animationDuration, function(){
         $(this).hide().removeClass( 'visible' );
