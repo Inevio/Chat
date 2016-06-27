@@ -955,13 +955,13 @@ var selectContact = function( contact ){
 
   var channel = contact.data( 'channel' );
 
-  // Make active
-  $( '.contactDom.active' ).removeClass( 'active' );
-  contact.addClass( 'active' );
-
   if( !mobile ){
+
+    $( '.contactDom.active' ).removeClass( 'active' );
+    contact.addClass( 'active' );
     content.addClass( 'visible' );
     msgInput.focus();
+
   }else{
 
     content.show().transition({
@@ -1015,13 +1015,13 @@ var selectChat = function( chat ){
 
   lastMessage.removeClass( 'conected' );
 
-  // Make active
-  $( '.chatDom.active' ).removeClass( 'active' );
-  chat.addClass( 'active' );
-
   if( !mobile ){
+
+    $( '.chatDom.active' ).removeClass( 'active' );
+    chat.addClass( 'active' );
     content.addClass( 'visible' );
     msgInput.focus();
+
   }else{
 
     content.show().transition({
@@ -2616,6 +2616,24 @@ var loadMoreMsgs = function(){
   });
 
 }
+
+app.on('click','.back-button', function(){
+
+  if( mobile ){
+
+    if( content.hasClass('visible') ){
+
+      content.transition({
+        'left' : '100%'
+      },animationDuration, function(){
+        $(this).hide().removeClass( 'visible' );
+      });
+
+    }
+
+  }
+
+});
 
 // INIT Chat
 initChat();

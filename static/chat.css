@@ -1518,11 +1518,12 @@
   }
 
   .window-title{
+    width: 100px;
     font-size: 20px;
     font-weight: bold;
     color: white;
     text-align: center;
-    margin-top: 12px;
+    margin: 12px auto 0;
     display: inline-block;
     position: absolute;
     left: 0;
@@ -1537,7 +1538,7 @@
     background-position: -100px 0px;
     float: left;
     display: inline-block;
-    margin: 15px;
+    margin: 15px 15px 11px;
     cursor: pointer;
   }
 
@@ -1549,7 +1550,7 @@
     background-position: -116px 0px;
     float: right;
     display: inline-block;
-    margin: 13px;
+    margin: 13px 13px 10px;
     cursor: pointer;
   }
 
@@ -1799,7 +1800,7 @@
   }
 
   .contact-tab-selector.active figure{
-    background-position: -75px 0px;
+    background-position: -74px 0px;
   }
 
   .group-name-input{
