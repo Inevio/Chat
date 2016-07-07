@@ -26,7 +26,7 @@ var contactTab        = $( '.contact-tab' );
 var contactsButton    = $( '.contact-tab-selector' );
 var sendButton        = $( '.conversation-send' );
 var content           = $( '.ui-content' );
-var lastMessage       = $( '.conversation-moreinfo' );
+var lastMessage       = $( '.conversation-moreinfo, .conver-moreinfo' );
 var searchBox         = $( '.chat-search input' );
 var searchBoxDelete   = $( '.chat-search .delete-content' );
 var closeChatButton   = $( '.close-coversation' );
@@ -955,11 +955,11 @@ var selectContact = function( contact ){
   $( '.conversation-header' ).off( 'click' );
 
   var channel = contact.data( 'channel' );
+  $( '.contactDom.active' ).removeClass( 'active' );
+  contact.addClass( 'active' );
 
   if( !mobile ){
 
-    $( '.contactDom.active' ).removeClass( 'active' );
-    contact.addClass( 'active' );
     content.addClass( 'visible' );
     msgInput.focus();
 
@@ -976,7 +976,7 @@ var selectContact = function( contact ){
   }
 
   // Set header
-  $( '.conversation-name' ).text( contact.find( '.contact-name' ).text() );
+  $( '.conversation-name, .conver-header .conver-title' ).text( contact.find( '.contact-name' ).text() );
 
   if ( channel == undefined ) {
 
@@ -1016,16 +1016,23 @@ var selectChat = function( chat ){
   var contact = chat.data( 'user' );
 
   lastMessage.removeClass( 'conected' );
+  $( '.chatDom.active' ).removeClass( 'active' );
+  chat.addClass( 'active' );
 
   if( !mobile ){
 
-    $( '.chatDom.active' ).removeClass( 'active' );
-    chat.addClass( 'active' );
     content.addClass( 'visible' );
     msgInput.focus();
 
   }else{
 
+    $('.initial-header').transition({
+      'left': '-100%'
+    },animationDuration);
+    $('.conver-header').transition({
+      'left': '0'
+    },animationDuration);
+    $('.conver-avatar').css('background-image', chat.find('.channel-img').css('background-image') );
     content.show().transition({
       'left' : 0
     },animationDuration, function(){
@@ -1033,11 +1040,14 @@ var selectChat = function( chat ){
       msgInput.focus();
       backButton.show();
     });
+    $('.ui-navbar').transition({
+      'left' : '-100%'
+    },animationDuration);
 
   }
 
   // Set header
-  $( '.conversation-name' ).text( chat.find( '.channel-name' ).text() );
+  $( '.conversation-name, .conver-header .conver-title' ).text( chat.find( '.channel-name' ).text() );
 
   if ( channel == undefined ) {
 
@@ -2624,9 +2634,21 @@ app.on('click','.back-button', function(){
 
   if( mobile ){
 
+    $('.initial-header').transition({
+      'left': '0'
+    },animationDuration);
+    $('.conver-header').transition({
+      'left': '100%'
+    },animationDuration);
+
     if( content.hasClass('visible') ){
 
-      backButton.hide();
+      //backButton.hide();
+      $( '.contactDom.active' ).removeClass( 'active' );
+      $( '.chatDom.active' ).removeClass( 'active' );
+      $('.ui-navbar').transition({
+        'left' : 0
+      },animationDuration);
       content.stop().clearQueue().transition({
         'left' : '100%'
       },animationDuration, function(){

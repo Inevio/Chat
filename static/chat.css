@@ -1515,6 +1515,7 @@
 
   .ui-header-mobile{
     display: block;
+    height: 50px;
   }
 
   .window-title{
@@ -1523,7 +1524,7 @@
     font-weight: bold;
     color: white;
     text-align: center;
-    margin: 12px auto 0;
+    margin: 17px auto 0;
     display: inline-block;
     position: absolute;
     left: 0;
@@ -1538,7 +1539,7 @@
     background-position: -100px 0px;
     float: left;
     display: inline-block;
-    margin: 15px 15px 11px;
+    margin: 19px 15px 11px;
     cursor: pointer;
     display: none;
   }
@@ -1551,7 +1552,7 @@
     background-position: -116px 0px;
     float: right;
     display: inline-block;
-    margin: 13px 13px 10px;
+    margin: 18px 13px 10px;
     cursor: pointer;
   }
 
@@ -1563,9 +1564,10 @@
 
   .chat .ui-navbar{
     width: 100%;
+    height: ~'calc(100% - 51px)';
     float: none;
     position: absolute;
-    top: 41px;
+    top: 51px;
     left: 0px;
   }
 
@@ -1660,6 +1662,8 @@
   .chat .ui-content{
     width: 100%;
     left: 100%;
+    top: 51px;
+    height: ~'calc(100% - 51px)';
     border-right: none;
     float: none;
   }
@@ -1812,6 +1816,77 @@
   .ui-input input{
     margin-top: 6px;
     padding-top: 0px;
+  }
+
+  .initial-header{
+    width: 100%;
+    height: 50px;
+    left: 0;
+    position: absolute;
+  }
+
+  .conver-header{
+    width: 100%;
+    height: 50px;
+    top: 0;
+    left: 100%;
+    position: absolute;
+  }
+
+  .conver-header .conver-info{
+    width: ~'calc(100% - 110px)';
+    display: inline-block;
+  }
+
+  .conver-header .window-title{
+    display: none;
+  }
+
+  .conver-header .back-button{
+    display: block;
+  }
+
+  .conver-info .conver-avatar{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: white;
+    float: left;
+    margin-top: 7px;
+    margin-right: 5px;
+    background-size: cover;
+  }
+
+  .conver-info div{
+    float: left;
+    width: ~'calc(100% - 55px)';
+    text-align: left;
+  }
+
+  .conver-info .conver-title{
+    font-size: 15px;
+    font-weight: bold;
+    color: #ffffff;
+    margin-top: 12px;
+  }
+
+  .conver-info .conver-moreinfo{
+    font-size: 13px;
+    color: #d2dce2;
+    margin-top: 3px;
+  }
+
+  .conver-info .conver-moreinfo.conected{
+    color: #60b25e;
+  }
+
+  .ui-content .header{
+    display: none;
+  }
+
+  .ui-content .container-conversation{
+    top: 0px;
+    height: 100%;
   }
 
 }
