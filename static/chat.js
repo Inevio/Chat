@@ -970,7 +970,6 @@ var selectContact = function( contact ){
     },animationDuration, function(){
       $(this).addClass( 'visible' );
       msgInput.focus();
-      backButton.show();
     });
 
   }
@@ -1038,7 +1037,6 @@ var selectChat = function( chat ){
     },animationDuration, function(){
       $(this).addClass( 'visible' );
       msgInput.focus();
-      backButton.show();
     });
     $('.ui-navbar').transition({
       'x' : '-100%'
