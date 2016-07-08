@@ -1027,21 +1027,21 @@ var selectChat = function( chat ){
   }else{
 
     $('.initial-header').transition({
-      'left': '-100%'
+      'x': '-100%'
     },animationDuration);
     $('.conver-header').transition({
-      'left': '0'
+      'x': '0'
     },animationDuration);
     $('.conver-avatar').css('background-image', chat.find('.channel-img').css('background-image') );
     content.show().transition({
-      'left' : 0
+      'x' : 0
     },animationDuration, function(){
       $(this).addClass( 'visible' );
       msgInput.focus();
       backButton.show();
     });
     $('.ui-navbar').transition({
-      'left' : '-100%'
+      'x' : '-100%'
     },animationDuration);
 
   }
@@ -2635,10 +2635,10 @@ app.on('click','.back-button', function(){
   if( mobile ){
 
     $('.initial-header').transition({
-      'left': '0'
+      'x': '0'
     },animationDuration);
     $('.conver-header').transition({
-      'left': '100%'
+      'x': '100%'
     },animationDuration);
 
     if( content.hasClass('visible') ){
@@ -2647,10 +2647,10 @@ app.on('click','.back-button', function(){
       $( '.contactDom.active' ).removeClass( 'active' );
       $( '.chatDom.active' ).removeClass( 'active' );
       $('.ui-navbar').transition({
-        'left' : 0
+        'x' : 0
       },animationDuration);
       content.stop().clearQueue().transition({
-        'left' : '100%'
+        'x' : '100%'
       },animationDuration, function(){
         $(this).hide().removeClass( 'visible' );
       });
