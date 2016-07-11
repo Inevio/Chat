@@ -1,6 +1,7 @@
 // CHAT 1.0.11
 var mobile = true;
 var animationDuration = 1000;
+var mode = 0; // 0 == Chats tab, 1 == Contacts tab, 2 == Conversation tab, 3 == Information tab, 4 == creating group, -1 == transition
 
 var myContacts = [];
 var groupMembers = [];
@@ -30,7 +31,7 @@ var lastMessage       = $( '.conversation-moreinfo, .conver-moreinfo' );
 var searchBox         = $( '.chat-search input' );
 var searchBoxDelete   = $( '.chat-search .delete-content' );
 var closeChatButton   = $( '.close-coversation' );
-var newGroupButton    = $( '.new-group-button' );
+var newGroupButton    = $( '.new-group-button, .new-group' );
 var groupMenu         = $( '.group-menu' );
 var backGroup         = $( '.group-menu .back' );
 var memberPrototype   = $( '.member.wz-prototype' );
@@ -521,6 +522,7 @@ var changeTab = function(tab){
     // Make it active and visible
     case 'chat':
 
+    mode = 0;
     contactsButton.removeClass('active');
     chatButton.addClass('active');
     contactTab.removeClass( 'visible' );
@@ -529,19 +531,21 @@ var changeTab = function(tab){
     colorChange.addClass( 'visible' );
     groupMenu.removeClass( 'visible' );
     removeGroup.removeClass( 'visible' );
+    $('.new-group').removeClass( 'visible' );
 
     break;
 
     // Make it active and visible
     case 'contact':
 
+    mode = 1;
     chatButton.removeClass( 'active' );
     contactsButton.addClass( 'active' );
     chatTab.removeClass( 'visible' );
     contactTab.addClass( 'visible' );
     newGroupButton.addClass( 'visible' );
     colorChange.removeClass( 'visible' );
-
+    $('.new-group').addClass( 'visible' );
 
     break;
 
@@ -1069,11 +1073,19 @@ var selectChat = function( chat ){
 
     if( chat.data( 'isGroup' ) != null ){
 
-      $( '.conversation-header' ).addClass( 'viewGroup' );
+      if( mobile ){
+        $( '.conver-info' ).addClass( 'viewGroup' );
+      }else{
+        $( '.conversation-header' ).addClass( 'viewGroup' );
+      }
 
     }else{
 
-      $( '.conversation-header' ).removeClass( 'viewGroup' );
+      if( mobile ){
+        $( '.conver-info' ).removeClass( 'viewGroup' );
+      }else{
+        $( '.conversation-header' ).removeClass( 'viewGroup' );
+      }
 
     }
 
@@ -1947,6 +1959,7 @@ var getStringHour = function( date ){
 var newGroup = function(){
 
   // Make it visible
+  mode = 4;
   $( '.group-menu .visible' ).removeClass( 'visible' );
   groupMenu.addClass( 'visible' ).addClass( 'group-new' ).removeClass( 'group-edit' );
   $( '.group-new' ).addClass( 'visible' );
@@ -2238,6 +2251,14 @@ var viewGroup = function(){
   $( '.group-menu .visible' ).removeClass( 'visible' );
   groupMenu.addClass( 'visible' ).addClass( 'group-view' );
   $( '.group-view' ).addClass( 'visible' );
+
+  if( mobile ){
+
+    $('.group-menu').transition({
+      'x' : 0
+    }, animationDuration);
+
+  }
 
   $( '.memberDom' ).remove();
   var members = $( '.chatDom.active' ).data( 'user' );
@@ -2632,14 +2653,25 @@ app.on('click','.back-button', function(){
 
   if( mobile ){
 
-    $('.initial-header').transition({
-      'x': '0'
-    },animationDuration);
-    $('.conver-header').transition({
-      'x': '100%'
-    },animationDuration);
+    if( $('.group-menu').hasClass('visible') ){
 
-    if( content.hasClass('visible') ){
+      $('.group-menu').transition({
+        'x' : '100%'
+      }, animationDuration, function(){
+
+        groupMenu.removeClass( 'visible' );
+        removeGroup.removeClass( 'visible' );
+
+      });
+
+    }else if( content.hasClass('visible') ){
+
+      $('.initial-header').transition({
+        'x': '0'
+      },animationDuration);
+      $('.conver-header').transition({
+        'x': '100%'
+      },animationDuration);
 
       //backButton.hide();
       $( '.contactDom.active' ).removeClass( 'active' );
