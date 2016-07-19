@@ -969,12 +969,22 @@ var selectContact = function( contact ){
 
   }else{
 
+    $('.initial-header').transition({
+      'x': '-100%'
+    },animationDuration);
+    $('.conver-header').transition({
+      'x': '0'
+    },animationDuration);
+    $('.conver-avatar').css('background-image', contact.find('.contact-img').css('background-image') );
     content.show().transition({
-      'left' : 0
+      'x' : 0
     },animationDuration, function(){
       $(this).addClass( 'visible' );
       msgInput.focus();
     });
+    $('.ui-navbar').transition({
+      'x' : '-100%'
+    },animationDuration);
 
   }
 
@@ -1960,11 +1970,20 @@ var newGroup = function(){
 
   // Make it visible
   mode = 4;
+
   $( '.group-menu .visible' ).removeClass( 'visible' );
   groupMenu.addClass( 'visible' ).addClass( 'group-new' ).removeClass( 'group-edit' );
   $( '.group-new' ).addClass( 'visible' );
   $( '.group-name-input input' ).val( '' );
   $( '.search-members input' ).val( '' );
+
+  if( mobile ){
+
+    $('.group-menu').transition({
+      'x' : 0
+    }, animationDuration);
+
+  }
 
   setGroupAvatar( '?' , $( '.group-avatar' ) );
 
