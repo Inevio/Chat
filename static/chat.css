@@ -1722,7 +1722,7 @@
 
   .group-members{
     width: ~'calc(100% - 10px)';
-    height: ~'calc(100% - 148px)';
+    height: ~'calc(100% - 100px)';
     margin-right: 0px;
   }
 
@@ -1931,6 +1931,26 @@
 
   .new-group.visible{
     display: block;
+  }
+
+  .channel .channel-badge span{
+    padding: 4px 7px;
+    font-size: 13px;
+    border-radius: 11px;
+    background-color: #ea444a;
+    background-image: -webkit-linear-gradient(bottom, #e53a40, #f05056);
+    background-image: -moz-linear-gradient(bottom, #e53a40, #f05056);
+    background-image: -o-linear-gradient(bottom, #e53a40, #f05056);
+    background-image: -ms-linear-gradient(bottom, #e53a40, #f05056);
+    background-image: linear-gradient(to top, #e53a40, #f05056);
+  }
+
+  .channel .channel-badge{
+    margin-top: 3px;
+  }
+
+  .group-new .member-list{
+    height: ~'calc(100% - 115px)';
   }
 
 }
