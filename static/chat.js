@@ -1,7 +1,8 @@
 // CHAT 1.0.11
 var mobile = true;
-var animationDuration = 1000;
+var animationDuration = 750;
 var mode = 0; // 0 == Chats tab, 1 == Contacts tab, 2 == Conversation tab, 3 == Information tab, 4 == creating group, -1 == transition
+var prevMode = 0;
 
 var myContacts = [];
 var groupMembers = [];
@@ -969,6 +970,8 @@ var selectContact = function( contact ){
 
   }else{
 
+    prevMode = mode;
+    mode = -1;
     $('.initial-header').transition({
       'x': '-100%'
     },animationDuration);
@@ -979,6 +982,7 @@ var selectContact = function( contact ){
     content.show().transition({
       'x' : 0
     },animationDuration, function(){
+      mode = 2;
       $(this).addClass( 'visible' );
       msgInput.focus();
     });
@@ -1000,8 +1004,9 @@ var selectContact = function( contact ){
   }else{
 
     $( '.chatDom.active' ).removeClass( 'active' );
-    $( '.chatDom-' + channel.id ).addClass( 'active' );;
+    $( '.chatDom-' + channel.id ).addClass( 'active' );
     listMessages( channel );
+    changeTab('chat');
 
   }
 
@@ -1039,6 +1044,8 @@ var selectChat = function( chat ){
 
   }else{
 
+    prevMode = mode;
+    mode = -1;
     $('.initial-header').transition({
       'x': '-100%'
     },animationDuration);
@@ -1049,6 +1056,7 @@ var selectChat = function( chat ){
     content.show().transition({
       'x' : 0
     },animationDuration, function(){
+      mode = 2;
       $(this).addClass( 'visible' );
       msgInput.focus();
     });
@@ -1969,7 +1977,6 @@ var getStringHour = function( date ){
 var newGroup = function(){
 
   // Make it visible
-  mode = 4;
 
   $( '.group-menu .visible' ).removeClass( 'visible' );
   groupMenu.addClass( 'visible' ).addClass( 'group-new' ).removeClass( 'group-edit' );
@@ -1979,9 +1986,15 @@ var newGroup = function(){
 
   if( mobile ){
 
+    prevMode = mode;
+    mode = -1;
     $('.group-menu').transition({
       'x' : 0
-    }, animationDuration);
+    }, animationDuration, function(){
+      mode = 4;
+    });
+    $('.initial-header .new-group').removeClass('visible');
+    $('.initial-header .back-button').addClass('visible');
 
   }
 
@@ -2672,8 +2685,14 @@ app.on('click','.back-button', function(){
 
   if( mobile ){
 
-    if( $('.group-menu').hasClass('visible') ){
+    if( mode == 3 || mode == 4 ){
 
+      if( mode == 4 ){
+        $('.initial-header .new-group').addClass('visible');
+        $('.initial-header .back-button').removeClass('visible');
+      }
+
+      //mode = -1;
       $('.group-menu').transition({
         'x' : '100%'
       }, animationDuration, function(){
@@ -2683,8 +2702,9 @@ app.on('click','.back-button', function(){
 
       });
 
-    }else if( content.hasClass('visible') ){
+    }else if( mode == 2 ){
 
+      //mode = -1;
       $('.initial-header').transition({
         'x': '0'
       },animationDuration);

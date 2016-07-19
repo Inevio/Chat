@@ -1812,7 +1812,16 @@
 
   .group-name-input{
     width: ~'calc(100% - 26px)';
-    border-radius: 14px;
+    height: 39px;
+    border-radius: 20px;
+  }
+
+  .group-name-input input{
+    margin-top: 9px;
+    margin-left: 7px;
+    margin-right: 7px;
+    width: ~'calc(100% - 14px)';
+    font-size: 19px;
   }
 
   .ui-input input{
@@ -1951,6 +1960,10 @@
 
   .group-new .member-list{
     height: ~'calc(100% - 115px)';
+  }
+
+  .message-body{
+    max-width: ~'calc(100% - 69px)';
   }
 
 }
