@@ -524,6 +524,7 @@ var changeTab = function(tab){
     case 'chat':
 
     mode = 0;
+    prevMode = mode;
     contactsButton.removeClass('active');
     chatButton.addClass('active');
     contactTab.removeClass( 'visible' );
@@ -540,6 +541,7 @@ var changeTab = function(tab){
     case 'contact':
 
     mode = 1;
+    prevMode = mode;
     chatButton.removeClass( 'active' );
     contactsButton.addClass( 'active' );
     chatTab.removeClass( 'visible' );
@@ -2286,9 +2288,13 @@ var viewGroup = function(){
 
   if( mobile ){
 
+    prevMode = mode;
+    mode = -1;
     $('.group-menu').transition({
       'x' : 0
-    }, animationDuration);
+    }, animationDuration, function(){
+      mode = 3;
+    });
 
   }
 
@@ -2692,11 +2698,12 @@ app.on('click','.back-button', function(){
         $('.initial-header .back-button').removeClass('visible');
       }
 
-      //mode = -1;
+      mode = -1;
       $('.group-menu').transition({
         'x' : '100%'
       }, animationDuration, function(){
 
+        mode = prevMode;
         groupMenu.removeClass( 'visible' );
         removeGroup.removeClass( 'visible' );
 
@@ -2704,7 +2711,7 @@ app.on('click','.back-button', function(){
 
     }else if( mode == 2 ){
 
-      //mode = -1;
+      mode = -1;
       $('.initial-header').transition({
         'x': '0'
       },animationDuration);
@@ -2721,6 +2728,7 @@ app.on('click','.back-button', function(){
       content.stop().clearQueue().transition({
         'x' : '100%'
       },animationDuration, function(){
+        mode = prevMode;
         $(this).hide().removeClass( 'visible' );
       });
 
