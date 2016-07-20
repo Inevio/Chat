@@ -477,6 +477,10 @@ app
 
   $( '.message-container' ).scrollTop(9999999);
 
+})
+
+.on('click','.back-button', function(){
+  goBack();
 });
 // END APP EVENTS
 
@@ -1404,7 +1408,7 @@ var printMessage = function( msg , sender , time , animate , byScroll , checked 
     firstLoad = false;
   }
 
-  console.log('msg',date);
+  //console.log('msg',date);
   if( !byScroll && currentDate && ( date.getDate() > currentDate.getDate() || date.getMonth() > currentDate.getMonth() || date.getFullYear() > currentDate.getFullYear() )){
 
     if ( currentDate.getFullYear() == yesterday.getFullYear() && currentDate.getMonth() == yesterday.getMonth() && currentDate.getDate() == yesterday.getDate() ) {
@@ -1414,13 +1418,13 @@ var printMessage = function( msg , sender , time , animate , byScroll , checked 
     }
 
     message.before( separator );
-    console.log('insertsep before',separator.find('span').text());
+    //console.log('insertsep before',separator.find('span').text());
 
   }else if( byScroll && currentDate && ( date.getDate() < currentDate.getDate() || date.getMonth() < currentDate.getMonth() || date.getFullYear() < currentDate.getFullYear() )){
 
     separator.find('span').text(timeElapsed(currentDate));
     message.before( separator );
-    console.log('insertsep before',separator.find('span').text());
+    //console.log('insertsep before',separator.find('span').text());
 
   }
 
@@ -2687,7 +2691,7 @@ var loadMoreMsgs = function(){
 
 }
 
-app.on('click','.back-button', function(){
+var goBack = function(){
 
   if( mobile ){
 
@@ -2719,7 +2723,6 @@ app.on('click','.back-button', function(){
         'x': '100%'
       },animationDuration);
 
-      //backButton.hide();
       $( '.contactDom.active' ).removeClass( 'active' );
       $( '.chatDom.active' ).removeClass( 'active' );
       $('.ui-navbar').transition({
@@ -2736,7 +2739,7 @@ app.on('click','.back-button', function(){
 
   }
 
-});
+}
 
 // INIT Chat
 initChat();
