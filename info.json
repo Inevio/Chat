@@ -1,4 +1,3 @@
-
 {
 
     "name"    : "Chat",
@@ -56,6 +55,35 @@
                     "css"    : ["chat.css"],
                     "script" : ["chat.js" , "jquery.textarea_autosize.min.js"],
                     "start"  : ["start.js"]
+
+                },
+
+                "hidden" : {
+
+                  "template" : "chat.html",
+
+                  "maxizable" : false,
+                  "resizable" : false,
+
+                  "width"  : {
+
+                      "default" : 996,
+                      "min"     : 880,
+                      "max"     : 0
+
+                  },
+
+                  "height" : {
+
+                      "default" : 638,
+                      "min"     : 450,
+                      "max"     : 0
+
+                  },
+
+                  "css"    : [],
+                  "script" : [],
+                  "start"  : ["processCosmos.js"]
 
                 }
 
