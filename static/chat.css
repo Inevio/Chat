@@ -1769,7 +1769,9 @@
   .contact .contact-name{
     font-size: 17px;
     color: white;
-    margin-top: 16px;
+    margin-top: 15px;
+    line-height: 1.1em;
+    width: ~'calc(100% - 100px)';
   }
 
   .conected-indicator{
@@ -1827,6 +1829,10 @@
   .ui-input input{
     margin-top: 6px;
     padding-top: 0px;
+  }
+
+  .ui-input.active .delete-content, .ui-input-search.active .delete-content{
+    display: none;
   }
 
   .initial-header{
