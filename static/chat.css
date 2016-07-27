@@ -1827,11 +1827,11 @@
   }
 
   .ui-input input{
-    margin-top: 6px;
+    margin-top: 8px;
     padding-top: 0px;
   }
 
-  .ui-input.active .delete-content, .ui-input-search.active .delete-content{
+  .ui-input.active figure, .ui-input-search.active .delete-content{
     display: none;
   }
 
@@ -1970,6 +1970,20 @@
 
   .message-body{
     max-width: ~'calc(100% - 69px)';
+  }
+
+  .accept-button{
+    float: right;
+    margin-right: 15px;
+    margin-top: 19px;
+    font-size: 16px;
+    color: #60b25e;
+    cursor: pointer;
+    display: none;
+  }
+
+  .search-members{
+    border-radius: 20px;
   }
 
 }
