@@ -38,7 +38,7 @@ var backGroup         = $( '.group-menu .back' );
 var memberPrototype   = $( '.member.wz-prototype' );
 var memberList        = $( '.member-list' );
 var cancelNewGroup    = $( '.cancel-group' );
-var saveNewGroup      = $( '.save-group' );
+var saveNewGroup      = $( '.save-group, .accept-button' );
 var removeGroup       = $( '.remove-group' );
 var conversationDel   = $( '.conversation-input .delete-content' );
 var closeApp          = $( '.ui-close' );
@@ -2010,6 +2010,8 @@ var newGroup = function(){
       });
       $('.initial-header .new-group').removeClass('visible');
       $('.initial-header .back-button').addClass('visible');
+      $('.initial-header .more-button').hide();
+      $('.initial-header .accept-button').show();
 
     }
 
@@ -2716,6 +2718,8 @@ var goBack = function(){
       if( mode == 4 ){
         $('.initial-header .new-group').addClass('visible');
         $('.initial-header .back-button').removeClass('visible');
+        $('.initial-header .more-button').show();
+        $('.initial-header .accept-button').hide();
       }
 
       mode = -1;
