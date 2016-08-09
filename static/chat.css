@@ -1702,6 +1702,16 @@
     max-width: ~'calc(100% - 40px)';
   }
 
+  .group-new .member{
+    width: ~'calc(100% - 75px)';
+    margin-right: 0px;
+    margin-left: 75px;
+  }
+
+  .group-new .member .ui-checkbox{
+    margin-top: 18px;
+  }
+
   .member{
     width: ~'calc(100% - 55px)';
     margin-right: 0px;
