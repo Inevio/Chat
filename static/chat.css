@@ -1982,7 +1982,7 @@
     max-width: ~'calc(100% - 69px)';
   }
 
-  .accept-button{
+  .accept-button, .edit-button{
     float: right;
     margin-right: 15px;
     margin-top: 19px;
@@ -1990,6 +1990,11 @@
     color: #60b25e;
     cursor: pointer;
     display: none;
+  }
+
+  .info-header .edit-button{
+    display: block;
+    color: white;
   }
 
   .search-members{
