@@ -1,6 +1,6 @@
 // CHAT 1.0.11
 var mobile = true;
-var animationDuration = 750;
+var animationDuration = 500;
 var mode = 0; // 0 == Chats tab, 1 == Contacts tab, 2 == Conversation tab, 3 == Information tab, 4 == creating group, -1 == transition
 var prevMode = 0;
 
@@ -38,7 +38,7 @@ var backGroup         = $( '.group-menu .back' );
 var memberPrototype   = $( '.member.wz-prototype' );
 var memberList        = $( '.member-list' );
 var cancelNewGroup    = $( '.cancel-group' );
-var saveNewGroup      = $( '.save-group, .accept-button' );
+var saveNewGroup      = $( '.save-group, .accept-button, .edit-button.accept' );
 var removeGroup       = $( '.remove-group' );
 var conversationDel   = $( '.conversation-input .delete-content' );
 var closeApp          = $( '.ui-close' );
@@ -2316,6 +2316,13 @@ var viewGroup = function(){
         mode = 3;
       });
 
+      $('.conver-header').transition({
+        'x': '-100%'
+      },animationDuration);
+      $('.info-header').transition({
+        'x': '0'
+      },animationDuration);
+
     }
 
     $( '.memberDom' ).remove();
@@ -2716,10 +2723,21 @@ var goBack = function(){
     if( mode == 3 || mode == 4 ){
 
       if( mode == 4 ){
+
         $('.initial-header .new-group').addClass('visible');
         $('.initial-header .back-button').removeClass('visible');
         $('.initial-header .more-button').show();
         $('.initial-header .accept-button').hide();
+
+      }else{
+
+        $('.conver-header').transition({
+          'x': '0'
+        },animationDuration);
+        $('.info-header').transition({
+          'x': '100%'
+        },animationDuration);
+
       }
 
       mode = -1;
@@ -2751,8 +2769,10 @@ var goBack = function(){
       content.stop().clearQueue().transition({
         'x' : '100%'
       },animationDuration, function(){
+
         mode = prevMode;
         $(this).hide().removeClass( 'visible' );
+
       });
 
     }
