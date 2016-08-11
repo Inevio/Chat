@@ -1,7 +1,7 @@
 // CHAT 1.0.11
 var mobile = true;
 var animationDuration = 500;
-var mode = 0; // 0 == Chats tab, 1 == Contacts tab, 2 == Conversation tab, 3 == Information tab, 4 == creating group, -1 == transition
+var mode = 0; // 0 == Chats tab, 1 == Contacts tab, 2 == Conversation tab, 3 == Information tab, 4 == creating group, 5 == editing group, -1 == transition
 var prevMode = 0;
 
 var myContacts = [];
@@ -38,7 +38,7 @@ var backGroup         = $( '.group-menu .back' );
 var memberPrototype   = $( '.member.wz-prototype' );
 var memberList        = $( '.member-list' );
 var cancelNewGroup    = $( '.cancel-group' );
-var saveNewGroup      = $( '.save-group, .accept-button, .edit-button.accept' );
+var saveNewGroup      = $( '.save-group, .accept-button' );
 var removeGroup       = $( '.remove-group' );
 var conversationDel   = $( '.conversation-input .delete-content' );
 var closeApp          = $( '.ui-close' );
@@ -390,7 +390,7 @@ app
 
 })
 
-.on( 'click' , '.group-header .edit' , function(){
+.on( 'click' , '.group-header .edit, .edit-button' , function(){
 
   editGroupMode( $( '.chatDom.active' ).data( 'isGroup' ) );
 
@@ -2374,6 +2374,16 @@ var viewGroup = function(){
 
 var editGroupMode = function( groupName ){
 
+  prevMode = mode;
+  mode = 5;
+
+  if( mobile ){
+
+    $('.edit-button').hide();
+    $('.accept-button').show();
+
+  }
+
   $( '.group-menu .visible' ).removeClass( 'visible' );
   groupMenu.addClass( 'visible' ).addClass( 'group-edit' );
   $( '.group-edit' ).addClass( 'visible' );
@@ -2774,6 +2784,27 @@ var goBack = function(){
         $(this).hide().removeClass( 'visible' );
 
       });
+
+    }else if( mode == 5 ){
+
+      mode = -1;
+      $('.group-menu').transition({
+        'x' : '100%'
+      }, animationDuration, function(){
+
+        mode = 2;
+        $('.accept-button').hide();
+        $('.edit-button').show();
+        cancelNewGroup.click();
+
+      });
+
+      $('.conver-header').transition({
+        'x': '0'
+      },animationDuration);
+      $('.info-header').transition({
+        'x': '100%'
+      },animationDuration);
 
     }
 
