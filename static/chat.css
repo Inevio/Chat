@@ -1702,7 +1702,7 @@
     max-width: ~'calc(100% - 40px)';
   }
 
-  .group-new .member{
+  .group-new .member, .group-edit .member{
     width: ~'calc(100% - 75px)';
     margin-right: 0px;
     margin-left: 75px;
@@ -1995,6 +1995,10 @@
   .info-header .edit-button{
     display: block;
     color: white;
+  }
+
+  .info-header .accept-button{
+    display: none;
   }
 
   .search-members{
