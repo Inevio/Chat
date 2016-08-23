@@ -1283,7 +1283,6 @@ var printMessage = function( msg , sender , time , animate , byScroll , checked 
     firstLoad = false;
   }
 
-  console.log('msg',date);
   if( !byScroll && currentDate && ( date.getDate() > currentDate.getDate() || date.getMonth() > currentDate.getMonth() || date.getFullYear() > currentDate.getFullYear() )){
 
     if ( currentDate.getFullYear() == yesterday.getFullYear() && currentDate.getMonth() == yesterday.getMonth() && currentDate.getDate() == yesterday.getDate() ) {
@@ -1414,6 +1413,7 @@ var send = function( message , channel , channelDom ){
       var myName = wz.system.user().name;
       var sender = ( groupName ? ( groupName + ' - ' + myName ) : myName ).trim() + ':\n';
 
+      console.log(message);
       channel.send(  {
 
         'action' : 'message' ,
@@ -1533,6 +1533,7 @@ var setActiveChat = function( chat ){
 }
 
 var objectRecieved = function( message , o ){
+  console.log(message, o);
 
   var channelActive = $( '.chatDom.active' ).data( 'channel' );
 
