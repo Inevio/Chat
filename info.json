@@ -54,7 +54,7 @@
 
                     "css"    : ["chat.css"],
                     "script" : ["chat.js" , "jquery.textarea_autosize.min.js"],
-                    "start"  : ["start.js" , "processOpenApp.js"]
+                    "start"  : ["start.js"]
 
                 }
 
