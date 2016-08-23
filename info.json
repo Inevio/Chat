@@ -83,7 +83,7 @@
 
                   "css"    : [],
                   "script" : [],
-                  "start"  : ["processCosmos.js"]
+                  "start"  : ["processOpenApp.js"]
 
                 }
 
