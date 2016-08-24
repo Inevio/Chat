@@ -1,4 +1,5 @@
 var app  = $( this );
+var mobile = true;
 
 if ( !params ) {
 

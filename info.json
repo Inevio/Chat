@@ -1,6 +1,6 @@
 {
 
-    "name"    : "Chat",
+    "name"    : "Chat Mobile",
     "version" : "1.0",
     "stage"   : "beta",
     "api"     : "a100d2",
@@ -38,22 +38,49 @@
 
                     "width"  : {
 
-                        "default" : 996,
-                        "min"     : 880,
+                        "default" : 367,
+                        "min"     : 367,
                         "max"     : 0
 
                     },
 
                     "height" : {
 
-                        "default" : 638,
-                        "min"     : 450,
+                        "default" : 675,
+                        "min"     : 675,
                         "max"     : 0
 
                     },
 
                     "css"    : ["chat.css"],
                     "script" : ["chat.js" , "jquery.textarea_autosize.min.js"],
+                    "start"  : ["start.js"]
+
+                }
+
+            }
+
+        },
+
+        "mobile" : {
+
+            "primary" : "main",
+            "service" : ["service.js"],
+            "common"  : {
+
+                "css"    : [],
+                "script" : [],
+                "start"  : []
+
+            },
+
+            "view" : {
+
+                "main" : {
+
+                    "template" : "chat.html",
+                    "css"    : ["chat.css"],
+                    "script" : ["chat.js"],
                     "start"  : ["start.js"]
 
                 }
