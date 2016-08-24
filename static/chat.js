@@ -1,5 +1,4 @@
 // CHAT 1.0.11
-var mobile = true;
 var animationDuration = 500;
 var mode = 0; // 0 == Chats tab, 1 == Contacts tab, 2 == Conversation tab, 3 == Information tab, 4 == creating group, 5 == editing group, -1 == transition
 var prevMode = 0;
@@ -50,6 +49,8 @@ var separatorPrototype = $( '.separator.wz-prototype' );
 var backButton        = $( '.back-button' );
 var myContactID       = api.system.user().id;
 var adminMode         = false;
+
+var mobile = app.hasClass('mobile');
 
 // COLOR PALETTE
 var colorPalette = [
