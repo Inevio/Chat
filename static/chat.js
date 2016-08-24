@@ -1416,10 +1416,58 @@ var initChat = function(){
     checkTab();
     getContacts();
     getChats();
+    preselectChat();
 
     msgInput.textareaAutoSize();
 
   });
+
+}
+
+var preselectChat = function(){
+
+  if ( params ) {
+
+    var action = params[0];
+    var o = params[1];
+    var callback = params[2];
+
+    if ( action === 'open-chat' ) {
+
+      if ( o.type === 'world' ) {
+
+        var world = o.content;
+
+        wql.getWorldChannel( world.id , function( error , obj ){
+
+          if ( error ) { console.log('ERROR: ', error ); }
+
+          var chatId = obj[0].id;
+
+          var timeout = setTimeout(function(){
+            $( '.chatDom-' + chatId ).click();
+          }, 1000);
+
+          callback( 'chat abierto, todo ok!' );
+
+        });
+
+      }else if( o.type === 'user' ){
+
+        var user = o.content;
+
+        var timeout = setTimeout(function(){
+          changeTab( 'contact' );
+          $( '.user-id-' + user ).click();
+        }, 1000);
+
+        callback( 'chat abierto, todo ok!' );
+
+      }
+
+    }
+
+  }
 
 }
 
