@@ -1,5 +1,9 @@
 var app  = $( this );
-var mobile = true;
+var mobile = app.hasClass('mobile');
+
+if( mobile ){
+  app.addClass('dark');
+}
 
 if ( !params ) {
 
