@@ -249,53 +249,6 @@ msgContainer.on( 'scroll' , function( e ){
 
 });
 
-app.on( 'app-param', function( e, params ){
-
-  var action = params[0];
-  var world = params[1];
-  var callback = params[2];
-
-  if (!world.owner) {
-    return;
-  }
-
-  switch (action) {
-
-    case 'new-chat':
-
-
-    api.channel( function( error , channel ){
-
-      if ( error ) { console.log('ERROR: ', error ); }
-
-      wql.addWorldChannel( [ channel.id , world.name , world.id ] , function( error , message ){
-
-        if ( error ) { console.log('ERROR: ', error ); }
-
-        wql.addUserInChannel( [ channel.id , myContactID ] , function( error , message ){
-
-          if ( error ) { console.log('ERROR: ', error ); }
-
-          channel.addUser( myContactID , function( error ){
-
-            if ( error ) { console.log('ERROR: ', error ); }
-
-            callback( 'chat generado, todo ok!' );
-            wz.app.removeView(app);
-
-          });
-
-        });
-
-      });
-
-    });
-    break;
-
-
-  }
-
-});
 
 // END UI EVENTS
 
@@ -465,14 +418,6 @@ app
 
 })
 
-.on( 'app-param', function( e, params ){
-
-  var interval = setInterval(function(){
-    $( '.chatDom-' + params ).click();
-    clearInterval(interval);
-  }, 1000);
-
-})
 
 .on( 'ui-view-resize ui-view-maximize ui-view-unmaximize', function(){
 
@@ -1417,7 +1362,6 @@ var printMessage = function( msg , sender , time , animate , byScroll , checked 
     firstLoad = false;
   }
 
-  //console.log('msg',date);
   if( !byScroll && currentDate && ( date.getDate() > currentDate.getDate() || date.getMonth() > currentDate.getMonth() || date.getFullYear() > currentDate.getFullYear() )){
 
     if ( currentDate.getFullYear() == yesterday.getFullYear() && currentDate.getMonth() == yesterday.getMonth() && currentDate.getDate() == yesterday.getDate() ) {
@@ -1548,6 +1492,7 @@ var send = function( message , channel , channelDom ){
       var myName = wz.system.user().name;
       var sender = ( groupName ? ( groupName + ' - ' + myName ) : myName ).trim() + ':\n';
 
+      console.log(message);
       channel.send(  {
 
         'action' : 'message' ,
@@ -1667,6 +1612,7 @@ var setActiveChat = function( chat ){
 }
 
 var objectRecieved = function( message , o ){
+  console.log(message, o);
 
   var channelActive = $( '.chatDom.active' ).data( 'channel' );
 
