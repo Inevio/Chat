@@ -1507,7 +1507,7 @@
   margin-left: 2px;
 }
 
-.wz-view.mobile{
+.wz-view.wz-mobile-view{
 
   .ui-header-desktop{
     display: none;

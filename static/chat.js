@@ -50,7 +50,7 @@ var backButton        = $( '.back-button' );
 var myContactID       = api.system.user().id;
 var adminMode         = false;
 
-var mobile = app.hasClass('mobile');
+var mobile = app.hasClass('wz-mobile-view');
 
 // COLOR PALETTE
 var colorPalette = [

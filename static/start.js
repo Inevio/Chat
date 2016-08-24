@@ -1,5 +1,5 @@
 var app  = $( this );
-var mobile = app.hasClass('mobile');
+var mobile = app.hasClass('wz-mobile-view');
 
 if( mobile ){
   app.addClass('dark');
@@ -31,6 +31,7 @@ if ( !params ) {
 
 }else{
 
+  console.log(params);
   var action = params[0];
   var o = params[1];
   var callback = params[2];
