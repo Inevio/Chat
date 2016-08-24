@@ -61,6 +61,33 @@
 
             }
 
+        },
+
+        "mobile" : {
+
+            "primary" : "main",
+            "service" : ["service.js"],
+            "common"  : {
+
+                "css"    : [],
+                "script" : [],
+                "start"  : []
+
+            },
+
+            "view" : {
+
+                "main" : {
+
+                    "template" : "chat.html",
+                    "css"    : ["chat.css"],
+                    "script" : ["chat.js"],
+                    "start"  : ["start.js"]
+
+                }
+
+            }
+
         }
 
     },
