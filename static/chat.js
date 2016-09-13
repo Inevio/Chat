@@ -1426,7 +1426,7 @@ var initChat = function(){
 var sendMessage = function(){
 
   var txt = msgInput.val();
-  var channel = $( '.chatDom.active' ).data( 'channel' );
+  var channel    = $( '.chatDom.active' ).data( 'channel' );
   var channelDom = $( '.chatDom.active' );
   var contactApi = $( '.contactDom.active' ).data( 'contact' );
 
@@ -1437,19 +1437,19 @@ var sendMessage = function(){
 
     api.channel( function( error , channel ){
 
-      if ( error ) { console.log('ERROR: ', error ); }
+      if ( error ) { console.log('ERROR1: ', error ); }
 
       wql.addChannel( [ channel.id , null ] , function( error , message ){
 
-        if ( error ) { console.log('ERROR: ', error ); }
+        if ( error ) { console.log('ERROR2: ', error ); }
 
         wql.addUserInChannel( [ channel.id , contactApi.id ] , function( error , message ){
 
-          if ( error ) { console.log('ERROR: ', error ); }
+          if ( error ) { console.log('ERROR3: ', error ); }
 
           wql.addUserInChannel( [ channel.id , myContactID ] , function( error , message ){
 
-            if ( error ) { console.log('ERROR: ', error ); }
+            if ( error ) { console.log('ERROR4: ', error ); }
 
             channel.addUser( contactApi.id , function(){
 
@@ -2599,17 +2599,21 @@ var warnWriting = function(){
   lastMsg = Date.now();
   var channel = $( '.active.chatDom' ).data( 'channel' );
 
-  warnWritingTimeOut = setTimeout(function(){
+  if( channel ){
 
-    if ( ( Date.now() - lastMsg ) > 500  ) {
+    warnWritingTimeOut = setTimeout(function(){
 
-      channel.send(  { 'action' : 'writing' , 'id' : channel.id } , function( error ){});
+      if ( ( Date.now() - lastMsg ) > 500  ) {
 
-    }
+        channel.send(  { 'action' : 'writing' , 'id' : channel.id } , function( error ){});
 
-    warnWritingTimeOut = false;
+      }
 
-  }, 500);
+      warnWritingTimeOut = false;
+
+    }, 500);
+
+  }
 
 }
 

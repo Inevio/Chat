@@ -80,7 +80,7 @@
 
                     "template" : "chat.html",
                     "css"    : ["chat.css"],
-                    "script" : ["chat.js"],
+                    "script" : ["chat.js", "jquery.textarea_autosize.min.js"],
                     "start"  : ["start.js"]
 
                 }
