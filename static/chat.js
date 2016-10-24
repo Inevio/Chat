@@ -612,12 +612,12 @@ var getChats = function( callback ){
         return;
       }
 
-      wql.getUsersInChannel( channel.id , function( error , users ){
+      api.channel( channel.id , function( error, channelApi ){
 
-        api.user.friendList( false, function( error, friends ){
+        wql.getUsersInChannel( channel.id , function( error , users ){
 
-          var isGroup = channel.name != null ? true : false;
           var groupName = channel.name;
+          var isGroup = groupName != null ? true : false;
 
           if( !isGroup ){
 
@@ -634,58 +634,35 @@ var getChats = function( callback ){
 
             }
 
+            api.user( you , function( err , user ){
 
-            asyncEach( friends , function( element , cb ){
-
-              if ( element.id == you ) {
-
-                api.channel( channel.id , function( error, channel ){
-
-                  appendChat( channel , element , groupName , cb );
-
-                });
-
-              }else{
-
-                cb();
-
-              }
-
-            } , function(){
-
-              if( callback ){
-                callback();
-              }
+              appendChat( channelApi , user , groupName , function(){} );
 
             });
 
           }else{
 
-            api.channel( channel.id , function( error, channel ){
+            var usersInGroup = [];
 
-              var usersInGroup = [];
+            asyncEach( users , function( user , cb ){
 
-              asyncEach( users , function( user , cb ){
+              wz.user( user.user , function( e , user ){
 
-                wz.user( user.user , function( e , user ){
+                if ( user.id != myContactID ) {
+                  usersInGroup.push( user );
+                }
+                cb();
 
-                  if ( user.id != myContactID ) {
-                    usersInGroup.push( user );
-                  }
-                  cb();
-
-                });
+              });
 
 
-              }, function(){
+            }, function(){
 
-                appendChat( channel , usersInGroup , groupName , function(){
+              appendChat( channelApi , usersInGroup , groupName , function(){
 
-                  if( callback ){
-                    callback();
-                  }
-
-                });
+                if( callback ){
+                  callback();
+                }
 
               });
 
@@ -744,17 +721,17 @@ var appendContact = function( c , channel , callback ){
 
 }
 
-var appendChat = function( c , user , groupName , callback ){
+var appendChat = function( channel , user , groupName , callback ){
 
   chatButton.click();
 
-  wql.getMessages( c.id , function( error, messages ){
+  wql.getMessages( channel.id , function( error, messages ){
 
     messages = messages.reverse();
 
-    wql.getLastRead( [c.id, myContactID] , function( error , lastRead ){
+    wql.getLastRead( [channel.id, myContactID] , function( error , lastRead ){
 
-      wql.getUnreads( [c.id, lastRead[0]['last_read']] , function( error , notSeen ){
+      wql.getUnreads( [channel.id, lastRead[0]['last_read']] , function( error , notSeen ){
 
         if ( error ) { console.log('ERROR: ', error ); }
 
@@ -775,7 +752,7 @@ var appendChat = function( c , user , groupName , callback ){
         chat
         .removeClass( 'wz-prototype' )
         .addClass( 'chatDom' )
-        .addClass( 'chatDom-' + c.id );
+        .addClass( 'chatDom-' + channel.id );
 
 
 
@@ -834,7 +811,7 @@ var appendChat = function( c , user , groupName , callback ){
         }
 
         // No repeat chats already appended
-        if ( $( '.chatDom-' + c.id ).length != 0 ) {
+        if ( $( '.chatDom-' + channel.id ).length != 0 ) {
 
           if( callback ){ callback(); };
           return;
@@ -853,15 +830,15 @@ var appendChat = function( c , user , groupName , callback ){
 
           if ( notSeen[0] != undefined && notSeen[0]['COUNT(*)'] > 0 ) {
 
-            $('.chatDom-' + c.id).data( 'notSeen' , notSeen[0]['COUNT(*)'] );
-            $('.chatDom-' + c.id).find( '.channel-badge' ).addClass('visible').find('span').text( notSeen[0]['COUNT(*)'] );
+            $('.chatDom-' + channel.id).data( 'notSeen' , notSeen[0]['COUNT(*)'] );
+            $('.chatDom-' + channel.id).find( '.channel-badge' ).addClass('visible').find('span').text( notSeen[0]['COUNT(*)'] );
             updateBadge( notSeen[0]['COUNT(*)'] , true );
 
           }
 
         }
 
-        chat.data( 'channel' , c );
+        chat.data( 'channel' , channel );
         chat.data( 'user' , user );
         chat.data( 'isGroup' , groupName );
 
