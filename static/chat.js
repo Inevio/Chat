@@ -636,7 +636,13 @@ var getChats = function( callback ){
 
             api.user( you , function( err , user ){
 
-              appendChat( channelApi , user , groupName , function(){} );
+              appendChat( channelApi , user , groupName , function(){
+
+                if( callback ){
+                  callback();
+                }
+
+              } );
 
             });
 
@@ -1309,11 +1315,21 @@ var printMessage = function( msg , sender , time , animate , byScroll , checked 
 
   if (byScroll) {
 
-    $( '.messageDom' ).eq(0).before( message );
+    if ( $('.msg-id-' + msg.id).length === 0 ) {
+      $( '.messageDom' ).eq(0).before( message );
+    }else{
+      console.log('REP');
+      return;
+    }
 
   }else{
 
-    msgContainer.append( message );
+    if ( $('.msg-id-' + msg.id).length === 0 ) {
+      msgContainer.append( message );
+    }else{
+      console.log('REP');
+      return;
+    }
 
   }
 
