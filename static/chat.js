@@ -12,6 +12,7 @@ var listenWritingTimeOut = false;
 var loadingMsgs = false;
 var currentDate;
 var firstLoad;
+var lastMessageReceived;
 
 // Local Variables
 var app               = $( this );
@@ -1095,25 +1096,68 @@ var listMessages = function( channel ){
 
     if ( error ) { console.log('ERROR: ', error ); }
 
-    for( var i = 0; i < messages.length; i++ ){
+    if ( isGroup ) {
 
-      if ( messages[i].sender == myContactID ) {
+      // Check for antique users messages
+      var userChecked = [];
+      var usersNeccesary = [];
 
-        printMessage( messages[ i ] , null , messages[ i ].time );
+      messages.forEach(function( message ){
 
-      }else{
+        var userFound = false;
 
-        if ( !isGroup ) {
+        users.forEach(function( user ){
 
-          printMessage( messages[ i ] , users , messages[ i ].time );
+          if ( user.id === message.sender ) {
+
+            userFound = true;
+            usersNeccesary.push( user );
+
+          }
+
+        });
+
+        if ( !userFound ) {
+
+          var userPromise = $.Deferred();
+          userChecked.push( userPromise );
+          api.user( message.sender , function( err , usr ){
+
+            usersNeccesary.push( usr );
+            userPromise.resolve();
+
+          })
+
+        }
+
+      });
+
+    }
+
+    // All users necessary on var users
+    $.when.apply( null, userChecked ).done( function(){
+
+      for( var i = 0; i < messages.length; i++ ){
+
+        if ( messages[i].sender == myContactID ) {
+
+          printMessage( messages[ i ] , null , messages[ i ].time );
 
         }else{
 
-          for (var j = 0; j < users.length; j++) {
+          if ( !isGroup ) {
 
-            if ( users[j].id == messages[ i ].sender ) {
+            printMessage( messages[ i ] , usersNeccesary , messages[ i ].time );
 
-              printMessage( messages[ i ] , users[j] , messages[ i ].time );
+          }else{
+
+            for (var j = 0; j < usersNeccesary.length; j++) {
+
+              if ( usersNeccesary[j].id == messages[ i ].sender ) {
+
+                printMessage( messages[ i ] , usersNeccesary[j] , messages[ i ].time );
+
+              }
 
             }
 
@@ -1123,36 +1167,52 @@ var listMessages = function( channel ){
 
       }
 
-    }
+      if( messages && messages.length > 0){
 
-    if( messages && messages.length > 0){
+        var lastReadId = messages[ messages.length - 1].id;
 
-      var lastReadId = messages[ messages.length - 1].id;
+        wql.updateLastRead( [ lastReadId , channel.id, myContactID ] , function( error , message ){
 
-      wql.updateLastRead( [ lastReadId , channel.id, myContactID ] , function( error , message ){
-
-        if ( error ) { console.log('ERROR: ', error ); }
-        $('.chatDom.active').data( 'notSeen' , 0 );
+          if ( error ) { console.log('ERROR: ', error ); }
+          $('.chatDom.active').data( 'notSeen' , 0 );
 
 
-        if ( isGroup ) {
+          if ( isGroup ) {
 
-          var aux = 0 ;
+            var aux = 0 ;
 
-          $.each( users , function( i , user ){
+            $.each( usersNeccesary , function( i , user ){
 
-            wql.getLastRead( [ channel.id , user.id ] , function( error , lastRead ){
+              wql.getLastRead( [ channel.id , user.id ] , function( error , lastRead ){
 
-              if ( lastRead[0].last_read > aux ) {
+                if ( lastRead[0].last_read > aux ) {
 
-                aux = lastRead[0].last_read;
-                var lastMsgRead = $( '.msg-id-' + lastRead[0].last_read);
-                var index = lastMsgRead.index() - 1;
+                  aux = lastRead[0].last_read;
+                  var lastMsgRead = $( '.msg-id-' + lastRead[0].last_read);
+                  var index = lastMsgRead.index() - 1;
 
-                $( '.messageDom' ).removeClass('readed');
-                lastMsgRead.parent().find( '.messageDom' ).slice( 0 , index ).addClass( 'readed' );
+                  $( '.messageDom' ).removeClass('readed');
+                  lastMsgRead.parent().find( '.messageDom' ).slice( 0 , index ).addClass( 'readed' );
 
-              }
+                }
+
+              });
+
+              channel.send(  { 'action' : 'updateRead' , 'id' : channel.id , 'lastRead' : lastReadId } , function( error ){
+
+              });
+
+            });
+
+          }else {
+
+            wql.getLastRead( [ channel.id , usersNeccesary.id ] , function( error , lastRead ){
+
+              var lastMsgRead = $( '.msg-id-' + lastRead[0].last_read);
+              var index = lastMsgRead.index() - 1;
+
+              $( '.messageDom' ).removeClass('readed');
+              lastMsgRead.parent().find( '.messageDom' ).slice( 0 , index ).addClass( 'readed' );
 
             });
 
@@ -1160,29 +1220,13 @@ var listMessages = function( channel ){
 
             });
 
-          });
+          }
 
-        }else {
+        });
 
-          wql.getLastRead( [ channel.id , users.id ] , function( error , lastRead ){
+      }
 
-            var lastMsgRead = $( '.msg-id-' + lastRead[0].last_read);
-            var index = lastMsgRead.index() - 1;
-
-            $( '.messageDom' ).removeClass('readed');
-            lastMsgRead.parent().find( '.messageDom' ).slice( 0 , index ).addClass( 'readed' );
-
-          });
-
-          channel.send(  { 'action' : 'updateRead' , 'id' : channel.id , 'lastRead' : lastReadId } , function( error ){
-
-          });
-
-        }
-
-      });
-
-    }
+    });
 
   });
 
@@ -1533,7 +1577,6 @@ var send = function( message , channel , channelDom ){
       var myName = wz.system.user().name;
       var sender = ( groupName ? ( groupName + ' - ' + myName ) : myName ).trim() + ':\n';
 
-      console.log(message);
       channel.send(  {
 
         'action' : 'message' ,
@@ -1653,7 +1696,6 @@ var setActiveChat = function( chat ){
 }
 
 var objectRecieved = function( message , o ){
-  console.log(message, o);
 
   var channelActive = $( '.chatDom.active' ).data( 'channel' );
 
@@ -1687,7 +1729,7 @@ var objectRecieved = function( message , o ){
 
     var active = $( '.chatDom-' + o.id );
 
-    if ( o.userId == myContactID ) {
+    if ( active.length > 0 ) {
 
       if( channelActive && o.id == channelActive.id ) {
 
@@ -1733,6 +1775,12 @@ var objectRecieved = function( message , o ){
 
     // MESSAGE
     case 'message':
+
+    console.log(o);
+    if ( lastMessageReceived && o.id === lastMessageReceived.id ) {
+      return;
+    }
+    lastMessageReceived = o;
 
     messageRecieved( message , o , channelActive );
 
