@@ -1147,7 +1147,7 @@ var listMessages = function( channel ){
 
           if ( !isGroup ) {
 
-            printMessage( messages[ i ] , usersNeccesary , messages[ i ].time );
+            printMessage( messages[ i ] , users , messages[ i ].time );
 
           }else{
 
@@ -1206,7 +1206,7 @@ var listMessages = function( channel ){
 
           }else {
 
-            wql.getLastRead( [ channel.id , usersNeccesary.id ] , function( error , lastRead ){
+            wql.getLastRead( [ channel.id , users.id ] , function( error , lastRead ){
 
               var lastMsgRead = $( '.msg-id-' + lastRead[0].last_read);
               var index = lastMsgRead.index() - 1;
