@@ -1776,11 +1776,12 @@ var objectRecieved = function( message , o ){
     // MESSAGE
     case 'message':
 
-    console.log(o);
+    /* COMPRUEBO QUE NO ES UN MENSAJE REPETIDO, YA QUE NO SE PORQUE SE ENVIA 2 VECES AL HACER UN UNICO .send() */
     if ( lastMessageReceived && o.id === lastMessageReceived.id ) {
       return;
     }
     lastMessageReceived = o;
+    /* -- */
 
     messageRecieved( message , o , channelActive );
 
