@@ -1100,7 +1100,7 @@ var listMessages = function( channel ){
 
       // Check for antique users messages
       var userChecked = [];
-      var usersNeccesary = [];
+      var usersNeccesary = users.slice(0);
 
       messages.forEach(function( message ){
 
@@ -1108,7 +1108,14 @@ var listMessages = function( channel ){
 
         users.forEach(function( user ){
 
-          if ( user.id === message.sender ) {
+          var found = false;
+          for (var i = 0; i < usersNeccesary.length; i++) {
+              if (usersNeccesary[i].id === user.id) {
+                  found = true;
+              }
+          }
+
+          if ( user.id === message.sender && usersNeccesary.indexOf( user ) === -1 && !found) {
 
             userFound = true;
             usersNeccesary.push( user );
@@ -1123,7 +1130,16 @@ var listMessages = function( channel ){
           userChecked.push( userPromise );
           api.user( message.sender , function( err , usr ){
 
-            usersNeccesary.push( usr );
+            var found = false;
+            for (var i = 0; i < usersNeccesary.length; i++) {
+                if (usersNeccesary[i].id === usr.id) {
+                    found = true;
+                }
+            }
+            if ( !found ) {
+              usersNeccesary.push( usr );
+            }
+
             userPromise.resolve();
 
           })
@@ -1209,10 +1225,11 @@ var listMessages = function( channel ){
             wql.getLastRead( [ channel.id , users.id ] , function( error , lastRead ){
 
               var lastMsgRead = $( '.msg-id-' + lastRead[0].last_read);
-              var index = lastMsgRead.index() - 1;
+              var allMessages = lastMsgRead.parent().find( '.messageDom' );
+              var index = allMessages.index( lastMsgRead ) + 1;
 
-              $( '.messageDom' ).removeClass('readed');
-              lastMsgRead.parent().find( '.messageDom' ).slice( 0 , index ).addClass( 'readed' );
+              allMessages.removeClass('readed');
+              allMessages.slice( 0 , index ).addClass( 'readed' );
 
             });
 
