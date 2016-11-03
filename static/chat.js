@@ -1196,19 +1196,22 @@ var listMessages = function( channel ){
           if ( isGroup ) {
 
             var aux = 0 ;
+            $( '.messageDom' ).removeClass('readed');
 
-            $.each( usersNeccesary , function( i , user ){
+            $.each( users , function( i , user ){
 
               wql.getLastRead( [ channel.id , user.id ] , function( error , lastRead ){
 
                 if ( lastRead[0].last_read > aux ) {
 
                   aux = lastRead[0].last_read;
-                  var lastMsgRead = $( '.msg-id-' + lastRead[0].last_read);
-                  var index = lastMsgRead.index() - 1;
 
-                  $( '.messageDom' ).removeClass('readed');
-                  lastMsgRead.parent().find( '.messageDom' ).slice( 0 , index ).addClass( 'readed' );
+                  var lastMsgRead = $( '.msg-id-' + lastRead[0].last_read);
+                  var allMessages = lastMsgRead.parent().find( '.messageDom' );
+                  var index = allMessages.index( lastMsgRead ) + 1;
+
+                  allMessages.removeClass('readed');
+                  allMessages.slice( 0 , index ).addClass( 'readed' );
 
                 }
 
