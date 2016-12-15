@@ -3,20 +3,25 @@ var mobile = app.hasClass('wz-mobile-view');
 
 if( mobile ){
   app.addClass('dark');
+  $('.ui-window.chat').addClass('dark');
 }
 
 if ( !params ) {
 
   wql.getUserPreference( api.system.user().id , function( error , preferences ){
 
-    if ( preferences.length > 0 ) {
+    if( !error ){
 
-      preferences = preferences[0];
+      if ( preferences.length > 0 ) {
 
-      wz.view.setSize( preferences.width , preferences.height );
+        preferences = preferences[0];
 
-      if ( preferences.dark ) {
-        $( '.ui-window' ).addClass( 'dark' );
+        wz.view.setSize( preferences.width , preferences.height );
+
+        if ( preferences.dark ) {
+          $( '.ui-window' ).addClass( 'dark' );
+        }
+
       }
 
     }
