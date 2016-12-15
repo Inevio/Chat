@@ -1,6 +1,7 @@
 'use strict';
 
 var myContactID  = api.system.user().id;
+var lastMessageReceived;
 
 api.channel.on( 'message' , function( info , o ){
 
@@ -16,6 +17,13 @@ api.channel.on( 'message' , function( info , o ){
 
   // If recieved is a message increment Badge, and show the banner
   if ( o.action === 'message' ) {
+
+    /* COMPRUEBO QUE NO ES UN MENSAJE REPETIDO, YA QUE NO SE PORQUE SE ENVIA 2 VECES AL HACER UN UNICO .send() */
+    if ( lastMessageReceived && o.id === lastMessageReceived.id ) {
+      return;
+    }
+    lastMessageReceived = o;
+    /* -- */
 
     updateBadge( 1 , true );
 

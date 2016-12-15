@@ -32,7 +32,6 @@ if ( !params ) {
   var o = params[1];
   var callback = params[2];
 
-  start();
   if ( ! o.type ) {
     return;
   }
@@ -115,36 +114,7 @@ if ( !params ) {
 
     case 'open-chat':
 
-    if ( o.type === 'world' ) {
-
-      var world = o.content;
-
-      wql.getWorldChannel( world.id , function( error , obj ){
-
-        if ( error ) { console.log('ERROR: ', error ); }
-
-        var chatId = obj[0].id;
-
-        var timeout = setTimeout(function(){
-          $( '.chatDom-' + chatId ).click();
-        }, 1000);
-
-        callback( 'chat abierto, todo ok!' );
-
-      });
-
-    }else if( o.type === 'user' ){
-
-      var user = o.content;
-
-      var timeout = setTimeout(function(){
-        $( '.chatDom-' + user ).click();
-      }, 1000);
-
-      callback( 'chat abierto, todo ok!' );
-
-    }
-
+    start();
     break;
 
     case 'remove-chat':
