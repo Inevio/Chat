@@ -1522,6 +1522,11 @@
     display: none;
   }
 
+  .message-container{
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .ui-header-mobile{
     display: block;
     height: 50px;
