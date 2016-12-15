@@ -725,7 +725,7 @@
   background-image: url( '@static/.png' );
 }
 
-.dark .chat .ui-content{
+.dark.chat .ui-content{
   background-image: url( '@static/pattern-dark.png' );
   background-size: 800px 600px;
   width: ~'calc(100% - 319px)';
