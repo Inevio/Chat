@@ -1,6 +1,6 @@
 {
 
-    "name"    : "Chat Mobile",
+    "name"    : "Chat",
     "version" : "1.0",
     "stage"   : "beta",
     "api"     : "a100d2",
@@ -38,16 +38,16 @@
 
                     "width"  : {
 
-                        "default" : 367,
-                        "min"     : 367,
+                        "default" : 900,
+                        "min"     : 880,
                         "max"     : 0
 
                     },
 
                     "height" : {
 
-                        "default" : 675,
-                        "min"     : 675,
+                        "default" : 600,
+                        "min"     : 450,
                         "max"     : 0
 
                     },

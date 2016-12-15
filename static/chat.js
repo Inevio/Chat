@@ -12,6 +12,7 @@ var listenWritingTimeOut = false;
 var loadingMsgs = false;
 var currentDate;
 var firstLoad;
+var lastMessageReceived;
 
 // Local Variables
 var app               = $( this );
@@ -112,6 +113,8 @@ chatButton.on( 'click' , function(e){
 });
 
 contactsButton.on( 'click' , function(){
+  filterElements( '' );
+  searchBox.val( '' );
   changeTab('contact');
   searchBox.focus();
 });
@@ -612,12 +615,12 @@ var getChats = function( callback ){
         return;
       }
 
-      wql.getUsersInChannel( channel.id , function( error , users ){
+      api.channel( channel.id , function( error, channelApi ){
 
-        api.user.friendList( false, function( error, friends ){
+        wql.getUsersInChannel( channel.id , function( error , users ){
 
-          var isGroup = channel.name != null ? true : false;
           var groupName = channel.name;
+          var isGroup = groupName != null ? true : false;
 
           if( !isGroup ){
 
@@ -634,58 +637,41 @@ var getChats = function( callback ){
 
             }
 
+            api.user( you , function( err , user ){
 
-            asyncEach( friends , function( element , cb ){
+              appendChat( channelApi , user , groupName , function(){
 
-              if ( element.id == you ) {
+                if( callback ){
+                  callback();
+                }
 
-                api.channel( channel.id , function( error, channel ){
-
-                  appendChat( channel , element , groupName , cb );
-
-                });
-
-              }else{
-
-                cb();
-
-              }
-
-            } , function(){
-
-              if( callback ){
-                callback();
-              }
+              } );
 
             });
 
           }else{
 
-            api.channel( channel.id , function( error, channel ){
+            var usersInGroup = [];
 
-              var usersInGroup = [];
+            asyncEach( users , function( user , cb ){
 
-              asyncEach( users , function( user , cb ){
+              wz.user( user.user , function( e , user ){
 
-                wz.user( user.user , function( e , user ){
+                if ( user.id != myContactID ) {
+                  usersInGroup.push( user );
+                }
+                cb();
 
-                  if ( user.id != myContactID ) {
-                    usersInGroup.push( user );
-                  }
-                  cb();
-
-                });
+              });
 
 
-              }, function(){
+            }, function(){
 
-                appendChat( channel , usersInGroup , groupName , function(){
+              appendChat( channelApi , usersInGroup , groupName , function(){
 
-                  if( callback ){
-                    callback();
-                  }
-
-                });
+                if( callback ){
+                  callback();
+                }
 
               });
 
@@ -744,17 +730,17 @@ var appendContact = function( c , channel , callback ){
 
 }
 
-var appendChat = function( c , user , groupName , callback ){
+var appendChat = function( channel , user , groupName , callback ){
 
   chatButton.click();
 
-  wql.getMessages( c.id , function( error, messages ){
+  wql.getMessages( channel.id , function( error, messages ){
 
     messages = messages.reverse();
 
-    wql.getLastRead( [c.id, myContactID] , function( error , lastRead ){
+    wql.getLastRead( [channel.id, myContactID] , function( error , lastRead ){
 
-      wql.getUnreads( [c.id, lastRead[0]['last_read']] , function( error , notSeen ){
+      wql.getUnreads( [channel.id, lastRead[0]['last_read']] , function( error , notSeen ){
 
         if ( error ) { console.log('ERROR: ', error ); }
 
@@ -775,7 +761,7 @@ var appendChat = function( c , user , groupName , callback ){
         chat
         .removeClass( 'wz-prototype' )
         .addClass( 'chatDom' )
-        .addClass( 'chatDom-' + c.id );
+        .addClass( 'chatDom-' + channel.id );
 
 
 
@@ -834,7 +820,7 @@ var appendChat = function( c , user , groupName , callback ){
         }
 
         // No repeat chats already appended
-        if ( $( '.chatDom-' + c.id ).length != 0 ) {
+        if ( $( '.chatDom-' + channel.id ).length != 0 ) {
 
           if( callback ){ callback(); };
           return;
@@ -853,15 +839,15 @@ var appendChat = function( c , user , groupName , callback ){
 
           if ( notSeen[0] != undefined && notSeen[0]['COUNT(*)'] > 0 ) {
 
-            $('.chatDom-' + c.id).data( 'notSeen' , notSeen[0]['COUNT(*)'] );
-            $('.chatDom-' + c.id).find( '.channel-badge' ).addClass('visible').find('span').text( notSeen[0]['COUNT(*)'] );
+            $('.chatDom-' + channel.id).data( 'notSeen' , notSeen[0]['COUNT(*)'] );
+            $('.chatDom-' + channel.id).find( '.channel-badge' ).addClass('visible').find('span').text( notSeen[0]['COUNT(*)'] );
             updateBadge( notSeen[0]['COUNT(*)'] , true );
 
           }
 
         }
 
-        chat.data( 'channel' , c );
+        chat.data( 'channel' , channel );
         chat.data( 'user' , user );
         chat.data( 'isGroup' , groupName );
 
@@ -1112,25 +1098,84 @@ var listMessages = function( channel ){
 
     if ( error ) { console.log('ERROR: ', error ); }
 
-    for( var i = 0; i < messages.length; i++ ){
+    if ( isGroup ) {
 
-      if ( messages[i].sender == myContactID ) {
+      // Check for antique users messages
+      var userChecked = [];
+      var usersNeccesary = users.slice(0);
 
-        printMessage( messages[ i ] , null , messages[ i ].time );
+      messages.forEach(function( message ){
 
-      }else{
+        var userFound = false;
 
-        if ( !isGroup ) {
+        users.forEach(function( user ){
 
-          printMessage( messages[ i ] , users , messages[ i ].time );
+          var found = false;
+          for (var i = 0; i < usersNeccesary.length; i++) {
+              if (usersNeccesary[i].id === user.id) {
+                  found = true;
+              }
+          }
+
+          if ( user.id === message.sender && usersNeccesary.indexOf( user ) === -1 && !found) {
+
+            userFound = true;
+            usersNeccesary.push( user );
+
+          }
+
+        });
+
+        if ( !userFound ) {
+
+          var userPromise = $.Deferred();
+          userChecked.push( userPromise );
+          api.user( message.sender , function( err , usr ){
+
+            var found = false;
+            for (var i = 0; i < usersNeccesary.length; i++) {
+                if (usersNeccesary[i].id === usr.id) {
+                    found = true;
+                }
+            }
+            if ( !found ) {
+              usersNeccesary.push( usr );
+            }
+
+            userPromise.resolve();
+
+          })
+
+        }
+
+      });
+
+    }
+
+    // All users necessary on var users
+    $.when.apply( null, userChecked ).done( function(){
+
+      for( var i = 0; i < messages.length; i++ ){
+
+        if ( messages[i].sender == myContactID ) {
+
+          printMessage( messages[ i ] , null , messages[ i ].time );
 
         }else{
 
-          for (var j = 0; j < users.length; j++) {
+          if ( !isGroup ) {
 
-            if ( users[j].id == messages[ i ].sender ) {
+            printMessage( messages[ i ] , users , messages[ i ].time );
 
-              printMessage( messages[ i ] , users[j] , messages[ i ].time );
+          }else{
+
+            for (var j = 0; j < usersNeccesary.length; j++) {
+
+              if ( usersNeccesary[j].id == messages[ i ].sender ) {
+
+                printMessage( messages[ i ] , usersNeccesary[j] , messages[ i ].time );
+
+              }
 
             }
 
@@ -1140,36 +1185,56 @@ var listMessages = function( channel ){
 
       }
 
-    }
+      if( messages && messages.length > 0){
 
-    if( messages && messages.length > 0){
+        var lastReadId = messages[ messages.length - 1].id;
 
-      var lastReadId = messages[ messages.length - 1].id;
+        wql.updateLastRead( [ lastReadId , channel.id, myContactID ] , function( error , message ){
 
-      wql.updateLastRead( [ lastReadId , channel.id, myContactID ] , function( error , message ){
-
-        if ( error ) { console.log('ERROR: ', error ); }
-        $('.chatDom.active').data( 'notSeen' , 0 );
+          if ( error ) { console.log('ERROR: ', error ); }
+          $('.chatDom.active').data( 'notSeen' , 0 );
 
 
-        if ( isGroup ) {
+          if ( isGroup ) {
 
-          var aux = 0 ;
+            var aux = 0 ;
+            $( '.messageDom' ).removeClass('readed');
 
-          $.each( users , function( i , user ){
+            $.each( users , function( i , user ){
 
-            wql.getLastRead( [ channel.id , user.id ] , function( error , lastRead ){
+              wql.getLastRead( [ channel.id , user.id ] , function( error , lastRead ){
 
-              if ( lastRead[0].last_read > aux ) {
+                if ( lastRead[0].last_read > aux ) {
 
-                aux = lastRead[0].last_read;
-                var lastMsgRead = $( '.msg-id-' + lastRead[0].last_read);
-                var index = lastMsgRead.index() - 1;
+                  aux = lastRead[0].last_read;
 
-                $( '.messageDom' ).removeClass('readed');
-                lastMsgRead.parent().find( '.messageDom' ).slice( 0 , index ).addClass( 'readed' );
+                  var lastMsgRead = $( '.msg-id-' + lastRead[0].last_read);
+                  var allMessages = lastMsgRead.parent().find( '.messageDom' );
+                  var index = allMessages.index( lastMsgRead ) + 1;
 
-              }
+                  allMessages.removeClass('readed');
+                  allMessages.slice( 0 , index ).addClass( 'readed' );
+
+                }
+
+              });
+
+              channel.send(  { 'action' : 'updateRead' , 'id' : channel.id , 'lastRead' : lastReadId } , function( error ){
+
+              });
+
+            });
+
+          }else {
+
+            wql.getLastRead( [ channel.id , users.id ] , function( error , lastRead ){
+
+              var lastMsgRead = $( '.msg-id-' + lastRead[0].last_read);
+              var allMessages = lastMsgRead.parent().find( '.messageDom' );
+              var index = allMessages.index( lastMsgRead ) + 1;
+
+              allMessages.removeClass('readed');
+              allMessages.slice( 0 , index ).addClass( 'readed' );
 
             });
 
@@ -1177,29 +1242,13 @@ var listMessages = function( channel ){
 
             });
 
-          });
+          }
 
-        }else {
+        });
 
-          wql.getLastRead( [ channel.id , users.id ] , function( error , lastRead ){
+      }
 
-            var lastMsgRead = $( '.msg-id-' + lastRead[0].last_read);
-            var index = lastMsgRead.index() - 1;
-
-            $( '.messageDom' ).removeClass('readed');
-            lastMsgRead.parent().find( '.messageDom' ).slice( 0 , index ).addClass( 'readed' );
-
-          });
-
-          channel.send(  { 'action' : 'updateRead' , 'id' : channel.id , 'lastRead' : lastReadId } , function( error ){
-
-          });
-
-        }
-
-      });
-
-    }
+    });
 
   });
 
@@ -1332,11 +1381,21 @@ var printMessage = function( msg , sender , time , animate , byScroll , checked 
 
   if (byScroll) {
 
-    $( '.messageDom' ).eq(0).before( message );
+    if ( $('.msg-id-' + msg.id).length === 0 ) {
+      $( '.messageDom' ).eq(0).before( message );
+    }else{
+      console.log('REP');
+      return;
+    }
 
   }else{
 
-    msgContainer.append( message );
+    if ( $('.msg-id-' + msg.id).length === 0 ) {
+      msgContainer.append( message );
+    }else{
+      console.log('REP');
+      return;
+    }
 
   }
 
@@ -1416,10 +1475,58 @@ var initChat = function(){
     checkTab();
     getContacts();
     getChats();
+    preselectChat();
 
     msgInput.textareaAutoSize();
 
   });
+
+}
+
+var preselectChat = function(){
+
+  if ( params ) {
+
+    var action = params[0];
+    var o = params[1];
+    var callback = params[2];
+
+    if ( action === 'open-chat' ) {
+
+      if ( o.type === 'world' ) {
+
+        var world = o.content;
+
+        wql.getWorldChannel( world.id , function( error , obj ){
+
+          if ( error ) { console.log('ERROR: ', error ); }
+
+          var chatId = obj[0].id;
+
+          var timeout = setTimeout(function(){
+            $( '.chatDom-' + chatId ).click();
+          }, 1000);
+
+          callback( 'chat abierto, todo ok!' );
+
+        });
+
+      }else if( o.type === 'user' ){
+
+        var user = o.content;
+
+        var timeout = setTimeout(function(){
+          changeTab( 'contact' );
+          $( '.user-id-' + user ).click();
+        }, 1000);
+
+        callback( 'chat abierto, todo ok!' );
+
+      }
+
+    }
+
+  }
 
 }
 
@@ -1492,7 +1599,6 @@ var send = function( message , channel , channelDom ){
       var myName = wz.system.user().name;
       var sender = ( groupName ? ( groupName + ' - ' + myName ) : myName ).trim() + ':\n';
 
-      console.log(message);
       channel.send(  {
 
         'action' : 'message' ,
@@ -1612,7 +1718,6 @@ var setActiveChat = function( chat ){
 }
 
 var objectRecieved = function( message , o ){
-  console.log(message, o);
 
   var channelActive = $( '.chatDom.active' ).data( 'channel' );
 
@@ -1646,7 +1751,7 @@ var objectRecieved = function( message , o ){
 
     var active = $( '.chatDom-' + o.id );
 
-    if ( o.userId == myContactID ) {
+    if ( active.length > 0 ) {
 
       if( channelActive && o.id == channelActive.id ) {
 
@@ -1692,6 +1797,13 @@ var objectRecieved = function( message , o ){
 
     // MESSAGE
     case 'message':
+
+    /* COMPRUEBO QUE NO ES UN MENSAJE REPETIDO, YA QUE NO SE PORQUE SE ENVIA 2 VECES AL HACER UN UNICO .send() */
+    if ( lastMessageReceived && o.id === lastMessageReceived.id ) {
+      return;
+    }
+    lastMessageReceived = o;
+    /* -- */
 
     messageRecieved( message , o , channelActive );
 
