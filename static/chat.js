@@ -421,7 +421,6 @@ app
 
 })
 
-
 .on( 'ui-view-resize ui-view-maximize ui-view-unmaximize', function(){
 
   $( '.message-container' ).scrollTop(9999999);
@@ -429,6 +428,11 @@ app
 })
 
 .on('click','.back-button', function(){
+  goBack();
+})
+
+.on('backbutton', function( e ){
+  e.stopPropagation()
   goBack();
 });
 // END APP EVENTS
@@ -2142,6 +2146,9 @@ var editGroup = function(){
   var members = $( '.memberDom.active' );
   var channel = $( '.chatDom.active' ).data( 'channel' );
   var membersHaveTo = [];
+
+  console.log( $( '.chatDom.active' ) );
+  console.log(channel);
 
   if ( groupName != '' ) {
 
