@@ -527,20 +527,26 @@ var getContacts = function(){
 
     var res = [];
 
-    asyncEach( list, function( channel, callback ){
+    if( list && list.length ){
 
-      api.channel( channel.id_channel, function( error, chn ){
+      asyncEach( list, function( channel, callback ){
 
-        chn.user = channel.user;
+        api.channel( channel.id_channel, function( error, chn ){
 
-        res.push( chn );
-        callback();
+          chn.user = channel.user;
 
+          res.push( chn );
+          callback();
+
+        });
+
+      }, function(){
+        channels.resolve( res );
       });
 
-    }, function(){
-      channels.resolve( res );
-    });
+    }else{
+      channels.resolve( [] );
+    }
 
   });
 
