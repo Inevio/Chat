@@ -2154,7 +2154,7 @@ var editGroup = function(){
 
     if ( members.length == 0 ) {
 
-      //alert( lang.noMemberError );
+      alert( lang.noMemberError );
       return;
 
     }
