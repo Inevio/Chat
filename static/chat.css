@@ -1522,6 +1522,11 @@
     display: none;
   }
 
+  .contact-list{
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .message-container{
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
@@ -1671,6 +1676,15 @@
 
   .contact-tab-selector.active span, .chat-tab-selector.active span{
     color: white;
+  }
+
+  .contact:hover .highlight-area{
+    background-color: initial;
+    box-shadow: none;
+  }
+  .dark .contact:hover .highlight-area{
+    background-color: initial;
+    box-shadow: none;
   }
 
   .chat .ui-content{
@@ -1893,7 +1907,6 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: white;
     float: left;
     margin-top: 7px;
     margin-right: 5px;
