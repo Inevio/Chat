@@ -1524,11 +1524,20 @@
   background: -webkit-linear-gradient(top, #f05056 0%,#e53a40 100%); /* Chrome10-25,Safari5.1-6 */
   background: linear-gradient(to bottom, #f05056 0%,#e53a40 100%);
   float: left;
-  margin-left: -4px;
-  margin-top: 1px;
   border-radius: 50%;
   display: none;
 }
+
+.chat-tab-selector .unread-messages{
+  margin-left: -4px;
+  margin-top: 1px;
+}
+
+.ui-header .unread-messages{
+  margin-left: -17px;
+  margin-top: 16px;
+}
+
 
 .wz-view.wz-mobile-view{
 

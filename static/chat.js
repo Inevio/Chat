@@ -482,7 +482,7 @@ var changeTab = function(tab){
 
     mode = 0;
     prevMode = mode;
-    $('.chat-tab-selector .unread-messages').hide();
+    $('.unread-messages').hide();
     contactsButton.removeClass('active');
     chatButton.addClass('active');
     contactTab.removeClass( 'visible' );
@@ -1996,8 +1996,9 @@ var messageNotReaded = function( message ){
 
   updateBadge( 1 , true );
 
-  if( mode == 1 ){
-    $('.chat-tab-selector .unread-messages').show();
+  console.log(mode);
+  if( mode != 0 ){//No estamos en la lista de chats
+    $('.unread-messages').show();
   }
 
   var notSeen = $('.chatDom-' + message.id).data( 'notSeen' );
@@ -2817,6 +2818,8 @@ var loadMoreMsgs = function(){
 var goBack = function(){
 
   if( mobile && mode != -1 ){
+
+    $('.unread-messages').hide();
 
     if( mode == 3 || mode == 4 ){
 
