@@ -722,7 +722,7 @@
   top: 41px;
   left: 318px;
   background-size: 800px 600px;
-  background-image: url( '@static/.png' );
+  background-image: url( '@static/pattern.png' );
 }
 
 .dark.chat .ui-content{
@@ -1514,6 +1514,20 @@
 
 .dark .app-color .selector i{
   margin-left: 2px;
+}
+
+.unread-messages{
+  width: 4px;
+  height: 4px;
+  background: #f05056; /* Old browsers */
+  background: -moz-linear-gradient(top, #f05056 0%, #e53a40 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top, #f05056 0%,#e53a40 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom, #f05056 0%,#e53a40 100%);
+  float: left;
+  margin-left: -4px;
+  margin-top: 1px;
+  border-radius: 50%;
+  display: none;
 }
 
 .wz-view.wz-mobile-view{
