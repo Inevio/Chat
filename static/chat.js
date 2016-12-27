@@ -482,6 +482,7 @@ var changeTab = function(tab){
 
     mode = 0;
     prevMode = mode;
+    $('.chat-tab-selector .unread-messages').hide();
     contactsButton.removeClass('active');
     chatButton.addClass('active');
     contactTab.removeClass( 'visible' );
@@ -742,7 +743,9 @@ var appendContact = function( c , channel , callback ){
 
 var appendChat = function( channel , user , groupName , callback ){
 
-  chatButton.click();
+  if( user.id == myContactID ){
+    chatButton.click();
+  }
 
   wql.getMessages( channel.id , function( error, messages ){
 
@@ -1575,6 +1578,9 @@ var sendMessage = function(){
               send( txt , channel , channelDom );
               getChats( function(){
 
+                if( mode == 1 ){
+                  changeTab('chat');
+                }
                 $( '.chatDom-' + channel.id ).click();
 
               });
@@ -1989,6 +1995,10 @@ var messageRecieved = function( message , o , channelActive ){
 var messageNotReaded = function( message ){
 
   updateBadge( 1 , true );
+
+  if( mode == 1 ){
+    $('.chat-tab-selector .unread-messages').show();
+  }
 
   var notSeen = $('.chatDom-' + message.id).data( 'notSeen' );
   notSeen = notSeen ? notSeen + 1 : 1;
