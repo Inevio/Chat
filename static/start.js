@@ -21,6 +21,7 @@ if ( !params ) {
         }
 
         if ( preferences.dark ) {
+          app.addClass('dark');
           $( '.ui-window' ).addClass( 'dark' );
         }
 
