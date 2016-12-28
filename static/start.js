@@ -16,7 +16,9 @@ if ( !params ) {
 
         preferences = preferences[0];
 
-        wz.view.setSize( preferences.width , preferences.height );
+        if( ( preferences.width < wz.tool.desktopWidth() ) && ( preferences.height < wz.tool.desktopHeight() ) ){
+          wz.view.setSize( preferences.width , preferences.height );
+        }
 
         if ( preferences.dark ) {
           $( '.ui-window' ).addClass( 'dark' );
