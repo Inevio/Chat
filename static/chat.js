@@ -113,7 +113,7 @@ chatButton.on( 'click' , function(e){
 });
 
 contactsButton.on( 'click' , function(){
-  
+
   filterElements( '' );
   searchBox.val( '' );
   changeTab('contact');
@@ -201,7 +201,7 @@ searchMembers.on( 'input' , function(){
 content.on( 'click' , function(){
 
   var selection = $(this).selection();
-  if (!selection || selection.width === 0) {
+  if ( !mobile && ( !selection || selection.width === 0 ) ) {
     msgInput.focus();
   }
 
