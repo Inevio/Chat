@@ -113,10 +113,14 @@ chatButton.on( 'click' , function(e){
 });
 
 contactsButton.on( 'click' , function(){
+  
   filterElements( '' );
   searchBox.val( '' );
   changeTab('contact');
-  searchBox.focus();
+  if( !mobile ){
+    searchBox.focus();
+  }
+
 });
 
 sendButton.on( 'click' , function(){
