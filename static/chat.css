@@ -1545,9 +1545,9 @@
     display: none;
   }
 
-  .contact-list{
+  .contact-list, .channel-list{
     overflow-y: scroll;
-    -webkit-overflow-scrolling: touch;
+    /*-webkit-overflow-scrolling: touch;*/
   }
 
   .message-container{
