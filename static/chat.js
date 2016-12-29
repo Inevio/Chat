@@ -125,6 +125,7 @@ contactsButton.on( 'click' , function(){
 
 sendButton.on( 'click' , function(){
   msgInput.css('height','24px');
+  msgInput.focus();
   sendMessage();
 });
 
