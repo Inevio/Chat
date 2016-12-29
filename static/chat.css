@@ -1809,13 +1809,26 @@
   }
 
   .contact{
+    width: 100%;
+    height: 48px;
+    border-bottom: none;
+    float: none;
+  }
+
+  .contact::after{
+    content: '';
     width: ~'calc(100% - 65px)';
-    height: 47px
+    height: 1px;
+    background-color: #6a7178;
+    display: inline-block;
+    position: absolute;
+    margin: 0px 0px 0px 65px;
   }
 
   .contact .highlight-area{
     width: 100%;
     height: 48px;
+    position: static;
   }
 
   .contact .contact-img {
