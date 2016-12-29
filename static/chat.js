@@ -496,6 +496,9 @@ var changeTab = function(tab){
     groupMenu.removeClass( 'visible' );
     removeGroup.removeClass( 'visible' );
     $('.new-group').removeClass( 'visible' );
+    if( mobile ){
+      $( '.ui-header-mobile .window-title' ).text(lang.chats);
+    }
 
     break;
 
@@ -511,6 +514,9 @@ var changeTab = function(tab){
     newGroupButton.addClass( 'visible' );
     colorChange.removeClass( 'visible' );
     $('.new-group').addClass( 'visible' );
+    if( mobile ){
+      $( '.ui-header-mobile .window-title' ).text(lang.contacts);
+    }
 
     break;
 
