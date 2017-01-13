@@ -950,7 +950,7 @@ var selectContact = function( contact ){
       },animationDuration, function(){
         mode = 2;
         $(this).addClass( 'visible' );
-        msgInput.focus();
+        //msgInput.focus();
       });
       $('.ui-navbar').transition({
         'x' : '-100%'
@@ -1028,7 +1028,7 @@ var selectChat = function( chat ){
       },animationDuration, function(){
         mode = 2;
         $(this).addClass( 'visible' );
-        msgInput.focus();
+        //msgInput.focus();
       });
       $('.ui-navbar').transition({
         'x' : '-100%'
@@ -2920,12 +2920,10 @@ if( mobile ){
 
   $('input, textarea').on('focus', function(){
     Keyboard.shrinkView(true);
-    console.log('hago focus');
   })
 
   .on('blur', function(){
     Keyboard.shrinkView(false);
-    console.log('pierdo focus');
   });
 
   $(window).on('resize',function(){
