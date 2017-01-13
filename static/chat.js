@@ -51,6 +51,8 @@ var backButton        = $( '.back-button' );
 var myContactID       = api.system.user().id;
 var adminMode         = false;
 
+var window = app.parents().slice( -1 )[ 0 ].parentNode.defaultView;
+
 var mobile = app.hasClass('wz-mobile-view');
 
 // COLOR PALETTE
@@ -2918,11 +2920,17 @@ if( mobile ){
 
   $('input, textarea').on('focus', function(){
     Keyboard.shrinkView(true);
+    console.log('hago focus');
   })
 
   .on('blur', function(){
-    Keyboard.shrinkView(true);
+    Keyboard.shrinkView(false);
+    console.log('pierdo focus');
   });
+
+  $(window).on('resize',function(){
+    $('.message-container').scrollTop( $('.message-container')[ 0 ].scrollHeight );
+  })
 
 }
 
