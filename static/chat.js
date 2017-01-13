@@ -2914,5 +2914,17 @@ var goBack = function(){
 
 }
 
+if( mobile ){
+
+  $('input, textarea').on('focus', function(){
+    Keyboard.shrinkView(true);
+  })
+
+  .on('blur', function(){
+    Keyboard.shrinkView(true);
+  });
+
+}
+
 // INIT Chat
 initChat();
