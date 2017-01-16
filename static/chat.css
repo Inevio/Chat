@@ -2087,4 +2087,20 @@
     border-radius: 20px;
   }
 
+  .conversation-send-mobile{
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+  }
+
+  .conversation-send-mobile figure{
+    width: 16px;
+    height: 14px;
+    background-image: url('@static/mobile/flecha.png');
+    background-size: 16px 14px;
+    margin-top: 10px;
+    margin-left: 10px;
+    display: inline-block;
+  }
+
 }
