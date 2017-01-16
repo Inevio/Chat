@@ -467,6 +467,32 @@ var setTexts = function(){
   $( '.app-color .dark' ).text(lang.dark);
 }
 
+var setMobile = function(){
+
+  if( mobile ){
+
+    $('.conversation-send-desktop').hide();
+    
+    $('input, textarea').on('focus', function(){
+      Keyboard.shrinkView(true);
+    })
+
+    .on('blur', function(){
+      Keyboard.shrinkView(false);
+    });
+
+    $(window).on('resize',function(){
+      $('.message-container').scrollTop( $('.message-container')[ 0 ].scrollHeight );
+    })
+
+  }else{
+
+    $('.conversation-send-mobile').hide();
+
+  }
+
+}
+
 var checkTab = function(){
 
   // Load channels
@@ -1498,6 +1524,7 @@ var initChat = function(){
     me = user;
 
     setTexts();
+    setMobile();
     checkTab();
     getContacts();
     getChats();
@@ -2170,9 +2197,6 @@ var editGroup = function(){
   var members = $( '.memberDom.active' );
   var channel = $( '.chatDom.active' ).data( 'channel' );
   var membersHaveTo = [];
-
-  console.log( $( '.chatDom.active' ) );
-  console.log(channel);
 
   if ( groupName != '' ) {
 
@@ -2919,22 +2943,6 @@ var goBack = function(){
     }
 
   }
-
-}
-
-if( mobile ){
-
-  $('input, textarea').on('focus', function(){
-    Keyboard.shrinkView(true);
-  })
-
-  .on('blur', function(){
-    Keyboard.shrinkView(false);
-  });
-
-  $(window).on('resize',function(){
-    $('.message-container').scrollTop( $('.message-container')[ 0 ].scrollHeight );
-  })
 
 }
 
