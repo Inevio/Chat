@@ -1,25 +1,33 @@
 var app  = $( this );
-var mobile = true;
+var mobile = app.hasClass('wz-mobile-view');
+
+if( mobile ){
+  app.addClass('dark');
+  $('.ui-window.chat').addClass('dark');
+}
 
 if ( !params ) {
 
   wql.getUserPreference( api.system.user().id , function( error , preferences ){
 
-    if ( preferences.length > 0 ) {
+    if( !error ){
 
-      preferences = preferences[0];
+      if ( preferences.length > 0 ) {
 
-      wz.view.setSize( preferences.width , preferences.height );
+        preferences = preferences[0];
 
-      if ( preferences.dark ) {
-        $( '.ui-window' ).addClass( 'dark' );
+        if( ( preferences.width < wz.tool.desktopWidth() ) && ( preferences.height < wz.tool.desktopHeight() ) ){
+          wz.view.setSize( preferences.width , preferences.height );
+        }
+
+        if ( preferences.dark ) {
+          app.addClass('dark');
+          $( '.ui-window' ).addClass( 'dark' );
+        }
+
       }
 
     }
-
-    app.css({'border-radius'    : '6px',
-    'background-color' : '#2c3238'
-    });
 
     start();
 
@@ -27,6 +35,7 @@ if ( !params ) {
 
 }else{
 
+  console.log(params);
   var action = params[0];
   var o = params[1];
   var callback = params[2];
