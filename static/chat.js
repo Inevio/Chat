@@ -2399,12 +2399,6 @@ var viewGroup = function(){
 
   if( mode != -1 ){
 
-    if( adminMode ){
-      $('.info-header .edit-button').show();
-    }else{
-      $('.info-header .edit-button').hide();
-    }
-
     // Make it visible
     $( '.group-menu .visible' ).removeClass( 'visible' );
     groupMenu.addClass( 'visible' ).addClass( 'group-view' );
@@ -2456,6 +2450,12 @@ var viewGroup = function(){
       $( '.chatDom.active' ).data( 'channel' ).list( function( error, users ){
 
         var admin = users[0];
+
+        if( admin == myContactID ){
+          $('.info-header .edit-button').show();
+        }else{
+          $('.info-header .edit-button').hide();
+        }
 
         groupMembers = [];
         appendMember( user , admin ).addClass( 'me' );
