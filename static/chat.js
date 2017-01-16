@@ -2399,6 +2399,12 @@ var viewGroup = function(){
 
   if( mode != -1 ){
 
+    if( adminMode ){
+      $('.info-header .edit-button').show();
+    }else{
+      $('.info-header .edit-button').hide();
+    }
+
     // Make it visible
     $( '.group-menu .visible' ).removeClass( 'visible' );
     groupMenu.addClass( 'visible' ).addClass( 'group-view' );
