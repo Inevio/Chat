@@ -520,13 +520,13 @@ var changeTab = function(tab){
     chatButton.addClass('active');
     contactTab.removeClass( 'visible' );
     chatTab.addClass( 'visible' );
-    newGroupButton.removeClass( 'visible' );
     colorChange.addClass( 'visible' );
     groupMenu.removeClass( 'visible' );
     removeGroup.removeClass( 'visible' );
-    //$('.new-group').removeClass( 'visible' );
     if( mobile ){
       $( '.ui-header-mobile .window-title' ).text(lang.chats);
+    }else{
+      newGroupButton.removeClass( 'visible' );
     }
 
     break;
@@ -542,7 +542,6 @@ var changeTab = function(tab){
     contactTab.addClass( 'visible' );
     newGroupButton.addClass( 'visible' );
     colorChange.removeClass( 'visible' );
-    //$('.new-group').addClass( 'visible' );
     if( mobile ){
       $( '.ui-header-mobile .window-title' ).text(lang.contacts);
     }
@@ -2128,7 +2127,7 @@ var newGroup = function(){
       }, animationDuration, function(){
         mode = 4;
       });
-      $('.initial-header .new-group').hide();
+      $('.initial-header .new-group').removeClass('visible');
       $('.initial-header .back-button').addClass('visible');
       $('.initial-header .more-button').hide();
       $('.initial-header .accept-button').show();
@@ -2871,7 +2870,7 @@ var goBack = function(){
 
       if( mode == 4 ){
 
-        $('.initial-header .new-group').show();
+        $('.initial-header .new-group').addClass('visible');
         $('.initial-header .back-button').removeClass('visible');
         $('.initial-header .more-button').show();
         $('.initial-header .accept-button').hide();
