@@ -2028,16 +2028,17 @@
   }
 
   .new-group{
-    font-size: 16px;
-    margin-left: 20px;
-    margin-top: 18px;
-    color: #ffffff;
+    width: 27px;
+    height: 21px;
+    padding: 17px 20px;
     float: left;
-    display: none;
   }
 
-  .new-group.visible{
-    display: block;
+  .new-group .new-group-icon{
+    width: 27px;
+    height: 21px;
+    background-image: url('@static/mobile/new-group.png');
+    background-size: 27px 21px;
   }
 
   .channel .channel-badge span{
