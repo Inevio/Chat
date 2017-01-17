@@ -1576,14 +1576,18 @@
   .back-button{
     width: 16px;
     height: 15px;
+    float: left;
+    padding: 19px 15px 11px;
+    display: none;
+  }
+
+  .back-button i{
+    width: 16px;
+    height: 15px;
     background: url('@static/mobile/sprite.png');
     background-size: 170px 31px;
     background-position: -100px 0px;
-    float: left;
     display: inline-block;
-    margin: 19px 15px 11px;
-    cursor: pointer;
-    display: none;
   }
 
   .more-button{
