@@ -2063,6 +2063,7 @@
   }
 
   .group-new .member-list{
+    overflow-y: scroll;
     height: ~'calc(100% - 115px)';
   }
 
@@ -2107,6 +2108,14 @@
     margin-top: 10px;
     margin-left: 10px;
     display: inline-block;
+  }
+
+  .conversation-input{
+    width: ~'calc(100% - 76px)';
+  }
+
+  .conversation-input textarea{
+    width: 100%;
   }
 
 }
