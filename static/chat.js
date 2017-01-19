@@ -2122,6 +2122,7 @@ var newGroup = function(){
     $( '.group-new' ).addClass( 'visible' );
     $( '.group-name-input input' ).val( '' );
     $( '.search-members input' ).val( '' );
+    $( '.group-members-txt' ).hide();
 
     if( mobile ){
 
@@ -2466,6 +2467,7 @@ var viewGroup = function(){
 
     if ( members ) {
 
+      $( '.group-members-txt' ).show();
       $( '.group-members-txt' ).text( ( members.length + 1 ) + ' ' + lang.members );
 
     }else{
