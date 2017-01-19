@@ -50,6 +50,7 @@ var separatorPrototype = $( '.separator.wz-prototype' );
 var backButton        = $( '.back-button' );
 var myContactID       = api.system.user().id;
 var adminMode         = false;
+var selectedGroup;
 
 var window = app.parents().slice( -1 )[ 0 ].parentNode.defaultView;
 
@@ -1086,6 +1087,8 @@ var selectChat = function( chat ){
 
       if( chat.data( 'isGroup' ) != null ){
 
+        selectedGroup = channel;
+        console.log(channel);
         if( mobile ){
           $( '.conver-info' ).addClass( 'viewGroup' );
         }else{
@@ -2258,7 +2261,10 @@ var editGroup = function(){
 
           groupMenu.removeClass( 'visible' );
           removeGroup.removeClass( 'visible' );
-          $('.chatDom.active').remove();
+          if( mobile ){
+            $('.chatDom.active').remove();
+          }
+          
           getChats( function(){
 
             $( '.chatDom-' + channel.id ).click();
@@ -2474,7 +2480,6 @@ var viewGroup = function(){
       $( '.chatDom.active' ).data( 'channel' ).list( function( error, users ){
 
         var admin = users[0];
-        console.log(arguments);
 
         if( admin == myContactID ){
           $('.info-header .edit-button').show();
@@ -2556,7 +2561,6 @@ var editGroupMode = function( groupName ){
 
 var appendMember = function( user , admin ){
 
-  console.log('appendMember', arguments);
   var member = memberPrototype.clone();
   member
   .removeClass( 'wz-prototype' )
