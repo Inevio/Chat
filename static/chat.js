@@ -260,7 +260,6 @@ msgContainer.on( 'scroll' , function( e ){
 
 });
 
-
 // END UI EVENTS
 
 // APP EVENTS
@@ -426,6 +425,12 @@ app
     });
 
   });
+
+})
+
+.on( 'click' , '.conversation-input', function(){
+
+  $(this).find('textarea').focus();
 
 })
 
@@ -2264,7 +2269,7 @@ var editGroup = function(){
           if( mobile ){
             $('.chatDom.active').remove();
           }
-          
+
           getChats( function(){
 
             $( '.chatDom-' + channel.id ).click();
