@@ -50,7 +50,6 @@ var separatorPrototype = $( '.separator.wz-prototype' );
 var backButton        = $( '.back-button' );
 var myContactID       = api.system.user().id;
 var adminMode         = false;
-var selectedGroup;
 
 var window = app.parents().slice( -1 )[ 0 ].parentNode.defaultView;
 
@@ -1092,8 +1091,6 @@ var selectChat = function( chat ){
 
       if( chat.data( 'isGroup' ) != null ){
 
-        selectedGroup = channel;
-        console.log(channel);
         if( mobile ){
           $( '.conver-info' ).addClass( 'viewGroup' );
         }else{
@@ -2137,7 +2134,7 @@ var newGroup = function(){
       });
       $('.initial-header .new-group').removeClass('visible');
       $('.initial-header .back-button').addClass('visible');
-      $('.initial-header .more-button').hide();
+      //$('.initial-header .more-button').hide();
       $('.initial-header .accept-button').show();
 
     }
@@ -2370,7 +2367,11 @@ var createNewGroup = function(){
                   removeGroup.removeClass( 'visible' );
                   getChats( function(){
 
-                    $('.chatDom-'+channel.id).click();
+                    if( mobile ){
+                      goBack();
+                    }else{
+                      $('.chatDom-'+channel.id).click();
+                    }
 
                   });
 
@@ -2460,7 +2461,6 @@ var viewGroup = function(){
     $( '.memberDom' ).remove();
     var members = $( '.chatDom.active' ).data( 'user' );
     var groupName = $( '.chatDom.active' ).data( 'isGroup' );
-    console.log(members);
 
     $( '.group-name' ).text( groupName );
 
@@ -2881,7 +2881,7 @@ var goBack = function(){
 
         $('.initial-header .new-group').addClass('visible');
         $('.initial-header .back-button').removeClass('visible');
-        $('.initial-header .more-button').show();
+        //$('.initial-header .more-button').show();
         $('.initial-header .accept-button').hide();
 
       }else{

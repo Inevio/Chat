@@ -2073,8 +2073,7 @@
 
   .accept-button, .edit-button{
     float: right;
-    margin-right: 15px;
-    margin-top: 19px;
+    padding: 19px 15px;
     font-size: 16px;
     color: #60b25e;
     cursor: pointer;
@@ -2098,6 +2097,9 @@
     width: 34px;
     height: 34px;
     border-radius: 50%;
+    margin: 0px;
+    padding: 8px;
+    background-clip: content-box;
   }
 
   .conversation-send-mobile figure{
