@@ -1546,6 +1546,7 @@
   }
 
   .contact-list, .channel-list{
+    width: 100%;
     overflow-y: scroll;
     /*-webkit-overflow-scrolling: touch;*/
   }
@@ -1640,14 +1641,10 @@
     bottom: 0px;
   }
 
-  .channel-list{
-    width: 100%;
-  }
-
   .channel{
     width: 100%;
     height: 76px;
-    float: none;
+    float: right;
     border-bottom: none;
     display: inline-block;
   }
@@ -1660,7 +1657,7 @@
     display: inline-block;
     position: relative;
     bottom: 12px;
-    margin: 0px 0px 0px 65px;
+    margin: 0px 0px 0px 80px;
   }
 
   .channel .last-message{
@@ -1727,6 +1724,15 @@
     box-shadow: none;
   }
   .dark .contact:hover .highlight-area{
+    background-color: initial;
+    box-shadow: none;
+  }
+
+  .channel:hover .highlight-area{
+    background-color: initial;
+    box-shadow: none;
+  }
+  .dark .channel:hover .highlight-area{
     background-color: initial;
     box-shadow: none;
   }
@@ -1833,7 +1839,8 @@
     width: 100%;
     height: 48px;
     border-bottom: none;
-    float: none;
+    float: right;
+    display: inline-block;
   }
 
   .contact::after{
