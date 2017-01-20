@@ -1649,6 +1649,7 @@
     height: 76px;
     float: none;
     border-bottom: none;
+    display: inline-block;
   }
 
   .channel::after{
