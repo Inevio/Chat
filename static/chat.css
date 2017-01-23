@@ -2128,4 +2128,8 @@
     width: 100%;
   }
 
+  .ui-input-search .search-icon i{
+    background-image: url('https://static.inevio.com/image/uikit/sprite-dark@2x.png');
+  }
+
 }
