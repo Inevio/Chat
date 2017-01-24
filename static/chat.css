@@ -2083,7 +2083,7 @@
     margin-top: 3px;
   }
 
-  .group-new .member-list{
+  .group-new .member-list, .group-edit .member-list{
     overflow-y: scroll;
     height: ~'calc(100% - 115px)';
   }
