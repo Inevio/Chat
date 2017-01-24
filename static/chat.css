@@ -1697,7 +1697,9 @@
   }
 
   .channel .channel-img span{
-    margin-top: 22px;
+    font-size: 27px;
+    margin-top: 17px;
+    font-weight: normal;
   }
 
   .chat-tab-selector, .contact-tab-selector{
