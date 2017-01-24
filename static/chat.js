@@ -518,40 +518,40 @@ var changeTab = function(tab){
     // Make it active and visible
     case 'chat':
 
-    mode = 0;
-    prevMode = mode;
-    $('.unread-messages').hide();
-    contactsButton.removeClass('active');
-    chatButton.addClass('active');
-    contactTab.removeClass( 'visible' );
-    chatTab.addClass( 'visible' );
-    colorChange.addClass( 'visible' );
-    groupMenu.removeClass( 'visible' );
-    removeGroup.removeClass( 'visible' );
-    if( mobile ){
-      $( '.ui-header-mobile .window-title' ).text(lang.chats);
-    }else{
-      newGroupButton.removeClass( 'visible' );
-    }
+      mode = 0;
+      prevMode = mode;
+      $('.unread-messages').hide();
+      contactsButton.removeClass('active');
+      chatButton.addClass('active');
+      contactTab.removeClass( 'visible' );
+      chatTab.addClass( 'visible' );
+      colorChange.addClass( 'visible' );
+      groupMenu.removeClass( 'visible' );
+      removeGroup.removeClass( 'visible' );
+      if( mobile ){
+        $( '.ui-header-mobile .window-title' ).text(lang.chats);
+      }else{
+        newGroupButton.removeClass( 'visible' );
+      }
 
-    break;
+      break;
 
     // Make it active and visible
     case 'contact':
 
-    mode = 1;
-    prevMode = mode;
-    chatButton.removeClass( 'active' );
-    contactsButton.addClass( 'active' );
-    chatTab.removeClass( 'visible' );
-    contactTab.addClass( 'visible' );
-    newGroupButton.addClass( 'visible' );
-    colorChange.removeClass( 'visible' );
-    if( mobile ){
-      $( '.ui-header-mobile .window-title' ).text(lang.contacts);
-    }
+      mode = 1;
+      prevMode = mode;
+      chatButton.removeClass( 'active' );
+      contactsButton.addClass( 'active' );
+      chatTab.removeClass( 'visible' );
+      contactTab.addClass( 'visible' );
+      newGroupButton.addClass( 'visible' );
+      colorChange.removeClass( 'visible' );
+      if( mobile ){
+        $( '.ui-header-mobile .window-title' ).text(lang.contacts);
+      }
 
-    break;
+      break;
 
   }
 
