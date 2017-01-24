@@ -1973,7 +1973,7 @@
     height: 40px;
     border-radius: 50%;
     float: left;
-    margin-top: 7px;
+    margin-top: 6px;
     margin-right: 10px;
     background-size: cover;
     display: none;
@@ -1982,7 +1982,6 @@
   .conver-info .conver-avatar-group{
     width: 36px;
     height: 36px;
-    margin-top: 6px;
   }
 
   .conver-info .conver-avatar-group span{
