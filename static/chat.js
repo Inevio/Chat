@@ -444,7 +444,7 @@ app
 })
 
 .on('backbutton', function( e ){
-  e.stopPropagation()
+  e.stopPropagation();
   goBack();
 });
 // END APP EVENTS
