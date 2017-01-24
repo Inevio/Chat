@@ -1092,7 +1092,12 @@ var selectChat = function( chat ){
       if( chat.data( 'isGroup' ) != null ){
 
         if( mobile ){
+
           $( '.conver-info' ).addClass( 'viewGroup' );
+          $( '.conver-avatar' ).hide();
+          $( '.conver-avatar-group' ).show();
+          setGroupAvatar( chat.find( '.channel-name' ).text() , $( '.conver-avatar-group' ) );
+
         }else{
           $( '.conversation-header' ).addClass( 'viewGroup' );
         }
@@ -1100,6 +1105,8 @@ var selectChat = function( chat ){
       }else{
 
         if( mobile ){
+          $( '.conver-avatar' ).show();
+          $( '.conver-avatar-group' ).hide();
           $( '.conver-info' ).removeClass( 'viewGroup' );
         }else{
           $( '.conversation-header' ).removeClass( 'viewGroup' );

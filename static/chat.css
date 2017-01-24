@@ -1968,14 +1968,27 @@
     display: block;
   }
 
-  .conver-info .conver-avatar{
+  .conver-info .conver-avatar, .conver-info .conver-avatar-group{
     width: 40px;
     height: 40px;
     border-radius: 50%;
     float: left;
     margin-top: 7px;
-    margin-right: 5px;
+    margin-right: 10px;
     background-size: cover;
+    display: none;
+  }
+
+  .conver-info .conver-avatar-group{
+    width: 36px;
+    height: 36px;
+    margin-top: 6px;
+  }
+
+  .conver-info .conver-avatar-group span{
+    font-weight: bold;
+    margin-top: 12px;
+    display: inline-block;
   }
 
   .conver-info div{
