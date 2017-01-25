@@ -2399,7 +2399,11 @@ var createNewGroup = function(){
 
   }else{
 
-    alert( lang.groupNameError );
+    if( mobile ){
+      navigator.notification.alert( '', function(){},lang.groupNameError );
+    }else{
+      alert( lang.groupNameError );
+    }
 
   }
 
