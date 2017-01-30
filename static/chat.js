@@ -1530,6 +1530,8 @@ var printMessage = function( msg , sender , time , animate , byScroll , checked 
 
 var initChat = function(){
 
+  console.log(params);
+
   api.user( myContactID , function( error, user ){
 
     me = user;
@@ -1538,7 +1540,20 @@ var initChat = function(){
     setMobile();
     checkTab();
     getContacts();
-    getChats();
+
+    if( params[0] === "push" ){
+
+      getChats( function(){
+
+        $( '.chatDom-' + params[1].channelId ).click();
+
+      });
+
+    }else{
+      getChats();
+    }
+
+
     preselectChat();
 
     msgInput.textareaAutoSize();
@@ -1673,7 +1688,7 @@ var send = function( message , channel , channelDom ){
         'id' : messages.insertId ,
         'groupName' : groupName
 
-      } , { push : { message : sender + message } } , function( error ){
+      } , { push : { message : sender + message, data : channel.id } } , function( error ){
 
         if ( error ) { console.log('ERROR: ', error ); }
 
