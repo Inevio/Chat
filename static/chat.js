@@ -1541,12 +1541,10 @@ var initChat = function(){
     checkTab();
     getContacts();
 
-    if( params[0] === "push" ){
+    if( params && params[ 0 ] === 'push' ){
 
       getChats( function(){
-
-        $( '.chatDom-' + params[1].channelId ).click();
-
+        $( '.chatDom-' + params[ 1 ].channelId ).click();
       });
 
     }else{

@@ -35,46 +35,44 @@ if ( !params ) {
 
 }else{
 
-  if( params[0] === "push" ){
-    start();
-  }else{
+  if( params[ 0 ] === 'push' ){
+    return start();
+  }
 
-    var action = params[0];
-    var o = params[1];
-    var callback = params[2];
+  var action = params[0];
+  var o = params[1];
+  var callback = params[2];
 
-    if ( ! o.type ) {
-      return;
-    }
+  if ( ! o.type ) {
+    return;
+  }
 
-    switch (action) {
+  switch (action) {
 
-      case 'new-chat':
+    case 'new-chat':
 
-      if ( o.type === 'world' ) {
+    if ( o.type === 'world' ) {
 
-        var world = o.content;
+      var world = o.content;
 
-        api.channel( function( error , channel ){
+      api.channel( function( error , channel ){
+
+        if ( error ) { console.log('ERROR: ', error ); }
+
+        wql.addWorldChannel( [ channel.id , world.name , world.id ] , function( error , message ){
 
           if ( error ) { console.log('ERROR: ', error ); }
 
-          wql.addWorldChannel( [ channel.id , world.name , world.id ] , function( error , message ){
+          wql.addUserInChannel( [ channel.id , world.owner ] , function( error , message ){
 
             if ( error ) { console.log('ERROR: ', error ); }
 
-            wql.addUserInChannel( [ channel.id , world.owner ] , function( error , message ){
+            channel.addUser( world.owner , function( error ){
 
               if ( error ) { console.log('ERROR: ', error ); }
 
-              channel.addUser( world.owner , function( error ){
-
-                if ( error ) { console.log('ERROR: ', error ); }
-
-                callback( 'chat generado, todo ok!' );
-                wz.app.removeView(app);
-
-              });
+              callback( 'chat generado, todo ok!' );
+              wz.app.removeView(app);
 
             });
 
@@ -82,90 +80,90 @@ if ( !params ) {
 
         });
 
-      }
-
-      break;
-
-      case 'join-chat':
-
-      if ( o.type === 'world' ) {
-
-        var world = o.content;
-
-        wql.getWorldChannel( world.id , function( error , obj ){
-
-          if ( error ) { console.log('ERROR: ', error ); }
-
-          var chatId = obj[0].id;
-
-          wz.channel( chatId , function( error, channel ){
-
-            wql.addUserInChannel( [ channel.id , world.owner ] , function( error , message ){
-
-              if ( error ) { console.log('ERROR: ', error ); }
-
-              channel.addUser( world.owner , function( error ){
-
-                if ( error ) { console.log('ERROR: ', error ); }
-
-                callback( 'me he unido al chat, todo ok!' );
-                wz.app.removeView(app);
-
-              });
-
-            });
-
-          });
-
-        });
-
-      }
-
-      break;
-
-      case 'open-chat':
-
-      start();
-      break;
-
-      case 'remove-chat':
-
-      if ( o.type === 'world' ) {
-
-        var world = o.content;
-
-        wql.getWorldChannel( world.id , function( error , obj ){
-
-          if ( error ) { console.log('ERROR: ', error ); }
-
-          var chatId = obj[0].id;
-
-          wz.channel( chatId , function( error, channel ){
-
-            wql.deleteUsersInChannel( channel.id , function( error , message ){
-
-              if ( error ) { console.log('ERROR: ', error ); }
-
-              wql.deleteChannel( channel.id , function( error , message ){
-
-                if ( error ) { console.log('ERROR: ', error ); }
-
-                callback( 'chat borrado, todo ok!' );
-                wz.app.removeView(app);
-
-              });
-
-            });
-
-          });
-
-        });
-
-      }
-
-      break;
+      });
 
     }
+
+    break;
+
+    case 'join-chat':
+
+    if ( o.type === 'world' ) {
+
+      var world = o.content;
+
+      wql.getWorldChannel( world.id , function( error , obj ){
+
+        if ( error ) { console.log('ERROR: ', error ); }
+
+        var chatId = obj[0].id;
+
+        wz.channel( chatId , function( error, channel ){
+
+          wql.addUserInChannel( [ channel.id , world.owner ] , function( error , message ){
+
+            if ( error ) { console.log('ERROR: ', error ); }
+
+            channel.addUser( world.owner , function( error ){
+
+              if ( error ) { console.log('ERROR: ', error ); }
+
+              callback( 'me he unido al chat, todo ok!' );
+              wz.app.removeView(app);
+
+            });
+
+          });
+
+        });
+
+      });
+
+    }
+
+    break;
+
+    case 'open-chat':
+
+    start();
+    break;
+
+    case 'remove-chat':
+
+    if ( o.type === 'world' ) {
+
+      var world = o.content;
+
+      wql.getWorldChannel( world.id , function( error , obj ){
+
+        if ( error ) { console.log('ERROR: ', error ); }
+
+        var chatId = obj[0].id;
+
+        wz.channel( chatId , function( error, channel ){
+
+          wql.deleteUsersInChannel( channel.id , function( error , message ){
+
+            if ( error ) { console.log('ERROR: ', error ); }
+
+            wql.deleteChannel( channel.id , function( error , message ){
+
+              if ( error ) { console.log('ERROR: ', error ); }
+
+              callback( 'chat borrado, todo ok!' );
+              wz.app.removeView(app);
+
+            });
+
+          });
+
+        });
+
+      });
+
+    }
+
+    break;
 
   }
 
