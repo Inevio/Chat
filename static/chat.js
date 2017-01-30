@@ -1673,7 +1673,7 @@ var send = function( message , channel , channelDom ){
         'id' : messages.insertId ,
         'groupName' : groupName
 
-      } , { background : sender + message } , function( error ){
+      } , { push : { message : sender + message } } , function( error ){
 
         if ( error ) { console.log('ERROR: ', error ); }
 
