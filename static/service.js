@@ -90,9 +90,9 @@ api.notification.on( 'notification', function( data ){
 
   var info = [ 'push' , { channelId : parseInt( data.data ) } ]
 
-  //if( data.foreground ){
+  if( !data.foreground ){
     api.app.createView( info );
-  //}
+  }
 
 
 });
