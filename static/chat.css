@@ -1546,6 +1546,7 @@
   }
 
   .contact-list, .channel-list{
+    width: 100%;
     overflow-y: scroll;
     /*-webkit-overflow-scrolling: touch;*/
   }
@@ -1576,14 +1577,18 @@
   .back-button{
     width: 16px;
     height: 15px;
+    float: left;
+    padding: 19px 15px 11px;
+    display: none;
+  }
+
+  .back-button i{
+    width: 16px;
+    height: 15px;
     background: url('@static/mobile/sprite.png');
     background-size: 170px 31px;
     background-position: -100px 0px;
-    float: left;
     display: inline-block;
-    margin: 19px 15px 11px;
-    cursor: pointer;
-    display: none;
   }
 
   .more-button{
@@ -1636,15 +1641,12 @@
     bottom: 0px;
   }
 
-  .channel-list{
-    width: 100%;
-  }
-
   .channel{
     width: 100%;
-    height: 76px;
-    float: none;
+    height: 77px;
+    float: right;
     border-bottom: none;
+    display: inline-block;
   }
 
   .channel::after{
@@ -1655,7 +1657,7 @@
     display: inline-block;
     position: relative;
     bottom: 12px;
-    margin: 0px 0px 0px 65px;
+    margin: 0px 0px 0px 80px;
   }
 
   .channel .last-message{
@@ -1695,7 +1697,9 @@
   }
 
   .channel .channel-img span{
-    margin-top: 22px;
+    font-size: 27px;
+    margin-top: 17px;
+    font-weight: normal;
   }
 
   .chat-tab-selector, .contact-tab-selector{
@@ -1722,6 +1726,15 @@
     box-shadow: none;
   }
   .dark .contact:hover .highlight-area{
+    background-color: initial;
+    box-shadow: none;
+  }
+
+  .channel:hover .highlight-area{
+    background-color: initial;
+    box-shadow: none;
+  }
+  .dark .channel:hover .highlight-area{
     background-color: initial;
     box-shadow: none;
   }
@@ -1828,7 +1841,8 @@
     width: 100%;
     height: 48px;
     border-bottom: none;
-    float: none;
+    float: right;
+    display: inline-block;
   }
 
   .contact::after{
@@ -1956,14 +1970,26 @@
     display: block;
   }
 
-  .conver-info .conver-avatar{
+  .conver-info .conver-avatar, .conver-info .conver-avatar-group{
     width: 40px;
     height: 40px;
     border-radius: 50%;
     float: left;
-    margin-top: 7px;
-    margin-right: 5px;
+    margin-top: 6px;
+    margin-right: 10px;
     background-size: cover;
+    display: none;
+  }
+
+  .conver-info .conver-avatar-group{
+    width: 36px;
+    height: 36px;
+  }
+
+  .conver-info .conver-avatar-group span{
+    font-weight: bold;
+    margin-top: 12px;
+    display: inline-block;
   }
 
   .conver-info div{
@@ -2028,16 +2054,18 @@
   }
 
   .new-group{
-    font-size: 16px;
-    margin-left: 20px;
-    margin-top: 18px;
-    color: #ffffff;
+    width: 27px;
+    height: 21px;
+    padding: 17px 20px;
     float: left;
     display: none;
   }
 
-  .new-group.visible{
-    display: block;
+  .new-group .new-group-icon{
+    width: 27px;
+    height: 21px;
+    background-image: url('@static/mobile/new-group.png');
+    background-size: 27px 21px;
   }
 
   .channel .channel-badge span{
@@ -2056,7 +2084,8 @@
     margin-top: 3px;
   }
 
-  .group-new .member-list{
+  .group-new .member-list, .group-edit .member-list{
+    overflow-y: scroll;
     height: ~'calc(100% - 115px)';
   }
 
@@ -2066,8 +2095,7 @@
 
   .accept-button, .edit-button{
     float: right;
-    margin-right: 15px;
-    margin-top: 19px;
+    padding: 19px 15px;
     font-size: 16px;
     color: #60b25e;
     cursor: pointer;
@@ -2091,6 +2119,9 @@
     width: 34px;
     height: 34px;
     border-radius: 50%;
+    margin: 0px;
+    padding: 8px;
+    background-clip: content-box;
   }
 
   .conversation-send-mobile figure{
@@ -2101,6 +2132,18 @@
     margin-top: 10px;
     margin-left: 10px;
     display: inline-block;
+  }
+
+  .conversation-input{
+    width: ~'calc(100% - 76px)';
+  }
+
+  .conversation-input textarea{
+    width: 100%;
+  }
+
+  .ui-input-search .search-icon i{
+    background-image: url('https://static.inevio.com/image/uikit/sprite-dark@2x.png');
   }
 
 }

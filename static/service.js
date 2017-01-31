@@ -83,3 +83,16 @@ wql.getChannels( myContactID , function( error , channels ){
   });
 
 });
+
+api.notification.on( 'notification', function( data ){
+
+  console.log('recibo notification', data);
+
+  var info = [ 'push' , { channelId : parseInt( data.data ) } ]
+
+  if( !data.foreground ){
+    api.app.createView( info );
+  }
+
+
+});
