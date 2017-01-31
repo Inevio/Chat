@@ -240,6 +240,7 @@ colorChange.on( 'click' , function(){
 
   }
 
+  app.toggleClass( 'dark' );
   $( '.ui-window' ).toggleClass( 'dark' );
   $( '.conversation-input input' ).val('');
 
