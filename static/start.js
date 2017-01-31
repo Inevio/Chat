@@ -35,7 +35,10 @@ if ( !params ) {
 
 }else{
 
-  console.log(params);
+  if( params[ 0 ] === 'push' ){
+    return start();
+  }
+
   var action = params[0];
   var o = params[1];
   var callback = params[2];

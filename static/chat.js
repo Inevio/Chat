@@ -240,6 +240,7 @@ colorChange.on( 'click' , function(){
 
   }
 
+  app.toggleClass( 'dark' );
   $( '.ui-window' ).toggleClass( 'dark' );
   $( '.conversation-input input' ).val('');
 
@@ -258,7 +259,6 @@ msgContainer.on( 'scroll' , function( e ){
   }
 
 });
-
 
 // END UI EVENTS
 
@@ -428,6 +428,12 @@ app
 
 })
 
+.on( 'click' , '.conversation-input', function(){
+
+  $(this).find('textarea').focus();
+
+})
+
 .on( 'ui-view-resize ui-view-maximize ui-view-unmaximize', function(){
 
   $( '.message-container' ).scrollTop(9999999);
@@ -439,7 +445,7 @@ app
 })
 
 .on('backbutton', function( e ){
-  e.stopPropagation()
+  e.stopPropagation();
   goBack();
 });
 // END APP EVENTS
@@ -513,41 +519,40 @@ var changeTab = function(tab){
     // Make it active and visible
     case 'chat':
 
-    mode = 0;
-    prevMode = mode;
-    $('.unread-messages').hide();
-    contactsButton.removeClass('active');
-    chatButton.addClass('active');
-    contactTab.removeClass( 'visible' );
-    chatTab.addClass( 'visible' );
-    newGroupButton.removeClass( 'visible' );
-    colorChange.addClass( 'visible' );
-    groupMenu.removeClass( 'visible' );
-    removeGroup.removeClass( 'visible' );
-    $('.new-group').removeClass( 'visible' );
-    if( mobile ){
-      $( '.ui-header-mobile .window-title' ).text(lang.chats);
-    }
+      mode = 0;
+      prevMode = mode;
+      $('.unread-messages').hide();
+      contactsButton.removeClass('active');
+      chatButton.addClass('active');
+      contactTab.removeClass( 'visible' );
+      chatTab.addClass( 'visible' );
+      colorChange.addClass( 'visible' );
+      groupMenu.removeClass( 'visible' );
+      removeGroup.removeClass( 'visible' );
+      if( mobile ){
+        $( '.ui-header-mobile .window-title' ).text(lang.chats);
+      }else{
+        newGroupButton.removeClass( 'visible' );
+      }
 
-    break;
+      break;
 
     // Make it active and visible
     case 'contact':
 
-    mode = 1;
-    prevMode = mode;
-    chatButton.removeClass( 'active' );
-    contactsButton.addClass( 'active' );
-    chatTab.removeClass( 'visible' );
-    contactTab.addClass( 'visible' );
-    newGroupButton.addClass( 'visible' );
-    colorChange.removeClass( 'visible' );
-    $('.new-group').addClass( 'visible' );
-    if( mobile ){
-      $( '.ui-header-mobile .window-title' ).text(lang.contacts);
-    }
+      mode = 1;
+      prevMode = mode;
+      chatButton.removeClass( 'active' );
+      contactsButton.addClass( 'active' );
+      chatTab.removeClass( 'visible' );
+      contactTab.addClass( 'visible' );
+      newGroupButton.addClass( 'visible' );
+      colorChange.removeClass( 'visible' );
+      if( mobile ){
+        $( '.ui-header-mobile .window-title' ).text(lang.contacts);
+      }
 
-    break;
+      break;
 
   }
 
@@ -1088,7 +1093,12 @@ var selectChat = function( chat ){
       if( chat.data( 'isGroup' ) != null ){
 
         if( mobile ){
+
           $( '.conver-info' ).addClass( 'viewGroup' );
+          $( '.conver-avatar' ).hide();
+          $( '.conver-avatar-group' ).show();
+          setGroupAvatar( chat.find( '.channel-name' ).text() , $( '.conver-avatar-group' ) );
+
         }else{
           $( '.conversation-header' ).addClass( 'viewGroup' );
         }
@@ -1096,6 +1106,8 @@ var selectChat = function( chat ){
       }else{
 
         if( mobile ){
+          $( '.conver-avatar' ).show();
+          $( '.conver-avatar-group' ).hide();
           $( '.conver-info' ).removeClass( 'viewGroup' );
         }else{
           $( '.conversation-header' ).removeClass( 'viewGroup' );
@@ -1519,6 +1531,8 @@ var printMessage = function( msg , sender , time , animate , byScroll , checked 
 
 var initChat = function(){
 
+  console.log(params);
+
   api.user( myContactID , function( error, user ){
 
     me = user;
@@ -1527,7 +1541,18 @@ var initChat = function(){
     setMobile();
     checkTab();
     getContacts();
-    getChats();
+
+    if( params && params[ 0 ] === 'push' ){
+
+      getChats( function(){
+        $( '.chatDom-' + params[ 1 ].channelId ).click();
+      });
+
+    }else{
+      getChats();
+    }
+
+
     preselectChat();
 
     msgInput.textareaAutoSize();
@@ -1662,7 +1687,7 @@ var send = function( message , channel , channelDom ){
         'id' : messages.insertId ,
         'groupName' : groupName
 
-      } , { push : { message : sender + message } } , function( error ){
+      } , { push : { message : sender + message, data : channel.id } } , function( error ){
 
         if ( error ) { console.log('ERROR: ', error ); }
 
@@ -2118,6 +2143,7 @@ var newGroup = function(){
     $( '.group-new' ).addClass( 'visible' );
     $( '.group-name-input input' ).val( '' );
     $( '.search-members input' ).val( '' );
+    $( '.group-members-txt' ).hide();
 
     if( mobile ){
 
@@ -2130,7 +2156,7 @@ var newGroup = function(){
       });
       $('.initial-header .new-group').removeClass('visible');
       $('.initial-header .back-button').addClass('visible');
-      $('.initial-header .more-button').hide();
+      //$('.initial-header .more-button').hide();
       $('.initial-header .accept-button').show();
 
     }
@@ -2259,7 +2285,10 @@ var editGroup = function(){
 
           groupMenu.removeClass( 'visible' );
           removeGroup.removeClass( 'visible' );
-          $('.chatDom.active').remove();
+          if( mobile ){
+            $('.chatDom.active').remove();
+          }
+
           getChats( function(){
 
             $( '.chatDom-' + channel.id ).click();
@@ -2360,7 +2389,11 @@ var createNewGroup = function(){
                   removeGroup.removeClass( 'visible' );
                   getChats( function(){
 
-                    $('.chatDom-'+channel.id).click();
+                    if( mobile ){
+                      goBack();
+                    }else{
+                      $('.chatDom-'+channel.id).click();
+                    }
 
                   });
 
@@ -2380,7 +2413,11 @@ var createNewGroup = function(){
 
   }else{
 
-    alert( lang.groupNameError );
+    if( mobile ){
+      navigator.notification.alert( '', function(){},lang.groupNameError );
+    }else{
+      alert( lang.groupNameError );
+    }
 
   }
 
@@ -2455,6 +2492,7 @@ var viewGroup = function(){
 
     if ( members ) {
 
+      $( '.group-members-txt' ).show();
       $( '.group-members-txt' ).text( ( members.length + 1 ) + ' ' + lang.members );
 
     }else{
@@ -2870,7 +2908,7 @@ var goBack = function(){
 
         $('.initial-header .new-group').addClass('visible');
         $('.initial-header .back-button').removeClass('visible');
-        $('.initial-header .more-button').show();
+        //$('.initial-header .more-button').show();
         $('.initial-header .accept-button').hide();
 
       }else{
