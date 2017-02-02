@@ -88,7 +88,7 @@ api.notification.on( 'notification', function( data ){
 
   console.log('recibo notification', data);
 
-  var info = [ 'push' , { channelId : parseInt( data.data ) } ]
+  var info = [ 'push' , { channelId : parseInt( data.data.channel ) , messageId : parseInt( data.data.message ) }  ]
 
   if( !data.foreground ){
     api.app.createView( info );
