@@ -113,6 +113,23 @@ wz.user.on( 'friendAdded', function( user ){
 wz.user.on( 'friendRemoved', function( user ){
   getContacts();
 });
+
+api.system.on( 'connect' ,function(){
+
+  /*getContacts();
+  getChats();
+
+  console.log($( '.chatDom.active' ).data());
+  console.log(mode);
+  if( mode == MODE_CONVERSATION ){
+    listMessages( $( '.chatDom.active' ).data() );
+  }*/
+
+});
+
+api.system.on( 'disconnect' ,function(){
+  console.log('disconnect');
+});
 // END SERVER EVENTS
 
 
