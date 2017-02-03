@@ -1,5 +1,12 @@
 // CHAT 1.0.11
 var animationDuration = 500;
+var MODE_CHAT = 0;
+var MODE_CONTACTS = 1;
+var MODE_CONVERSATION = 2;
+var MODE_INFORMATION = 3;
+var MODE_CREATING_GROUP = 4;
+var MODE_EDITING_GROUP = 5;
+var MODE_ANIMATING = -1;
 var mode = 0; // 0 == Chats tab, 1 == Contacts tab, 2 == Conversation tab, 3 == Information tab, 4 == creating group, 5 == editing group, -1 == transition
 var prevMode = 0;
 
@@ -519,7 +526,7 @@ var changeTab = function(tab){
     // Make it active and visible
     case 'chat':
 
-      mode = 0;
+      mode = MODE_CHAT;
       prevMode = mode;
       $('.unread-messages').hide();
       contactsButton.removeClass('active');
@@ -540,7 +547,7 @@ var changeTab = function(tab){
     // Make it active and visible
     case 'contact':
 
-      mode = 1;
+      mode = MODE_CONTACTS;
       prevMode = mode;
       chatButton.removeClass( 'active' );
       contactsButton.addClass( 'active' );
@@ -968,7 +975,7 @@ var selectContact = function( contact ){
     }else{
 
       prevMode = mode;
-      mode = -1;
+      mode = MODE_ANIMATING;
       $('.initial-header').transition({
         'x': '-100%'
       },animationDuration);
@@ -979,7 +986,7 @@ var selectContact = function( contact ){
       content.show().transition({
         'x' : 0
       },animationDuration, function(){
-        mode = 2;
+        mode = MODE_CONVERSATION;
         $(this).addClass( 'visible' );
         //msgInput.focus();
       });
@@ -1046,7 +1053,7 @@ var selectChat = function( chat ){
     }else{
 
       prevMode = mode;
-      mode = -1;
+      mode = MODE_ANIMATING;
       $('.initial-header').transition({
         'x': '-100%'
       },animationDuration);
@@ -1057,7 +1064,7 @@ var selectChat = function( chat ){
       content.show().transition({
         'x' : 0
       },animationDuration, function(){
-        mode = 2;
+        mode = MODE_CONVERSATION;
         $(this).addClass( 'visible' );
         //msgInput.focus();
       });
@@ -1643,7 +1650,7 @@ var sendMessage = function(){
               send( txt , channel , channelDom );
               getChats( function(){
 
-                if( mode == 1 ){
+                if( mode == MODE_CONTACTS ){
                   changeTab('chat');
                 }
                 $( '.chatDom-' + channel.id ).click();
@@ -1687,7 +1694,7 @@ var send = function( message , channel , channelDom ){
         'id' : messages.insertId ,
         'groupName' : groupName
 
-      } , { push : { message : sender + message, data : channel.id } } , function( error ){
+      } , { push : { message : sender + message, data : { 'channel' : channel.id, 'message' : message.insertId } } } , function( error ){
 
         if ( error ) { console.log('ERROR: ', error ); }
 
@@ -1871,7 +1878,7 @@ var objectRecieved = function( message , o ){
 
     if ( channelActive && message.id == channelActive.id && message.sender != myContactID ) {
 
-      listenWriting();
+      listenWriting(message.sender);
 
     }
     break;
@@ -2148,11 +2155,11 @@ var newGroup = function(){
     if( mobile ){
 
       prevMode = mode;
-      mode = -1;
+      mode = MODE_ANIMATING;
       $('.group-menu').transition({
         'x' : 0
       }, animationDuration, function(){
-        mode = 4;
+        mode = MODE_CREATING_GROUP;
       });
       $('.initial-header .new-group').removeClass('visible');
       $('.initial-header .back-button').addClass('visible');
@@ -2468,11 +2475,11 @@ var viewGroup = function(){
     if( mobile ){
 
       prevMode = mode;
-      mode = -1;
+      mode = MODE_ANIMATING;
       $('.group-menu').transition({
         'x' : 0
       }, animationDuration, function(){
-        mode = 3;
+        mode = MODE_INFORMATION;
       });
 
       $('.conver-header').transition({
@@ -2541,7 +2548,7 @@ var viewGroup = function(){
 var editGroupMode = function( groupName ){
 
   prevMode = mode;
-  mode = 5;
+  mode = MODE_EDITING_GROUP;
 
   if( mobile ){
 
@@ -2836,9 +2843,26 @@ var warnWriting = function(){
 
 }
 
-var listenWriting = function(){
+var listenWriting = function( senderId ){
 
-  lastMessage.text( lang.writing );
+  var writingText = lang.writing;
+
+  if( $( '.chatDom.active' ).data( 'isGroup' ) && senderId ){
+
+    api.user( senderId , function( error, user ){
+
+      console.log(arguments);
+      if( error ){
+        console.log('ERROR: ' + error);
+      }else{
+        lastMessage.text( user.name + ' ' + lang.is + ' ' + writingText );      
+      }
+
+    });
+
+  }else{
+    lastMessage.text( writingText );
+  }
 
   clearTimeout( listenWritingTimeOut );
 
@@ -2902,9 +2926,9 @@ var goBack = function(){
 
     $('.unread-messages').hide();
 
-    if( mode == 3 || mode == 4 ){
+    if( mode == MODE_INFORMATION || mode == MODE_CREATING_GROUP ){
 
-      if( mode == 4 ){
+      if( mode == MODE_CREATING_GROUP ){
 
         $('.initial-header .new-group').addClass('visible');
         $('.initial-header .back-button').removeClass('visible');
@@ -2922,7 +2946,7 @@ var goBack = function(){
 
       }
 
-      mode = -1;
+      mode = MODE_ANIMATING;
       $('.group-menu').transition({
         'x' : '100%'
       }, animationDuration, function(){
@@ -2933,9 +2957,9 @@ var goBack = function(){
 
       });
 
-    }else if( mode == 2 ){
+    }else if( mode == MODE_CONVERSATION ){
 
-      mode = -1;
+      mode = MODE_ANIMATING;
       $('.initial-header').transition({
         'x': '0'
       },animationDuration);
@@ -2957,14 +2981,14 @@ var goBack = function(){
 
       });
 
-    }else if( mode == 5 ){
+    }else if( mode == MODE_EDITING_GROUP ){
 
-      mode = -1;
+      mode = MODE_ANIMATING;
       $('.group-menu').transition({
         'x' : '100%'
       }, animationDuration, function(){
 
-        mode = 2;
+        mode = MODE_CONVERSATION;
         $('.accept-button').hide();
         $('.edit-button').show();
         cancelNewGroup.click();
