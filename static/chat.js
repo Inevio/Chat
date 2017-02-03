@@ -1878,7 +1878,7 @@ var objectRecieved = function( message , o ){
 
     if ( channelActive && message.id == channelActive.id && message.sender != myContactID ) {
 
-      listenWriting();
+      listenWriting(message.sender);
 
     }
     break;
@@ -2843,9 +2843,26 @@ var warnWriting = function(){
 
 }
 
-var listenWriting = function(){
+var listenWriting = function( senderId ){
 
-  lastMessage.text( lang.writing );
+  var writingText = lang.writing;
+
+  if( $( '.chatDom.active' ).data( 'isGroup' ) && senderId ){
+
+    api.user( senderId , function( error, user ){
+
+      console.log(arguments);
+      if( error ){
+        console.log('ERROR: ' + error);
+      }else{
+        lastMessage.text( user.name + ' ' + lang.is + ' ' + writingText );      
+      }
+
+    });
+
+  }else{
+    lastMessage.text( writingText );
+  }
 
   clearTimeout( listenWritingTimeOut );
 
