@@ -2851,11 +2851,10 @@ var listenWriting = function( senderId ){
 
     api.user( senderId , function( error, user ){
 
-      console.log(arguments);
       if( error ){
         console.log('ERROR: ' + error);
       }else{
-        lastMessage.text( user.name + ' ' + lang.is + ' ' + writingText );      
+        lastMessage.text( user.name + ' ' + lang.is + ' ' + writingText );
       }
 
     });
