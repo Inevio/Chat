@@ -92,25 +92,25 @@ api.channel.on( 'userAdded', function( info, userId ){
   userAdded( info , userId );
 });
 
-wz.user.on( 'connect' , function( user ){
+api.user.on( 'connect' , function( user ){
 
   updateContactState( $( '.user-id-' + user.id ) , true , user.id );
   updateState( user.id , true );
 
 });
 
-wz.user.on( 'disconnect' , function( user ){
+api.user.on( 'disconnect' , function( user ){
 
   updateContactState( $( '.user-id-' + user.id ) , false , user.id );
   updateState( user.id , false );
 
 });
 
-wz.user.on( 'friendAdded', function( user ){
+api.user.on( 'friendAdded', function( user ){
   getContacts();
 });
 
-wz.user.on( 'friendRemoved', function( user ){
+api.user.on( 'friendRemoved', function( user ){
   getContacts();
 });
 
@@ -209,7 +209,7 @@ conversationDel.on( 'click' , function(){
 
 closeApp.on( 'click' , function(){
 
-  var position = wz.view.getPosition();
+  var position = api.view.getPosition();
 
   wql.updateUserPreference( [ myContactID , app.width() , app.height() , $( '.ui-window' ).hasClass('dark') , position.x , position.y , app.width() , app.height() , $( '.ui-window' ).hasClass('dark') , position.x , position.y ] , function( error , message ){
 
@@ -516,7 +516,7 @@ var appendChat = function( channel , user , groupName , callback ){
 
           if(lastMsg != undefined){
 
-            wz.user( lastMsg.sender , function( e , usr ){
+            api.user( lastMsg.sender , function( e , usr ){
 
               var name = usr.name;
               var date = new Date(lastMsg.time);
@@ -1130,7 +1130,7 @@ var filterMembers = function( filter ){
 
 var getChats = function( callback ){
 
-  wz.app.setBadge( 0 );
+  api.app.setBadge( 0 );
 
   wql.getChannels( myContactID , function( error , channels ){
 
@@ -1187,7 +1187,7 @@ var getChats = function( callback ){
 
             asyncEach( users , function( user , cb ){
 
-              wz.user( user.user , function( e , user ){
+              api.user( user.user , function( e , user ){
 
                 if ( user.id != myContactID ) {
                   usersInGroup.push( user );
@@ -1278,8 +1278,8 @@ var getContacts = function(){
 
       confirm( lang.noContacts , function(o){
         if(o){
-          wz.app.removeView( app );
-          wz.app.openApp( 2 , function(o){} );
+          api.app.removeView( app );
+          api.app.openApp( 2 , function(o){} );
         }
       });
 
@@ -1804,7 +1804,7 @@ var messageRecieved = function( message , o , channelActive ){
             launchBanner( users.fullName , o.txt , users.avatar.tiny , function(){
 
               $( '.chatDom-' + message.id ).click();
-              wz.app.viewToFront( app );
+              api.app.viewToFront( app );
 
             });
 
@@ -1837,12 +1837,12 @@ var messageRecieved = function( message , o , channelActive ){
               if ( message.sender != myContactID ) {
                 messageNotReaded( messageRec );
 
-                wz.user( message.sender, function( error, user ){
+                api.user( message.sender, function( error, user ){
 
                   launchBanner( user.fullName , o.txt , user.avatar.tiny , function(){
 
                     $( '.chatDom-' + message.id ).click();
-                    wz.app.viewToFront( app );
+                    api.app.viewToFront( app );
 
                   });
 
@@ -1878,12 +1878,12 @@ var messageRecieved = function( message , o , channelActive ){
     if ( message.sender != myContactID ) {
       messageNotReaded( messageRec );
 
-      wz.user( message.sender, function( error, user ){
+      api.user( message.sender, function( error, user ){
 
         launchBanner( user.fullName , o.txt , user.avatar.tiny , function(){
 
           $( '.chatDom-' + message.id ).click();
-          wz.app.viewToFront( app );
+          api.app.viewToFront( app );
 
         });
 
@@ -2535,7 +2535,7 @@ var send = function( message , channel , channelDom ){
       if ( error ) { console.log('ERROR: ', error ); }
 
       var groupName = $(channelDom).data('isGroup');
-      var myName = wz.system.user().name;
+      var myName = api.system.user().name;
       var sender = ( groupName ? ( groupName + ' - ' + myName ) : myName ).trim() + ':\n';
 
       channel.send(  {
@@ -2629,7 +2629,7 @@ var setActiveChat = function( chat ){
 
 var setChatInfo = function( chat , o , user , isGroup ){
 
-  wz.user( user , function( e , usr ){
+  api.user( user , function( e , usr ){
 
     var name = usr.name;
 
@@ -2840,12 +2840,12 @@ var timeElapsed = function( lastTime ){
 
 var updateBadge = function( num , add ){
 
-  var actualBadge = wz.app.getBadge();
+  var actualBadge = api.app.getBadge();
 
   if ( add ) {
-    wz.app.setBadge( parseInt(actualBadge) + num );
+    api.app.setBadge( parseInt(actualBadge) + num );
   }else{
-    wz.app.setBadge( parseInt(actualBadge) - num );
+    api.app.setBadge( parseInt(actualBadge) - num );
   }
 
 
