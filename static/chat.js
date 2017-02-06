@@ -2326,6 +2326,7 @@ var selectChat = function( chat ){
     currentDate = null;
 
     var channel = chat.data( 'channel' );
+    console.log(channel);
     var contact = chat.data( 'user' );
 
     lastMessage.removeClass( 'conected' );
