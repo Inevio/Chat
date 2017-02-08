@@ -2760,6 +2760,7 @@ var setTexts = function(){
   $( '.group-name-input input' ).attr('placeholder', lang.groupName);
   $( '.app-color .white' ).text(lang.white);
   $( '.app-color .dark' ).text(lang.dark);
+  
 }
 
 var startsWithChats = function( wordToCompare ){
