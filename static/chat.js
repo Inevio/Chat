@@ -2854,16 +2854,12 @@ var updateBadge = function( num , add ){
 
 var updateContactState = function( friend , state , id ){
 
-    friend.toggleClass( 'conected' );
+  friend.toggleClass( 'conected' );
 
-    for (var i = 0; i < myContacts.length; i++) {
+  for (var i = 0; i < myContacts.length; i++) {
 
-      if ( myContacts[i].id == id ) {
-
-        myContacts[i].status = state ? true : false;
-
-      }
-
+    if ( myContacts[i].id == id ) {
+      myContacts[i].status = state ? true : false;
     }
 
   }
