@@ -1329,15 +1329,13 @@ var getStringHour = function( date ){
     mm='0'+mm
   }
 
-
-
   return hh + ':' + mm;
 
 }
 
 var goBack = function(){
 
-  if( mobile && mode != -1 ){
+  if( mobile && mode != MODE_ANIMATING ){
 
     $('.unread-messages').hide();
 
@@ -1743,7 +1741,7 @@ var messageNotReaded = function( message ){
   updateBadge( 1 , true );
 
   console.log(mode);
-  if( mode != 0 ){//No estamos en la lista de chats
+  if( mode != MODE_CHAT ){//No estamos en la lista de chats
     $('.unread-messages').show();
   }
 
@@ -1910,7 +1908,7 @@ var messageRecieved = function( message , o , channelActive ){
 var newGroup = function(){
 
   // Make it visible
-  if( mode != -1 ){
+  if( mode != MODE_ANIMATING ){
 
     $( '.group-menu .visible' ).removeClass( 'visible' );
     groupMenu.addClass( 'visible' ).addClass( 'group-new' ).removeClass( 'group-edit' );
@@ -2319,7 +2317,7 @@ var saveGroup = function(){
 
 var selectChat = function( chat ){
 
-  if( mode != -1 ){
+  if( mode != MODE_ANIMATING ){
 
     groupMenu.removeClass( 'visible' );
     removeGroup.removeClass( 'visible' );
@@ -2453,7 +2451,7 @@ var selectColor = function( string ){
 
 var selectContact = function( contact ){
 
-  if( mode != -1 ){
+  if( mode != MODE_ANIMATING ){
 
     groupMenu.removeClass( 'visible' );
     removeGroup.removeClass( 'visible' );
@@ -2902,7 +2900,7 @@ var userAdded = function( info , userId ){
 
 var viewGroup = function(){
 
-  if( mode != -1 ){
+  if( mode != MODE_ANIMATING ){
 
     // Make it visible
     $( '.group-menu .visible' ).removeClass( 'visible' );
