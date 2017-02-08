@@ -16,8 +16,8 @@ if ( !params ) {
 
         preferences = preferences[0];
 
-        if( ( preferences.width < wz.tool.desktopWidth() ) && ( preferences.height < wz.tool.desktopHeight() ) ){
-          wz.view.setSize( preferences.width , preferences.height );
+        if( ( preferences.width < api.tool.desktopWidth() ) && ( preferences.height < api.tool.desktopHeight() ) ){
+          api.view.setSize( preferences.width , preferences.height );
         }
 
         if ( preferences.dark ) {
@@ -72,7 +72,7 @@ if ( !params ) {
               if ( error ) { console.log('ERROR: ', error ); }
 
               callback( 'chat generado, todo ok!' );
-              wz.app.removeView(app);
+              api.app.removeView(app);
 
             });
 
@@ -98,7 +98,7 @@ if ( !params ) {
 
         var chatId = obj[0].id;
 
-        wz.channel( chatId , function( error, channel ){
+        api.channel( chatId , function( error, channel ){
 
           wql.addUserInChannel( [ channel.id , world.owner ] , function( error , message ){
 
@@ -109,7 +109,7 @@ if ( !params ) {
               if ( error ) { console.log('ERROR: ', error ); }
 
               callback( 'me he unido al chat, todo ok!' );
-              wz.app.removeView(app);
+              api.app.removeView(app);
 
             });
 
@@ -140,7 +140,7 @@ if ( !params ) {
 
         var chatId = obj[0].id;
 
-        wz.channel( chatId , function( error, channel ){
+        api.channel( chatId , function( error, channel ){
 
           wql.deleteUsersInChannel( channel.id , function( error , message ){
 
@@ -151,7 +151,7 @@ if ( !params ) {
               if ( error ) { console.log('ERROR: ', error ); }
 
               callback( 'chat borrado, todo ok!' );
-              wz.app.removeView(app);
+              api.app.removeView(app);
 
             });
 
