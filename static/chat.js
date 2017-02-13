@@ -535,6 +535,17 @@ var appendChat = function( channel , user , groupName , callback ){
 
             });
 
+          }else{
+
+            console.log(channel);
+
+            if( channel.time != null ){
+
+              var date = new Date( channel.time );
+              chat.find( '.channel-last-time' ).text( timeElapsed( date ) );
+
+            }
+
           }
 
           chat.find( '.channel-name' ).text( groupName );
@@ -579,9 +590,17 @@ var appendChat = function( channel , user , groupName , callback ){
             chat
             .data( 'time' , new Date( lastMsg.time ) );
           }else{
-            appendChatInOrder( chat , new Date() );
+
+            var date = '';
+
+            if( channel.time != null ){
+              date = channel.time;
+            }
+
+            appendChatInOrder( chat , new Date(date) );
             chat
-            .data( 'time' , new Date() );
+            .data( 'time' , new Date(date) );
+
           }
 
           if ( notSeen[0] != undefined && notSeen[0]['COUNT(*)'] > 0 ) {
@@ -853,8 +872,9 @@ var createNewGroup = function(){
 
       if ( error ) { console.log('ERROR: ', error ); }
 
-      wql.addChannel( [ channel.id , groupName ] , function( error , message ){
+      wql.addChannel( [ channel.id , groupName, Date.now() ] , function( error , message ){
 
+        console.log(channel.id, groupName);
         if ( error ) { console.log('ERROR: ', error ); }
 
         wql.addUserInChannel( [ channel.id , myContactID ] , function( error , message ){
@@ -1148,6 +1168,8 @@ var getChats = function( callback ){
       }
 
       api.channel( channel.id , function( error, channelApi ){
+
+        channelApi.time = channel.time;
 
         wql.getUsersInChannel( channel.id , function( error , users ){
 
@@ -2760,7 +2782,7 @@ var setTexts = function(){
   $( '.group-name-input input' ).attr('placeholder', lang.groupName);
   $( '.app-color .white' ).text(lang.white);
   $( '.app-color .dark' ).text(lang.dark);
-  
+
 }
 
 var startsWithChats = function( wordToCompare ){
