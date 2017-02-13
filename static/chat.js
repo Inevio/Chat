@@ -311,23 +311,7 @@ app
 
     menu.addOption( lang.deleteChat , function(){
 
-      wql.deleteUsersInChannel( channel.id , function( error , message ){
-
-        if ( error ) { console.log('ERROR: ', error ); }
-
-        wql.deleteChannel( channel.id , function( error , message ){
-
-          if ( error ) { console.log('ERROR: ', error ); }
-
-          channel.destroy();
-
-          $( '.chatDom.active' ).remove();
-          content.removeClass( 'visible' );
-          $( '.user-id-' + user ).data( 'channel' , null );
-
-        });
-
-      });
+      deleteChannel( channel, user );
 
     });
   }
@@ -339,7 +323,7 @@ app
 .on( 'click' , '.chatDom' , function(){
 
   selectChat( $( this ) );
-  setTimeout(function(){ $( '.message-container' ).scrollTop(9999999); }, 100);
+  //setTimeout(function(){ $( '.message-container' ).scrollTop(9999999); }, 100);
 
 })
 
@@ -420,7 +404,7 @@ app
 
       groupMenu.removeClass( 'visible' );
       removeGroup.removeClass( 'visible' );
-      $( '.chatDom.active' ).remove();
+      $( '.chatDom-' + channel.id ).remove();
       content.removeClass( 'visible' );
 
     });
@@ -460,7 +444,7 @@ app
 
 .on( 'ui-view-resize ui-view-maximize ui-view-unmaximize', function(){
 
-  $( '.message-container' ).scrollTop(9999999);
+  //$( '.message-container' ).scrollTop(9999999);
 
 })
 
@@ -536,8 +520,6 @@ var appendChat = function( channel , user , groupName , callback ){
             });
 
           }else{
-
-            console.log(channel);
 
             if( channel.time != null ){
 
@@ -827,17 +809,34 @@ var changeTab = function(tab){
 
 }
 
-var chatDeleted = function( info ){
+var chatDeleted = function( channel, user ){
 
-  var chat = $( '.chatDom-' + info.id );
+  console.log(arguments);
 
-  if ( chat.hasClass( 'active' ) ) {
+  wql.deleteUsersInChannel( channel.id , function( error , message ){
 
-    content.removeClass( 'visible' );
+    if ( error ) { console.log('ERROR: ', error ); }
 
-  }
+    wql.deleteChannel( channel.id , function( error , message ){
 
-  chat.remove();
+      if ( error ) { console.log('ERROR: ', error ); }
+
+      var chat = $( '.chatDom-' + channel.id );
+
+      if ( chat.hasClass( 'active' ) ) {
+        content.removeClass( 'visible' );
+      }
+
+      //Si no es un grupo, eliminamos la referencia a la conversacion para el usuario
+      if( channel.time == null ){
+        $( '.user-id-' + user ).data( 'channel' , null );
+      }
+
+      chat.remove();
+
+    });
+
+  });
 
 }
 
@@ -928,6 +927,12 @@ var createNewGroup = function(){
     }
 
   }
+
+}
+
+var deleteChannel = function( channel, user ){
+
+  channel.destroy( channel, user );
 
 }
 
@@ -1608,6 +1613,21 @@ var listMessages = function( channel ){
             }
 
           }
+
+        }
+
+        //Si ya he terminado las llamadas a printMessage
+        if( i === messages.length - 1 ){
+
+          console.log( 'voy a hacer scroll', channel );
+          wql.getLastRead( [ channel.id , myContactID ] , function( error , lastRead ){
+
+            var divTop = $('.message-container')[0].offsetTop;
+            var elementTop = $('.msg-id-' + lastRead[0].last_read )[0].offsetTop;
+            var elementRelativeTop = elementTop - divTop;
+            $('.message-container').scrollTop( elementRelativeTop )
+
+          });
 
         }
 
@@ -2346,7 +2366,6 @@ var selectChat = function( chat ){
     currentDate = null;
 
     var channel = chat.data( 'channel' );
-    console.log(channel);
     var contact = chat.data( 'user' );
 
     lastMessage.removeClass( 'conected' );
