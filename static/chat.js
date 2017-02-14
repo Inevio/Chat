@@ -2173,6 +2173,7 @@ var printMessage = function( msg , sender , time , animate , byScroll , checked 
 
     if( !(/^http(s)?:\/\//i).test( $(this).attr('href') ) ){
       $(this).attr( 'href', 'http://' + $(this).attr('href') );
+      $(this).addClass('wz-selectable');
     }
 
   });
