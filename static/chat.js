@@ -311,7 +311,20 @@ app
 
     menu.addOption( lang.deleteChat , function(){
 
-      deleteChannel( channel, user );
+      wql.deleteUsersInChannel( channel.id , function( error , message ){
+
+        if ( error ) { console.log('ERROR: ', error ); }
+
+        wql.deleteChannel( channel.id , function( error , message ){
+
+          if ( error ) { console.log('ERROR: ', error ); }
+
+          $( '.user-id-' + user ).data( 'channel' , null );
+          channel.destroy();
+
+        });
+
+      });
 
     });
   }
@@ -809,34 +822,17 @@ var changeTab = function(tab){
 
 }
 
-var chatDeleted = function( channel, user ){
+var chatDeleted = function( info ){
 
   console.log(arguments);
 
-  wql.deleteUsersInChannel( channel.id , function( error , message ){
+  var chat = $( '.chatDom-' + info.id );
 
-    if ( error ) { console.log('ERROR: ', error ); }
+  if ( chat.hasClass( 'active' ) ) {
+    content.removeClass( 'visible' );
+  }
 
-    wql.deleteChannel( channel.id , function( error , message ){
-
-      if ( error ) { console.log('ERROR: ', error ); }
-
-      var chat = $( '.chatDom-' + channel.id );
-
-      if ( chat.hasClass( 'active' ) ) {
-        content.removeClass( 'visible' );
-      }
-
-      //Si no es un grupo, eliminamos la referencia a la conversacion para el usuario
-      if( channel.time == null ){
-        $( '.user-id-' + user ).data( 'channel' , null );
-      }
-
-      chat.remove();
-
-    });
-
-  });
+  chat.remove();
 
 }
 
@@ -927,12 +923,6 @@ var createNewGroup = function(){
     }
 
   }
-
-}
-
-var deleteChannel = function( channel, user ){
-
-  channel.destroy( channel, user );
 
 }
 
