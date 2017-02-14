@@ -1609,13 +1609,16 @@ var listMessages = function( channel ){
         //Si ya he terminado las llamadas a printMessage
         if( i === messages.length - 1 ){
 
-          console.log( 'voy a hacer scroll', channel );
           wql.getLastRead( [ channel.id , myContactID ] , function( error , lastRead ){
 
-            var divTop = $('.message-container')[0].offsetTop;
-            var elementTop = $('.msg-id-' + lastRead[0].last_read )[0].offsetTop;
-            var elementRelativeTop = elementTop - divTop;
-            $('.message-container').scrollTop( elementRelativeTop )
+            if( lastRead && $('.msg-id-' + lastRead[0].last_read ).length ){
+
+              var divTop = $('.message-container')[0].offsetTop;
+              var elementTop = $('.msg-id-' + lastRead[0].last_read )[0].offsetTop;
+              var elementRelativeTop = elementTop - divTop;
+              $('.message-container').scrollTop( elementRelativeTop );
+
+            }
 
           });
 
