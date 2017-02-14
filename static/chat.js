@@ -329,10 +329,10 @@ app
 
 .on( 'ui-view-focus', function(){
 
-  var chatActive = $( '.chatDom.active' );
+  /*var chatActive = $( '.chatDom.active' );
   if (chatActive.length > 0) {
     selectChat( chatActive );
-  }
+  }*/
 
 })
 
