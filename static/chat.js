@@ -2151,7 +2151,8 @@ var printMessage = function( msg , sender , time , animate , byScroll , checked 
 
   if ( text ) {
 
-    textProcessed = text.replace( /((http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*))/ig, '<a href="$1" target="_blank">$1</a>' );
+    textProcessed = text.replace( /(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})/ , '<a href="$1" target="_blank">$1</a>' );
+    //textProcessed = text.replace( /((http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*))/ig, '<a href="$1" target="_blank">$1</a>' );
     textProcessed = textProcessed.replace(/\n/g, "<br />");
 
   }else{
@@ -2165,32 +2166,10 @@ var printMessage = function( msg , sender , time , animate , byScroll , checked 
   textProcessed.find('a').each( function(){
 
     if( !(/^http(s)?:\/\//i).test( $(this).attr('href') ) ){
+
       $(this).attr( 'href', 'http://' + $(this).attr('href') );
       $(this).addClass('wz-selectable');
-    }
 
-  });
-
-  textProcessed = textProcessed.html();
-
-
-  if ( text ) {
-
-    textProcessed = text.replace( /((http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*))/ig, '<a href="$1" target="_blank">$1</a>' );
-    textProcessed = textProcessed.replace(/\n/g, "<br />");
-
-  }else{
-
-    textProcessed = text;
-
-  }
-
-  textProcessed = $('<div></div>').html( textProcessed );
-
-  textProcessed.find('a').each( function(){
-
-    if( !(/^http(s)?:\/\//i).test( $(this).attr('href') ) ){
-      $(this).attr( 'href', 'http://' + $(this).attr('href') );
     }
 
   });
