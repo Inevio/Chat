@@ -2613,7 +2613,7 @@ var sendMessage = function(){
 
       if ( error ) { console.log('ERROR1: ', error ); }
 
-      wql.addChannel( [ channel.id , null ] , function( error , message ){
+      wql.addChannel( [ channel.id , null, Date.now() ] , function( error , message ){
 
         if ( error ) { console.log('ERROR2: ', error ); }
 
