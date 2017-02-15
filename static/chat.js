@@ -1311,6 +1311,12 @@ var getContacts = function(){
       var channel     = channels.filter( function( item ){ return item.user === friend.id; })[ 0 ];
       var isConnected = connected.filter( function( id ){ return id === friend.id; })[ 0 ];
 
+      if( isConnected === undefined ){
+        isConnected = false;
+      }else{
+        isConnected = true;
+      }
+
       // Existe el canal
       if( channel ){
 
@@ -2884,7 +2890,12 @@ var updateBadge = function( num , add ){
 
 var updateContactState = function( friend , state , id ){
 
-  friend.toggleClass( 'conected' );
+  if( state ){
+    friend.addClass( 'conected' );
+  }else{
+    friend.removeClass( 'conected' );
+  }
+
 
   for (var i = 0; i < myContacts.length; i++) {
 
