@@ -2284,9 +2284,13 @@ var printMessage = function( msg , sender , time , animate , byScroll , checked 
   if( !byScroll && currentDate && ( date.getDate() > currentDate.getDate() || date.getMonth() > currentDate.getMonth() || date.getFullYear() > currentDate.getFullYear() )){
 
     if ( currentDate.getFullYear() == yesterday.getFullYear() && currentDate.getMonth() == yesterday.getMonth() && currentDate.getDate() == yesterday.getDate() ) {
-      separator.find( 'span' ).text( 'Ayer' );
+      separator.find( 'span' ).text( 'Hoy' );
     }else{
+
+      /*var tempDate = currentDate;
+      tempDate.setDate( currentDate.getDate() + 1 );*/
       separator.find( 'span' ).text( timeElapsed( currentDate ) );
+
     }
 
     message.before( separator );
@@ -2300,7 +2304,7 @@ var printMessage = function( msg , sender , time , animate , byScroll , checked 
 
   }
 
-  if ( !byScroll && currentDate && ( date.getFullYear() != now.getFullYear() || date.getMonth() != now.getMonth() || date.getDate() != now.getDate() ) ) {
+  /*if ( !byScroll && currentDate && ( date.getFullYear() != now.getFullYear() || date.getMonth() != now.getMonth() || date.getDate() != now.getDate() ) ) {
 
     var sep = separatorPrototype.clone();
     sep.removeClass( 'wz-prototype' ).addClass( 'separatorDom final-separator' );
@@ -2319,7 +2323,7 @@ var printMessage = function( msg , sender , time , animate , byScroll , checked 
     message.prev().remove();
   }else if ( message.prev().prev().hasClass( 'final-separator' ) ) {
     message.prev().prev().remove();
-  }
+  }*/
 
   currentDate = date;
 
