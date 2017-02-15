@@ -335,7 +335,9 @@ app
 
 .on( 'click' , '.chatDom' , function(){
 
-  selectChat( $( this ) );
+  if( !$( this ).hasClass( 'active' ) ){
+    selectChat( $( this ) );
+  }
   //setTimeout(function(){ $( '.message-container' ).scrollTop(9999999); }, 100);
 
 })
