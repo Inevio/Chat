@@ -1761,9 +1761,9 @@ var loadMoreMsgs = function(){
 
     });
 
-    if ( firstMsg[0] && messages.length > 0) {
-      msgContainer.scrollTop( firstMsg[0].offsetTop - 4 );
-    }
+    /*if ( firstMsg[0] && messages.length > 0) {
+      //msgContainer.scrollTop( firstMsg[0].offsetTop - 4 );
+    }*/
 
     loadingMsgs = false;
 
