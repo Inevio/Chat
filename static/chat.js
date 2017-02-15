@@ -1616,7 +1616,8 @@ var listMessages = function( channel ){
               var divTop = $('.message-container')[0].offsetTop;
               var elementTop = $('.msg-id-' + lastRead[0].last_read )[0].offsetTop;
               var elementRelativeTop = elementTop - divTop;
-              $('.message-container').scrollTop( elementRelativeTop );
+              $('.message-container').stop().clearQueue().animate( { scrollTop : elementRelativeTop }, 0  );
+              //$('.message-container').scrollTop( elementRelativeTop );
 
             }
 
@@ -2246,11 +2247,15 @@ var printMessage = function( msg , sender , time , animate , byScroll , checked 
 
   }
 
-  if(animate){
+  if( sender == null ){
+    msgContainer.stop().clearQueue().animate( { scrollTop : message[0].offsetTop }, 400  );
+  }
+
+  /*if(animate){
     msgContainer.stop().clearQueue().animate( { scrollTop : message[0].offsetTop }, 400  );
   }else{
     msgContainer.scrollTop( message[0].offsetTop );
-  }
+  }*/
 
   if ( checked ) {
     message.addClass( 'readed' );
