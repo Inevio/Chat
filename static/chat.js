@@ -720,7 +720,7 @@ var appendMember = function( user , admin ){
 
 }
 
-var arrDiff = function (a1, a2) {
+var arrDiff = function ( a1, a2 ) {
 
   var a = [], diff = [];
 
@@ -778,7 +778,7 @@ var asyncEach = function( list, step, callback ){
 
 };
 
-var changeTab = function(tab){
+var changeTab = function( tab ){
 
   switch(tab) {
 
@@ -2671,26 +2671,18 @@ var setChatInfo = function( chat , o , user , isGroup ){
 
     if ( isGroup ) {
 
-      if ( usr.id == myContactID ) {
-
+      if ( usr.id == myContactID ){
         chat.find( '.channel-last-msg' ).html( '<i>' + lang.you + '</i>' + ': ' + o.txt );
-
-      }else {
-
+      }else{
         chat.find( '.channel-last-msg' ).html( '<i>' + name + '</i>' + ': ' + o.txt );
-
       }
 
     }else{
 
-      if ( usr.id == myContactID ) {
-
+      if ( usr.id == myContactID ){
         chat.find( '.channel-last-msg' ).html( '<i>' + lang.you + '</i>' + ': ' + o.txt );
-
-      }else {
-
+      }else{
         chat.find( '.channel-last-msg' ).text( o.txt );
-
       }
 
     }
@@ -2739,9 +2731,7 @@ var setMobile = function(){
     })
 
   }else{
-
     $('.conversation-send-mobile').hide();
-
   }
 
 }
@@ -2761,14 +2751,14 @@ var setRemoveButton = function(){
 
       removeGroup.find( 'span' ).text(lang.deleteExit);
       adminMode = true;
-      $('.group-header .edit').addClass('visible');
+      $( '.group-header .edit' ).addClass('visible');
       removeGroup.addClass( 'removeGroup' );
 
     }else{
 
       adminMode = false;
       removeGroup.find( 'span' ).text(lang.exitGroup);
-      $('.group-header .edit').removeClass('visible');
+      $( '.group-header .edit' ).removeClass('visible');
       removeGroup.addClass( 'exitGroup' );
 
     }
@@ -2803,9 +2793,7 @@ var setTexts = function(){
 var startsWithChats = function( wordToCompare ){
 
   return function( index , element ) {
-
     return $( element ).find( '.channel-name' ).text().toLowerCase().indexOf( wordToCompare.toLowerCase() ) !== -1;
-
   }
 
 }
@@ -2813,9 +2801,7 @@ var startsWithChats = function( wordToCompare ){
 var startsWithContacts = function( wordToCompare ){
 
   return function( index , element ) {
-
     return $( element ).find( '.contact-name' ).text().toLowerCase().indexOf( wordToCompare.toLowerCase() ) !== -1;
-
   }
 
 }
@@ -2903,7 +2889,7 @@ var updateContactState = function( friend , state , id ){
 
       myContacts[i].status = state ? true : false;
       break;
-      
+
     }
 
   }
@@ -2917,14 +2903,19 @@ var updateState = function( userId , state ){
   $.each( chats , function( i , chat ){
 
     var chatUser = $( chat ).data( 'user' );
+
     if ( chatUser && chatUser.id == userId && $( chat ).hasClass( 'active' ) ) {
 
       if ( state ) {
+
         lastMessage.addClass( 'conected' );
         lastMessage.text( lang.conected );
+
       }else{
+
         lastMessage.removeClass( 'conected' );
         lastMessage.text( lang.disconected );
+
       }
 
     }
@@ -2936,11 +2927,8 @@ var updateState = function( userId , state ){
 var userAdded = function( info , userId ){
 
   if( info.sender != myContactID && myContactID === userId ){
-
     getChats();
-
   }
-
 
 }
 
@@ -2957,16 +2945,17 @@ var viewGroup = function(){
 
       prevMode = mode;
       mode = MODE_ANIMATING;
-      $('.group-menu').transition({
+      $( '.group-menu' ).transition({
         'x' : 0
       }, animationDuration, function(){
         mode = MODE_INFORMATION;
       });
 
-      $('.conver-header').transition({
+      $( '.conver-header' ).transition({
         'x': '-100%'
       },animationDuration);
-      $('.info-header').transition({
+
+      $( '.info-header' ).transition({
         'x': '0'
       },animationDuration);
 
@@ -3036,9 +3025,7 @@ var warnWriting = function(){
     warnWritingTimeOut = setTimeout(function(){
 
       if ( ( Date.now() - lastMsg ) > 500  ) {
-
         channel.send(  { 'action' : 'writing' , 'id' : channel.id } , function( error ){});
-
       }
 
       warnWritingTimeOut = false;
