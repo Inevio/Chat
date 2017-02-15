@@ -2180,32 +2180,32 @@ var printMessage = function( msg , sender , time , animate , byScroll , checked 
   textProcessed = textProcessed.html();
 
 
-  if(hh<10) {
-    hh='0'+hh
+  if( hh < 10 ){
+    hh = '0' + hh;
   }
 
-  if(mm<10) {
-    mm='0'+mm
+  if( mm < 10 ){
+    mm = '0' + mm;
   }
 
   if( sender == null ){
 
     message = $( '.message-me.wz-prototype' ).clone();
     message
-    .removeClass( 'wz-prototype' )
-    .addClass( 'messageDom' )
-    .find( '.message-text' ).html( textProcessed );
-    message
-    .find( '.message-time' ).text( hh + ':' + mm );
+      .removeClass( 'wz-prototype' )
+      .addClass( 'messageDom' )
+      .find( '.message-text' ).html( textProcessed );
+      message
+      .find( '.message-time' ).text( hh + ':' + mm );
 
   }else{
 
     message = $( '.message-other.wz-prototype' ).clone();
     message
-    .removeClass( 'wz-prototype' )
-    .addClass( 'messageDom' )
+      .removeClass( 'wz-prototype' )
+      .addClass( 'messageDom' );
     message
-    .find( '.message-text' ).html( textProcessed );
+      .find( '.message-text' ).html( textProcessed );
 
     if ( $( '.chatDom.active' ).data( 'isGroup' ) != null ) {
 
@@ -2229,22 +2229,26 @@ var printMessage = function( msg , sender , time , animate , byScroll , checked 
   message.data( 'id' , msg.id );
   message.data( 'date' , date );
 
-  if (byScroll) {
+  if ( byScroll ){
 
-    if ( $('.msg-id-' + msg.id).length === 0 ) {
+    if ( $( '.msg-id-' + msg.id ).length === 0 ) {
       $( '.messageDom' ).eq(0).before( message );
     }else{
+
       console.log('REP');
       return;
+
     }
 
   }else{
 
-    if ( $('.msg-id-' + msg.id).length === 0 ) {
+    if ( $( '.msg-id-' + msg.id ).length === 0 ) {
       msgContainer.append( message );
     }else{
+
       console.log('REP');
       return;
+
     }
 
   }
@@ -2271,16 +2275,18 @@ var printMessage = function( msg , sender , time , animate , byScroll , checked 
   separator.removeClass( 'wz-prototype' ).addClass( 'separatorDom' );
 
   if ( byScroll && firstLoad ) {
+
     currentDate = $( '.messageDom' ).eq(0).data( 'date' );
     firstLoad = false;
+
   }
 
   if( !byScroll && currentDate && ( date.getDate() > currentDate.getDate() || date.getMonth() > currentDate.getMonth() || date.getFullYear() > currentDate.getFullYear() )){
 
     if ( currentDate.getFullYear() == yesterday.getFullYear() && currentDate.getMonth() == yesterday.getMonth() && currentDate.getDate() == yesterday.getDate() ) {
-      separator.find('span').text('Ayer');
+      separator.find( 'span' ).text( 'Ayer' );
     }else{
-      separator.find('span').text(timeElapsed(currentDate));
+      separator.find( 'span' ).text( timeElapsed( currentDate ) );
     }
 
     message.before( separator );
@@ -2288,7 +2294,7 @@ var printMessage = function( msg , sender , time , animate , byScroll , checked 
 
   }else if( byScroll && currentDate && ( date.getDate() < currentDate.getDate() || date.getMonth() < currentDate.getMonth() || date.getFullYear() < currentDate.getFullYear() )){
 
-    separator.find('span').text(timeElapsed(currentDate));
+    separator.find( 'span' ).text( timeElapsed( currentDate ) );
     message.before( separator );
     //console.log('insertsep before',separator.find('span').text());
 
@@ -2300,18 +2306,18 @@ var printMessage = function( msg , sender , time , animate , byScroll , checked 
     sep.removeClass( 'wz-prototype' ).addClass( 'separatorDom final-separator' );
 
     if ( date.getFullYear() == yesterday.getFullYear() && date.getMonth() == yesterday.getMonth() && date.getDate() == yesterday.getDate() ) {
-      sep.find('span').text('Ayer');
+      sep.find( 'span' ).text( 'Ayer' );
     }else{
-      sep.find('span').text(timeElapsed(currentDate));
+      sep.find( 'span' ).text( timeElapsed( currentDate ) );
     }
 
     message.after( sep );
 
   }
 
-  if ( message.prev().hasClass('final-separator') ) {
+  if ( message.prev().hasClass( 'final-separator' ) ) {
     message.prev().remove();
-  }else if ( message.prev().prev().hasClass('final-separator') ) {
+  }else if ( message.prev().prev().hasClass( 'final-separator' ) ) {
     message.prev().prev().remove();
   }
 
