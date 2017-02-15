@@ -2900,7 +2900,10 @@ var updateContactState = function( friend , state , id ){
   for (var i = 0; i < myContacts.length; i++) {
 
     if ( myContacts[i].id == id ) {
+
       myContacts[i].status = state ? true : false;
+      break;
+      
     }
 
   }
