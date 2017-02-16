@@ -1373,6 +1373,58 @@
   margin-top: 4px;
 }
 
+.go-bottom{
+  width: 42px;
+  height: 42px;
+  position: absolute;
+  bottom: 14px;
+  right: 10px;
+  z-index: 2;
+  -webkit-border-radius: 21px;
+  -moz-border-radius: 21px;
+  border-radius: 21px;
+  background-color: #fff;
+	-webkit-box-shadow: 0 2px 4px rgba(0,1,1,.2), inset 0 1px rgba(255,255,255,.05);
+	-moz-box-shadow: 0 2px 4px rgba(0,1,1,.2), inset 0 1px rgba(255,255,255,.05);
+	box-shadow: 0 2px 4px rgba(0,1,1,.2), inset 0 1px rgba(255,255,255,.05);
+	background-image: -webkit-linear-gradient(bottom, #f4f4f4, #fff);
+	background-image: -moz-linear-gradient(bottom, #f4f4f4, #fff);
+	background-image: -o-linear-gradient(bottom, #f4f4f4, #fff);
+	background-image: -ms-linear-gradient(bottom, #f4f4f4, #fff);
+	background-image: linear-gradient(to top, #f4f4f4, #fff);
+  display: none;
+}
+
+.go-bottom.active{
+  display: block;
+}
+
+.go-bottom .go-bottom-badge{
+  width: 6px;
+  height: 6px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  background-color: #fe1843;
+  position: absolute;
+  right: 5px;
+  display: none;
+}
+
+.go-bottom.unread .go-bottom-badge{
+  display: block;
+}
+
+.go-bottom .go-bottom-arrow{
+  width: 18px;
+  height: 8px;
+  background-color: black;
+  margin: 0 auto;
+  top: 50%;
+  position: relative;
+  transform: translateY(-50%);
+}
+
 /* END CHAT BODY*/
 
 
