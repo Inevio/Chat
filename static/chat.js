@@ -1590,13 +1590,13 @@ var listMessages = function( channel ){
 
         if ( messages[i].sender == myContactID ) {
 
-          printMessage( messages[ i ] , null , messages[ i ].time );
+          printMessage( messages[ i ] , null , messages[ i ].time , true );
 
         }else{
 
           if ( !isGroup ) {
 
-            printMessage( messages[ i ] , users , messages[ i ].time );
+            printMessage( messages[ i ] , users , messages[ i ].time , true );
 
           }else{
 
@@ -1604,7 +1604,7 @@ var listMessages = function( channel ){
 
               if ( usersNeccesary[j].id == messages[ i ].sender ) {
 
-                printMessage( messages[ i ] , usersNeccesary[j] , messages[ i ].time );
+                printMessage( messages[ i ] , usersNeccesary[j] , messages[ i ].time , true );
 
               }
 
@@ -1811,7 +1811,7 @@ var messageRecieved = function( message , o , channelActive ){
 
       wql.updateLastRead( [ o.id , channelActive.id, myContactID ] , function( error , message ){
         if ( error ) { console.log('ERROR: ', error ); }
-        printMessage( o , null , date , true );
+        printMessage( o , null , date );
       });
 
       var users = chat.data('user');
@@ -1838,7 +1838,7 @@ var messageRecieved = function( message , o , channelActive ){
 
         if (!app.parent().hasClass( 'wz-app-focus' )) {
 
-          printMessage( o , users , date , true );
+          printMessage( o , users , date );
 
           if ( message.sender != myContactID ) {
             messageNotReaded( messageRec );
@@ -1857,7 +1857,7 @@ var messageRecieved = function( message , o , channelActive ){
           wql.updateLastRead( [ o.id , channelActive.id, myContactID ] , function( error , message ){
             if ( error ) { console.log('ERROR: ', error ); }
 
-            printMessage( o , users , date , true );
+            printMessage( o , users , date );
 
           });
 
@@ -1874,7 +1874,7 @@ var messageRecieved = function( message , o , channelActive ){
 
             if (!app.parent().hasClass( 'wz-app-focus' )) {
 
-              printMessage( o , user , date , true );
+              printMessage( o , user , date );
 
               if ( message.sender != myContactID ) {
                 messageNotReaded( messageRec );
@@ -1900,7 +1900,7 @@ var messageRecieved = function( message , o , channelActive ){
 
                 $( '.user-id-' + user.id ).data( 'channel' , channelActive );
 
-                printMessage( o , user , date , true );
+                printMessage( o , user , date );
 
               });
 
@@ -2148,7 +2148,7 @@ var preselectChat = function(){
 
 }
 
-var printMessage = function( msg , sender , time , animate , byScroll , checked ){
+var printMessage = function( msg , sender , time , noAnimate , byScroll , checked ){
 
   var message;
   var date = new Date( time );
@@ -2259,7 +2259,7 @@ var printMessage = function( msg , sender , time , animate , byScroll , checked 
 
   }
 
-  if( sender == null ){
+  if( sender == null && !noAnimate ){
     msgContainer.stop().clearQueue().animate( { scrollTop : message[0].offsetTop }, 400  );
   }
 
