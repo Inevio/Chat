@@ -1528,9 +1528,7 @@ var listMessages = function( channel ){
   var users = $( '.chatDom.active' ).data( 'user' );
 
   if ( Array.isArray( users ) ) {
-
     isGroup = true;
-
   }
 
   wql.getMessages( channel.id , function( error, messages ){
@@ -1579,6 +1577,7 @@ var listMessages = function( channel ){
                     found = true;
                 }
             }
+
             if ( !found ) {
               usersNeccesary.push( usr );
             }
@@ -1654,7 +1653,6 @@ var listMessages = function( channel ){
           if ( error ) { console.log('ERROR: ', error ); }
           $('.chatDom.active').data( 'notSeen' , 0 );
 
-
           if ( isGroup ) {
 
             var aux = 0 ;
@@ -1681,6 +1679,8 @@ var listMessages = function( channel ){
 
               channel.send(  { 'action' : 'updateRead' , 'id' : channel.id , 'lastRead' : lastReadId } , function( error ){
 
+
+
               });
 
             });
@@ -1699,6 +1699,8 @@ var listMessages = function( channel ){
             });
 
             channel.send(  { 'action' : 'updateRead' , 'id' : channel.id , 'lastRead' : lastReadId } , function( error ){
+
+              if ( error ) { console.log('ERROR: ', error ); }
 
             });
 
