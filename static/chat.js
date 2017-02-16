@@ -2272,7 +2272,7 @@ var printMessage = function( msg , sender , time , noAnimate , byScroll , checke
   }
 
 
-  console.log( noAnimate, sender, checkScrollBottom() );
+  //console.log( noAnimate, sender, checkScrollBottom() );
   if( !noAnimate && ( sender == null || checkScrollBottom() ) ){
     msgContainer.stop().clearQueue().animate( { scrollTop : message[0].offsetTop }, 400  );
   }
