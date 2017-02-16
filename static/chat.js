@@ -1694,7 +1694,7 @@ var send = function( message , channel , channelDom ){
         'id' : messages.insertId ,
         'groupName' : groupName
 
-      } , { push : { message : sender + message, data : { 'channel' : channel.id, 'message' : message.insertId } } } , function( error ){
+      }, { push : { customId : messages.insertId, message : sender + message, data : { 'channel' : channel.id, 'message' : message.insertId } } } , function( error ){
 
         if ( error ) { console.log('ERROR: ', error ); }
 
@@ -2855,7 +2855,7 @@ var listenWriting = function( senderId ){
       if( error ){
         console.log('ERROR: ' + error);
       }else{
-        lastMessage.text( user.name + ' ' + lang.is + ' ' + writingText );      
+        lastMessage.text( user.name + ' ' + lang.is + ' ' + writingText );
       }
 
     });
