@@ -838,6 +838,16 @@ var chatDeleted = function( info ){
 
 }
 
+var checkScrollBottom = function(){
+
+  if( $('.message-container').scrollTop() + $('.message-container').height() > $('.message-container')[0].scrollHeight - 100) {
+    return true;
+  }
+
+  return false;
+
+}
+
 var checkTab = function(){
 
   // Load channels
@@ -2259,7 +2269,9 @@ var printMessage = function( msg , sender , time , noAnimate , byScroll , checke
 
   }
 
-  if( sender == null && !noAnimate ){
+
+  console.log( noAnimate, sender, checkScrollBottom() );
+  if( !noAnimate && ( sender == null || checkScrollBottom() ) ){
     msgContainer.stop().clearQueue().animate( { scrollTop : message[0].offsetTop }, 400  );
   }
 
