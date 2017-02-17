@@ -57,6 +57,7 @@ var separatorPrototype = $( '.separator.wz-prototype' );
 var backButton        = $( '.back-button' );
 var myContactID       = api.system.user().id;
 var adminMode         = false;
+var creatingChannel   = false;
 
 var window = app.parents().slice( -1 )[ 0 ].parentNode.defaultView;
 
@@ -2644,7 +2645,12 @@ var sendMessage = function(){
   // Clean sender
   msgInput.val('');
 
-  if ( channel == null ) {
+  console.log(creatingChannel);
+
+  if ( channel == null && !creatingChannel ) {
+
+    creatingChannel = true;
+    console.log(creatingChannel);
 
     api.channel( function( error , channel ){
 
@@ -2664,11 +2670,13 @@ var sendMessage = function(){
 
             channel.addUser( contactApi.id , function(){
 
+
               $( '.contactDom.active' ).data( 'channel' , channel );
               $( '.chatDom.active' ).data( 'channel' , channel );
               send( txt , channel , channelDom );
               getChats( function(){
 
+                creatingChannel = false;
                 if( mode == MODE_CONTACTS ){
                   changeTab('chat');
                 }
