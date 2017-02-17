@@ -1378,7 +1378,7 @@
   height: 42px;
   position: absolute;
   bottom: 14px;
-  right: 10px;
+  right: 14px;
   z-index: 2;
   -webkit-border-radius: 21px;
   -moz-border-radius: 21px;
@@ -1392,7 +1392,8 @@
 	background-image: -o-linear-gradient(bottom, #f4f4f4, #fff);
 	background-image: -ms-linear-gradient(bottom, #f4f4f4, #fff);
 	background-image: linear-gradient(to top, #f4f4f4, #fff);
-  display: none;
+  cursor: pointer;
+  /*display: none;*/
 }
 
 .go-bottom.active{
@@ -1409,6 +1410,7 @@
   position: absolute;
   right: 5px;
   display: none;
+  cursor: pointer;
 }
 
 .go-bottom.unread .go-bottom-badge{
@@ -1417,16 +1419,31 @@
 
 .go-bottom .go-bottom-arrow{
   width: 18px;
-  height: 8px;
-  background-color: black;
-  margin: 0 auto;
-  top: 50%;
-  position: relative;
-  transform: translateY(-50%);
+  height: 10px;
+  background-image: url('@static/flecha-bajar-white.png');
+  background-size: 18px 10px;
+  margin: 17px auto 0 auto;
+  cursor: pointer;
 }
 
 /* END CHAT BODY*/
 
+.dark .go-bottom{
+  background-color: #52606d;
+	-webkit-box-shadow: 0 1px 4px rgba(0,0,0,.2);
+	-moz-box-shadow: 0 1px 4px rgba(0,0,0,.2);
+	box-shadow: 0 1px 4px rgba(0,0,0,.2);
+	background-image: -webkit-linear-gradient(bottom, #52606d, #586775);
+	background-image: -moz-linear-gradient(bottom, #52606d, #586775);
+	background-image: -o-linear-gradient(bottom, #52606d, #586775);
+	background-image: -ms-linear-gradient(bottom, #52606d, #586775);
+	background-image: linear-gradient(to top, #52606d, #586775);
+}
+
+.dark .go-bottom .go-bottom-arrow{
+  background-image: url('@static/flecha-bajar-dark.png');
+  background-size: 18px 10px;
+}
 
 .dark .ui-input-search input::-webkit-input-placeholder { /* WebKit, Blink, Edge */
   padding-top: 2px;
