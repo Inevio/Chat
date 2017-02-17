@@ -2215,4 +2215,8 @@
     background-image: url('https://static.inevio.com/image/uikit/sprite-dark@2x.png');
   }
 
+  .go-bottom{
+    display: none !important;
+  }
+
 }
