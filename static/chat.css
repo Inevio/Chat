@@ -1393,7 +1393,7 @@
 	background-image: -ms-linear-gradient(bottom, #f4f4f4, #fff);
 	background-image: linear-gradient(to top, #f4f4f4, #fff);
   cursor: pointer;
-  /*display: none;*/
+  display: none;
 }
 
 .go-bottom.active{
