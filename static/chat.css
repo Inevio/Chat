@@ -1401,11 +1401,11 @@
 }
 
 .go-bottom .go-bottom-badge{
-  width: 6px;
-  height: 6px;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
+  width: 8px;
+  height: 8px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
   background-color: #fe1843;
   position: absolute;
   right: 5px;
@@ -1420,10 +1420,15 @@
 .go-bottom .go-bottom-arrow{
   width: 18px;
   height: 10px;
-  background-image: url('@static/flecha-bajar-white.png');
-  background-size: 18px 10px;
+  background-image: url('@static/sprite-flecha.png');
+  background-position: 0px 0px;
+  background-size: 54px 10px;
   margin: 18px auto 0 auto;
   cursor: pointer;
+}
+
+.go-bottom.unread .go-bottom-arrow{
+  background-position: -36px 0px;
 }
 
 /* END CHAT BODY*/
@@ -1441,8 +1446,7 @@
 }
 
 .dark .go-bottom .go-bottom-arrow{
-  background-image: url('@static/flecha-bajar-dark.png');
-  background-size: 18px 10px;
+  background-position: -18px 0px;
 }
 
 .dark .ui-input-search input::-webkit-input-placeholder { /* WebKit, Blink, Edge */
