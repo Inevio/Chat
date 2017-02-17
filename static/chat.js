@@ -2645,12 +2645,9 @@ var sendMessage = function(){
   // Clean sender
   msgInput.val('');
 
-  console.log(creatingChannel);
-
   if ( channel == null && !creatingChannel ) {
 
     creatingChannel = true;
-    console.log(creatingChannel);
 
     api.channel( function( error , channel ){
 
@@ -2669,7 +2666,6 @@ var sendMessage = function(){
             if ( error ) { console.log('ERROR4: ', error ); }
 
             channel.addUser( contactApi.id , function(){
-
 
               $( '.contactDom.active' ).data( 'channel' , channel );
               $( '.chatDom.active' ).data( 'channel' , channel );
