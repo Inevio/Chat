@@ -277,9 +277,14 @@ msgContainer.on( 'scroll' , function( e ){
   }
 
   if ( $(this).scrollTop() < 200 ) {
-
     loadMoreMsgs();
+  }
 
+  //Si estoy a mas de 400 pixeles del final y no está el boton de ir al final en pantalla
+  if( !checkScrollBottom(300) && !$('.go-bottom').hasClass('active') ){
+    showGoBottom(false);
+  }else if( checkScrollBottom(300) && $('.go-bottom').hasClass('active') ){
+    hideGoBottom();
   }
 
 });
@@ -465,6 +470,10 @@ app
 
 .on('click','.back-button', function(){
   goBack();
+})
+
+.on('click', '.go-bottom', function(){
+  goBottom();
 })
 
 .on('backbutton', function( e ){
@@ -838,9 +847,14 @@ var chatDeleted = function( info ){
 
 }
 
-var checkScrollBottom = function(){
+var checkScrollBottom = function( value ){
 
-  if( $('.message-container').scrollTop() + $('.message-container').height() > $('.message-container')[0].scrollHeight - 100) {
+  //Si no se le pasa valor, usamos 100 por defecto
+  if( !value ){
+    value = 100;
+  }
+
+  if( $('.message-container').scrollTop() + $('.message-container').height() > $('.message-container')[0].scrollHeight - value ) {
     return true;
   }
 
@@ -1368,6 +1382,13 @@ var getStringHour = function( date ){
 
 }
 
+var goBottom = function(){
+
+  $('.message-container').scrollTop( $('.messageDom:last')[0].offsetTop );
+  hideGoBottom();
+
+}
+
 var goBack = function(){
 
   if( mobile && mode != MODE_ANIMATING ){
@@ -1454,6 +1475,10 @@ var goBack = function(){
 
   }
 
+}
+
+var hideGoBottom = function(){
+  $('.go-bottom').removeClass('active unread');
 }
 
 var initChat = function(){
@@ -2275,6 +2300,8 @@ var printMessage = function( msg , sender , time , noAnimate , byScroll , checke
   //console.log( noAnimate, sender, checkScrollBottom() );
   if( !noAnimate && ( sender == null || checkScrollBottom() ) ){
     msgContainer.stop().clearQueue().animate( { scrollTop : message[0].offsetTop }, 400  );
+  }else if( !noAnimate && sender != null && !checkScrollBottom() && !checked ){
+    showGoBottom( true );
   }
 
   /*if(animate){
@@ -2801,6 +2828,15 @@ var setTexts = function(){
   $( '.group-name-input input' ).attr('placeholder', lang.groupName);
   $( '.app-color .white' ).text(lang.white);
   $( '.app-color .dark' ).text(lang.dark);
+
+}
+
+var showGoBottom = function( withBadge ){
+
+  $('.go-bottom').addClass('active');
+  if( withBadge ){
+    $('.go-bottom').addClass('unread');
+  }
 
 }
 
