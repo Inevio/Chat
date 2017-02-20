@@ -59,6 +59,7 @@ var myContactID       = api.system.user().id;
 var adminMode         = false;
 var creatingChannel   = false;
 var lastReadId        = -1;
+var heightToScroll    = -1;
 
 var window = app.parents().slice( -1 )[ 0 ].parentNode.defaultView;
 
@@ -1481,6 +1482,7 @@ var goBack = function(){
 
 var hideGoBottom = function(){
   $('.go-bottom').removeClass('active unread');
+  $('.unread-separator').remove();
 }
 
 var initChat = function(){
@@ -2185,7 +2187,6 @@ var preselectChat = function(){
 
 var printMessage = function( msg , sender , time , noAnimate , byScroll , checked ){
 
-  console.log(lastReadId);
   var message;
   var date = new Date( time );
   var hh = date.getHours();
@@ -2297,12 +2298,37 @@ var printMessage = function( msg , sender , time , noAnimate , byScroll , checke
 
 
   //console.log( noAnimate, sender, checkScrollBottom() );
-  if( !noAnimate && ( sender == null || checkScrollBottom() ) ){
+  if( lastReadId === msg.id ){
+
+    msgContainer.scrollTop( message[0].offsetTop );
+    heightToScroll = message.outerHeight(true);//Activo el modo scroll
+
+  }else if( heightToScroll !== -1 ){
+
+    if( message.prev().data('id') === lastReadId && sender != null ){
+
+      var sep = separatorPrototype.clone();
+      sep.removeClass( 'wz-prototype' ).addClass( 'unread-separator' );
+      sep.find( 'span' ).text( 'Mensajes sin leer' );
+      message.before( sep );
+      heightToScroll += sep.outerHeight();
+
+    }
+
+    //console.log( heightToScroll + message.outerHeight(true), app.height() );
+    if( ( heightToScroll + message.outerHeight(true) ) < app.height() ){
+
+      heightToScroll += message.outerHeight(true);
+      msgContainer.scrollTop( message[0].offsetTop );
+
+    }else{
+      heightToScroll = -1; //Desactivamos para mejorar el rendimiento
+    }
+
+  }else if( !noAnimate && ( sender == null || checkScrollBottom() ) ){
     msgContainer.stop().clearQueue().animate( { scrollTop : message[0].offsetTop }, 400  );
   }else if( !noAnimate && sender != null && !checkScrollBottom() && !checked ){
     showGoBottom( true );
-  }else if( lastReadId === msg.id ){
-    msgContainer.scrollTop( message[0].offsetTop );
   }
 
   /*if(animate){
