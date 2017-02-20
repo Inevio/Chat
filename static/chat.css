@@ -1350,7 +1350,9 @@
   float: left;
   width: 100%;
   text-align: center;
-  margin-top: 11px;
+  top: 50%;
+  transform: translateY(-50%);
+  position: relative;
   font-weight: bold;
   font-size: 22px;
 }
@@ -1848,7 +1850,7 @@
   }
 
   .group-avatar span{
-    margin-top: 15px;
+    /*margin-top: 15px;*/
     font-size: 32px;
   }
 
