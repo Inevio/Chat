@@ -58,6 +58,7 @@ var backButton        = $( '.back-button' );
 var myContactID       = api.system.user().id;
 var adminMode         = false;
 var creatingChannel   = false;
+var lastReadId        = -1;
 
 var window = app.parents().slice( -1 )[ 0 ].parentNode.defaultView;
 
@@ -1549,6 +1550,10 @@ var listMessages = function( channel ){
   $( '.messageDom' ).remove();
   $( '.separatorDom' ).remove();
 
+  var promisesArray = [];
+  var lastReadPromise = $.Deferred();
+  promisesArray.push( lastReadPromise );
+
   var isGroup = false;
 
   var users = $( '.chatDom.active' ).data( 'user' );
@@ -1566,7 +1571,6 @@ var listMessages = function( channel ){
     if ( isGroup ) {
 
       // Check for antique users messages
-      var userChecked = [];
       var usersNeccesary = users.slice(0);
 
       messages.forEach(function( message ){
@@ -1594,7 +1598,7 @@ var listMessages = function( channel ){
         if ( !userFound ) {
 
           var userPromise = $.Deferred();
-          userChecked.push( userPromise );
+          promisesArray.push( userPromise );
           api.user( message.sender , function( err , usr ){
 
             var found = false;
@@ -1618,8 +1622,20 @@ var listMessages = function( channel ){
 
     }
 
+    wql.getLastRead( [ channel.id , myContactID ] , function( error , lastRead ){
+
+      if( lastRead && lastRead[0].last_read ){
+        lastReadId = lastRead[0].last_read;
+      }else{
+        lastReadId = -1;
+      }
+
+      lastReadPromise.resolve();
+
+    });
+
     // All users necessary on var users
-    $.when.apply( null, userChecked ).done( function(){
+    $.when.apply( null, promisesArray ).done( function(){
 
       for( var i = 0; i < messages.length; i++ ){
 
@@ -1646,25 +1662,6 @@ var listMessages = function( channel ){
             }
 
           }
-
-        }
-
-        //Si ya he terminado las llamadas a printMessage
-        if( i === messages.length - 1 ){
-
-          wql.getLastRead( [ channel.id , myContactID ] , function( error , lastRead ){
-
-            if( lastRead && $('.msg-id-' + lastRead[0].last_read ).length ){
-
-              var divTop = $('.message-container')[0].offsetTop;
-              var elementTop = $('.msg-id-' + lastRead[0].last_read )[0].offsetTop;
-              var elementRelativeTop = elementTop - divTop;
-              $('.message-container').stop().clearQueue().animate( { scrollTop : elementRelativeTop }, 0  );
-              //$('.message-container').scrollTop( elementRelativeTop );
-
-            }
-
-          });
 
         }
 
@@ -2188,6 +2185,7 @@ var preselectChat = function(){
 
 var printMessage = function( msg , sender , time , noAnimate , byScroll , checked ){
 
+  console.log(lastReadId);
   var message;
   var date = new Date( time );
   var hh = date.getHours();
@@ -2303,6 +2301,8 @@ var printMessage = function( msg , sender , time , noAnimate , byScroll , checke
     msgContainer.stop().clearQueue().animate( { scrollTop : message[0].offsetTop }, 400  );
   }else if( !noAnimate && sender != null && !checkScrollBottom() && !checked ){
     showGoBottom( true );
+  }else if( lastReadId === msg.id ){
+    msgContainer.scrollTop( message[0].offsetTop );
   }
 
   /*if(animate){
