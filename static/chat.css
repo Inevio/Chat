@@ -1408,7 +1408,8 @@
   border-radius: 4px;
   background-color: #fe1843;
   position: absolute;
-  right: 5px;
+  right: 4px;
+  top: 1px;
   display: none;
   cursor: pointer;
 }
