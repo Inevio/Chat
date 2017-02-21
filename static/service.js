@@ -6,7 +6,7 @@ var lastMessageReceived;
 api.channel.on( 'message' , function( info , o ){
 
   // The app is oppened, so don't show the banner
-  if (wz.app.getViews().length != 0) {
+  if (api.app.getViews().length != 0) {
     return;
   }
 
@@ -27,7 +27,7 @@ api.channel.on( 'message' , function( info , o ){
 
     updateBadge( 1 , true );
 
-    wz.user( info.sender, function( error, user ){
+    api.user( info.sender, function( error, user ){
 
       if( error ){
         return;
@@ -42,7 +42,7 @@ api.channel.on( 'message' , function( info , o ){
         // To Do -> .sound( 'marimba' )
         .on( 'click', function(){
 
-          wz.app.openApp( 232 , info.id , function(o){});
+          api.app.openApp( 232 , info.id , function(o){});
 
         })
         .render();
@@ -55,12 +55,12 @@ api.channel.on( 'message' , function( info , o ){
 
 var updateBadge = function( num , add ){
 
-  var actualBadge = wz.app.getBadge();
+  var actualBadge = api.app.getBadge();
 
   if ( add ) {
-    wz.app.setBadge( parseInt(actualBadge) + num  );
+    api.app.setBadge( parseInt(actualBadge) + num  );
   }else{
-    wz.app.setBadge( parseInt(actualBadge) - num  );
+    api.app.setBadge( parseInt(actualBadge) - num  );
   }
 
 
