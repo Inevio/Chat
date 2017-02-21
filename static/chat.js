@@ -20,6 +20,11 @@ var loadingMsgs = false;
 var currentDate;
 var firstLoad;
 var lastMessageReceived;
+var adminMode         = false;
+var creatingChannel   = false;
+var lastReadId        = -1;
+var heightToScroll    = -1;
+var unreadTimeOut;
 
 // Local Variables
 var app               = $( this );
@@ -56,10 +61,7 @@ var msgContainer      = $( '.message-container' );
 var separatorPrototype = $( '.separator.wz-prototype' );
 var backButton        = $( '.back-button' );
 var myContactID       = api.system.user().id;
-var adminMode         = false;
-var creatingChannel   = false;
-var lastReadId        = -1;
-var heightToScroll    = -1;
+
 
 var window = app.parents().slice( -1 )[ 0 ].parentNode.defaultView;
 
@@ -1667,6 +1669,19 @@ var listMessages = function( channel ){
 
         }
 
+        if( i === messages.length -1 ){
+
+          if( checkScrollBottom() ){
+
+            clearTimeout( unreadTimeOut );
+            unreadTimeOut = setTimeout( function(){
+              $('.unread-separator').remove();
+            }, 3000);
+
+          }
+
+        }
+
       }
 
       if( messages && messages.length > 0){
@@ -1873,12 +1888,16 @@ var messageRecieved = function( message , o , channelActive ){
 
         setChatInfo( chat , o , message.sender , false );
 
-        if (!app.parent().hasClass( 'wz-app-focus' )) {
+        wql.updateLastRead( [ o.id , channelActive.id, myContactID ] , function( error , message ){
+          if ( error ) { console.log('ERROR: ', error ); }
 
           printMessage( o , users , date );
 
+        });
+
+        if (!app.parent().hasClass( 'wz-app-focus' )) {
+
           if ( message.sender != myContactID ) {
-            messageNotReaded( messageRec );
 
             launchBanner( users.fullName , o.txt , users.avatar.tiny , function(){
 
@@ -1888,15 +1907,6 @@ var messageRecieved = function( message , o , channelActive ){
             });
 
           }
-
-        }else{
-
-          wql.updateLastRead( [ o.id , channelActive.id, myContactID ] , function( error , message ){
-            if ( error ) { console.log('ERROR: ', error ); }
-
-            printMessage( o , users , date );
-
-          });
 
         }
 
@@ -1909,12 +1919,19 @@ var messageRecieved = function( message , o , channelActive ){
 
           if ( user.id === message.sender ) {
 
-            if (!app.parent().hasClass( 'wz-app-focus' )) {
+            wql.updateLastRead( [ o.id , channelActive.id, myContactID ] , function( error , message ){
+
+              if ( error ) { console.log('ERROR: ', error ); }
+
+              $( '.user-id-' + user.id ).data( 'channel' , channelActive );
 
               printMessage( o , user , date );
 
+            });
+
+            if (!app.parent().hasClass( 'wz-app-focus' )) {
+
               if ( message.sender != myContactID ) {
-                messageNotReaded( messageRec );
 
                 api.user( message.sender, function( error, user ){
 
@@ -1928,19 +1945,6 @@ var messageRecieved = function( message , o , channelActive ){
                 });
 
               }
-
-            }else{
-
-              wql.updateLastRead( [ o.id , channelActive.id, myContactID ] , function( error , message ){
-
-                if ( error ) { console.log('ERROR: ', error ); }
-
-                $( '.user-id-' + user.id ).data( 'channel' , channelActive );
-
-                printMessage( o , user , date );
-
-              });
-
 
             }
 
@@ -2305,7 +2309,7 @@ var printMessage = function( msg , sender , time , noAnimate , byScroll , checke
 
   }else if( heightToScroll !== -1 && listing ){
 
-    if( message.prev().data('id') === lastReadId && sender != null  ){
+    if( message.prev().data('id') === lastReadId && sender != null ){
 
       var sep = separatorPrototype.clone();
       sep.removeClass( 'wz-prototype' ).addClass( 'unread-separator' );
