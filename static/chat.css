@@ -868,18 +868,18 @@
   float: left;
   width: 100%;
   height: 50px;
+  text-align: center;
 }
 
 .separator span{
-  float: left;
   font-size: 13px;
   color: #889399;
   background-color: rgba(255,255,255,0.9);
   border-radius: 14px;
-  width: 100px;
+  width: 140px;
   padding: 7px 0;
-  margin: 10px ~'calc(50% - 50px)';
-  text-align: center;
+  margin: 10px auto;
+  display: inline-block;
 }
 
 .dark .separator span{
@@ -1350,7 +1350,9 @@
   float: left;
   width: 100%;
   text-align: center;
-  margin-top: 11px;
+  top: 50%;
+  transform: translateY(-50%);
+  position: relative;
   font-weight: bold;
   font-size: 22px;
 }
@@ -1373,8 +1375,82 @@
   margin-top: 4px;
 }
 
+.go-bottom{
+  width: 42px;
+  height: 42px;
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  z-index: 2;
+  -webkit-border-radius: 21px;
+  -moz-border-radius: 21px;
+  border-radius: 21px;
+  background-color: #fff;
+	-webkit-box-shadow: 0 2px 4px rgba(0,1,1,.2), inset 0 1px rgba(255,255,255,.05);
+	-moz-box-shadow: 0 2px 4px rgba(0,1,1,.2), inset 0 1px rgba(255,255,255,.05);
+	box-shadow: 0 2px 4px rgba(0,1,1,.2), inset 0 1px rgba(255,255,255,.05);
+	background-image: -webkit-linear-gradient(bottom, #f4f4f4, #fff);
+	background-image: -moz-linear-gradient(bottom, #f4f4f4, #fff);
+	background-image: -o-linear-gradient(bottom, #f4f4f4, #fff);
+	background-image: -ms-linear-gradient(bottom, #f4f4f4, #fff);
+	background-image: linear-gradient(to top, #f4f4f4, #fff);
+  cursor: pointer;
+  display: none;
+}
+
+.go-bottom.active{
+  display: block;
+}
+
+.go-bottom .go-bottom-badge{
+  width: 8px;
+  height: 8px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  background-color: #fe1843;
+  position: absolute;
+  right: 4px;
+  top: 1px;
+  display: none;
+  cursor: pointer;
+}
+
+.go-bottom.unread .go-bottom-badge{
+  display: block;
+}
+
+.go-bottom .go-bottom-arrow{
+  width: 18px;
+  height: 10px;
+  background-image: url('@static/sprite-flecha.png');
+  background-position: 0px 0px;
+  background-size: 54px 10px;
+  margin: 18px auto 0 auto;
+  cursor: pointer;
+}
+
+.go-bottom.unread .go-bottom-arrow{
+  background-position: -36px 0px;
+}
+
 /* END CHAT BODY*/
 
+.dark .go-bottom{
+  background-color: #52606d;
+	-webkit-box-shadow: 0 1px 4px rgba(0,0,0,.2);
+	-moz-box-shadow: 0 1px 4px rgba(0,0,0,.2);
+	box-shadow: 0 1px 4px rgba(0,0,0,.2);
+	background-image: -webkit-linear-gradient(bottom, #52606d, #586775);
+	background-image: -moz-linear-gradient(bottom, #52606d, #586775);
+	background-image: -o-linear-gradient(bottom, #52606d, #586775);
+	background-image: -ms-linear-gradient(bottom, #52606d, #586775);
+	background-image: linear-gradient(to top, #52606d, #586775);
+}
+
+.dark .go-bottom .go-bottom-arrow{
+  background-position: -18px 0px;
+}
 
 .dark .ui-input-search input::-webkit-input-placeholder { /* WebKit, Blink, Edge */
   padding-top: 2px;
@@ -1774,7 +1850,7 @@
   }
 
   .group-avatar span{
-    margin-top: 15px;
+    /*margin-top: 15px;*/
     font-size: 32px;
   }
 
@@ -2144,6 +2220,10 @@
 
   .ui-input-search .search-icon i{
     background-image: url('https://static.inevio.com/image/uikit/sprite-dark@2x.png');
+  }
+
+  .go-bottom{
+    display: none !important;
   }
 
 }
