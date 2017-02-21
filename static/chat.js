@@ -343,7 +343,7 @@ app
 
 .on( 'click' , '.chatDom' , function(){
 
-  if( !$( this ).hasClass( 'active' ) ){
+  if( !$( this ).hasClass( 'active' ) || $( this ).find('.channel-badge').hasClass('visible') ){
     selectChat( $( this ) );
   }
   //setTimeout(function(){ $( '.message-container' ).scrollTop(9999999); }, 100);
@@ -1643,13 +1643,13 @@ var listMessages = function( channel ){
 
         if ( messages[i].sender == myContactID ) {
 
-          printMessage( messages[ i ] , null , messages[ i ].time , true );
+          printMessage( messages[ i ] , null , messages[ i ].time , true, null, null, true );
 
         }else{
 
           if ( !isGroup ) {
 
-            printMessage( messages[ i ] , users , messages[ i ].time , true );
+            printMessage( messages[ i ] , users , messages[ i ].time , true, null, null, true );
 
           }else{
 
@@ -1657,7 +1657,7 @@ var listMessages = function( channel ){
 
               if ( usersNeccesary[j].id == messages[ i ].sender ) {
 
-                printMessage( messages[ i ] , usersNeccesary[j] , messages[ i ].time , true );
+                printMessage( messages[ i ] , usersNeccesary[j] , messages[ i ].time , true, null, null, true );
 
               }
 
@@ -2185,7 +2185,7 @@ var preselectChat = function(){
 
 }
 
-var printMessage = function( msg , sender , time , noAnimate , byScroll , checked ){
+var printMessage = function( msg , sender , time , noAnimate , byScroll , checked, listing ){
 
   var message;
   var date = new Date( time );
@@ -2298,14 +2298,14 @@ var printMessage = function( msg , sender , time , noAnimate , byScroll , checke
 
 
   //console.log( noAnimate, sender, checkScrollBottom() );
-  if( lastReadId === msg.id ){
+  if( lastReadId === msg.id && listing ){
 
     msgContainer.scrollTop( message[0].offsetTop );
-    heightToScroll = message.outerHeight(true);//Activo el modo scroll
+    heightToScroll = message.outerHeight(true); //Activo el modo scroll
 
-  }else if( heightToScroll !== -1 ){
+  }else if( heightToScroll !== -1 && listing ){
 
-    if( message.prev().data('id') === lastReadId && sender != null ){
+    if( message.prev().data('id') === lastReadId && sender != null  ){
 
       var sep = separatorPrototype.clone();
       sep.removeClass( 'wz-prototype' ).addClass( 'unread-separator' );
