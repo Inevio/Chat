@@ -1676,6 +1676,7 @@ var listMessages = function( channel ){
             clearTimeout( unreadTimeOut );
             unreadTimeOut = setTimeout( function(){
               $('.unread-separator').remove();
+              $('.message-container').scrollTop( $('.message-container').scrollTop() );
             }, 3000);
 
           }
