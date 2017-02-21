@@ -1676,6 +1676,7 @@ var listMessages = function( channel ){
             clearTimeout( unreadTimeOut );
             unreadTimeOut = setTimeout( function(){
               $('.unread-separator').remove();
+              $('.message-container').scrollTop( $('.message-container').scrollTop() );
             }, 3000);
 
           }
@@ -2653,7 +2654,7 @@ var send = function( message , channel , channelDom ){
         'id' : messages.insertId ,
         'groupName' : groupName
 
-      } , { push : { message : sender + message, data : { 'channel' : channel.id, 'message' : message.insertId } } } , function( error ){
+      } , { push : { customId : channel.id + '-' + messages.insertId, message : sender + message, data : { 'channel' : channel.id, 'message' : message.insertId } } } , function( error ){ 
 
         if ( error ) { console.log('ERROR: ', error ); }
 
