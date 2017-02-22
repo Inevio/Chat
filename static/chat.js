@@ -494,19 +494,25 @@ var appendChat = function( channel , user , groupName , callback ){
     chatButton.click();
   }
 
-  wql.getMessages( channel.id , function( error, messages ){
+  console.time('getLastMessage-' + channel.id);
 
-    messages = messages.reverse();
+  wql.getLastMessage( channel.id , function( error, message ){
+
+    console.timeEnd('getLastMessage-' + channel.id);
+    console.time('getLastRead-' + channel.id);
 
     wql.getLastRead( [channel.id, myContactID] , function( error , lastRead ){
 
+      console.timeEnd('getLastRead-' + channel.id);
+      console.time('getUnreads-' + channel.id);
+
       wql.getUnreads( [channel.id, lastRead[0]['last_read']] , function( error , notSeen ){
+
+        console.timeEnd('getUnreads-' + channel.id);
 
         if ( error ) { console.log('ERROR: ', error ); }
 
-        var lastMsg;
-
-        var lastMsg = messages[ messages.length - 1 ];
+        var lastMsg = message[0];
 
         var chat = chatPrototype.clone();
 
@@ -514,8 +520,6 @@ var appendChat = function( channel , user , groupName , callback ){
         .removeClass( 'wz-prototype' )
         .addClass( 'chatDom' )
         .addClass( 'chatDom-' + channel.id );
-
-
 
         if ( groupName != null ) {
 
@@ -1170,7 +1174,11 @@ var getChats = function( callback ){
 
   api.app.setBadge( 0 );
 
+  console.time('channels');
+
   wql.getChannels( myContactID , function( error , channels ){
+
+    console.timeEnd('channels');
 
     if ( error ) { console.log('ERROR: ', error ); }
 
@@ -1185,12 +1193,18 @@ var getChats = function( callback ){
         return;
       }
 
+      console.time('apiChannel-' + i);
+
       api.channel( channel.id , function( error, channelApi ){
+
+        console.timeEnd('apiChannel-' + i);
+        console.time('usersInChannel-' + i);
 
         channelApi.time = channel.time;
 
         wql.getUsersInChannel( channel.id , function( error , users ){
 
+          console.timeEnd('usersInChannel-' + i);
           var groupName = channel.name;
           var isGroup = groupName != null ? true : false;
 
