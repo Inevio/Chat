@@ -170,7 +170,7 @@ searchBox.on( 'input' , function(){
 
 closeChatButton.on( 'click' , function(){
 
-  content.removeClass( 'visible' );
+  hideContent();
 
   if ( chatButton.hasClass( 'active' ) ) {
     $( '.chatDom.active' ).removeClass( 'active' );
@@ -271,7 +271,7 @@ colorChange.on( 'click' , function(){
 
   app.toggleClass( 'dark' );
   $( '.ui-window' ).toggleClass( 'dark' );
-  $( '.conversation-input input' ).val('');
+  //$( '.conversation-input input' ).val('');
 
 });
 
@@ -430,7 +430,7 @@ app
       groupMenu.removeClass( 'visible' );
       removeGroup.removeClass( 'visible' );
       $( '.chatDom-' + channel.id ).remove();
-      content.removeClass( 'visible' );
+      hideContent();
 
     });
 
@@ -453,7 +453,7 @@ app
       groupMenu.removeClass( 'visible' );
       removeGroup.removeClass( 'visible' );
       $( '.chatDom.active' ).remove();
-      content.removeClass( 'visible' );
+      hideContent();
 
     });
 
@@ -845,7 +845,7 @@ var chatDeleted = function( info ){
   var chat = $( '.chatDom-' + info.id );
 
   if ( chat.hasClass( 'active' ) ) {
-    content.removeClass( 'visible' );
+    hideContent();
   }
 
   chat.remove();
@@ -1482,6 +1482,13 @@ var goBack = function(){
 
 }
 
+var hideContent = function(){
+
+  $( '.no-content' ).show();
+  content.removeClass( 'visible' );
+
+}
+
 var hideGoBottom = function(){
   $('.go-bottom').removeClass('active unread');
   $('.unread-separator').remove();
@@ -2050,17 +2057,9 @@ var objectRecieved = function( message , o ){
 
     if ( o.userId == myContactID ) {
 
-      if( channelActive && o.id == channelActive.id ) {
+      active.remove();
+      content.removeClass( 'visible' );
 
-        active.remove();
-        content.removeClass( 'visible' );
-
-      }else{
-
-        active.remove();
-        content.removeClass( 'visible' );
-
-      }
     }
 
     break;
@@ -2443,7 +2442,7 @@ var selectChat = function( chat ){
 
     if( !mobile ){
 
-      content.addClass( 'visible' );
+      showContent();
       msgInput.focus();
 
     }else{
@@ -2574,7 +2573,7 @@ var selectContact = function( contact ){
 
     if( !mobile ){
 
-      content.addClass( 'visible' );
+      showContent();
       msgInput.focus();
 
     }else{
@@ -2654,7 +2653,7 @@ var send = function( message , channel , channelDom ){
         'id' : messages.insertId ,
         'groupName' : groupName
 
-      } , { push : { customId : channel.id + '-' + messages.insertId, message : sender + message, data : { 'channel' : channel.id, 'message' : message.insertId } } } , function( error ){ 
+      } , { push : { customId : channel.id + '-' + messages.insertId, message : sender + message, data : { 'channel' : channel.id, 'message' : message.insertId } } } , function( error ){
 
         if ( error ) { console.log('ERROR: ', error ); }
 
@@ -2863,6 +2862,13 @@ var setTexts = function(){
   $( '.group-name-input input' ).attr('placeholder', lang.groupName);
   $( '.app-color .white' ).text(lang.white);
   $( '.app-color .dark' ).text(lang.dark);
+
+}
+
+var showContent = function(){
+
+  content.addClass( 'visible' );
+  $( '.no-content' ).hide();
 
 }
 
@@ -3120,6 +3126,7 @@ var warnWriting = function(){
   }
 
 }
+
 
 // INIT Chat
 initChat();
