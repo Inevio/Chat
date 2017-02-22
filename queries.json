@@ -6,6 +6,7 @@
     "getSingleChannel"      : "SELECT id_channel, user FROM user_in_channel WHERE id_channel IN ( SELECT id_channel FROM user_in_channel, channel WHERE user = ? AND user_in_channel.id_channel = channel.id AND channel.name IS NULL ) AND user != ?",
     "addMessage"            : "INSERT INTO message SET text = ?, sender = ?, channel = ?, time = UNIX_TIMESTAMP() * 1000",
     "getMessages"           : "SELECT * FROM message WHERE channel = ? ORDER BY id DESC LIMIT 50",
+    "getLastMessage"        : "SELECT * FROM message WHERE channel = ? ORDER BY id DESC LIMIT 1",
     "getUsersInChannel"     : "SELECT user FROM user_in_channel WHERE id_channel = ?",
     "updateLastRead"        : "UPDATE user_in_channel SET last_read = ? WHERE id_channel = ? && user = ?",
     "getLastRead"           : "SELECT last_read FROM user_in_channel WHERE id_channel = ? && user = ?",

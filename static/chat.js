@@ -170,7 +170,7 @@ searchBox.on( 'input' , function(){
 
 closeChatButton.on( 'click' , function(){
 
-  content.removeClass( 'visible' );
+  hideContent();
 
   if ( chatButton.hasClass( 'active' ) ) {
     $( '.chatDom.active' ).removeClass( 'active' );
@@ -271,7 +271,7 @@ colorChange.on( 'click' , function(){
 
   app.toggleClass( 'dark' );
   $( '.ui-window' ).toggleClass( 'dark' );
-  $( '.conversation-input input' ).val('');
+  //$( '.conversation-input input' ).val('');
 
 });
 
@@ -430,7 +430,7 @@ app
       groupMenu.removeClass( 'visible' );
       removeGroup.removeClass( 'visible' );
       $( '.chatDom-' + channel.id ).remove();
-      content.removeClass( 'visible' );
+      hideContent();
 
     });
 
@@ -453,7 +453,7 @@ app
       groupMenu.removeClass( 'visible' );
       removeGroup.removeClass( 'visible' );
       $( '.chatDom.active' ).remove();
-      content.removeClass( 'visible' );
+      hideContent();
 
     });
 
@@ -494,27 +494,25 @@ var appendChat = function( channel , user , groupName , callback ){
     chatButton.click();
   }
 
-  wql.getMessages( channel.id , function( error, messages ){
+  console.time('getLastMessage-' + channel.id);
 
-    messages = messages.reverse();
+  wql.getLastMessage( channel.id , function( error, message ){
+
+    console.timeEnd('getLastMessage-' + channel.id);
+    console.time('getLastRead-' + channel.id);
 
     wql.getLastRead( [channel.id, myContactID] , function( error , lastRead ){
 
+      console.timeEnd('getLastRead-' + channel.id);
+      console.time('getUnreads-' + channel.id);
+
       wql.getUnreads( [channel.id, lastRead[0]['last_read']] , function( error , notSeen ){
+
+        console.timeEnd('getUnreads-' + channel.id);
 
         if ( error ) { console.log('ERROR: ', error ); }
 
-        var lastMsg;
-
-        for( var i = 0; i < messages.length; i++ ){
-
-          if( i+1 == messages.length ){
-
-            var lastMsg = messages[i];
-
-          }
-
-        }
+        var lastMsg = message[0];
 
         var chat = chatPrototype.clone();
 
@@ -522,8 +520,6 @@ var appendChat = function( channel , user , groupName , callback ){
         .removeClass( 'wz-prototype' )
         .addClass( 'chatDom' )
         .addClass( 'chatDom-' + channel.id );
-
-
 
         if ( groupName != null ) {
 
@@ -845,7 +841,7 @@ var chatDeleted = function( info ){
   var chat = $( '.chatDom-' + info.id );
 
   if ( chat.hasClass( 'active' ) ) {
-    content.removeClass( 'visible' );
+    hideContent();
   }
 
   chat.remove();
@@ -1178,7 +1174,11 @@ var getChats = function( callback ){
 
   api.app.setBadge( 0 );
 
+  console.time('channels');
+
   wql.getChannels( myContactID , function( error , channels ){
+
+    console.timeEnd('channels');
 
     if ( error ) { console.log('ERROR: ', error ); }
 
@@ -1193,12 +1193,18 @@ var getChats = function( callback ){
         return;
       }
 
+      console.time('apiChannel-' + i);
+
       api.channel( channel.id , function( error, channelApi ){
+
+        console.timeEnd('apiChannel-' + i);
+        console.time('usersInChannel-' + i);
 
         channelApi.time = channel.time;
 
         wql.getUsersInChannel( channel.id , function( error , users ){
 
+          console.timeEnd('usersInChannel-' + i);
           var groupName = channel.name;
           var isGroup = groupName != null ? true : false;
 
@@ -1479,6 +1485,13 @@ var goBack = function(){
     }
 
   }
+
+}
+
+var hideContent = function(){
+
+  $( '.no-content' ).show();
+  content.removeClass( 'visible' );
 
 }
 
@@ -2050,17 +2063,9 @@ var objectRecieved = function( message , o ){
 
     if ( o.userId == myContactID ) {
 
-      if( channelActive && o.id == channelActive.id ) {
+      active.remove();
+      content.removeClass( 'visible' );
 
-        active.remove();
-        content.removeClass( 'visible' );
-
-      }else{
-
-        active.remove();
-        content.removeClass( 'visible' );
-
-      }
     }
 
     break;
@@ -2443,7 +2448,7 @@ var selectChat = function( chat ){
 
     if( !mobile ){
 
-      content.addClass( 'visible' );
+      showContent();
       msgInput.focus();
 
     }else{
@@ -2574,7 +2579,7 @@ var selectContact = function( contact ){
 
     if( !mobile ){
 
-      content.addClass( 'visible' );
+      showContent();
       msgInput.focus();
 
     }else{
@@ -2654,7 +2659,7 @@ var send = function( message , channel , channelDom ){
         'id' : messages.insertId ,
         'groupName' : groupName
 
-      } , { push : { customId : channel.id + '-' + messages.insertId, message : sender + message, data : { 'channel' : channel.id, 'message' : message.insertId } } } , function( error ){ 
+      } , { push : { customId : channel.id + '-' + messages.insertId, message : sender + message, data : { 'channel' : channel.id, 'message' : message.insertId } } } , function( error ){
 
         if ( error ) { console.log('ERROR: ', error ); }
 
@@ -2863,6 +2868,13 @@ var setTexts = function(){
   $( '.group-name-input input' ).attr('placeholder', lang.groupName);
   $( '.app-color .white' ).text(lang.white);
   $( '.app-color .dark' ).text(lang.dark);
+
+}
+
+var showContent = function(){
+
+  content.addClass( 'visible' );
+  $( '.no-content' ).hide();
 
 }
 
@@ -3120,6 +3132,7 @@ var warnWriting = function(){
   }
 
 }
+
 
 // INIT Chat
 initChat();
