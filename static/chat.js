@@ -506,15 +506,7 @@ var appendChat = function( channel , user , groupName , callback ){
 
         var lastMsg;
 
-        for( var i = 0; i < messages.length; i++ ){
-
-          if( i+1 == messages.length ){
-
-            var lastMsg = messages[i];
-
-          }
-
-        }
+        var lastMsg = messages[ messages.length - 1 ];
 
         var chat = chatPrototype.clone();
 
