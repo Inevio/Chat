@@ -302,7 +302,6 @@ msgContainer.on( 'scroll' , function( e ){
 app
 .on( 'contextmenu', '.chatDom', function(e){
 
-  var menu = api.menu();
   var channelNotFound = true;
   var channelDom = $( e.target );
 
@@ -320,6 +319,8 @@ app
   var user = channelDom.data('user').id;
 
   if ( !channelDom.data('isGroup') ) {
+
+    var menu = api.menu();
 
     menu.addOption( lang.deleteChat , function(){
 
@@ -339,9 +340,12 @@ app
       });
 
     });
+
+    menu.render();
+    
   }
 
-  menu.render();
+
 
 })
 
