@@ -2308,51 +2308,6 @@ var printMessage = function( msg , sender , time , noAnimate , byScroll , checke
 
   }
 
-
-  //console.log( noAnimate, sender, checkScrollBottom() );
-  if( lastReadId === msg.id && listing ){
-
-    msgContainer.scrollTop( message[0].offsetTop );
-    heightToScroll = message.outerHeight(true); //Activo el modo scroll
-
-  }else if( heightToScroll !== -1 && listing ){
-
-    if( message.prev().data('id') === lastReadId && sender != null ){
-
-      var sep = separatorPrototype.clone();
-      sep.removeClass( 'wz-prototype' ).addClass( 'unread-separator' );
-      sep.find( 'span' ).text( 'Mensajes sin leer' );
-      message.before( sep );
-      heightToScroll += sep.outerHeight();
-
-    }
-
-    //console.log( heightToScroll + message.outerHeight(true), app.height() );
-    if( ( heightToScroll + message.outerHeight(true) ) < app.height() ){
-
-      heightToScroll += message.outerHeight(true);
-      msgContainer.scrollTop( message[0].offsetTop );
-
-    }else{
-      heightToScroll = -1; //Desactivamos para mejorar el rendimiento
-    }
-
-  }else if( !noAnimate && ( sender == null || checkScrollBottom() ) ){
-    msgContainer.stop().clearQueue().animate( { scrollTop : message[0].offsetTop }, 400  );
-  }else if( !noAnimate && sender != null && !checkScrollBottom() && !checked ){
-    showGoBottom( true );
-  }
-
-  /*if(animate){
-    msgContainer.stop().clearQueue().animate( { scrollTop : message[0].offsetTop }, 400  );
-  }else{
-    msgContainer.scrollTop( message[0].offsetTop );
-  }*/
-
-  if ( checked ) {
-    message.addClass( 'readed' );
-  }
-
   var now = new Date();
   var yesterday = new Date();
   yesterday.setDate( now.getDate() - 1 );
@@ -2410,6 +2365,52 @@ var printMessage = function( msg , sender , time , noAnimate , byScroll , checke
   }else if ( message.prev().prev().hasClass( 'final-separator' ) ) {
     message.prev().prev().remove();
   }*/
+
+  //console.log( noAnimate, sender, checkScrollBottom() );
+  if( lastReadId === msg.id && listing ){
+
+    msgContainer.scrollTop( message[0].offsetTop + message.outerHeight(true) );
+    heightToScroll = message.outerHeight(true); //Activo el modo scroll
+
+  }else if( heightToScroll !== -1 && listing ){
+
+    if( message.prev().data('id') === lastReadId && sender != null ){
+
+      var sep = separatorPrototype.clone();
+      sep.removeClass( 'wz-prototype' ).addClass( 'unread-separator' );
+      sep.find( 'span' ).text( 'Mensajes sin leer' );
+      message.before( sep );
+      heightToScroll += sep.outerHeight();
+
+    }
+
+    //console.log( heightToScroll + message.outerHeight(true), app.height() );
+    if( ( heightToScroll + message.outerHeight(true) ) < app.height() ){
+
+      heightToScroll += message.outerHeight(true);
+      msgContainer.scrollTop( message[0].offsetTop );
+
+    }else{
+      heightToScroll = -1; //Desactivamos para mejorar el rendimiento
+    }
+
+  }else if( !noAnimate && ( sender == null || checkScrollBottom() ) ){
+    msgContainer.stop().clearQueue().animate( { scrollTop : message[0].offsetTop }, 400  );
+  }else if( !noAnimate && sender != null && !checkScrollBottom() && !checked ){
+    showGoBottom( true );
+  }
+
+  /*if(animate){
+    msgContainer.stop().clearQueue().animate( { scrollTop : message[0].offsetTop }, 400  );
+  }else{
+    msgContainer.scrollTop( message[0].offsetTop );
+  }*/
+
+  if ( checked ) {
+    message.addClass( 'readed' );
+  }
+
+
 
   currentDate = date;
 
