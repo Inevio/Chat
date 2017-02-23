@@ -783,7 +783,7 @@
   cursor: pointer;
 }
 
-.conversation-header *{
+.viewGroup.conversation-header *{
   cursor: pointer;
 }
 
