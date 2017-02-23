@@ -25,6 +25,8 @@ var creatingChannel   = false;
 var lastReadId        = -1;
 var heightToScroll    = -1;
 var unreadTimeOut;
+var loadingChat       = false;
+
 
 // Local Variables
 var app               = $( this );
@@ -2433,119 +2435,129 @@ var saveGroup = function(){
 
 var selectChat = function( chat ){
 
-  if( mode != MODE_ANIMATING ){
+  if( !loadingChat ){
 
-    groupMenu.removeClass( 'visible' );
-    removeGroup.removeClass( 'visible' );
-    currentDate = null;
+    loadingChat = true;
 
-    var channel = chat.data( 'channel' );
-    var contact = chat.data( 'user' );
+    if( mode != MODE_ANIMATING ){
 
-    lastMessage.removeClass( 'conected' );
-    $( '.chatDom.active' ).removeClass( 'active' );
-    chat.addClass( 'active' );
+      groupMenu.removeClass( 'visible' );
+      removeGroup.removeClass( 'visible' );
+      currentDate = null;
 
-    if( !mobile ){
+      var channel = chat.data( 'channel' );
+      var contact = chat.data( 'user' );
 
-      showContent();
-      msgInput.focus();
+      lastMessage.removeClass( 'conected' );
+      $( '.chatDom.active' ).removeClass( 'active' );
+      chat.addClass( 'active' );
 
-    }else{
+      if( !mobile ){
 
-      prevMode = mode;
-      mode = MODE_ANIMATING;
-      $('.initial-header').transition({
-        'x': '-100%'
-      },animationDuration);
-      $('.conver-header').transition({
-        'x': '0'
-      },animationDuration);
-      $('.conver-avatar').css('background-image', chat.find('.channel-img').css('background-image') );
-      content.show().transition({
-        'x' : 0
-      },animationDuration, function(){
-        mode = MODE_CONVERSATION;
-        $(this).addClass( 'visible' );
-        //msgInput.focus();
-      });
-      $('.ui-navbar').transition({
-        'x' : '-100%'
-      },animationDuration);
-
-    }
-
-    // Set header
-    $( '.conversation-name, .conver-header .conver-title' ).text( chat.find( '.channel-name' ).text() );
-
-    if ( channel == undefined ) {
-
-      //$( '.conversation-header' ).data( 'channel' , null );
-      $( '.messageDom' ).remove();
-      $( '.separatorDom' ).remove();
-
-
-    }else{
-
-      //$( '.conversation-header' ).data( 'channel' , channel );
-      listMessages( channel );
-
-      chat.data( 'notSeen' , null );
-      if ( chat.find( '.channel-badge' ).hasClass( 'visible' ) ) {
-        updateBadge( parseInt(chat.find( '.channel-badge span' ).text()) , false );
-      }
-      chat.find( '.channel-badge' ).removeClass( 'visible' );
-
-      $( '.conversation-header' ).off( 'click' );
-
-      if( chat.data( 'isGroup' ) != null ){
-
-        if( mobile ){
-
-          $( '.conver-info' ).addClass( 'viewGroup' );
-          $( '.conver-avatar' ).hide();
-          $( '.conver-avatar-group' ).show();
-          setGroupAvatar( chat.find( '.channel-name' ).text() , $( '.conver-avatar-group' ) );
-
-        }else{
-          $( '.conversation-header' ).addClass( 'viewGroup' );
-        }
+        showContent();
+        msgInput.focus();
 
       }else{
 
-        if( mobile ){
-          $( '.conver-avatar' ).show();
-          $( '.conver-avatar-group' ).hide();
-          $( '.conver-info' ).removeClass( 'viewGroup' );
-        }else{
-          $( '.conversation-header' ).removeClass( 'viewGroup' );
-        }
+        prevMode = mode;
+        mode = MODE_ANIMATING;
+        $('.initial-header').transition({
+          'x': '-100%'
+        },animationDuration);
+        $('.conver-header').transition({
+          'x': '0'
+        },animationDuration);
+        $('.conver-avatar').css('background-image', chat.find('.channel-img').css('background-image') );
+        content.show().transition({
+          'x' : 0
+        },animationDuration, function(){
+          mode = MODE_CONVERSATION;
+          $(this).addClass( 'visible' );
+          //msgInput.focus();
+        });
+        $('.ui-navbar').transition({
+          'x' : '-100%'
+        },animationDuration);
 
       }
 
-      if ( chat.data( 'isGroup' ) == null ) {
+      // Set header
+      $( '.conversation-name, .conver-header .conver-title' ).text( chat.find( '.channel-name' ).text() );
 
-        if ( isConected( contact.id ) ) {
+      if ( channel == undefined ) {
 
-          lastMessage.addClass( 'conected' );
-          lastMessage.text( lang.conected );
+        //$( '.conversation-header' ).data( 'channel' , null );
+        $( '.messageDom' ).remove();
+        $( '.separatorDom' ).remove();
 
-        }else {
-
-          lastMessage.removeClass( 'conected' );
-          lastMessage.text( lang.disconected );
-
-        }
 
       }else{
 
-        lastMessage.text( ( contact.length + 1 ) + ' ' + lang.members );
+        //$( '.conversation-header' ).data( 'channel' , channel );
+        listMessages( channel );
+
+        chat.data( 'notSeen' , null );
+        if ( chat.find( '.channel-badge' ).hasClass( 'visible' ) ) {
+          updateBadge( parseInt(chat.find( '.channel-badge span' ).text()) , false );
+        }
+        chat.find( '.channel-badge' ).removeClass( 'visible' );
+
+        $( '.conversation-header' ).off( 'click' );
+
+        if( chat.data( 'isGroup' ) != null ){
+
+          if( mobile ){
+
+            $( '.conver-info' ).addClass( 'viewGroup' );
+            $( '.conver-avatar' ).hide();
+            $( '.conver-avatar-group' ).show();
+            setGroupAvatar( chat.find( '.channel-name' ).text() , $( '.conver-avatar-group' ) );
+
+          }else{
+            $( '.conversation-header' ).addClass( 'viewGroup' );
+          }
+
+        }else{
+
+          if( mobile ){
+            $( '.conver-avatar' ).show();
+            $( '.conver-avatar-group' ).hide();
+            $( '.conver-info' ).removeClass( 'viewGroup' );
+          }else{
+            $( '.conversation-header' ).removeClass( 'viewGroup' );
+          }
+
+        }
+
+        if ( chat.data( 'isGroup' ) == null ) {
+
+          if ( isConected( contact.id ) ) {
+
+            lastMessage.addClass( 'conected' );
+            lastMessage.text( lang.conected );
+
+          }else {
+
+            lastMessage.removeClass( 'conected' );
+            lastMessage.text( lang.disconected );
+
+          }
+
+        }else{
+
+          lastMessage.text( ( contact.length + 1 ) + ' ' + lang.members );
+
+        }
 
       }
+
+      loadingChat = false;
 
     }
 
   }
+
+
 
 }
 
