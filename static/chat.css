@@ -1634,7 +1634,7 @@
 
   .ui-header-mobile{
     display: block;
-    height: 53px;
+    height: 54px;
     border-bottom: 2px solid #2a2f35;
   }
 
@@ -1689,10 +1689,10 @@
 
   .chat .ui-navbar{
     width: 100%;
-    height: ~'calc(100% - 55px)';
+    height: ~'calc(100% - 56px)';
     float: none;
     position: absolute;
-    top: 55px;
+    top: 56px;
     transform: translate3d(0,0,0);
   }
 
@@ -1820,8 +1820,8 @@
     width: 100%;
     transform: translate3d(100%,0,0);
     left: 0;
-    top: 55px;
-    height: ~'calc(100% - 55px)';
+    top: 56px;
+    height: ~'calc(100% - 56px)';
     border-right: none;
     float: none;
   }
