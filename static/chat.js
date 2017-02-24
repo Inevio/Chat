@@ -28,6 +28,7 @@ var unreadTimeOut;
 var loadingChat       = false;
 
 
+
 // Local Variables
 var app               = $( this );
 var chatIcon          = $( '.chat-icon' );
