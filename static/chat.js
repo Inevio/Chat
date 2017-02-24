@@ -26,8 +26,7 @@ var lastReadId        = -1;
 var heightToScroll    = -1;
 var unreadTimeOut;
 var loadingChat       = false;
-
-
+var animationEffect  = 'cubic-bezier(.4,0,.2,1)';
 
 // Local Variables
 var app               = $( this );
@@ -260,7 +259,7 @@ colorChange.on( 'click' , function(){
 
       'margin-left' : '18px'
 
-    }, 250);
+    }, 250, animationEffect);
 
   }else{
 
@@ -268,7 +267,7 @@ colorChange.on( 'click' , function(){
 
       'margin-left' : '2px'
 
-    }, 250);
+    }, 250, animationEffect);
 
   }
 
@@ -343,7 +342,7 @@ app
     });
 
     menu.render();
-    
+
   }
 
 
@@ -1426,17 +1425,18 @@ var goBack = function(){
 
         $('.conver-header').transition({
           'x': '0'
-        },animationDuration);
+        },animationDuration, animationEffect);
+
         $('.info-header').transition({
           'x': '100%'
-        },animationDuration);
+        },animationDuration, animationEffect);
 
       }
 
       mode = MODE_ANIMATING;
       $('.group-menu').transition({
         'x' : '100%'
-      }, animationDuration, function(){
+      }, animationDuration, animationEffect, function(){
 
         mode = prevMode;
         groupMenu.removeClass( 'visible' );
@@ -1449,19 +1449,21 @@ var goBack = function(){
       mode = MODE_ANIMATING;
       $('.initial-header').transition({
         'x': '0'
-      },animationDuration);
+      },animationDuration, animationEffect);
+
       $('.conver-header').transition({
         'x': '100%'
-      },animationDuration);
+      },animationDuration, animationEffect);
 
       $( '.contactDom.active' ).removeClass( 'active' );
       $( '.chatDom.active' ).removeClass( 'active' );
       $('.ui-navbar').transition({
         'x' : 0
-      },animationDuration);
+      },animationDuration, animationEffect);
+
       content.stop().clearQueue().transition({
         'x' : '100%'
-      },animationDuration, function(){
+      },animationDuration, animationEffect, function(){
 
         mode = prevMode;
         $(this).hide().removeClass( 'visible' );
@@ -1473,7 +1475,7 @@ var goBack = function(){
       mode = MODE_ANIMATING;
       $('.group-menu').transition({
         'x' : '100%'
-      }, animationDuration, function(){
+      }, animationDuration, animationEffect, function(){
 
         mode = MODE_CONVERSATION;
         $('.accept-button').hide();
@@ -1484,10 +1486,11 @@ var goBack = function(){
 
       $('.conver-header').transition({
         'x': '0'
-      },animationDuration);
+      },animationDuration, animationEffect);
+
       $('.info-header').transition({
         'x': '100%'
-      },animationDuration);
+      },animationDuration, animationEffect);
 
     }
 
@@ -2029,7 +2032,7 @@ var newGroup = function(){
       mode = MODE_ANIMATING;
       $('.group-menu').transition({
         'x' : 0
-      }, animationDuration, function(){
+      }, animationDuration, animationEffect, function(){
         mode = MODE_CREATING_GROUP;
       });
       $('.initial-header .new-group').removeClass('visible');
@@ -2469,21 +2472,24 @@ var selectChat = function( chat ){
         mode = MODE_ANIMATING;
         $('.initial-header').transition({
           'x': '-100%'
-        },animationDuration);
+        },animationDuration, animationEffect);
+
         $('.conver-header').transition({
           'x': '0'
-        },animationDuration);
+        },animationDuration, animationEffect);
+
         $('.conver-avatar').css('background-image', chat.find('.channel-img').css('background-image') );
         content.show().transition({
           'x' : 0
-        },animationDuration, function(){
+        },animationDuration, animationEffect, function(){
           mode = MODE_CONVERSATION;
           $(this).addClass( 'visible' );
           //msgInput.focus();
         });
+
         $('.ui-navbar').transition({
           'x' : '-100%'
-        },animationDuration);
+        },animationDuration, animationEffect);
 
       }
 
@@ -2604,23 +2610,27 @@ var selectContact = function( contact ){
 
       prevMode = mode;
       mode = MODE_ANIMATING;
+
       $('.initial-header').transition({
         'x': '-100%'
-      },animationDuration);
+      },animationDuration, animationEffect);
+
       $('.conver-header').transition({
         'x': '0'
-      },animationDuration);
+      },animationDuration, animationEffect);
+
       $('.conver-avatar').css('background-image', contact.find('.contact-img').css('background-image') );
       content.show().transition({
         'x' : 0
-      },animationDuration, function(){
+      },animationDuration, animationEffect, function(){
         mode = MODE_CONVERSATION;
         $(this).addClass( 'visible' );
         //msgInput.focus();
       });
+
       $('.ui-navbar').transition({
         'x' : '-100%'
-      },animationDuration);
+      },animationDuration, animationEffect);
 
     }
 
@@ -3062,17 +3072,17 @@ var viewGroup = function(){
       mode = MODE_ANIMATING;
       $( '.group-menu' ).transition({
         'x' : 0
-      }, animationDuration, function(){
+      }, animationDuration, animationEffect, function(){
         mode = MODE_INFORMATION;
       });
 
       $( '.conver-header' ).transition({
         'x': '-100%'
-      },animationDuration);
+      },animationDuration, animationEffect);
 
       $( '.info-header' ).transition({
         'x': '0'
-      },animationDuration);
+      },animationDuration, animationEffect);
 
     }
 
