@@ -1655,7 +1655,7 @@
     width: 16px;
     height: 15px;
     float: left;
-    padding: 20px 15px 11px 14px;
+    padding: 21px 15px 11px 16px;
     display: none;
   }
 
@@ -2055,7 +2055,7 @@
     height: 40px;
     border-radius: 50%;
     float: left;
-    margin-top: 5px;
+    margin-top: 6px;
     margin-right: 10px;
     background-size: cover;
     display: none;
@@ -2254,6 +2254,7 @@
 
   .check{
     background: url('@static/sprite-ticks@2x.png');
+    background-size: 77px 10px;
   }
 
 }
