@@ -4,6 +4,7 @@ var mobile = app.hasClass('wz-mobile-view');
 if( mobile ){
   app.addClass('dark');
   $('.ui-window.chat').addClass('dark');
+  StatusBar.backgroundColorByHexString("#2c3238");
 }
 
 if ( !params ) {
