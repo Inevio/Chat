@@ -1655,7 +1655,7 @@
     width: 16px;
     height: 15px;
     float: left;
-    padding: 19px 15px 11px;
+    padding: 20px 15px 11px 14px;
     display: none;
   }
 
@@ -1750,7 +1750,7 @@
   .channel .channel-name{
     font-size: 16px;
     line-height: 17px;
-    margin-top: 19px;
+    margin-top: 18px;
     width: ~'calc(100% - 160px)';
   }
 
@@ -2038,7 +2038,7 @@
   }
 
   .conver-header .conver-info{
-    width: ~'calc(100% - 110px)';
+    width: ~'calc(100% - 55px)';
     display: inline-block;
   }
 
@@ -2055,7 +2055,7 @@
     height: 40px;
     border-radius: 50%;
     float: left;
-    margin-top: 6px;
+    margin-top: 5px;
     margin-right: 10px;
     background-size: cover;
     display: none;
@@ -2068,7 +2068,7 @@
 
   .conver-info .conver-avatar-group span{
     font-weight: bold;
-    margin-top: 12px;
+    margin-top: 10px;
     display: inline-block;
   }
 
@@ -2082,13 +2082,13 @@
     font-size: 15px;
     font-weight: bold;
     color: #ffffff;
-    margin-top: 12px;
+    margin-top: 9px;
   }
 
   .conver-info .conver-moreinfo{
     font-size: 13px;
     color: #d2dce2;
-    margin-top: 3px;
+    margin-top: 6px;
   }
 
   .conver-info .conver-moreinfo.conected{
@@ -2200,6 +2200,7 @@
     height: 34px;
     border-radius: 50%;
     margin: 0px;
+    margin-right: 2px;
     padding: 8px;
     background-clip: content-box;
   }
@@ -2236,7 +2237,23 @@
 
   .channel .channel-last-time{
     font-size: 14px;
-    margin-top: 22px;
+    margin-top: 19px;
+  }
+
+  .ui-window{
+    border-radius: 0px;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+  }
+
+  .conversation-footer{
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+  }
+
+  .check{
+    background: url('@static/sprite-ticks@2x.png');
   }
 
 }
