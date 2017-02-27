@@ -43,127 +43,66 @@ if ( !params ) {
   var o = params[1];
   var callback = params[2];
 
-  if ( ! o.type ) {
-    return;
-  }
-
   switch (action) {
-
-    case 'new-chat':
-
-    if ( o.type === 'world' ) {
-
-      var world = o.content;
-
-      api.channel( function( error , channel ){
-
-        if ( error ) { console.log('ERROR: ', error ); }
-
-        wql.addWorldChannel( [ channel.id , world.name , world.id ] , function( error , message ){
-
-          if ( error ) { console.log('ERROR: ', error ); }
-
-          wql.addUserInChannel( [ channel.id , world.owner ] , function( error , message ){
-
-            if ( error ) { console.log('ERROR: ', error ); }
-
-            channel.addUser( world.owner , function( error ){
-
-              if ( error ) { console.log('ERROR: ', error ); }
-
-              callback( 'chat generado, todo ok!' );
-              api.app.removeView(app);
-
-            });
-
-          });
-
-        });
-
-      });
-
-    }
-
-    break;
-
-    case 'join-chat':
-
-    if ( o.type === 'world' ) {
-
-      var world = o.content;
-
-      wql.getWorldChannel( world.id , function( error , obj ){
-
-        if ( error ) { console.log('ERROR: ', error ); }
-
-        var chatId = obj[0].id;
-
-        api.channel( chatId , function( error, channel ){
-
-          wql.addUserInChannel( [ channel.id , world.owner ] , function( error , message ){
-
-            if ( error ) { console.log('ERROR: ', error ); }
-
-            channel.addUser( world.owner , function( error ){
-
-              if ( error ) { console.log('ERROR: ', error ); }
-
-              callback( 'me he unido al chat, todo ok!' );
-              api.app.removeView(app);
-
-            });
-
-          });
-
-        });
-
-      });
-
-    }
-
-    break;
 
     case 'open-chat':
 
-    start();
-    break;
+      start();
+      break;
 
-    case 'remove-chat':
+    case 'new-world-chat':
 
-    if ( o.type === 'world' ) {
+      var world = o;
 
-      var world = o.content;
-
-      wql.getWorldChannel( world.id , function( error , obj ){
-
-        if ( error ) { console.log('ERROR: ', error ); }
-
-        var chatId = obj[0].id;
-
-        api.channel( chatId , function( error, channel ){
-
-          wql.deleteUsersInChannel( channel.id , function( error , message ){
-
-            if ( error ) { console.log('ERROR: ', error ); }
-
-            wql.deleteChannel( channel.id , function( error , message ){
-
-              if ( error ) { console.log('ERROR: ', error ); }
-
-              callback( 'chat borrado, todo ok!' );
-              api.app.removeView(app);
-
+      world.getChannelForApp( 14 , function( e , channelId ){
+        if(e) console.log('ERROR: ', e);
+        api.channel( channelId , function( e , channel ){
+          if(e) console.log('ERROR: ', e);
+          wql.addWorldChannel( [ channel.id , world.name , world.id ] , function( e , message ){
+            if(e) console.log('ERROR: ', e);
+            channel.list(function( e , userList ){
+              if(e) console.log('ERROR: ', e);
+              userList.forEach(function( user ){
+                wql.addUserInChannel( [ channel.id , user ] , function( e , message ){
+                  if(e) console.log('ERROR: ', e);
+                  api.app.removeView(app);
+                });
+              });
             });
-
           });
-
         });
-
       });
+      break;
 
-    }
+    case 'open-world-chat':
 
-    break;
+      var world = o;
+
+      wql.getWorldChannel( [ world.id ] , function( e , channelFound ){
+        if ( channel.length > 0 ) {
+          console.log( 'ABRE ESTO!' , channelFound );
+        }else{
+          world.getChannelForApp( 14 , function( e , channelId ){
+            if(e) console.log('ERROR: ', e);
+            api.channel( channelId , function( e , channel ){
+              if(e) console.log('ERROR: ', e);
+              wql.addWorldChannel( [ channel.id , world.name , world.id ] , function( e , message ){
+                if(e) console.log('ERROR: ', e);
+                channel.list(function( e , userList ){
+                  if(e) console.log('ERROR: ', e);
+                  userList.forEach(function( user ){
+                    wql.addUserInChannel( [ channel.id , user ] , function( e , message ){
+                      if(e) console.log('ERROR: ', e);
+                      console.log( 'ABRE ESTO!' , channel );
+                    });
+                  });
+                });
+              });
+            });
+          });
+        }
+      });
+      break;
 
   }
 
