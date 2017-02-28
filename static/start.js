@@ -59,7 +59,7 @@ if ( !params ) {
         if(e) console.log('ERROR: ', e);
         api.channel( channelId , function( e , channel ){
           if(e) console.log('ERROR: ', e);
-          wql.addWorldChannel( [ channel.id , world.name , world.id ] , function( e , message ){
+          wql.addWorldChannel( [ channel.id , world.name , world.id , Date.now() ] , function( e , message ){
             if(e) console.log('ERROR: ', e);
             channel.list(function( e , userList ){
               if(e) console.log('ERROR: ', e);
@@ -87,7 +87,7 @@ if ( !params ) {
             if(e) console.log('ERROR: ', e);
             api.channel( channelId , function( e , channel ){
               if(e) console.log('ERROR: ', e);
-              wql.addWorldChannel( [ channel.id , world.name , world.id ] , function( e , message ){
+              wql.addWorldChannel( [ channel.id , world.name , world.id , Date.now() ] , function( e , message ){
                 if(e) console.log('ERROR: ', e);
                 channel.list(function( e , userList ){
                   if(e) console.log('ERROR: ', e);
