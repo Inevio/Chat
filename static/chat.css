@@ -949,9 +949,9 @@
 
 .conversation-input textarea{
   line-height: 20px;
-  padding-left: 13px;
+  padding-left: 14px;
   border: none;
-  margin-top: 9px;
+  margin-top: 10px;
   margin-bottom: 9px;
   width: ~'calc(100% - 58px)';
   color: #545f65;
