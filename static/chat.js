@@ -64,6 +64,7 @@ var separatorPrototype = $( '.separator.wz-prototype' );
 var backButton        = $( '.back-button' );
 var myContactID       = api.system.user().id;
 
+var MAIL_REGEXP = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,4}))$/
 
 var window = app.parents().slice( -1 )[ 0 ].parentNode.defaultView;
 
@@ -485,6 +486,15 @@ app
 
 .on('click', '.go-bottom', function(){
   goBottom();
+})
+
+.on( 'click', '.invite .add', function(){
+
+  var input = $('<input class="full">');
+  $(this).before( input );
+  $(this).parent().scrollTop( $(this).parent()[ 0 ].scrollHeight );
+  input.focus();
+
 })
 
 .on('backbutton', function( e ){
@@ -2897,6 +2907,11 @@ var setTexts = function(){
   $( '.app-color .white' ).text(lang.white);
   $( '.app-color .dark' ).text(lang.dark);
 
+  $('.invite h1').text( lang.invite.title )
+  $('.invite h2').text( lang.invite.subtitle )
+  $('.invite h3').text( lang.invite.email )
+  $('.invite .add').text( lang.invite.add )
+
 }
 
 var showContent = function(){
@@ -2983,6 +2998,22 @@ var timeElapsed = function( lastTime ){
   }
 
   return message;
+
+}
+
+var updateAvailableInviteNextButton = function(){
+
+  var validMails = 0
+  $('.invite input').each( function(){
+    if( $(this).val().length && MAIL_REGEXP.test( $(this).val() ) ){
+      validMails++
+    }
+  })
+  if( validMails ){
+    $('.invite .next').removeClass('disabled')
+  }else{
+    $('.invite .next').addClass('disabled')
+  }
 
 }
 

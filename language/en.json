@@ -48,5 +48,13 @@
     "writing" : "writing...",
     "dark" : "Dark",
     "white" : "White",
-    "is" : "is"
+    "is" : "is",    
+
+    "invite" : {
+      "title" : "Invite your friends",
+      "subtitle" : "Everything is ready to go! If you want any coworker or friend to start horbiting with you invite them here",
+      "email" : "Emails",
+      "add" : "+ Add more emails"
+    }
+
 }
