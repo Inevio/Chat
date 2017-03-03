@@ -48,5 +48,13 @@
     "writing" : "escribiendo...",
     "dark" : "Oscuro",
     "white" : "Claro",
-    "is" : "está"
+    "is" : "está",
+
+    "invite" : {
+      "title" : "Invita a la gente",
+      "subtitle" : "¡Todo está listo! Si quieres que algún compañero o amigo empiece a horbitar contigo puedes invitarlos aquí",
+      "email" : "Emails",
+      "add" : "+ Añadir más emails"
+    }
+    
 }
