@@ -27,8 +27,6 @@ var heightToScroll    = -1;
 var unreadTimeOut;
 var loadingChat       = false;
 
-
-
 // Local Variables
 var app               = $( this );
 var chatIcon          = $( '.chat-icon' );
@@ -99,6 +97,14 @@ api.channel.on( 'destroyed' , function( info ){
 api.channel.on( 'userAdded', function( info, userId ){
   userAdded( info , userId );
 });
+
+api.notification.on( 'new', function( notification ){
+  console.log( notification )
+})
+
+api.notification.on( 'attended', function( list ){
+  console.log( list )
+})
 
 api.user.on( 'connect' , function( user ){
 
@@ -2558,8 +2564,6 @@ var selectChat = function( chat ){
     }
 
   }
-
-
 
 }
 
