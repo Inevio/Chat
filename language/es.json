@@ -51,8 +51,8 @@
     "is" : "está",
 
     "invite" : {
-      "title" : "Invita a la gente",
-      "subtitle" : "¡Todo está listo! Si quieres que algún compañero o amigo empiece a horbitar contigo puedes invitarlos aquí",
+      "title" : "No tienes contactos",
+      "subtitle" : "Actualmente no tienes ningún contacto en tu cuenta con el que iniciar una conversación.<br /><br />Busca a tus compañeros y amigos a través de la app de <b>Comunidad</b> o invita a quien quieras a unirse a horbito contigo:",
       "email" : "Emails",
       "add" : "+ Añadir más emails",
       "send" : "Enviar invitaciones"

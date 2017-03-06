@@ -507,6 +507,10 @@ app
 
 })
 
+.on( 'click', '.invite h2 b', function(){
+  api.app.openApp(2);
+})
+
 .on('backbutton', function( e ){
   e.stopPropagation();
   goBack();
@@ -2927,7 +2931,7 @@ var setTexts = function(){
   $( '.app-color .dark' ).text(lang.dark);
 
   $('.invite h1').text( lang.invite.title );
-  $('.invite h2').text( lang.invite.subtitle );
+  $('.invite h2').html( lang.invite.subtitle );
   $('.invite h3').text( lang.invite.email );
   $('.invite .add').text( lang.invite.add );
   $('.invite .next').text( lang.invite.send );

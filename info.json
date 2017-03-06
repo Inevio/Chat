@@ -47,7 +47,7 @@
                     "height" : {
 
                         "default" : 600,
-                        "min"     : 450,
+                        "min"     : 600,
                         "max"     : 0
 
                     },
