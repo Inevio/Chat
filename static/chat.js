@@ -1360,7 +1360,7 @@ var getContacts = function(){
 
     if ( friends.length === 0 ) {
 
-      $( '.no-content' ).css(
+      /*$( '.no-content' ).css(
         {
           'width' : '100%',
           'left'   : '0'
@@ -1375,7 +1375,12 @@ var getContacts = function(){
           api.app.removeView( app );
           api.app.openApp( 2 , function(o){} );
         }
-      });
+      });*/
+
+      if( app.hasClass('dark') ){
+        colorChange.click();
+      }
+      $('.no-contacts').addClass('active');
 
       return;
 
