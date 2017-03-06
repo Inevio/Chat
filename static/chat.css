@@ -1638,6 +1638,7 @@
     float: right;
     width: ~'calc(100% - 535px)';
     height: 100%;
+    text-align: center;
   }
 
   h1{
@@ -1698,21 +1699,30 @@
     cursor: pointer;
   }
 
+  .image{
+    width: 212px;
+    height: 210px;
+    background-image: url('@static/forever-alone.png');
+    background-size: 212px 210px;
+    display: inline-block;
+    margin: 150px auto 0 auto;
+  }
+
   .next{
-    float: left;
     display: block;
     border: 2px solid #0071f6;
     border-radius: 6px;
-    width: 154px;
-    height: 38px;
+    width: 230px;
+    height: 56px;
     font-family: Lato;
-    font-size: 17px;
+    font-size: 19px;
     font-weight: bold;
     color: #ffffff;
     background: #0071f6;
     position: absolute;
     bottom: 40px;
     right: 40px;
+    outline: none;
 
     &.disabled{
       border: 2px solid #c3c9cc !important;
@@ -1721,6 +1731,10 @@
     }
   }
 
+}
+
+.no-contacts.active{
+  display: block;
 }
 
 
