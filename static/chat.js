@@ -2907,10 +2907,11 @@ var setTexts = function(){
   $( '.app-color .white' ).text(lang.white);
   $( '.app-color .dark' ).text(lang.dark);
 
-  $('.invite h1').text( lang.invite.title )
-  $('.invite h2').text( lang.invite.subtitle )
-  $('.invite h3').text( lang.invite.email )
-  $('.invite .add').text( lang.invite.add )
+  $('.invite h1').text( lang.invite.title );
+  $('.invite h2').text( lang.invite.subtitle );
+  $('.invite h3').text( lang.invite.email );
+  $('.invite .add').text( lang.invite.add );
+  $('.invite .next').text( lang.invite.send );
 
 }
 
