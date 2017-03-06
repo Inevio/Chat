@@ -1736,6 +1736,11 @@
     }
   }
 
+  .ui-header{
+    border-bottom: none !important;
+    background: white !important;
+  }
+
 }
 
 .no-contacts.active{
