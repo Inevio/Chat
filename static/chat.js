@@ -100,6 +100,14 @@ api.channel.on( 'userAdded', function( info, userId ){
   userAdded( info , userId );
 });
 
+api.notification.on( 'new', function( notification ){
+  console.log( notification )
+})
+
+api.notification.on( 'attended', function( list ){
+  console.log( list )
+})
+
 api.user.on( 'connect' , function( user ){
 
   updateContactState( $( '.user-id-' + user.id ) , true , user.id );
@@ -2578,8 +2586,6 @@ var selectChat = function( chat ){
     }
 
   }
-
-
 
 }
 
