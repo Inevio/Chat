@@ -1625,7 +1625,7 @@
   bottom: 0;
   z-index: 4;
   background-color: white;
-  display: none;
+  /*display: none;*/
 
   .left{
     float: left;
@@ -1655,6 +1655,11 @@
     color: #545f65;
     line-height: 28px;
     width: 425px;
+  }
+  h2 b{
+    cursor: pointer;
+    color: #0071f6;
+    font-weight: normal;
   }
   h3{
     float: left;
