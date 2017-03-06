@@ -102,10 +102,12 @@ api.channel.on( 'userAdded', function( info, userId ){
 
 api.notification.on( 'new', function( notification ){
   console.log( notification )
+  //TODO comprobar si la notificacion es de chat o no y si tenemos que tratarla
 })
 
 api.notification.on( 'attended', function( list ){
   console.log( list )
+  //TODO comprobar si la notificacion marcada como atendida es de chat o no y si tenemos que tratarla
 })
 
 api.user.on( 'connect' , function( user ){
@@ -1199,6 +1201,16 @@ var getChats = function( callback ){
   api.app.setBadge( 0 );
 
   console.time('channels');
+
+  //TODO cargar lista de notificaciones pendientes o cargar 1 a 1 por chat
+
+  /*api.notification.list( function( error, list ){
+    console.log(list);
+  });
+
+  api.notification.count( function( error, count ){
+    console.log('numero de notificaciones: ' + count);
+  });*/
 
   wql.getChannels( myContactID , function( error , channels ){
 
@@ -2528,6 +2540,7 @@ var selectChat = function( chat ){
 
         chat.data( 'notSeen' , null );
         if ( chat.find( '.channel-badge' ).hasClass( 'visible' ) ) {
+          //TODO marcar como atendidas las notificaciones de este chat
           updateBadge( parseInt(chat.find( '.channel-badge span' ).text()) , false );
         }
         chat.find( '.channel-badge' ).removeClass( 'visible' );
