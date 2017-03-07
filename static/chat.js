@@ -511,6 +511,24 @@ app
   api.app.openApp(2);
 })
 
+.on( 'keyup', '.invite input', function(){
+  $(this).removeClass('wrong')
+  updateAvailableInviteNextButton()
+})
+
+.on( 'change blur', '.invite input', function(){
+  if( !$(this).val().length ){
+    $(this).removeClass('wrong')
+    return updateAvailableInviteNextButton()
+  }
+  if( MAIL_REGEXP.test( $(this).val() ) ){
+    $(this).removeClass('wrong')
+  }else{
+    $(this).addClass('wrong')
+  }
+  updateAvailableInviteNextButton()
+})
+
 .on('backbutton', function( e ){
   e.stopPropagation();
   goBack();
