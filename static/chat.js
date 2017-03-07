@@ -529,6 +529,12 @@ app
   updateAvailableInviteNextButton()
 })
 
+.on( 'click', '.invite .next:not(.clicked,.disabled)', function(){
+
+  //TODO validar mails y enviar invitaciones correspondientes
+
+})
+
 .on('backbutton', function( e ){
   e.stopPropagation();
   goBack();
@@ -1221,7 +1227,6 @@ var filterMembers = function( filter ){
 var getChats = function( callback ){
 
   api.app.setBadge( 0 );
-
   console.time('channels');
 
   //TODO cargar lista de notificaciones pendientes o cargar 1 a 1 por chat
