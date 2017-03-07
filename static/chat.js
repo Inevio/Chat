@@ -529,7 +529,7 @@ app
   updateAvailableInviteNextButton()
 })
 
-.on( 'click', '.invite .next:not(.clicked,.disabled)', function(){
+.on( 'click', '.invite .next:not(.disabled)', function(){
 
   //TODO validar mails y enviar invitaciones correspondientes
 
