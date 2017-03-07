@@ -1625,7 +1625,7 @@
   bottom: 0;
   z-index: 4;
   background-color: white;
-  /*display: none;*/
+  display: none;
 
   .left{
     float: left;
