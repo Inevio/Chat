@@ -1377,10 +1377,14 @@ var getContacts = function(){
         }
       });*/
 
-      if( app.hasClass('dark') ){
-        colorChange.click();
+      if( !mobile ){
+
+        if( app.hasClass('dark') ){
+          colorChange.click();
+        }
+        $('.no-contacts').addClass('active');
+
       }
-      $('.no-contacts').addClass('active');
 
       return;
 
