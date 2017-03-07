@@ -1688,11 +1688,12 @@
   }
   .area{
     float: left;
+    width: 82%;
     height: 220px;
     overflow: hidden;
   }
   input:focus{
-    border-color: #45e7c8;
+    border-color: #0071f6;
   }
   .add{
     display: block;
@@ -1736,9 +1737,32 @@
     }
   }
 
+  .next:hover{
+    background: #006ae6;
+    border-color: #006ae6;
+  }
+
+  .next:active{
+    background: #0062d6;
+    border-color: #0062d6;
+  }
+
   .ui-header{
     border-bottom: none !important;
     background: white !important;
+  }
+
+  input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    color: #717171;
+  }
+  input::-moz-placeholder { /* Firefox 19+ */
+    color: #717171;
+  }
+  input:-ms-input-placeholder { /* IE 10+ */
+    color: #717171;
+  }
+  input:-moz-placeholder { /* Firefox 18- */
+    color: #717171;
   }
 
 }
