@@ -531,7 +531,21 @@ app
 
 .on( 'click', '.invite .next:not(.disabled)', function(){
 
-  //TODO validar mails y enviar invitaciones correspondientes
+  var mails = [];
+
+  $('.invite input').each( function(){
+
+    //console.log( $(this).val().length && MAIL_REGEXP.test( $(this).val() ) );
+    if( $(this).val().length && MAIL_REGEXP.test( $(this).val() ) ){
+      mails.push( $(this).val() )
+    }
+
+  });
+
+  console.log(mails);
+  api.user.inviteByMail( mails, function(error){
+    console.log(arguments);
+  })
 
 })
 
