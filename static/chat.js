@@ -135,13 +135,15 @@ api.user.on( 'friendRemoved', function( user ){
 api.system.on( 'connect' ,function(){
 
   /*getContacts();
-  getChats();
+  getChats();*/
 
   console.log($( '.chatDom.active' ).data());
   console.log(mode);
-  if( mode == MODE_CONVERSATION ){
-    listMessages( $( '.chatDom.active' ).data() );
-  }*/
+  if( mode === MODE_CONVERSATION ){
+    selectChat( $( '.chatDom.active' ).data() );
+  }else if( mode === MODE_CHAT ){
+    getChats();
+  }
 
 });
 
