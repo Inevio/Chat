@@ -1,5 +1,7 @@
 var app  = $( this );
 var mobile = app.hasClass('wz-mobile-view');
+var myContactID  = api.system.user().id;
+
 
 if( mobile ){
   app.addClass('dark');
@@ -48,8 +50,8 @@ if ( !params ) {
 
     case 'open-chat':
 
-      start();
-      break;
+    start();
+    break;
 
     case 'new-world-chat':
 
@@ -80,8 +82,10 @@ if ( !params ) {
       var world = o;
 
       wql.getWorldChannel( [ world.id ] , function( e , channelFound ){
-        if ( channel.length > 0 ) {
-          console.log( 'ABRE ESTO!' , channelFound );
+        if ( channelFound.length > 0 ) {
+          params[0] = 'open-chat';
+          params[1] = { type: 'world' , content: channelFound[0].id }
+          start();
         }else{
           world.getChannelForApp( 14 , function( e , channelId ){
             if(e) console.log('ERROR: ', e);
@@ -94,7 +98,9 @@ if ( !params ) {
                   userList.forEach(function( user ){
                     wql.addUserInChannel( [ channel.id , user ] , function( e , message ){
                       if(e) console.log('ERROR: ', e);
-                      console.log( 'ABRE ESTO!' , channel );
+                      params[0] = 'open-chat';
+                      params[1] = { type: 'world' , content: channel.id }
+                      start();
                     });
                   });
                 });
@@ -104,6 +110,30 @@ if ( !params ) {
         }
       });
       break;
+
+    case 'remove-world-user-chat':{
+
+      var world = o;
+
+      wql.getWorldChannel( [ world.id ] , function( e , channel ){
+        if(e) console.log('ERROR: ', e);
+        wql.deleteUserInChannel( [ channel[0].id , myContactID ] , function( e , message ){
+            if(e) console.log('ERROR: ', e);
+            wql.getUsersInChannel( [ channel[0].id ] , function( e , users ){
+              if(e) console.log('ERROR: ', e);
+              if (users.length === 0) {
+                wql.deleteChannel( [ channel[0].id ] , function(){
+                  if(e) console.log('ERROR: ', e);
+                });
+              }
+              api.app.removeView(app);
+            });
+        });
+      });
+
+
+
+    }
 
   }
 

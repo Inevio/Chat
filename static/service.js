@@ -3,6 +3,27 @@
 var myContactID  = api.system.user().id;
 var lastMessageReceived;
 
+api.channel.on( 'userAdded' , function( channel , userAdded ){
+  api.channel( channel.id , function( e , channel ){
+    if(e) console.log('ERROR: ', e);
+    wql.addUserInChannel( [ channel.id , userAdded ] , function( e , message ){
+      if(e) console.log('ERROR: ', e);
+      if (api.app.getViews().length != 0) {
+        api.app.getViews( 'main' ).trigger( 'getChats' );
+      }
+    });
+  });
+});
+
+api.channel.on( 'userRemoved' , function( channel , userRemoved ){
+  api.channel( channel.id , function( e , channel ){
+    if(e) console.log('ERROR: ', e);
+    if (api.app.getViews().length != 0) {
+      api.app.getViews( 'main' ).trigger( 'getChats' );
+    }
+  });
+});
+
 api.channel.on( 'message' , function( info , o ){
 
   // The app is oppened, so don't show the banner

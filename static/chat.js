@@ -493,6 +493,14 @@ app
 .on('backbutton', function( e ){
   e.stopPropagation();
   goBack();
+})
+
+.on('getChats', function(){
+  getChats();
+})
+
+.on('app-param',function( e , params ){
+  processParams( params );
 });
 // END APP EVENTS
 
@@ -845,8 +853,6 @@ var changeTab = function( tab ){
 
 var chatDeleted = function( info ){
 
-  console.log(arguments);
-
   var chat = $( '.chatDom-' + info.id );
 
   if ( chat.hasClass( 'active' ) ) {
@@ -1088,7 +1094,7 @@ var editGroup = function(){
 
   }
 
-  goBack();
+  goBack(function(){});
 
 }
 
@@ -2169,21 +2175,10 @@ var preselectChat = function(){
 
       if ( o.type === 'world' ) {
 
-        var world = o.content;
-
-        wql.getWorldChannel( world.id , function( error , obj ){
-
-          if ( error ) { console.log('ERROR: ', error ); }
-
-          var chatId = obj[0].id;
-
-          var timeout = setTimeout(function(){
-            $( '.chatDom-' + chatId ).click();
-          }, 1000);
-
-          callback( 'chat abierto, todo ok!' );
-
-        });
+        var chatId = o.content;
+        var timeout = setTimeout(function(){
+          $( '.chatDom-' + chatId ).click();
+        }, 1000);
 
       }else if( o.type === 'user' ){
 
@@ -3151,6 +3146,113 @@ var warnWriting = function(){
 
 }
 
+var processParams = function( params ){
+  params = params;
+  var action = params[0];
+  var o = params[1];
+  var callback = params[2];
+
+  switch (action) {
+
+    case 'open-chat':
+
+      recheckParams();
+      break;
+
+    case 'new-world-chat':
+
+      var world = o;
+
+      world.getChannelForApp( 14 , function( e , channelId ){
+        if(e) console.log('ERROR: ', e);
+        api.channel( channelId , function( e , channel ){
+          if(e) console.log('ERROR: ', e);
+          wql.addWorldChannel( [ channel.id , world.name , world.id , Date.now() ] , function( e , message ){
+            if(e) console.log('ERROR: ', e);
+            channel.list(function( e , userList ){
+              if(e) console.log('ERROR: ', e);
+              userList.forEach(function( user ){
+                wql.addUserInChannel( [ channel.id , user ] , function( e , message ){
+                  if(e) console.log('ERROR: ', e);
+                  getChats(function(){});
+                  wz.app.openApp( 360 , [ 'focus' ] , 'hidden' );
+                });
+              });
+            });
+          });
+        });
+      });
+      break;
+
+    case 'open-world-chat':
+
+      var world = o;
+
+      wql.getWorldChannel( [ world.id ] , function( e , channelFound ){
+        if ( channelFound.length > 0 ) {
+          params[0] = 'open-chat';
+          params[1] = { type: 'world' , content: channelFound[0].id }
+          recheckParams();
+        }else{
+          world.getChannelForApp( 14 , function( e , channelId ){
+            if(e) console.log('ERROR: ', e);
+            api.channel( channelId , function( e , channel ){
+              if(e) console.log('ERROR: ', e);
+              wql.addWorldChannel( [ channel.id , world.name , world.id , Date.now() ] , function( e , message ){
+                if(e) console.log('ERROR: ', e);
+                channel.list(function( e , userList ){
+                  if(e) console.log('ERROR: ', e);
+                  userList.forEach(function( user ){
+                    wql.addUserInChannel( [ channel.id , user ] , function( e , message ){
+                      if(e) console.log('ERROR: ', e);
+                      params[0] = 'open-chat';
+                      params[1] = { type: 'world' , content: channel.id }
+                      recheckParams();
+                    });
+                  });
+                });
+              });
+            });
+          });
+        }
+      });
+      break;
+
+    case 'remove-world-user-chat':{
+
+      var world = o;
+
+      wql.getWorldChannel( [ world.id ] , function( e , channel ){
+        if(e) console.log('ERROR: ', e);
+        wql.deleteUserInChannel( [ channel[0].id , myContactID ] , function( e , message ){
+            if(e) console.log('ERROR: ', e);
+            wql.getUsersInChannel( [ channel[0].id ] , function( e , users ){
+              if(e) console.log('ERROR: ', e);
+              if (users.length === 0) {
+                wql.deleteChannel( [ channel[0].id ] , function(){
+                  if(e) console.log('ERROR: ', e);
+                });
+              }
+              chatDeleted( channel[0] );
+              wz.app.openApp( 360 , [ 'focus' ] , 'hidden' );
+            });
+        });
+      });
+
+    }
+
+  }
+
+}
+
+var recheckParams = function(){
+  if( params && params[ 0 ] === 'push' ){
+    getChats( function(){
+      $( '.chatDom-' + params[ 1 ].channelId ).click();
+    });
+  }
+  preselectChat();
+}
 
 // INIT Chat
 initChat();
