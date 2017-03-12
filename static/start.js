@@ -1,7 +1,7 @@
 var app  = $( this );
 var mobile = app.hasClass('wz-mobile-view');
 var myContactID  = api.system.user().id;
-
+var desktop  = $(this).parent().parent();
 
 if( mobile ){
   app.addClass('dark');
@@ -38,30 +38,27 @@ if ( !params ) {
 
 }else{
 
-  if( params[ 0 ] === 'push' ){
-    return start();
-  }
-
   var action = params[0];
-  var o = params[1];
+  var options = params[1];
   var callback = params[2];
 
   switch (action) {
 
-    case 'open-chat':
+    case 'push':
+      start();
+      break
 
-    start();
-    break;
+    case 'open-chat':
+      start();
+      break;
 
     case 'new-world-chat':
 
-      var world = o;
-
-      world.getChannelForApp( 14 , function( e , channelId ){
+      options.world.getChannelForApp( 14 , function( e , channelId ){
         if(e) console.log('ERROR: ', e);
         api.channel( channelId , function( e , channel ){
           if(e) console.log('ERROR: ', e);
-          wql.addWorldChannel( [ channel.id , world.name , world.id , Date.now() ] , function( e , message ){
+          wql.addWorldChannel( [ channel.id , options.world.name , options.world.id , Date.now() ] , function( e , message ){
             if(e) console.log('ERROR: ', e);
             channel.list(function( e , userList ){
               if(e) console.log('ERROR: ', e);
@@ -78,44 +75,12 @@ if ( !params ) {
       break;
 
     case 'open-world-chat':
-
-      var world = o;
-
-      wql.getWorldChannel( [ world.id ] , function( e , channelFound ){
-        if ( channelFound.length > 0 ) {
-          params[0] = 'open-chat';
-          params[1] = { type: 'world' , content: channelFound[0].id }
-          start();
-        }else{
-          world.getChannelForApp( 14 , function( e , channelId ){
-            if(e) console.log('ERROR: ', e);
-            api.channel( channelId , function( e , channel ){
-              if(e) console.log('ERROR: ', e);
-              wql.addWorldChannel( [ channel.id , world.name , world.id , Date.now() ] , function( e , message ){
-                if(e) console.log('ERROR: ', e);
-                channel.list(function( e , userList ){
-                  if(e) console.log('ERROR: ', e);
-                  userList.forEach(function( user ){
-                    wql.addUserInChannel( [ channel.id , user ] , function( e , message ){
-                      if(e) console.log('ERROR: ', e);
-                      params[0] = 'open-chat';
-                      params[1] = { type: 'world' , content: channel.id }
-                      start();
-                    });
-                  });
-                });
-              });
-            });
-          });
-        }
-      });
+      start();
       break;
 
     case 'remove-world-user-chat':{
 
-      var world = o;
-
-      wql.getWorldChannel( [ world.id ] , function( e , channel ){
+      wql.getWorldChannel( [ options.world.id ] , function( e , channel ){
         if(e) console.log('ERROR: ', e);
         wql.deleteUserInChannel( [ channel[0].id , myContactID ] , function( e , message ){
             if(e) console.log('ERROR: ', e);
