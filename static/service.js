@@ -1,5 +1,4 @@
 'use strict';
-
 var myContactID  = api.system.user().id;
 var lastMessageReceived;
 
@@ -16,11 +15,19 @@ api.channel.on( 'userAdded' , function( channel , userAdded ){
 });
 
 api.channel.on( 'userRemoved' , function( channel , userRemoved ){
-  api.channel( channel.id , function( e , channel ){
-    if(e) console.log('ERROR: ', e);
-    if (api.app.getViews().length != 0) {
-      api.app.getViews( 'main' ).trigger( 'getChats' );
-    }
+  wql.deleteUserInChannel( [ channel.id , userRemoved ] , function( e , message ){
+      if(e) console.log('ERROR: ', e);
+      wql.getUsersInChannel( [ channel.id ] , function( e , users ){
+        if(e) console.log('ERROR: ', e);
+        if (users.length === 0) {
+          wql.deleteChannel( [ channel[0].id ] , function(){
+            if(e) console.log('ERROR: ', e);
+          });
+        }
+        if (api.app.getViews().length != 0) {
+          api.app.getViews( 'main' ).trigger( 'getChats' );
+        }
+      });
   });
 });
 
