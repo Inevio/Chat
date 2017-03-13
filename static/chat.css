@@ -949,9 +949,9 @@
 
 .conversation-input textarea{
   line-height: 20px;
-  padding-left: 13px;
+  padding-left: 14px;
   border: none;
-  margin-top: 9px;
+  margin-top: 10px;
   margin-bottom: 9px;
   width: ~'calc(100% - 58px)';
   color: #545f65;
@@ -1614,6 +1614,163 @@
   margin-top: 16px;
 }
 
+.no-contacts{
+
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 4;
+  background-color: white;
+  display: none;
+
+  .left{
+    float: left;
+    margin: 72px 0 0 52px;
+    width: 483px;
+    height: 500px;
+  }
+
+  .right{
+    float: right;
+    width: ~'calc(100% - 535px)';
+    height: 100%;
+    text-align: center;
+  }
+
+  h1{
+    font-family: Lato;
+    font-weight: 900;
+    font-size: 43px;
+    color: #010101;
+    display: inline-block;
+  }
+  h2{
+    margin-top: 20px;
+    font-family: Lato;
+    font-size: 17px;
+    color: #545f65;
+    line-height: 28px;
+    width: 425px;
+  }
+  h2 b{
+    cursor: pointer;
+    color: #0071f6;
+    font-weight: normal;
+  }
+  h3{
+    float: left;
+    clear: both;
+    width: 100%;
+    margin: 26px 0 12px 16px;
+    font-family: Lato;
+    font-size: 15px;
+    font-weight: bold;
+    color: #161719;
+  }
+  input{
+    border: 2px solid #fff;
+    height: 46px;
+    border-radius: 6px;
+    background-color: #f0f0f0;
+    box-sizing: border-box;
+    padding: 0 16px;
+    margin-bottom: 11px;
+    &.wrong{
+      border-color: #fe1843 !important;
+    }
+  }
+  .full{
+    width: 384px;
+  }
+  .area{
+    float: left;
+    width: 82%;
+    height: 220px;
+    overflow: hidden;
+  }
+  input:focus{
+    border-color: #0071f6;
+  }
+  .add{
+    display: block;
+    font-family: Lato;
+    font-size: 15px;
+    color: #889399;
+    width: 380px;
+    text-align: right;
+    cursor: pointer;
+  }
+
+  .image{
+    width: 212px;
+    height: 210px;
+    background-image: url('@static/forever-alone.png');
+    background-size: 212px 210px;
+    display: inline-block;
+    margin: 150px auto 0 auto;
+  }
+
+  .next{
+    display: block;
+    border: 2px solid #0071f6;
+    border-radius: 6px;
+    width: 230px;
+    height: 56px;
+    font-family: Lato;
+    font-size: 19px;
+    font-weight: bold;
+    color: #ffffff;
+    background: #0071f6;
+    position: absolute;
+    bottom: 40px;
+    right: 40px;
+    outline: none;
+
+    &.disabled{
+      border: 2px solid #c3c9cc !important;
+      background-color: #c3c9cc !important;
+      color: #fff;
+    }
+  }
+
+  .next:hover{
+    background: #006ae6;
+    border-color: #006ae6;
+  }
+
+  .next:active{
+    background: #0062d6;
+    border-color: #0062d6;
+  }
+
+  .ui-header{
+    border-bottom: none !important;
+    background: white !important;
+  }
+
+  input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    color: #717171;
+  }
+  input::-moz-placeholder { /* Firefox 19+ */
+    color: #717171;
+  }
+  input:-ms-input-placeholder { /* IE 10+ */
+    color: #717171;
+  }
+  input:-moz-placeholder { /* Firefox 18- */
+    color: #717171;
+  }
+
+}
+
+.no-contacts.active{
+  display: block;
+}
+
 
 .wz-view.wz-mobile-view{
 
@@ -1634,7 +1791,7 @@
 
   .ui-header-mobile{
     display: block;
-    height: 53px;
+    height: 54px;
     border-bottom: 2px solid #2a2f35;
   }
 
@@ -1655,7 +1812,7 @@
     width: 16px;
     height: 15px;
     float: left;
-    padding: 19px 15px 11px;
+    padding: 21px 15px 11px 16px;
     display: none;
   }
 
@@ -1689,10 +1846,10 @@
 
   .chat .ui-navbar{
     width: 100%;
-    height: ~'calc(100% - 55px)';
+    height: ~'calc(100% - 56px)';
     float: none;
     position: absolute;
-    top: 55px;
+    top: 56px;
     transform: translate3d(0,0,0);
   }
 
@@ -1720,13 +1877,13 @@
 
   .channel{
     width: 100%;
-    height: 77px;
+    height: 71px;
     float: right;
     border-bottom: none;
     display: inline-block;
   }
 
-  .channel::after{
+  /*.channel::after{
     content: '';
     width: ~'calc(100% - 80px)';
     height: 1px;
@@ -1735,7 +1892,7 @@
     position: relative;
     bottom: 12px;
     margin: 0px 0px 0px 80px;
-  }
+  }*/
 
   .channel .last-message{
     font-size: 15px;
@@ -1750,32 +1907,35 @@
   .channel .channel-name{
     font-size: 16px;
     line-height: 17px;
-    margin-top: 21px;
-    width: ~'calc(100% - 152px)';
+    margin-top: 18px;
+    width: ~'calc(100% - 160px)';
   }
 
   .channel .highlight-area{
     width: 100%;
-    height: 77px;
+    height: 100%;
     position: static;
   }
 
-  .channel .channel-img{
-    height: 62px;
-    width: 62px;
-    margin-top: 7px;
-    margin-bottom: 7px;
-    margin-right: 10px;
+  .channel.active .highlight-area{
+    box-shadow: none;
   }
 
-  .channel .channel-img.group{
+  .channel .channel-img{
+    top: 50%;
+    transform: translateY(-50%);
+    position: relative;
+    margin: 0px 10px 0px 12px;
+  }
+
+  /*.channel .channel-img.group{
     height: 58px;
     width: 58px;
-  }
+  }*/
 
   .channel .channel-img span{
-    font-size: 27px;
-    margin-top: 17px;
+    font-size: 22px;
+    margin-top: 12px;
     font-weight: normal;
   }
 
@@ -1820,8 +1980,8 @@
     width: 100%;
     transform: translate3d(100%,0,0);
     left: 0;
-    top: 55px;
-    height: ~'calc(100% - 55px)';
+    top: 56px;
+    height: ~'calc(100% - 56px)';
     border-right: none;
     float: none;
   }
@@ -2035,7 +2195,7 @@
   }
 
   .conver-header .conver-info{
-    width: ~'calc(100% - 110px)';
+    width: ~'calc(100% - 55px)';
     display: inline-block;
   }
 
@@ -2065,7 +2225,7 @@
 
   .conver-info .conver-avatar-group span{
     font-weight: bold;
-    margin-top: 12px;
+    margin-top: 10px;
     display: inline-block;
   }
 
@@ -2079,13 +2239,13 @@
     font-size: 15px;
     font-weight: bold;
     color: #ffffff;
-    margin-top: 12px;
+    margin-top: 9px;
   }
 
   .conver-info .conver-moreinfo{
     font-size: 13px;
     color: #d2dce2;
-    margin-top: 3px;
+    margin-top: 6px;
   }
 
   .conver-info .conver-moreinfo.conected{
@@ -2197,6 +2357,7 @@
     height: 34px;
     border-radius: 50%;
     margin: 0px;
+    margin-right: 2px;
     padding: 8px;
     background-clip: content-box;
   }
@@ -2225,6 +2386,32 @@
 
   .go-bottom{
     display: none !important;
+  }
+
+  .channel .channel-last-msg{
+    font-size: 14px;
+  }
+
+  .channel .channel-last-time{
+    font-size: 14px;
+    margin-top: 19px;
+  }
+
+  .ui-window{
+    border-radius: 0px;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+  }
+
+  .conversation-footer{
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+  }
+
+  .check{
+    background: url('@static/sprite-ticks@2x.png');
+    background-size: 77px 10px;
   }
 
 }
