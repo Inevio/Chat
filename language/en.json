@@ -48,5 +48,14 @@
     "writing" : "writing...",
     "dark" : "Dark",
     "white" : "White",
-    "is" : "is"
+    "is" : "is",
+
+    "invite" : {
+      "title" : "Invite your friends",
+      "subtitle" : "You currently don't have any contact to start a conversation with.<br /><br />Find your coworkers and friends using the <b>Community</b> app or invite whoever you want to join horbito with you:",
+      "email" : "Emails",
+      "add" : "+ Add more emails",
+      "send" : "Send invitations"
+    }
+
 }

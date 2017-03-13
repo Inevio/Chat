@@ -26,6 +26,7 @@ var lastReadId        = -1;
 var heightToScroll    = -1;
 var unreadTimeOut;
 var loadingChat       = false;
+var animationEffect  = 'cubic-bezier(.4,0,.2,1)';
 
 // Local Variables
 var app               = $( this );
@@ -64,6 +65,7 @@ var separatorPrototype = $( '.separator.wz-prototype' );
 var backButton        = $( '.back-button' );
 var myContactID       = api.system.user().id;
 
+var MAIL_REGEXP = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,4}))$/
 
 var window = app.parents().slice( -1 )[ 0 ].parentNode.defaultView;
 
@@ -101,10 +103,12 @@ api.channel.on( 'userAdded', function( info, userId ){
 
 api.notification.on( 'new', function( notification ){
   console.log( notification )
+  //TODO comprobar si la notificacion es de chat o no y si tenemos que tratarla
 })
 
 api.notification.on( 'attended', function( list ){
   console.log( list )
+  //TODO comprobar si la notificacion marcada como atendida es de chat o no y si tenemos que tratarla
 })
 
 api.user.on( 'connect' , function( user ){
@@ -132,13 +136,15 @@ api.user.on( 'friendRemoved', function( user ){
 api.system.on( 'connect' ,function(){
 
   /*getContacts();
-  getChats();
+  getChats();*/
 
   console.log($( '.chatDom.active' ).data());
   console.log(mode);
-  if( mode == MODE_CONVERSATION ){
-    listMessages( $( '.chatDom.active' ).data() );
-  }*/
+  if( mode === MODE_CONVERSATION ){
+    selectChat( $( '.chatDom.active' ).data() );
+  }else if( mode === MODE_CHAT ){
+    getChats();
+  }
 
 });
 
@@ -267,7 +273,7 @@ colorChange.on( 'click' , function(){
 
       'margin-left' : '18px'
 
-    }, 250);
+    }, 250, animationEffect);
 
   }else{
 
@@ -275,7 +281,7 @@ colorChange.on( 'click' , function(){
 
       'margin-left' : '2px'
 
-    }, 250);
+    }, 250, animationEffect);
 
   }
 
@@ -316,7 +322,6 @@ desktop.on( 'message' , function( e , action , options ){
 app
 .on( 'contextmenu', '.chatDom', function(e){
 
-  var menu = api.menu();
   var channelNotFound = true;
   var channelDom = $( e.target );
 
@@ -334,6 +339,8 @@ app
   var user = channelDom.data('user').id;
 
   if ( !channelDom.data('isGroup') ) {
+
+    var menu = api.menu();
 
     menu.addOption( lang.deleteChat , function(){
 
@@ -353,9 +360,12 @@ app
       });
 
     });
+
+    menu.render();
+
   }
 
-  menu.render();
+
 
 })
 
@@ -495,6 +505,57 @@ app
 
 .on('click', '.go-bottom', function(){
   goBottom();
+})
+
+.on( 'click', '.invite .add', function(){
+
+  var input = $('<input class="full">');
+  $(this).before( input );
+  $(this).parent().scrollTop( $(this).parent()[ 0 ].scrollHeight );
+  input.focus();
+
+})
+
+.on( 'click', '.invite h2 b', function(){
+  api.app.openApp(2);
+})
+
+.on( 'keyup', '.invite input', function(){
+  $(this).removeClass('wrong')
+  updateAvailableInviteNextButton()
+})
+
+.on( 'change blur', '.invite input', function(){
+  if( !$(this).val().length ){
+    $(this).removeClass('wrong')
+    return updateAvailableInviteNextButton()
+  }
+  if( MAIL_REGEXP.test( $(this).val() ) ){
+    $(this).removeClass('wrong')
+  }else{
+    $(this).addClass('wrong')
+  }
+  updateAvailableInviteNextButton()
+})
+
+.on( 'click', '.invite .next:not(.disabled)', function(){
+
+  var mails = [];
+
+  $('.invite input').each( function(){
+
+    //console.log( $(this).val().length && MAIL_REGEXP.test( $(this).val() ) );
+    if( $(this).val().length && MAIL_REGEXP.test( $(this).val() ) ){
+      mails.push( $(this).val() )
+    }
+
+  });
+
+  console.log(mails);
+  api.user.inviteByMail( mails, function(error){
+    console.log(arguments);
+  })
+
 })
 
 .on('backbutton', function( e ){
@@ -1196,8 +1257,17 @@ var filterMembers = function( filter ){
 var getChats = function( callback ){
 
   api.app.setBadge( 0 );
-
   console.time('channels');
+
+  //TODO cargar lista de notificaciones pendientes o cargar 1 a 1 por chat
+
+  /*api.notification.list( function( error, list ){
+    console.log(list);
+  });
+
+  api.notification.count( function( error, count ){
+    console.log('numero de notificaciones: ' + count);
+  });*/
 
   wql.getChannels( myContactID , function( error , channels ){
 
@@ -1338,7 +1408,7 @@ var getContacts = function(){
 
     if ( friends.length === 0 ) {
 
-      $( '.no-content' ).css(
+      /*$( '.no-content' ).css(
         {
           'width' : '100%',
           'left'   : '0'
@@ -1353,7 +1423,16 @@ var getContacts = function(){
           api.app.removeView( app );
           api.app.openApp( 2 , function(o){} );
         }
-      });
+      });*/
+
+      if( !mobile ){
+
+        if( app.hasClass('dark') ){
+          colorChange.click();
+        }
+        $('.no-contacts').addClass('active');
+
+      }
 
       return;
 
@@ -1437,17 +1516,18 @@ var goBack = function(){
 
         $('.conver-header').transition({
           'x': '0'
-        },animationDuration);
+        },animationDuration, animationEffect);
+
         $('.info-header').transition({
           'x': '100%'
-        },animationDuration);
+        },animationDuration, animationEffect);
 
       }
 
       mode = MODE_ANIMATING;
       $('.group-menu').transition({
         'x' : '100%'
-      }, animationDuration, function(){
+      }, animationDuration, animationEffect, function(){
 
         mode = prevMode;
         groupMenu.removeClass( 'visible' );
@@ -1460,19 +1540,21 @@ var goBack = function(){
       mode = MODE_ANIMATING;
       $('.initial-header').transition({
         'x': '0'
-      },animationDuration);
+      },animationDuration, animationEffect);
+
       $('.conver-header').transition({
         'x': '100%'
-      },animationDuration);
+      },animationDuration, animationEffect);
 
       $( '.contactDom.active' ).removeClass( 'active' );
       $( '.chatDom.active' ).removeClass( 'active' );
       $('.ui-navbar').transition({
         'x' : 0
-      },animationDuration);
+      },animationDuration, animationEffect);
+
       content.stop().clearQueue().transition({
         'x' : '100%'
-      },animationDuration, function(){
+      },animationDuration, animationEffect, function(){
 
         mode = prevMode;
         $(this).hide().removeClass( 'visible' );
@@ -1484,7 +1566,7 @@ var goBack = function(){
       mode = MODE_ANIMATING;
       $('.group-menu').transition({
         'x' : '100%'
-      }, animationDuration, function(){
+      }, animationDuration, animationEffect, function(){
 
         mode = MODE_CONVERSATION;
         $('.accept-button').hide();
@@ -1495,10 +1577,11 @@ var goBack = function(){
 
       $('.conver-header').transition({
         'x': '0'
-      },animationDuration);
+      },animationDuration, animationEffect);
+
       $('.info-header').transition({
         'x': '100%'
-      },animationDuration);
+      },animationDuration, animationEffect);
 
     }
 
@@ -2038,7 +2121,7 @@ var newGroup = function(){
       mode = MODE_ANIMATING;
       $('.group-menu').transition({
         'x' : 0
-      }, animationDuration, function(){
+      }, animationDuration, animationEffect, function(){
         mode = MODE_CREATING_GROUP;
       });
       $('.initial-header .new-group').removeClass('visible');
@@ -2450,21 +2533,24 @@ var selectChat = function( chat ){
         mode = MODE_ANIMATING;
         $('.initial-header').transition({
           'x': '-100%'
-        },animationDuration);
+        },animationDuration, animationEffect);
+
         $('.conver-header').transition({
           'x': '0'
-        },animationDuration);
+        },animationDuration, animationEffect);
+
         $('.conver-avatar').css('background-image', chat.find('.channel-img').css('background-image') );
         content.show().transition({
           'x' : 0
-        },animationDuration, function(){
+        },animationDuration, animationEffect, function(){
           mode = MODE_CONVERSATION;
           $(this).addClass( 'visible' );
           //msgInput.focus();
         });
+
         $('.ui-navbar').transition({
           'x' : '-100%'
-        },animationDuration);
+        },animationDuration, animationEffect);
 
       }
 
@@ -2485,6 +2571,7 @@ var selectChat = function( chat ){
 
         chat.data( 'notSeen' , null );
         if ( chat.find( '.channel-badge' ).hasClass( 'visible' ) ) {
+          //TODO marcar como atendidas las notificaciones de este chat
           updateBadge( parseInt(chat.find( '.channel-badge span' ).text()) , false );
         }
         chat.find( '.channel-badge' ).removeClass( 'visible' );
@@ -2583,23 +2670,27 @@ var selectContact = function( contact ){
 
       prevMode = mode;
       mode = MODE_ANIMATING;
+
       $('.initial-header').transition({
         'x': '-100%'
-      },animationDuration);
+      },animationDuration, animationEffect);
+
       $('.conver-header').transition({
         'x': '0'
-      },animationDuration);
+      },animationDuration, animationEffect);
+
       $('.conver-avatar').css('background-image', contact.find('.contact-img').css('background-image') );
       content.show().transition({
         'x' : 0
-      },animationDuration, function(){
+      },animationDuration, animationEffect, function(){
         mode = MODE_CONVERSATION;
         $(this).addClass( 'visible' );
         //msgInput.focus();
       });
+
       $('.ui-navbar').transition({
         'x' : '-100%'
-      },animationDuration);
+      },animationDuration, animationEffect);
 
     }
 
@@ -2871,6 +2962,12 @@ var setTexts = function(){
   $( '.app-color .white' ).text(lang.white);
   $( '.app-color .dark' ).text(lang.dark);
 
+  $('.invite h1').text( lang.invite.title );
+  $('.invite h2').html( lang.invite.subtitle );
+  $('.invite h3').text( lang.invite.email );
+  $('.invite .add').text( lang.invite.add );
+  $('.invite .next').text( lang.invite.send );
+
 }
 
 var showContent = function(){
@@ -2960,6 +3057,22 @@ var timeElapsed = function( lastTime ){
 
 }
 
+var updateAvailableInviteNextButton = function(){
+
+  var validMails = 0
+  $('.invite input').each( function(){
+    if( $(this).val().length && MAIL_REGEXP.test( $(this).val() ) ){
+      validMails++
+    }
+  })
+  if( validMails ){
+    $('.invite .next').removeClass('disabled')
+  }else{
+    $('.invite .next').addClass('disabled')
+  }
+
+}
+
 var updateBadge = function( num , add ){
 
   var actualBadge = api.app.getBadge();
@@ -3046,17 +3159,17 @@ var viewGroup = function(){
       mode = MODE_ANIMATING;
       $( '.group-menu' ).transition({
         'x' : 0
-      }, animationDuration, function(){
+      }, animationDuration, animationEffect, function(){
         mode = MODE_INFORMATION;
       });
 
       $( '.conver-header' ).transition({
         'x': '-100%'
-      },animationDuration);
+      },animationDuration, animationEffect);
 
       $( '.info-header' ).transition({
         'x': '0'
-      },animationDuration);
+      },animationDuration, animationEffect);
 
     }
 
