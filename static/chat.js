@@ -2820,12 +2820,17 @@ var setRemoveButton = function(){
   removeGroup.addClass( 'visible' );
   removeGroup.off( 'click' );
 
+
+  if ($( '.chatDom.active' ).hasClass('world-chat')) {
+    removeGroup.removeClass( 'visible' );
+  }
+
   channel.list( function( error, users ){
 
     var admin = users[0];
 
     // I'm the admin
-    if ( myContactID == admin && ! $( '.chatDom.active' ).hasClass('world-chat') ) {
+    if ( myContactID == admin ) {
 
       removeGroup.find( 'span' ).text(lang.deleteExit);
       adminMode = true;
