@@ -502,20 +502,20 @@ app
   goBack();
 })
 
-.on('getChats', function(){
+.on('getChats', function( e , o ){
+  chatDeleted(o);
   getChats();
 })
+
 
 // END APP EVENTS
 
 // FUNCTIONS
-var appendChat = function( channel , user , groupName , callback ){
+var appendChat = function( channel , user , groupName , isWorldChannel , callback ){
 
   if( user.id == myContactID ){
     chatButton.click();
   }
-
-  console.time('getLastMessage-' + channel.id);
 
   wql.getLastMessage( channel.id , function( error, message ){
 
@@ -577,6 +577,10 @@ var appendChat = function( channel , user , groupName , callback ){
           }
 
           chat.find( '.channel-name' ).text( groupName );
+
+          if (isWorldChannel) {
+            chat.addClass('world-chat');
+          }
 
           setGroupAvatar( groupName , chat.find( '.channel-img' ) );
 
@@ -1197,8 +1201,6 @@ var getChats = function( callback ){
 
   wql.getChannels( myContactID , function( error , channels ){
 
-    console.timeEnd('channels');
-
     if ( error ) { console.log('ERROR: ', error ); }
 
     if( !channels.length ){
@@ -1212,12 +1214,9 @@ var getChats = function( callback ){
         return;
       }
 
-      console.time('apiChannel-' + i);
+      var isWorldChannel = channel.world_id ? true : false;
 
       api.channel( channel.id , function( error, channelApi ){
-
-        console.timeEnd('apiChannel-' + i);
-        console.time('usersInChannel-' + i);
 
         channelApi.time = channel.time;
 
@@ -1244,7 +1243,7 @@ var getChats = function( callback ){
 
             api.user( you , function( err , user ){
 
-              appendChat( channelApi , user , groupName , function(){
+              appendChat( channelApi , user , groupName , isWorldChannel , function(){
 
                 if( callback ){
                   callback();
@@ -1272,7 +1271,7 @@ var getChats = function( callback ){
 
             }, function(){
 
-              appendChat( channelApi , usersInGroup , groupName , function(){
+              appendChat( channelApi , usersInGroup , groupName , isWorldChannel , function(){
 
                 if( callback ){
                   callback();
@@ -1962,6 +1961,8 @@ var messageRecieved = function( message , o , channelActive ){
 
                 api.user( message.sender, function( error, user ){
 
+                  console.log('EOEOEOEOEOEOEOEOEO',message);
+
                   launchBanner( user.fullName , o.txt , user.avatar.tiny , function(){
 
                     $( '.chatDom-' + message.id ).click();
@@ -1989,6 +1990,8 @@ var messageRecieved = function( message , o , channelActive ){
       messageNotReaded( messageRec );
 
       api.user( message.sender, function( error, user ){
+
+        console.log('EOEOEOEOEOEOEOEOEO',message);
 
         launchBanner( user.fullName , o.txt , user.avatar.tiny , function(){
 
@@ -2822,7 +2825,7 @@ var setRemoveButton = function(){
     var admin = users[0];
 
     // I'm the admin
-    if ( myContactID == admin ) {
+    if ( myContactID == admin && ! $( '.chatDom.active' ).hasClass('world-chat') ) {
 
       removeGroup.find( 'span' ).text(lang.deleteExit);
       adminMode = true;
@@ -3166,7 +3169,12 @@ var checkParams = function( action , options ){
       api.app.viewToFront( app );
       wql.getWorldChannel( [ options.world.id ] , function( e , channelFound ){
         if ( channelFound.length > 0 ) {
-          openChat( channelFound[0].id , 'world' );
+          wql.addUserInChannel( [ channelFound[0].id , myContactID ] , function( e , message ){
+            if(e) console.log('ERROR: ', e);
+            getChats(function(){
+              openChat( channelFound[0].id , 'world' );
+            });
+          });
         }else{
           options.world.getChannelForApp( 14 , function( e , channelId ){
             if(e) console.log('ERROR: ', e);
@@ -3179,7 +3187,9 @@ var checkParams = function( action , options ){
                   userList.forEach(function( user ){
                     wql.addUserInChannel( [ channel.id , user ] , function( e , message ){
                       if(e) console.log('ERROR: ', e);
-                      openChat( channel.id , 'world' );
+                      getChats(function(){
+                        openChat( channel.id , 'world' );
+                      });
                     });
                   });
                 });

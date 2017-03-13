@@ -8,7 +8,7 @@ api.channel.on( 'userAdded' , function( channel , userAdded ){
     wql.addUserInChannel( [ channel.id , userAdded ] , function( e , message ){
       if(e) console.log('ERROR: ', e);
       if (api.app.getViews().length != 0) {
-        api.app.getViews( 'main' ).trigger( 'getChats' );
+        api.app.getViews( 'main' ).trigger( 'getChats' , { id: channel.id } );
       }
     });
   });
@@ -25,7 +25,7 @@ api.channel.on( 'userRemoved' , function( channel , userRemoved ){
           });
         }
         if (api.app.getViews().length != 0) {
-          api.app.getViews( 'main' ).trigger( 'getChats' );
+          api.app.getViews( 'main' ).trigger( 'getChats' , { id: channel.id } );
         }
       });
   });
