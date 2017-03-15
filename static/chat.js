@@ -139,9 +139,9 @@ api.system.on( 'connect' ,function(){
   getChats();*/
 
   console.log($( '.chatDom.active' ).data());
-  console.log(mode);
+  console.log('connect',mode);
   if( mode === MODE_CONVERSATION ){
-    selectChat( $( '.chatDom.active' ).data() );
+    selectChat( $( '.chatDom.active' ) );
   }else if( mode === MODE_CHAT ){
     getChats();
   }
