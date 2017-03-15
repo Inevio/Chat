@@ -223,9 +223,7 @@ removeGroup.on( 'click' , function(){
 });
 
 conversationDel.on( 'click' , function(){
-
   msgInput.val('');
-
 });
 
 closeApp.on( 'click' , function(){
@@ -588,11 +586,11 @@ var appendChat = function( channel , user , groupName , isWorldChannel , callbac
       console.timeEnd('getLastRead-' + channel.id);
       console.time('getUnreads-' + channel.id);
 
-      wql.getUnreads( [channel.id, lastRead[0]['last_read']] , function( error , notSeen ){
+      api.notification.count( { customIdLike : channel.id + '-%' }, function( err, counted ){
 
         console.timeEnd('getUnreads-' + channel.id);
 
-        if ( error ) { console.log('ERROR: ', error ); }
+        if ( err ) { console.log('ERROR: ', err ); }
 
         var lastMsg = message[0];
 
@@ -696,11 +694,10 @@ var appendChat = function( channel , user , groupName , isWorldChannel , callbac
 
           }
 
-          if ( notSeen[0] != undefined && notSeen[0]['COUNT(*)'] > 0 ) {
+          if( counted > 0 ) {
 
-            $('.chatDom-' + channel.id).data( 'notSeen' , notSeen[0]['COUNT(*)'] );
-            $('.chatDom-' + channel.id).find( '.channel-badge' ).addClass('visible').find('span').text( notSeen[0]['COUNT(*)'] );
-            updateBadge( notSeen[0]['COUNT(*)'] , true );
+            $('.chatDom-' + channel.id).data( 'notSeen' , counted );
+            $('.chatDom-' + channel.id).find( '.channel-badge' ).addClass('visible').find('span').text( counted )
 
           }
 
@@ -1256,7 +1253,7 @@ var filterMembers = function( filter ){
 
 var getChats = function( callback ){
 
-  api.app.setBadge( 0 );
+  //api.app.setBadge( 0 );
   console.time('channels');
 
   //TODO cargar lista de notificaciones pendientes o cargar 1 a 1 por chat
@@ -1603,11 +1600,10 @@ var hideGoBottom = function(){
 
 var initChat = function(){
 
-  console.log(params);
+  // It allows textareaAutoSize to be initialized
+  setTimeout( function(){
 
-  api.user( myContactID , function( error, user ){
-
-    me = user;
+    me = api.system.user();
 
     setTexts();
     setMobile();
@@ -1616,14 +1612,12 @@ var initChat = function(){
     getChats();
 
     if( params ){
-
       checkParams( params[0] , params[1] );
-
     }
 
     msgInput.textareaAutoSize();
 
-  });
+  }, 0 )
 
 }
 
@@ -1797,8 +1791,10 @@ var listMessages = function( channel ){
 
         var lastReadId = messages[ messages.length - 1].id;
 
+        console.log( api.notification )
+        api.notification.markAsAttended({ customId : channel.id + '-' + lastReadId, previous : channel.id + '-%' })
         wql.updateLastRead( [ lastReadId , channel.id, myContactID ] , function( error , message ){
-
+          console.log(4,error,message)
           if ( error ) { console.log('ERROR: ', error ); }
           $('.chatDom.active').data( 'notSeen' , 0 );
 
@@ -1826,10 +1822,8 @@ var listMessages = function( channel ){
 
               });
 
-              channel.send(  { 'action' : 'updateRead' , 'id' : channel.id , 'lastRead' : lastReadId } , function( error ){
-
-
-
+              channel.send( { 'action' : 'updateRead' , 'id' : channel.id , 'lastRead' : lastReadId } , function( error ){
+                // To Do -> Error
               });
 
             });
@@ -1953,7 +1947,8 @@ var messageNotReaded = function( message ){
   var notSeen = $('.chatDom-' + message.id).data( 'notSeen' );
   notSeen = notSeen ? notSeen + 1 : 1;
   $('.chatDom-' + message.id).data( 'notSeen' , notSeen );
-  $('.chatDom-' + message.id).find( '.channel-badge' ).addClass('visible').find('span').text( notSeen );
+  $('.chatDom-' + message.id).find( '.channel-badge' ).addClass('visible').find('span').text( notSeen ); // paco
+  console.log('pip2')
 
 }
 
@@ -1970,7 +1965,9 @@ var messageRecieved = function( message , o , channelActive ){
     // SOY EL EMISOR
     if( message.sender === myContactID ){
 
+      api.notification.markAsAttended({ customId : channelActive.id + '-' + o.id, previous : channelActive.id + '-%' })
       wql.updateLastRead( [ o.id , channelActive.id, myContactID ] , function( error , message ){
+        console.log(1,error,message)
         if ( error ) { console.log('ERROR: ', error ); }
         printMessage( o , null , date );
       });
@@ -1997,7 +1994,9 @@ var messageRecieved = function( message , o , channelActive ){
 
         setChatInfo( chat , o , message.sender , false );
 
+        api.notification.markAsAttended({ customId : channelActive.id + '-' + o.id, previous : channelActive.id + '-%' })
         wql.updateLastRead( [ o.id , channelActive.id, myContactID ] , function( error , message ){
+          console.log(2,error,message)
           if ( error ) { console.log('ERROR: ', error ); }
 
           printMessage( o , users , date );
@@ -2028,8 +2027,9 @@ var messageRecieved = function( message , o , channelActive ){
 
           if ( user.id === message.sender ) {
 
+            api.notification.markAsAttended({ customId : channelActive.id + '-' + o.id, previous : channelActive.id + '-%' })
             wql.updateLastRead( [ o.id , channelActive.id, myContactID ] , function( error , message ){
-
+              console.log(3,error,message)
               if ( error ) { console.log('ERROR: ', error ); }
 
               $( '.user-id-' + user.id ).data( 'channel' , channelActive );
@@ -3077,10 +3077,12 @@ var updateBadge = function( num , add ){
 
   var actualBadge = api.app.getBadge();
 
+  console.log('add',add,actualBadge,parseInt( actualBadge ),num)
+
   if ( add ) {
-    api.app.setBadge( parseInt(actualBadge) + num );
+    api.app.setBadge( parseInt( actualBadge ) + num );
   }else{
-    api.app.setBadge( parseInt(actualBadge) - num );
+    api.app.setBadge( parseInt( actualBadge ) - num );
   }
 
 
@@ -3341,7 +3343,6 @@ var checkParams = function( action , options ){
   }
 
 }
-
 
 // INIT Chat
 initChat();
