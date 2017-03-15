@@ -594,12 +594,20 @@ var appendChat = function( channel , user , groupName , isWorldChannel , callbac
 
         var lastMsg = message[0];
 
-        var chat = chatPrototype.clone();
+        var chat;
 
-        chat
-        .removeClass( 'wz-prototype' )
-        .addClass( 'chatDom' )
-        .addClass( 'chatDom-' + channel.id );
+        if ( $( '.chatDom-' + channel.id ).length != 0 ) {
+          chat = $( '.chatDom-' + channel.id );
+        }else{
+
+          var chat = chatPrototype.clone();
+
+          chat
+          .removeClass( 'wz-prototype' )
+          .addClass( 'chatDom' )
+          .addClass( 'chatDom-' + channel.id );
+
+        }
 
         if ( groupName != null ) {
 
@@ -1277,9 +1285,9 @@ var getChats = function( callback ){
     $.each( channels , function( i , channel ){
 
       // No repeat chats already appended
-      if ( $( '.chatDom-' + channel.id ).length != 0 ) {
+      /*if ( $( '.chatDom-' + channel.id ).length != 0 ) {
         return;
-      }
+      }*/
 
       var isWorldChannel = channel.world_id ? true : false;
 
