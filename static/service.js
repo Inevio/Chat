@@ -81,7 +81,7 @@ api.channel.on( 'message' , function( info , o ){
 
 });
 
-var updateBadge = function( num , add ){
+var updateBadge = function( num, add ){
 
   var actualBadge = api.app.getBadge();
 
@@ -94,23 +94,13 @@ var updateBadge = function( num , add ){
 
 };
 
-wql.getChannels( myContactID , function( error , channels ){
+api.notification.count( function( err, counted ){
 
-  channels.forEach( function( channel , i ){
+  if( !err ){
+    updateBadge( counted, true )
+  }
 
-    wql.getLastRead( [ channel.id , myContactID ] , function( error , lastRead ){
-
-      wql.getUnreads( [ channel.id, lastRead[0]['last_read'] ] , function( error , notSeen ){
-
-        updateBadge( notSeen[0]['COUNT(*)'] , true );
-
-      });
-
-    });
-
-  });
-
-});
+})
 
 api.notification.on( 'notification', function( data ){
 
@@ -122,5 +112,8 @@ api.notification.on( 'notification', function( data ){
     api.app.createView( info );
   }
 
-
 });
+
+api.notification.count( function( err, counted ){
+  console.log( err, counted )
+})
