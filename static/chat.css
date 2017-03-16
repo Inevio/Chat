@@ -2412,6 +2412,8 @@
   .check{
     background: url('@static/sprite-ticks@2x.png');
     background-size: 77px 10px;
+    width: 8px;
+    background-position: 8px 0;
   }
 
 }
