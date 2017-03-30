@@ -186,11 +186,10 @@
 
 .message-body .sender {
   display: none;
-  margin-top: 12px;
-  float: left;
-  margin-left: 14px;
+  margin:  12px 14px 0 14px;
   font-weight: bold;
   font-size: 15px;
+  display: block !important;
 }
 
 .message-triangle{
@@ -215,8 +214,7 @@
 }
 
 .message-text{
-  float: left;
-  width: ~'calc(100% - 30px)';
+  width: auto;
   font-size: 15px;
   color: #545f65;
   line-height: 22px;
@@ -225,10 +223,11 @@
   margin-left: 13px;
   margin-right: 15px;
   word-wrap: break-word;
+  display: block;
 }
 
 .message-text a{
-  width: ~'calc(100% - 30px)';
+  width: auto;
   font-size: 15px;
   color: #4698e0;
   line-height: 22px;
@@ -237,8 +236,7 @@
 }
 
 .sender-group .message-text{
-  float: left;
-  width: ~'calc(100% - 30px)';
+  width: auto;
   font-size: 15px;
   color: #545f65;
   line-height: 22px;
@@ -253,7 +251,7 @@
   position: absolute;
   background-size: 77px 10px;
   height: 10px;
-  bottom: 10px;
+  bottom: 7px;
   left: 48px;
   width: 9px;
   background-position: 47px 0;
@@ -274,7 +272,6 @@
 }
 
 .message-time{
-  float: left;
   color: #889399;
   font-size: 11px;
   margin-left: 13px;
@@ -282,11 +279,11 @@
 }
 
 .sender-group .message-time{
-  float: left;
   color: #889399;
   font-size: 11px;
   margin-left: 14px;
   margin-bottom: 8px;
+  display: block;
 }
 
 .dark .message-time{
