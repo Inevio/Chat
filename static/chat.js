@@ -378,10 +378,10 @@ app
 
 .on( 'ui-view-focus', function(){
 
-  /*var chatActive = $( '.chatDom.active' );
+  var chatActive = $( '.chatDom.active' );
   if (chatActive.length > 0) {
-    selectChat( chatActive );
-  }*/
+    chatActive.click();
+  }
 
 })
 
@@ -2015,6 +2015,8 @@ var messageRecieved = function( message , o , channelActive ){
 
           if ( message.sender != myContactID ) {
 
+            messageNotReaded( messageRec );
+
             launchBanner( users.fullName , o.txt , users.avatar.tiny , function(){
 
               $( '.chatDom-' + message.id ).click();
@@ -2052,7 +2054,7 @@ var messageRecieved = function( message , o , channelActive ){
 
                 api.user( message.sender, function( error, user ){
 
-                  console.log('EOEOEOEOEOEOEOEOEO',message);
+                  messageNotReaded( messageRec );
 
                   launchBanner( user.fullName , o.txt , user.avatar.tiny , function(){
 
@@ -2081,8 +2083,6 @@ var messageRecieved = function( message , o , channelActive ){
       messageNotReaded( messageRec );
 
       api.user( message.sender, function( error, user ){
-
-        console.log('EOEOEOEOEOEOEOEOEO',message);
 
         launchBanner( user.fullName , o.txt , user.avatar.tiny , function(){
 
