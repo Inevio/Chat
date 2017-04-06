@@ -45,7 +45,7 @@
   float: left;
   margin-left: 137px;
   width: 126px;
-  margin-top: 3px;
+  margin-top: 7px;
   display: none;
 }
 
@@ -712,11 +712,11 @@
 .chat .ui-content{
   float: left;
   width: ~'calc(100% - 318px)';
-  height: ~'calc(100% - 41px)';
+  height: ~'calc(100% - 50px)';
   display: none;
   z-index: 2;
   position: absolute;
-  top: 41px;
+  top: 50px;
   left: 318px;
   background-size: 800px 600px;
   background-image: url( '@static/pattern.png' );
@@ -726,7 +726,7 @@
   background-image: url( '@static/pattern-dark.png' );
   background-size: 800px 600px;
   width: ~'calc(100% - 319px)';
-  height: ~'calc(100% - 42px)';
+  height: ~'calc(100% - 50px)';
   border-radius: 0 0 6px 0;
   border-right: 1px solid #2c3238;
   border-bottom: 1px solid #2c3238;
@@ -995,8 +995,8 @@
   float: left;
   position: absolute;
   width: ~'calc(100% - 319px)';
-  height: ~'calc(100% - 41px)';
-  top: 41px;
+  height: ~'calc(100% - 50px)';
+  top: 50px;
   left: 318px;
   background: rgba(255,255,255,1);
   background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(247,248,250,1) 50%, rgba(247,248,250,1) 100%);
@@ -1012,7 +1012,7 @@
 .dark .no-content{
   background: #3f4750;
   width: ~'calc(100% - 320px)';
-  height: ~'calc(100% - 42px)';
+  height: ~'calc(100% - 50px)';
   border-radius: 0 0 6px 0;
   border-right: 1px solid #2c3238;
   border-bottom: 1px solid #2c3238;
@@ -1051,8 +1051,8 @@
   float: left;
   position: absolute;
   width: ~'calc(100% - 319px)';
-  height: ~'calc(100% - 41px)';
-  top: 41px;
+  height: ~'calc(100% - 50px)';
+  top: 50px;
   left: 318px;
   z-index: 3;
   display: none;
@@ -1519,10 +1519,11 @@
 .app-color{
   float: left;
   margin-left: 157px;
-  margin-top: 13px;
-  margin-bottom: 12px;
+  margin-top: 17px;
+  margin-bottom: 16px;
   display: none;
 }
+
 
 .app-color .dark{
   float: left;
