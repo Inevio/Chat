@@ -276,6 +276,7 @@
   font-size: 11px;
   margin-left: 13px;
   margin-bottom: 7px;
+  float: left;
 }
 
 .sender-group .message-time{
