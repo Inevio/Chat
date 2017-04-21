@@ -1762,6 +1762,10 @@
 
 .wz-view.wz-mobile-view{
 
+  .search-area{
+    height: 55px;
+  }
+
   .ui-header-desktop{
     display: none;
   }
@@ -1843,11 +1847,9 @@
 
   .chat-search{
     width: ~'calc(100% - 12px)';
-    border: none;
     float: none;
     margin: 8px auto;
     border-radius: 20px;
-    border: 1px solid transparent !important;
   }
 
   .chat-body{
@@ -2145,7 +2147,6 @@
   .group-name-input{
     width: ~'calc(100% - 26px)';
     height: 39px;
-    border-radius: 20px;
   }
 
   .group-name-input input{
@@ -2163,6 +2164,10 @@
 
   .ui-input.active figure, .ui-input-search.active .delete-content{
     display: none;
+  }
+
+  .search-members input{
+    width: ~'calc(100% - 60px)';
   }
 
   .initial-header{
@@ -2256,7 +2261,6 @@
   .group-menu{
     height: ~'calc(100% - 51px)';
     top: 51px;
-    background-color: #363d46;
     transform: translate3d(100%,0,0);
     position: absolute;
   }
@@ -2322,7 +2326,7 @@
     float: right;
     padding: 19px 15px;
     font-size: 16px;
-    color: #60b25e;
+    color: @blueHorbito;
     cursor: pointer;
     display: none;
   }
@@ -2334,10 +2338,6 @@
 
   .info-header .accept-button{
     display: none;
-  }
-
-  .search-members{
-    border-radius: 20px;
   }
 
   .conversation-send-mobile{
@@ -2369,7 +2369,11 @@
   }
 
   .ui-input-search .search-icon i{
-    background-image: url('https://static.horbito.com/image/uikit/sprite-dark@2x.png');
+    background-image: url('https://static.horbito.com/image/uikit/search-input-sprite-dark@2x.png');
+  }
+
+  .ui-input-search.active input{
+    width: ~'calc(100% - 58px)';
   }
 
   .go-bottom{
