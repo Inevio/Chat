@@ -9,6 +9,7 @@ var MODE_EDITING_GROUP = 5;
 var MODE_ANIMATING = -1;
 var mode = 0; // 0 == Chats tab, 1 == Contacts tab, 2 == Conversation tab, 3 == Information tab, 4 == creating group, 5 == editing group, -1 == transition
 var prevMode = 0;
+var isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 
 var myContacts = [];
 var groupMembers = [];
@@ -389,7 +390,8 @@ app
   if( !$( this ).hasClass( 'active' ) || $( this ).find('.channel-badge').hasClass('visible') ){
     selectChat( $( this ) );
   }
-  //setTimeout(function(){ $( '.message-container' ).scrollTop(9999999); }, 100);
+  $('.chat-search input').val('');
+  filterElements( '' );
 
 })
 
@@ -425,6 +427,8 @@ app
 .on( 'click' , '.contactDom' , function(){
 
   selectContact( $( this ) );
+  $('.chat-search input').val('');
+  filterElements( '' );
 
 })
 
@@ -1949,12 +1953,7 @@ var loadMoreMsgs = function(){
 
     });
 
-    /*if ( firstMsg[0] && messages.length > 0) {
-      //msgContainer.scrollTop( firstMsg[0].offsetTop - 4 );
-    }*/
-
     loadingMsgs = false;
-
 
   });
 
@@ -2405,6 +2404,11 @@ var printMessage = function( msg , sender , time , noAnimate , byScroll , checke
   var now = new Date();
   var yesterday = new Date();
   yesterday.setDate( now.getDate() - 1 );
+  var lastMsg = message.prev().not('.wz-prototype');
+  if (lastMsg.hasClass('wz-scroll-bar')) { 
+    lastMsg = lastMsg.prev().not('.wz-prototype');
+  }
+  var nextMsg = message.next().not('.wz-prototype');
 
   var separator = separatorPrototype.clone();
   separator.removeClass( 'wz-prototype' ).addClass( 'separatorDom' );
@@ -2416,95 +2420,70 @@ var printMessage = function( msg , sender , time , noAnimate , byScroll , checke
 
   }
 
-  if( !byScroll && currentDate && ( date.getDate() > currentDate.getDate() || date.getMonth() > currentDate.getMonth() || date.getFullYear() > currentDate.getFullYear() )){
+  if( !byScroll && !lastMsg.hasClass('separatorDom') && ( lastMsg.length === 0 || !lastMsg.data('date') || date.getFullYear() != lastMsg.data('date').getFullYear() || date.getMonth() != lastMsg.data('date').getMonth() || date.getDate() != lastMsg.data('date').getDate()) ){
 
-    if ( currentDate.getFullYear() == yesterday.getFullYear() && currentDate.getMonth() == yesterday.getMonth() && currentDate.getDate() == yesterday.getDate() ) {
+    if ( now.getFullYear() == date.getFullYear() && now.getMonth() == date.getMonth() && now.getDate() == date.getDate() ) {
       separator.find( 'span' ).text( 'Hoy' );
     }else{
-
-      /*var tempDate = currentDate;
-      tempDate.setDate( currentDate.getDate() + 1 );*/
-      separator.find( 'span' ).text( timeElapsed( currentDate ) );
-
+      separator.find( 'span' ).text( timeElapsed( date ) );
     }
-
     message.before( separator );
-    //console.log('insertsep before',separator.find('span').text());
 
-  }else if( byScroll && currentDate && ( date.getDate() < currentDate.getDate() || date.getMonth() < currentDate.getMonth() || date.getFullYear() < currentDate.getFullYear() )){
+  }else if( byScroll && !nextMsg.hasClass('separatorDom') && ( date.getFullYear() != nextMsg.data('date').getFullYear() || date.getMonth() != nextMsg.data('date').getMonth() || date.getDate() != nextMsg.data('date').getDate()) ){
 
-    separator.find( 'span' ).text( timeElapsed( currentDate ) );
-    message.before( separator );
-    //console.log('insertsep before',separator.find('span').text());
-
-  }
-
-  /*if ( !byScroll && currentDate && ( date.getFullYear() != now.getFullYear() || date.getMonth() != now.getMonth() || date.getDate() != now.getDate() ) ) {
-
-    var sep = separatorPrototype.clone();
-    sep.removeClass( 'wz-prototype' ).addClass( 'separatorDom final-separator' );
-
-    if ( date.getFullYear() == yesterday.getFullYear() && date.getMonth() == yesterday.getMonth() && date.getDate() == yesterday.getDate() ) {
-      sep.find( 'span' ).text( 'Ayer' );
+    if ( now.getFullYear() == nextMsg.data('date').getFullYear() && now.getMonth() == nextMsg.data('date').getMonth() && now.getDate() == nextMsg.data('date').getDate() ) {
+      separator.find( 'span' ).text( 'Hoy' );
     }else{
-      sep.find( 'span' ).text( timeElapsed( currentDate ) );
+      separator.find( 'span' ).text( dateToString( nextMsg.data('date') ) );
     }
-
-    message.after( sep );
+    message.after( separator );
 
   }
 
-  if ( message.prev().hasClass( 'final-separator' ) ) {
-    message.prev().remove();
-  }else if ( message.prev().prev().hasClass( 'final-separator' ) ) {
-    message.prev().prev().remove();
-  }*/
+  if( !byScroll ){
 
-  //console.log( noAnimate, sender, checkScrollBottom() );
-  if( lastReadId === msg.id && listing ){
+     if( lastReadId === msg.id && listing ){
 
-    msgContainer.scrollTop( message[0].offsetTop + message.outerHeight(true) );
-    heightToScroll = message.outerHeight(true); //Activo el modo scroll
+      msgContainer.scrollTop( message[0].offsetTop + message.outerHeight(true) );
+      heightToScroll = message.outerHeight(true); //Activo el modo scroll
 
-  }else if( heightToScroll !== -1 && listing ){
+    }else if( heightToScroll !== -1 && listing ){
 
-    if( message.prev().data('id') === lastReadId && sender != null ){
+      if( message.prev().data('id') === lastReadId && sender != null ){
 
-      var sep = separatorPrototype.clone();
-      sep.removeClass( 'wz-prototype' ).addClass( 'unread-separator' );
-      sep.find( 'span' ).text( 'Mensajes sin leer' );
-      message.before( sep );
-      heightToScroll += sep.outerHeight();
+        var sep = separatorPrototype.clone();
+        sep.removeClass( 'wz-prototype' ).addClass( 'unread-separator' );
+        sep.find( 'span' ).text( 'Mensajes sin leer' );
+        message.before( sep );
+        heightToScroll += sep.outerHeight();
 
+      }
+
+      //console.log( heightToScroll + message.outerHeight(true), app.height() );
+      if( ( heightToScroll + message.outerHeight(true) ) < app.height() ){
+
+        heightToScroll += message.outerHeight(true);
+        msgContainer.scrollTop( message[0].offsetTop );
+
+      }else{
+        heightToScroll = -1; //Desactivamos para mejorar el rendimiento
+      }
+
+    }else if( !noAnimate && ( sender == null || checkScrollBottom() ) ){
+      msgContainer.stop().clearQueue().animate( { scrollTop : message[0].offsetTop }, 400  );
+    }else if( !noAnimate && sender != null && !checkScrollBottom() && !checked ){
+      showGoBottom( true );
     }
 
-    //console.log( heightToScroll + message.outerHeight(true), app.height() );
-    if( ( heightToScroll + message.outerHeight(true) ) < app.height() ){
-
-      heightToScroll += message.outerHeight(true);
-      msgContainer.scrollTop( message[0].offsetTop );
-
-    }else{
-      heightToScroll = -1; //Desactivamos para mejorar el rendimiento
-    }
-
-  }else if( !noAnimate && ( sender == null || checkScrollBottom() ) ){
-    msgContainer.stop().clearQueue().animate( { scrollTop : message[0].offsetTop }, 400  );
-  }else if( !noAnimate && sender != null && !checkScrollBottom() && !checked ){
-    showGoBottom( true );
-  }
-
-  /*if(animate){
-    msgContainer.stop().clearQueue().animate( { scrollTop : message[0].offsetTop }, 400  );
   }else{
-    msgContainer.scrollTop( message[0].offsetTop );
-  }*/
+    if (isFirefox) {
+      msgContainer.scrollTop( msgContainer.scrollTop() + 63 );
+    }
+  }
 
   if ( checked ) {
     message.addClass( 'readed' );
   }
-
-
 
   currentDate = date;
 
@@ -3079,6 +3058,24 @@ var timeElapsed = function( lastTime ){
   }
 
   return message;
+
+}
+
+var dateToString = function( date ){
+
+  var day = date.getDate();
+  var month = date.getMonth();
+  var year = date.getFullYear().toString().substring( 2 , 4 );
+
+  if(day<10) {
+    day='0'+day
+  }
+
+  if(month<10) {
+    month='0'+month
+  }
+
+  return day + '/' + month + '/' + year;
 
 }
 
