@@ -19,7 +19,8 @@
     "days" : "days",
     "months" : "months",
     "years" : "años",
-    "noChat" : "There is no open chat",
+    "noChat" : "Select a chat to begin",
+    "clickChat" : "You can start a new conversation in Contacts",
     "back"  : "Back",
     "edit"  : "Edit",
     "info"  : "INFORMATION",
@@ -28,6 +29,8 @@
     "deleteExit" : "Delete and exit",
     "newGroupTitle"  : "New group chat",
     "search"  : "Search here...",
+    "searchContacts" :  "Search contacts...",
+    "nameGroup"   : "Group name",
     "cancel"  : "Cancel",
     "save"  : "Save",
     "groupName" : "Group name",
@@ -50,6 +53,7 @@
     "white" : "White",
     "is" : "is",
     "cantSend" : "You have disconnected. Please check your internet connection and try again.",
+    "addPeople" : "Add people",
 
     "invite" : {
       "title" : "Invite your friends",
