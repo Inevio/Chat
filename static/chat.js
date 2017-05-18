@@ -2994,14 +2994,7 @@ var setTexts = function(){
   $( '.send-txt' ).text(lang.send);
   $( '.new-group-button span' ).text(lang.newGroup);
   $( '.no-chat-txt' ).text(lang.noChat);
-  $( '.click-chat-txt' ).text(lang.clickChat + "\"Contacts\"");
-  $( '.click-chat-txt' ).text(lang.clickChat + "\"Contactos\"");
-  if($( '.click-chat-txt' ).text().includes("Contactos")){
-    $( '.click-chat-txt' ).text("Puedes abrir una nueva conversación en \"Contactos\"");
-  }else{
-    $( '.click-chat-txt' ).text("You can start a new conversation in \"Contacts\"");
-  }
-
+  $( '.click-chat-txt' ).text(lang.clickChat);
   $( '.group-menu .back span' ).text(lang.back);
   $( '.group-menu .edit' ).text(lang.edit);
   $( '.group-info .title' ).text(lang.info);
