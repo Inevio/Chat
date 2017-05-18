@@ -49,6 +49,7 @@
     "dark" : "Oscuro",
     "white" : "Claro",
     "is" : "está",
+    "cantSend" : "Estás desconectado de internet. Comprueba tu conexión e intentalo de nuevo.",
 
     "invite" : {
       "title" : "No tienes contactos",

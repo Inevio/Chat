@@ -26,7 +26,8 @@ var lastReadId        = -1;
 var heightToScroll    = -1;
 var unreadTimeOut;
 var loadingChat       = false;
-var animationEffect  = 'cubic-bezier(.4,0,.2,1)';
+var animationEffect   = 'cubic-bezier(.4,0,.2,1)';
+var socketWorking     = true;
 
 // Local Variables
 var app               = $( this );
@@ -138,6 +139,7 @@ api.system.on( 'connect' ,function(){
   /*getContacts();
   getChats();*/
 
+  socketWorking = true;
   console.log($( '.chatDom.active' ).data());
   console.log('connect',mode);
   if( mode === MODE_CONVERSATION ){
@@ -150,6 +152,7 @@ api.system.on( 'connect' ,function(){
 
 api.system.on( 'disconnect' ,function(){
   console.log('disconnect');
+  socketWorking = false;
 });
 // END SERVER EVENTS
 
@@ -171,9 +174,23 @@ contactsButton.on( 'click' , function(){
 });
 
 sendButton.on( 'click' , function(){
-  msgInput.css('height','24px');
-  msgInput.focus();
-  sendMessage();
+
+  if( socketWorking ){
+
+    msgInput.css('height','24px');
+    msgInput.focus();
+    sendMessage();
+
+  }else{
+
+    if( mobile ){
+      navigator.notification.alert( '', function(){},lang.cantSend );
+    }else{
+      alert( lang.cantSend );
+    }
+
+  }
+
 });
 
 searchBoxDelete.on( 'click' , function(){
