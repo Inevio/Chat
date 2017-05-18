@@ -29,6 +29,7 @@ var unreadTimeOut;
 var loadingChat       = false;
 var animationEffect   = 'cubic-bezier(.4,0,.2,1)';
 var socketWorking     = true;
+var language          = null;
 
 // Local Variables
 var app               = $( this );
@@ -50,7 +51,9 @@ var searchBox         = $( '.chat-search input' );
 var searchBoxDelete   = $( '.chat-search .delete-content' );
 var closeChatButton   = $( '.close-coversation' );
 var newGroupButton    = $( '.new-group-button, .new-group' );
+var navbar            = $(  '.ui-navbar');
 var groupMenu         = $( '.group-menu' );
+var nameGroup         = $(  '.group-name');
 var backGroup         = $( '.group-menu .back' );
 var memberPrototype   = $( '.member.wz-prototype' );
 var memberList        = $( '.member-list' );
@@ -221,14 +224,14 @@ newGroupButton.on( 'click' , function(){
 backGroup.on( 'click' , function(){
 
   groupMenu.removeClass( 'visible' );
-  removeGroup.removeClass( 'visible' );
+  //removeGroup.removeClass( 'visible' );
 
 });
 
 cancelNewGroup.on( 'click' , function(){
 
   groupMenu.removeClass( 'visible' );
-  removeGroup.removeClass( 'visible' );
+  //removeGroup.removeClass( 'visible' );
 
 });
 
@@ -432,7 +435,7 @@ app
 
 })
 
-.on( 'click' , '.group-header .edit, .edit-button' , function(){
+.on( 'click' , '.group-header .edit, .edit-button, .addPeople' , function(){
 
   editGroupMode( $( '.chatDom.active' ).data( 'isGroup' ) );
 
@@ -473,7 +476,7 @@ app
       channel.destroy();
 
       groupMenu.removeClass( 'visible' );
-      removeGroup.removeClass( 'visible' );
+      //removeGroup.removeClass( 'visible' );
       $( '.chatDom-' + channel.id ).remove();
       hideContent();
 
@@ -496,7 +499,7 @@ app
       if ( error ) { console.log('ERROR: ', error ); }
 
       groupMenu.removeClass( 'visible' );
-      removeGroup.removeClass( 'visible' );
+      //removeGroup.removeClass( 'visible' );
       $( '.chatDom.active' ).remove();
       hideContent();
 
@@ -914,12 +917,15 @@ var changeTab = function( tab ){
       chatButton.addClass('active');
       contactTab.removeClass( 'visible' );
       chatTab.addClass( 'visible' );
+      navbar.addClass('inChats');
       colorChange.addClass( 'visible' );
       groupMenu.removeClass( 'visible' );
-      removeGroup.removeClass( 'visible' );
+      //removeGroup.removeClass( 'visible' );
       if( mobile ){
         $( '.ui-header-mobile .window-title' ).text(lang.chats);
-      }else{
+        newGroupButton.hide();
+      }
+      else{
         newGroupButton.removeClass( 'visible' );
       }
 
@@ -934,10 +940,13 @@ var changeTab = function( tab ){
       contactsButton.addClass( 'active' );
       chatTab.removeClass( 'visible' );
       contactTab.addClass( 'visible' );
+      navbar.removeClass('inChats');
+      colorChange.addClass( 'visible');
       newGroupButton.addClass( 'visible' );
-      colorChange.removeClass( 'visible' );
+
       if( mobile ){
         $( '.ui-header-mobile .window-title' ).text(lang.contacts);
+        newGroupButton.hide();
       }
 
       break;
@@ -1026,7 +1035,7 @@ var createNewGroup = function(){
                 channel.addUser( contact.id , function(){
 
                   groupMenu.removeClass( 'visible' );
-                  removeGroup.removeClass( 'visible' );
+                  //removeGroup.removeClass( 'visible' );
                   getChats( function(){
 
                     if( mobile ){
@@ -1130,7 +1139,7 @@ var editGroup = function(){
         if ( toAdd.length === 0 ) {
 
           groupMenu.removeClass( 'visible' );
-          removeGroup.removeClass( 'visible' );
+          //removeGroup.removeClass( 'visible' );
           if( mobile ){
             $('.chatDom.active').remove();
           }
@@ -1158,7 +1167,7 @@ var editGroup = function(){
             channel.addUser( parseInt(user) , function(){
 
               groupMenu.removeClass( 'visible' );
-              removeGroup.removeClass( 'visible' );
+              //removeGroup.removeClass( 'visible' );
               $('.chatDom.active').remove();
               getChats( function(){
 
@@ -1205,10 +1214,11 @@ var editGroupMode = function( groupName ){
 
   }
 
-  $( '.group-menu .visible' ).removeClass( 'visible' );
-  groupMenu.addClass( 'visible' ).addClass( 'group-edit' );
-  $( '.group-edit' ).addClass( 'visible' );
+  //$( '.group-menu .visible' ).removeClass( 'visible' );
+  groupMenu.removeClass('group-view').removeClass('group-new').addClass('group-edit');
 
+  //$( '.group-edit' ).addClass( 'visible' );
+  $( '.group-name editMode' ).text(lang.nameGroup);
   $( '.group-name-input input' ).val( groupName );
 
   $( '.memberDom' ).remove();
@@ -1557,7 +1567,7 @@ var goBack = function(){
 
         mode = prevMode;
         groupMenu.removeClass( 'visible' );
-        removeGroup.removeClass( 'visible' );
+        //removeGroup.removeClass( 'visible' );
 
       });
 
@@ -1625,6 +1635,26 @@ var hideContent = function(){
 var hideGoBottom = function(){
   $('.go-bottom').removeClass('active unread');
   $('.unread-separator').remove();
+};
+
+var resetChatsClass = function(){
+
+  groupMenu.find('.group-view').removeClass('group-view');
+  groupMenu.find('.group-edit').removeClass('group-edit');
+  groupMenu.find('.group-new').removeClass('group-new');
+  $('.addPeople').hide();
+  $('.edit').hide();
+}
+
+var getLanguage = function(){
+
+  api.config.getLanguages( function( error, languages, used ){
+      if( used.code === "es" || used.code === "es-es" ){
+        language = "es";
+      }else if( used.code === "en" || used.code === "en-us" ){
+        language = "en";
+      }
+  });
 }
 
 var initChat = function(){
@@ -1633,7 +1663,7 @@ var initChat = function(){
   setTimeout( function(){
 
     me = api.system.user();
-
+    //getLanguage();
     setTexts();
     setMobile();
     checkTab();
@@ -1645,6 +1675,8 @@ var initChat = function(){
     }
 
     msgInput.textareaAutoSize();
+
+    resetChatsClass();
 
   }, 0 )
 
@@ -2132,12 +2164,15 @@ var newGroup = function(){
   // Make it visible
   if( mode != MODE_ANIMATING ){
 
-    $( '.group-menu .visible' ).removeClass( 'visible' );
-    groupMenu.addClass( 'visible' ).addClass( 'group-new' ).removeClass( 'group-edit' );
-    $( '.group-new' ).addClass( 'visible' );
+    nameGroup.text(lang.nameGroup);
+
+    //$( '.group-menu .visible' ).removeClass( 'visible' );
+    groupMenu.removeClass('group-edit').removeClass('group-view');
+    groupMenu.addClass( 'visible' ).addClass( 'group-new' );
+    //$( '.group-new' ).addClass( 'visible' );
     $( '.group-name-input input' ).val( '' );
     $( '.search-members input' ).val( '' );
-    $( '.group-members-txt' ).hide();
+    //$( '.group-members-txt' ).hide();
 
     if( mobile ){
 
@@ -2405,7 +2440,7 @@ var printMessage = function( msg , sender , time , noAnimate , byScroll , checke
   var yesterday = new Date();
   yesterday.setDate( now.getDate() - 1 );
   var lastMsg = message.prev().not('.wz-prototype');
-  if (lastMsg.hasClass('wz-scroll-bar')) { 
+  if (lastMsg.hasClass('wz-scroll-bar')) {
     lastMsg = lastMsg.prev().not('.wz-prototype');
   }
   var nextMsg = message.next().not('.wz-prototype');
@@ -2878,7 +2913,7 @@ var setGroupAvatar = function( groupName , avatar ){
   avatar.addClass('group').css({
     'background-image'  : 'none',
     'background-color'  : colorPalette[colorId].light,
-    'border'            : '2px solid ' + colorPalette[colorId].border,
+    'border-color'      : colorPalette[colorId].border,
     'border-style'      : 'solid'
   });
   avatar.find( 'span' ).css('color', colorPalette[colorId].text);
@@ -2888,6 +2923,9 @@ var setGroupAvatar = function( groupName , avatar ){
 var setMobile = function(){
 
   if( mobile ){
+
+    $('.inChats').removeClass('inChats');
+    newGroupButton.hide();
 
     $('.conversation-send-desktop').hide();
 
@@ -2912,7 +2950,7 @@ var setMobile = function(){
 var setRemoveButton = function(){
 
   var channel = $( '.chatDom.active' ).data( 'channel' );
-  removeGroup.addClass( 'visible' );
+  //removeGroup.addClass( 'visible' );
   removeGroup.off( 'click' );
 
 
@@ -2930,14 +2968,14 @@ var setRemoveButton = function(){
       removeGroup.find( 'span' ).text(lang.deleteExit);
       adminMode = true;
       $( '.group-header .edit' ).addClass('visible');
-      removeGroup.addClass( 'removeGroup' );
+      //removeGroup.addClass( 'removeGroup' );
 
     }else{
 
       adminMode = false;
       removeGroup.find( 'span' ).text(lang.exitGroup);
       $( '.group-header .edit' ).removeClass('visible');
-      removeGroup.addClass( 'exitGroup' );
+      //removeGroup.addClass( 'exitGroup' );
 
     }
 
@@ -2950,19 +2988,29 @@ var setTexts = function(){
   $( '.chat-tab-selector span' ).text(lang.chats);
   $( '.contact-tab-selector span' ).text(lang.contacts);
   msgInput.attr('placeholder', lang.msg);
-  $( '.chat-search input' ).attr('placeholder', lang.search);;
+  $( '.chat-search input' ).attr('placeholder', lang.search);
+  $(  '.group-members input').attr('placeholder', lang.searchContacts);
   $( '.close-coversation' ).text(lang.close);
   $( '.send-txt' ).text(lang.send);
   $( '.new-group-button span' ).text(lang.newGroup);
   $( '.no-chat-txt' ).text(lang.noChat);
+  $( '.click-chat-txt' ).text(lang.clickChat + "\"Contacts\"");
+  $( '.click-chat-txt' ).text(lang.clickChat + "\"Contactos\"");
+  if($( '.click-chat-txt' ).text().includes("Contactos")){
+    $( '.click-chat-txt' ).text("Puedes abrir una nueva conversación en \"Contactos\"");
+  }else{
+    $( '.click-chat-txt' ).text("You can start a new conversation in \"Contacts\"");
+  }
+
   $( '.group-menu .back span' ).text(lang.back);
   $( '.group-menu .edit' ).text(lang.edit);
   $( '.group-info .title' ).text(lang.info);
-  $( '.group-members .title' ).text(lang.MEMBERS);
-  $( '.group-create-txt' ).text(lang.newGroupTitle);
+  $( '.group-members .title' ).text(lang.members);
   $( '.save-group span' ).text(lang.save);
   $( '.cancel-group span' ).text(lang.cancel);
   $( '.group-name-input input' ).attr('placeholder', lang.groupName);
+  $( '.group-name').text(lang.groupName);
+  $( '.groupName').text(lang.nameGroup);
   $( '.app-color .white' ).text(lang.white);
   $( '.app-color .dark' ).text(lang.dark);
 
@@ -2971,6 +3019,7 @@ var setTexts = function(){
   $('.invite h3').text( lang.invite.email );
   $('.invite .add').text( lang.invite.add );
   $('.invite .next').text( lang.invite.send );
+  $('.addPeople span').text( lang.addPeople);
 
 }
 
@@ -3173,9 +3222,9 @@ var viewGroup = function(){
   if( mode != MODE_ANIMATING ){
 
     // Make it visible
-    $( '.group-menu .visible' ).removeClass( 'visible' );
-    groupMenu.addClass( 'visible' ).addClass( 'group-view' );
-    $( '.group-view' ).addClass( 'visible' );
+    //$( '.group-menu .visible' ).removeClass( 'visible' );
+    groupMenu.addClass( 'visible' ).removeClass('group-new').removeClass('group-edit').addClass( 'group-view' );
+    //$( '.group-view' ).addClass( 'visible' );
 
     if( mobile ){
 
@@ -3195,6 +3244,9 @@ var viewGroup = function(){
         'x': '0'
       },animationDuration, animationEffect);
 
+    }
+    if(!mobile){
+      $('.hideBtn').removeClass('visible');
     }
 
     $( '.memberDom' ).remove();
@@ -3228,8 +3280,10 @@ var viewGroup = function(){
 
         if( admin == myContactID ){
           $('.info-header .edit-button').show();
+          $('.addPeople').show();
         }else{
           $('.info-header .edit-button').hide();
+          $('.addPeople').hide();
         }
 
         groupMembers = [];

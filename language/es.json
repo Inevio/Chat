@@ -1,4 +1,3 @@
-
 {
 
     "emptyList" : "No tienes contactos todavía, abre Contactos y búscalos.",
@@ -19,7 +18,8 @@
     "days" : "días",
     "months"  : "meses",
     "years" : "años",
-    "noChat" : "No tienes ningún chat abierto",
+    "noChat" : "Abre un chat para comenzar",
+    "clickChat" : "Puedes abrir una nueva conversación en Contactos",
     "back"  : "Volver",
     "edit"  : "Editar",
     "info"  : "INFORMACIÓN",
@@ -28,6 +28,8 @@
     "deleteExit" : "Eliminar y salir",
     "newGroupTitle"  : "Creación nuevo chat grupal",
     "search"  : "Busca aquí...",
+    "searchContacts" :  "Buscar contactos...",
+    "nameGroup"   : "Nombre del grupo",
     "cancel"  : "Cancelar",
     "save"  : "Guardar",
     "groupName" : "Nombre del grupo",
@@ -50,7 +52,7 @@
     "white" : "Claro",
     "is" : "está",
     "cantSend" : "Estás desconectado de internet. Comprueba tu conexión e intentalo de nuevo.",
-
+    "addPeople" : "Añadir personas",
     "invite" : {
       "title" : "No tienes contactos",
       "subtitle" : "Actualmente no tienes ningún contacto en tu cuenta con el que iniciar una conversación.<br /><br />Busca a tus compañeros y amigos a través de la app de <b>Comunidad</b> o invita a quien quieras a unirse a horbito contigo:",
