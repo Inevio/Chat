@@ -49,6 +49,7 @@
     "dark" : "Dark",
     "white" : "White",
     "is" : "is",
+    "cantSend" : "You have disconnected. Please check your internet connection and try again.",
 
     "invite" : {
       "title" : "Invite your friends",
