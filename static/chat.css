@@ -809,14 +809,13 @@ input {
     position: absolute;
     top: 50px;
     left: 318px;
-    background-size: 1630px 1597px;
+    background-size: 1484px 1455px;
     background-image: url('@static/pattern.png');
     background-position: bottom left;
 }
 
 .dark.chat .ui-content {
     background-image: url('@static/pattern-dark.png');
-    background-size: 1630px 1597px;
     width: ~'calc(100% - 318px)';
     height: ~'calc(100% - 50px)';
     border-radius: 0 0 6px 0;
@@ -826,12 +825,12 @@ input {
 
 @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi) {
     .chat .ui-content {
-        babackground-size: 1630px 1597px;
+
         background-image: url('@static/pattern.png');
     }
     .dark.chat .ui-content {
         background-image: url('@static/pattern-dark.png');
-        babackground-size: 1630px 1597px;
+
     }
 }
 
