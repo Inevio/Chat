@@ -18,7 +18,6 @@ var lastMsg;
 var warnWritingTimeOut = false;
 var listenWritingTimeOut = false;
 var loadingMsgs = false;
-var currentDate;
 var firstLoad;
 var lastMessageReceived;
 var adminMode         = false;
@@ -30,6 +29,7 @@ var loadingChat       = false;
 var animationEffect   = 'cubic-bezier(.4,0,.2,1)';
 var socketWorking     = true;
 var language          = null;
+var messageScrollBlock;
 
 // Local Variables
 var app               = $( this );
@@ -1963,6 +1963,8 @@ var loadMoreMsgs = function(){
   var channel = $( '.active.chatDom' ).data( 'channel' );
   var users = $( '.active.chatDom' ).data( 'user' );
 
+  messageScrollBlock = firstMsg;
+
   wql.getMessagesFrom( [ channel.id , firstMsg.data( 'id' ) ] , function( error , messages ){
 
     $.each( messages , function( i, msg ){
@@ -2448,13 +2450,6 @@ var printMessage = function( msg , sender , time , noAnimate , byScroll , checke
   var separator = separatorPrototype.clone();
   separator.removeClass( 'wz-prototype' ).addClass( 'separatorDom' );
 
-  if ( byScroll && firstLoad ) {
-
-    currentDate = $( '.messageDom' ).eq(0).data( 'date' );
-    firstLoad = false;
-
-  }
-
   if( !byScroll && !lastMsg.hasClass('separatorDom') && ( lastMsg.length === 0 || !lastMsg.data('date') || date.getFullYear() != lastMsg.data('date').getFullYear() || date.getMonth() != lastMsg.data('date').getMonth() || date.getDate() != lastMsg.data('date').getDate()) ){
 
     if ( now.getFullYear() == date.getFullYear() && now.getMonth() == date.getMonth() && now.getDate() == date.getDate() ) {
@@ -2511,16 +2506,14 @@ var printMessage = function( msg , sender , time , noAnimate , byScroll , checke
     }
 
   }else{
-    if (isFirefox) {
-      msgContainer.scrollTop( msgContainer.scrollTop() + 63 );
-    }
+    //bloqueo de scroll
+    console.log( messageScrollBlock );
+    msgContainer.scrollTop(messageScrollBlock.offset().top - msgContainer.offset().top + msgContainer.scrollTop());
   }
 
   if ( checked ) {
     message.addClass( 'readed' );
   }
-
-  currentDate = date;
 
 }
 
@@ -2552,7 +2545,6 @@ var selectChat = function( chat ){
 
       groupMenu.removeClass( 'visible' );
       removeGroup.removeClass( 'visible' );
-      currentDate = null;
 
       var channel = chat.data( 'channel' );
       var contact = chat.data( 'user' );
