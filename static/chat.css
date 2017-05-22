@@ -650,14 +650,9 @@ input {
     display: none;
 }
 
-.active .channel-badge span {
-    background-color: #fff !important;
-    color: @blueHorbito !important;
-}
-
-.dark .active .channel-badge span {
-    background-color: @redHorbito !important;
-    color: #fff !important;
+.active .channel-badge span , .dark .active .channel-badge span  {
+    background-color: @redHorbito;
+    color: white;
 }
 
 .channel .channel-badge span {
