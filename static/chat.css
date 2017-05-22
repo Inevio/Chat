@@ -493,7 +493,7 @@ input {
 .channel.active .highlight-area {
     background-color: @blueHorbito !important;
     z-index: 2;
-    * {
+    .last-message, .channel-name, .channel-last-time {
         color: white !important;
     }
 }
@@ -501,8 +501,8 @@ input {
 .contact.active .highlight-area {
     background-color: @blueHorbito !important;
     z-index: 2;
-    * {
-        color: white !important;
+    .last-message, .channel-name, .channel-last-time {
+        color: white;
     }
 }
 
@@ -978,14 +978,14 @@ input {
 .conversation-footer {
     float: left;
     width: 100%;
-    min-height: 49px;
+    min-height: 47px;
+    max-width: none;
     background-color: rgba( 255, 255, 255, 0.98);
     -webkit-box-shadow: inset 1px 0px 0px 0px #e5e9ea, 0 -2px transparent;
     -moz-box-shadow: inset 1px 0px 0px 0px #e5e9ea, 0 -2px transparent;
     box-shadow: inset 1px 0px 0px 0px #e5e9ea, 0 -2px transparent;
     position: absolute;
     bottom: 0;
-    max-height: 49px;
 }
 
 .dark .conversation-footer {
@@ -1055,6 +1055,9 @@ input {
     background-color: @blueHorbito;
     margin-top: 8px;
     margin-right: 8px;
+    position: absolute;
+    bottom: 7px
+    right: 0px;
 }
 
 .conversation-send:hover {
