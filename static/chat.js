@@ -573,9 +573,18 @@ app
 
   });
 
-  console.log(mails);
   api.user.inviteByMail( mails, function(error){
-    console.log(arguments);
+
+    if( error ){
+      alert(error);
+    }else{
+      api.banner()
+          .setTitle( lang.invite.invitationSentTitle )
+          .setText( lang.invite.invitationSentSubtitle )
+          .setIcon( 'https://static.horbito.com/app/14/icon.png' )
+          .render();
+    }
+
   })
 
 })
