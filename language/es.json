@@ -58,7 +58,9 @@
       "subtitle" : "Actualmente no tienes ningún contacto en tu cuenta con el que iniciar una conversación.<br /><br />Busca a tus compañeros y amigos a través de la app de <b>Comunidad</b> o invita a quien quieras a unirse a horbito contigo:",
       "email" : "Emails",
       "add" : "+ Añadir más emails",
-      "send" : "Enviar invitaciones"
+      "send" : "Enviar invitaciones",
+      "invitationSentTitle"    : "Invitaciones enviadas",
+      "invitationSentSubtitle" : "Tus invitaciones están de camino!"
     }
 
 }

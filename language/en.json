@@ -60,7 +60,9 @@
       "subtitle" : "You currently don't have any contact to start a conversation with.<br /><br />Find your coworkers and friends using the <b>Community</b> app or invite whoever you want to join horbito with you:",
       "email" : "Emails",
       "add" : "+ Add more emails",
-      "send" : "Send invitations"
+      "send" : "Send invitations",
+      "invitationSentTitle"    : "Invitations sent",
+      "invitationSentSubtitle" : "Your invitations are on their way!"
     }
 
 }
