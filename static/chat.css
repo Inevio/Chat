@@ -2600,6 +2600,7 @@ input {
         margin-right: 2px;
         padding: 8px;
         background-clip: content-box;
+        bottom: 0px;
     }
     .conversation-send-mobile figure {
         width: 16px;
