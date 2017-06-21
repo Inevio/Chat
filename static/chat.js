@@ -2926,6 +2926,9 @@ var setMobile = function(){
 
   if( mobile ){
 
+    StatusBar.backgroundColorByHexString("#2c3238");
+    StatusBar.styleLightContent();
+
     $('.inChats').removeClass('inChats');
     newGroupButton.hide();
 
