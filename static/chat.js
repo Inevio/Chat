@@ -609,154 +609,173 @@ var appendChat = function( channel , user , groupName , isWorldChannel , callbac
     chatButton.click();
   }
 
-  wql.getLastMessage( channel.id , function( error, message ){
+  asyncParallel([
 
-    console.timeEnd('getLastMessage-' + channel.id);
-    console.time('getLastRead-' + channel.id);
+    function( callback ){
 
-    wql.getLastRead( [channel.id, myContactID] , function( error , lastRead ){
+      console.time('channel-chat-'+channel.id)
+      wql.getLastMessage( channel.id , function( error, message ){
+        console.timeEnd('getLastMessage-' + channel.id);
+        callback( error, message )
+      })
 
-      console.timeEnd('getLastRead-' + channel.id);
+    },
+
+    function( callback ){
+
+      console.time('getLastRead-' + channel.id);
+      wql.getLastRead( [channel.id, myContactID] , function( error , lastRead ){
+        console.timeEnd('getLastRead-' + channel.id);
+        callback( error, lastRead )
+      })
+
+    },
+
+    function( callback ){
+
       console.time('getUnreads-' + channel.id);
-
       api.notification.count( { customIdLike : channel.id + '-%' }, function( err, counted ){
-
         console.timeEnd('getUnreads-' + channel.id);
+        callback( err, counted )
+      })
+    }
 
-        if ( err ) { console.log('ERROR: ', err ); }
+  ], function( err, res ){
 
-        var lastMsg = message[0];
+    console.timeEnd('channel-chat-'+channel.id)
 
-        var chat;
+    if ( err ) { console.log('ERROR: ', err ); }
 
-        if ( $( '.chatDom-' + channel.id ).length != 0 ) {
-          chat = $( '.chatDom-' + channel.id );
-        }else{
+    var message = res[ 0 ]
+    var lastRead = res[ 1 ]
+    var counted = res[ 2 ]
+    var lastMsg = message[0];
 
-          var chat = chatPrototype.clone();
+    var chat;
 
-          chat
-          .removeClass( 'wz-prototype' )
-          .addClass( 'chatDom' )
-          .addClass( 'chatDom-' + channel.id );
+    if ( $( '.chatDom-' + channel.id ).length != 0 ) {
+      chat = $( '.chatDom-' + channel.id );
+    }else{
 
-        }
+      var chat = chatPrototype.clone();
 
-        if ( groupName != null ) {
+      chat
+      .removeClass( 'wz-prototype' )
+      .addClass( 'chatDom' )
+      .addClass( 'chatDom-' + channel.id );
 
-          if(lastMsg != undefined){
+    }
 
-            api.user( lastMsg.sender , function( e , usr ){
+    if ( groupName != null ) {
 
-              var name = usr.name;
-              var date = new Date(lastMsg.time);
+      if(lastMsg != undefined){
 
-              chat.find( '.channel-last-time' ).text( timeElapsed( date ) );
+        api.user( lastMsg.sender , function( e , usr ){
 
-              if ( lastMsg.sender == myContactID ) {
+          var name = usr.name;
+          var date = new Date(lastMsg.time);
 
-                chat.find( '.channel-last-msg' ).html( '<i>' + lang.you + '</i>' + ': ' + lastMsg.text );
+          chat.find( '.channel-last-time' ).text( timeElapsed( date ) );
 
-              }else{
+          if ( lastMsg.sender == myContactID ) {
 
-                chat.find( '.channel-last-msg' ).html( '<i>' + name + '</i>' + ': ' + lastMsg.text );
-
-              }
-
-            });
+            chat.find( '.channel-last-msg' ).html( '<i>' + lang.you + '</i>' + ': ' + lastMsg.text );
 
           }else{
 
-            if( channel.time != null ){
-
-              var date = new Date( channel.time );
-              chat.find( '.channel-last-time' ).text( timeElapsed( date ) );
-
-            }
+            chat.find( '.channel-last-msg' ).html( '<i>' + name + '</i>' + ': ' + lastMsg.text );
 
           }
 
-          chat.find( '.channel-name' ).text( groupName );
+        });
 
-          if (isWorldChannel) {
-            chat.addClass('world-chat');
-          }
+      }else{
 
-          setGroupAvatar( groupName , chat.find( '.channel-img' ) );
+        if( channel.time != null ){
 
-        }else{
-
-          chat.find( '.channel-name' ).text( user.fullName );
-          chat.find( '.channel-img' ).css( 'background-image' , 'url(' + user.avatar.big + ')' );
-
-          if(lastMsg != undefined){
-
-            var date = new Date( lastMsg.time );
-
-            chat.find( '.channel-last-time' ).text( timeElapsed( date ) );
-
-            if ( lastMsg.sender == myContactID ) {
-
-              chat.find( '.channel-last-msg' ).html( '<i>' + lang.you + '</i>' + ': ' + lastMsg.text );
-
-            }else {
-
-              chat.find( '.channel-last-msg' ).text( lastMsg.text );
-
-            }
-
-          }
+          var date = new Date( channel.time );
+          chat.find( '.channel-last-time' ).text( timeElapsed( date ) );
 
         }
 
-        // No repeat chats already appended
-        if ( $( '.chatDom-' + channel.id ).length != 0 ) {
+      }
 
-          if( callback ){ callback(); };
-          return;
+      chat.find( '.channel-name' ).text( groupName );
 
-        }else{
+      if (isWorldChannel) {
+        chat.addClass('world-chat');
+      }
 
-          if (lastMsg) {
-            appendChatInOrder( chat , new Date( lastMsg.time ) );
-            chat
-            .data( 'time' , new Date( lastMsg.time ) );
-          }else{
+      setGroupAvatar( groupName , chat.find( '.channel-img' ) );
 
-            var date = '';
+    }else{
 
-            if( channel.time != null ){
-              date = channel.time;
-            }
+      chat.find( '.channel-name' ).text( user.fullName );
+      chat.find( '.channel-img' ).css( 'background-image' , 'url(' + user.avatar.big + ')' );
 
-            appendChatInOrder( chat , new Date(date) );
-            chat
-            .data( 'time' , new Date(date) );
+      if(lastMsg != undefined){
 
-          }
+        var date = new Date( lastMsg.time );
 
-          if( counted > 0 ) {
+        chat.find( '.channel-last-time' ).text( timeElapsed( date ) );
 
-            $('.chatDom-' + channel.id).data( 'notSeen' , counted );
-            $('.chatDom-' + channel.id).find( '.channel-badge' ).addClass('visible').find('span').text( counted )
+        if ( lastMsg.sender == myContactID ) {
 
-          }
+          chat.find( '.channel-last-msg' ).html( '<i>' + lang.you + '</i>' + ': ' + lastMsg.text );
+
+        }else {
+
+          chat.find( '.channel-last-msg' ).text( lastMsg.text );
 
         }
 
-        chat.data( 'channel' , channel );
-        chat.data( 'user' , user );
-        chat.data( 'isGroup' , groupName );
+      }
 
-        setActiveChat( chat );
+    }
 
-        if( callback ){ callback(); };
+    // No repeat chats already appended
+    if ( $( '.chatDom-' + channel.id ).length != 0 ) {
 
-      });
+      if( callback ){ callback(); };
+      return;
 
-    });
+    }else{
 
-  });
+      if (lastMsg) {
+        appendChatInOrder( chat , new Date( lastMsg.time ) );
+        chat
+        .data( 'time' , new Date( lastMsg.time ) );
+      }else{
+
+        var date = '';
+
+        if( channel.time != null ){
+          date = channel.time;
+        }
+
+        appendChatInOrder( chat , new Date(date) );
+        chat
+        .data( 'time' , new Date(date) );
+
+      }
+
+      if( counted > 0 ) {
+
+        $('.chatDom-' + channel.id).data( 'notSeen' , counted );
+        $('.chatDom-' + channel.id).find( '.channel-badge' ).addClass('visible').find('span').text( counted )
+
+      }
+
+    }
+
+    chat.data( 'channel' , channel );
+    chat.data( 'user' , user );
+    chat.data( 'isGroup' , groupName );
+
+    setActiveChat( chat );
+
+    if( callback ){ callback(); };
+  })
 
 }
 
@@ -912,6 +931,42 @@ var asyncEach = function( list, step, callback ){
 
 };
 
+var asyncParallel = function( list, callback ){
+  
+  var position = 0;
+  var closed   = false;
+  var res      = []
+  var checkEnd = function( i, error, value ){
+
+    if( closed ){
+      return;
+    }
+
+    res[ i ] = value
+    position++;
+
+    if( position === list.length || error ){
+
+      closed = true;
+
+      callback( error, res );
+
+      // Nullify
+      list = callback = position = checkEnd = closed = null;
+
+    }
+
+  };
+
+  if( !list.length ){
+    return callback();
+  }
+
+  list.forEach( function( item, i ){
+    item( checkEnd.bind( null, i ) );
+  });
+
+}
 var changeTab = function( tab ){
 
   switch(tab) {
