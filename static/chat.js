@@ -654,7 +654,13 @@ var appendChat = function( channel , user , groupName , isWorldChannel , callbac
     var message = res[ 0 ];
     var lastRead = res[ 1 ];
     var counted = res[ 2 ];
-    var lastMsg = message[0];
+    
+    var lastMsg;
+    if ( message ) {
+      lastMsg = message[0];
+    }else{
+      lastMsg = undefined;
+    }
 
     var chat;
 
@@ -950,7 +956,7 @@ var asyncParallel = function( list, callback ){
     res[ i ] = value
     position++;
 
-    if( position === list.length || error ){
+    if( position === list.length ){
 
       closed = true;
 
