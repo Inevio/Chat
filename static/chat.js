@@ -69,6 +69,7 @@ var msgContainer      = $( '.message-container' );
 var separatorPrototype = $( '.separator.wz-prototype' );
 var backButton        = $( '.back-button' );
 var myContactID       = api.system.user().id;
+var openCommunityButton = $('.open-community-button');
 
 var MAIL_REGEXP = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,4}))$/
 
@@ -333,6 +334,10 @@ desktop.on( 'message' , function( e , action , options ){
 
   checkParams( action , options );
 
+});
+
+openCommunityButton.on( 'click' , function(){
+  wz.app.openApp( 2 );
 });
 
 // END UI EVENTS
@@ -646,10 +651,16 @@ var appendChat = function( channel , user , groupName , isWorldChannel , callbac
 
     if ( err ) { console.log('ERROR: ', err ); }
 
-    var message = res[ 0 ]
-    var lastRead = res[ 1 ]
-    var counted = res[ 2 ]
-    var lastMsg = message[0];
+    var message = res[ 0 ];
+    var lastRead = res[ 1 ];
+    var counted = res[ 2 ];
+    
+    var lastMsg;
+    if ( message ) {
+      lastMsg = message[0];
+    }else{
+      lastMsg = undefined;
+    }
 
     var chat;
 
@@ -945,7 +956,7 @@ var asyncParallel = function( list, callback ){
     res[ i ] = value
     position++;
 
-    if( position === list.length || error ){
+    if( position === list.length ){
 
       closed = true;
 
@@ -1354,6 +1365,10 @@ var filterMembers = function( filter ){
 
 }
 
+var isMobile = function(){
+  return app.hasClass( 'wz-mobile-view' );
+}
+
 var getChats = function( callback ){
 
   //api.app.setBadge( 0 );
@@ -1374,7 +1389,13 @@ var getChats = function( callback ){
     if ( error ) { console.log('ERROR: ', error ); }
 
     if( !channels.length ){
-      return contactsButton.click();
+      if (!isMobile()) {
+        return contactsButton.click();
+      }else{
+        return $('.no-chat-tab-mobile').addClass('visible');
+      }
+    }else{
+      $('.no-chat-tab-mobile').removeClass('visible');
     }
 
     $.each( channels , function( i , channel ){
@@ -1508,23 +1529,6 @@ var getContacts = function(){
 
     if ( friends.length === 0 ) {
 
-      /*$( '.no-content' ).css(
-        {
-          'width' : '100%',
-          'left'   : '0'
-        }
-      );
-
-      $( '.new-group-button' ).remove();
-      searchBox.remove();
-
-      confirm( lang.noContacts , function(o){
-        if(o){
-          api.app.removeView( app );
-          api.app.openApp( 2 , function(o){} );
-        }
-      });*/
-
       if( !mobile ){
 
         if( app.hasClass('dark') ){
@@ -1532,10 +1536,14 @@ var getContacts = function(){
         }
         $('.no-contacts').addClass('active');
 
+      }else{
+        $('.no-contacts-tab-mobile').addClass('visible');
       }
 
       return;
 
+    }else{
+      $('.no-contacts-tab-mobile').removeClass('visible');
     }
 
     asyncEach( friends, function( friend, callback ){
@@ -3073,6 +3081,10 @@ var setTexts = function(){
   $('.invite .add').text( lang.invite.add );
   $('.invite .next').text( lang.invite.send );
   $('.addPeople span').text( lang.addPeople);
+
+  $('.no-chat-tab-mobile .no-chat-text').text(lang.noChatMobile);
+  $('.no-contacts-tab-mobile .no-contacts-text').text(lang.noContactsMobile);
+  $('.open-community-button span').text(lang.openCommunity);
 
 }
 
