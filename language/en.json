@@ -63,6 +63,10 @@
       "send" : "Send invitations",
       "invitationSentTitle"    : "Invitations sent",
       "invitationSentSubtitle" : "Your invitations are on their way!"
-    }
+    },
+
+    "noContactsMobile"  : "You don't have any contacts, search for your friends in Community",
+    "noChatMobile"      : "Start a new conversation from the contacts tab",
+    "openCommunity"     : "Open Community"
 
 }
