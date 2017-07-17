@@ -61,6 +61,10 @@
       "send" : "Enviar invitaciones",
       "invitationSentTitle"    : "Invitaciones enviadas",
       "invitationSentSubtitle" : "Tus invitaciones están de camino!"
-    }
+    },
+
+    "noContactsMobile"  : "No tienes contactos, busca a tus amigos en Community",
+    "noChatMobile"      : "Comienza una nueva conversación desde la pestaña de contactos",
+    "openCommunity"     : "Abrir Community"
 
 }
