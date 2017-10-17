@@ -314,7 +314,7 @@ App.prototype._ensureConversation = function( contextId, callback ){
 
 }
 
-App.prototype._fullLoad = function(){
+/*App.prototype._fullLoad = function(){
 
   // To Do -> Remove timeout
 
@@ -341,13 +341,13 @@ App.prototype._fullLoad = function(){
 
   return this
 
-}
+}*/
 
 App.prototype._isScrolledToBottom = function(){
   return this._domMessageContainer[ 0 ].scrollHeight - this._domMessageContainer[ 0 ].scrollTop === this._domMessageContainer[ 0 ].clientHeight
 }
 
-App.prototype._loadFullContactsList = function( callback ){
+/*App.prototype._loadFullContactsList = function( callback ){
 
   callback = api.tool.secureCallback( callback )
 
@@ -380,9 +380,9 @@ App.prototype._loadFullContactsList = function( callback ){
 
   }.bind( this ))
 
-}
+}*/
 
-App.prototype._loadFullConversationsList = function( callback ){
+/*App.prototype._loadFullConversationsList = function( callback ){
 
   callback = api.tool.secureCallback( callback )
 
@@ -398,7 +398,7 @@ App.prototype._loadFullConversationsList = function( callback ){
 
   }.bind( this ) )
 
-}
+}*/
 
 App.prototype._translateInterface = function(){
 
@@ -466,7 +466,7 @@ App.prototype._updateMessageAttendedUI = function( messageId, contextId ){
 }
 
 // Public methods
-App.prototype.addConversation = function( context ){
+/*App.prototype.addConversation = function( context ){
 
   if( this.conversations[ context.id ] ){
     return this
@@ -478,9 +478,9 @@ App.prototype.addConversation = function( context ){
 
   return this
 
-}
+}*/
 
-App.prototype.addContact = function( user ){
+/*App.prototype.addContact = function( user ){
 
   if( this.contacts[ user.id ] ){
     return this
@@ -492,9 +492,9 @@ App.prototype.addContact = function( user ){
 
   return this
 
-}
+}*/
 
-App.prototype.setContactConnection = function( id, connected ){
+/*App.prototype.setContactConnection = function( id, connected ){
 
   if( this.contacts[ id ] ){
     this.contacts[ id ].setConnection( connected )
@@ -502,7 +502,7 @@ App.prototype.setContactConnection = function( id, connected ){
 
   return this
 
-}
+}*/
 
 App.prototype.openConversation = function( conversation ){
 
@@ -611,7 +611,7 @@ App.prototype.updateConversationId = function( oldId, newId ){
 
 }
 
-var Contact = function( app, user ){
+/*var Contact = function( app, user ){
 
   this.app = app
   this.dom = contactPrototype.clone().removeClass('wz-prototype')
@@ -626,9 +626,9 @@ var Contact = function( app, user ){
 
   return this
 
-}
+}*/
 
-Contact.prototype.setConnection = function( value ){
+/*Contact.prototype.setConnection = function( value ){
 
   this.connected = !!value
 
@@ -642,9 +642,9 @@ Contact.prototype.setConnection = function( value ){
 
   return this
 
-}
+}*/
 
-var Conversation = function( app, context ){
+/*var Conversation = function( app, context ){
 
   this.app = app
   this.context = context
@@ -662,9 +662,9 @@ var Conversation = function( app, context ){
 
   return this
 
-}
+}*/
 
-Conversation.prototype._loadAdditionalInfo = function(){
+/*Conversation.prototype._loadAdditionalInfo = function(){
 
   this.context.getUsers( { full : false }, function( err, list ){
 
@@ -678,9 +678,9 @@ Conversation.prototype._loadAdditionalInfo = function(){
     this.updateLastMessage( list[ list.length - 1 ] )
   }.bind( this ))
 
-}
+}*/
 
-Conversation.prototype._upgradeToRealConversation = function( callback ){
+/*Conversation.prototype._upgradeToRealConversation = function( callback ){
 
   if( !( this.context instanceof FakeContext ) ){
     return callback()
@@ -703,9 +703,9 @@ Conversation.prototype._upgradeToRealConversation = function( callback ){
 
   }.bind( this ))
 
-}
+}*/
 
-Conversation.prototype.sendBuffer = function(){
+/*Conversation.prototype.sendBuffer = function(){
 
   var value = $.trim( this.app.dom.find('.conversation-input textarea').val() )
 
@@ -724,9 +724,9 @@ Conversation.prototype.sendBuffer = function(){
 
   return this
 
-}
+}*/
 
-Conversation.prototype.setOpened = function( value ){
+/*Conversation.prototype.setOpened = function( value ){
 
   this.opened = !!value
 
@@ -738,14 +738,14 @@ Conversation.prototype.setOpened = function( value ){
 
   return this
 
-}
+}*/
 
-Conversation.prototype.updateLastMessage = function( message ){
+/*Conversation.prototype.updateLastMessage = function( message ){
 
   this.lastMessage = message
   this.updateUI()
 
-}
+}*/
 
 Conversation.prototype.updateUI = function(){
 
@@ -774,16 +774,16 @@ Conversation.prototype.updateUI = function(){
 
 }
 
-var FakeContext = function( userId ){
+/*var FakeContext = function( userId ){
 
   this.id = --FakeContext.idCounter
   this._users = [ userId ]
 
   return this
 
-}
+}*/
 
-FakeContext.prototype.getUsers = function( options, callback ){
+/*FakeContext.prototype.getUsers = function( options, callback ){
 
   if( arguments.length === 1 ){
     callback = options
@@ -798,9 +798,9 @@ FakeContext.prototype.getUsers = function( options, callback ){
     // To Do
   }, callback )
 
-};
+};*/
 
-FakeContext.prototype.getMessages = function( options, callback ){
+/*FakeContext.prototype.getMessages = function( options, callback ){
 
   if( arguments.length === 1 ){
     callback = options
@@ -809,7 +809,7 @@ FakeContext.prototype.getMessages = function( options, callback ){
 
   callback( null, [] )
 
-}
+}*/
 
 FakeContext.idCounter = 0
 
