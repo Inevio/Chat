@@ -198,7 +198,7 @@ App.prototype._appendMessage = function( message ){
 
 }
 
-App.prototype._bindEvents = function(){
+/*App.prototype._bindEvents = function(){
 
   var that = this
 
@@ -254,7 +254,7 @@ App.prototype._bindEvents = function(){
     that._updateMessageAttendedUI( comMessageId, comContextId )
   })
 
-}
+}*/
 
 App.prototype._changeMainAreaMode = function( value ){
 
@@ -400,7 +400,7 @@ App.prototype._isScrolledToBottom = function(){
 
 }*/
 
-App.prototype._translateInterface = function(){
+/*App.prototype._translateInterface = function(){
 
   $('.addPeople span', this.dom).text( lang.addPeople);
   $('.app-color .dark', this.dom).text(lang.dark);
@@ -430,7 +430,7 @@ App.prototype._translateInterface = function(){
   $('.save-group span', this.dom).text(lang.save);
   $('.send-txt', this.dom).text(lang.send);
 
-}
+}*/
 
 App.prototype._updateAllConversationsUI = function(){
 
