@@ -1060,6 +1060,9 @@ input {
     right: 0px;
 }
 
+.conversation-send-mobile{
+    display: none;
+}
 
 .conversation-send:hover {
     background-color: @blueHorbitoHover;
@@ -1086,6 +1089,11 @@ input {
     left: 318px;
     background: rgba(255, 255, 255, 1);
     border-left: 1px solid rgba(229, 233, 234, .9);
+    display: none;
+
+    &.visible{
+        display: block;
+    }
 }
 
 .dark .no-content {
@@ -2593,6 +2601,7 @@ input {
         display: none;
     }
     .conversation-send-mobile {
+        display: block;
         width: 34px;
         height: 34px;
         border-radius: 50%;
