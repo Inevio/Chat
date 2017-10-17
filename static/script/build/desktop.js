@@ -1,5 +1,10 @@
-class Model(){}
+var view = 1
 
-var model = new Model()
+var model = ( function( view ){
+  class Model(){}
+
+  return new Model()
+
+})( view )
+
 class View(){}
-class Controller(){}
