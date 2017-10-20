@@ -81,11 +81,24 @@ var model = ( function( view ){
 
   	constructor( view ){
 
+  		this.view = view;
   	  this.openedChat
 		  this.contacts = {}
 		  this.conversations = {}
 
   	}
+
+		_changeSidebarMode( value ){
+
+		  if( this._sidebarMode === value ){
+		    return
+		  }
+
+		  this._sidebarMode = value
+
+		  view.changeSidebarMode( value )
+
+		}
 
   	_loadFullContactList( callback ){
 
@@ -115,7 +128,7 @@ var model = ( function( view ){
 		      this.setContactConnection( userId, true )
 		    }.bind( this ))
 
-		    this._updateAllConversationsUI()
+		    //this._updateAllConversationsUI()
 		    callback( null, res )
 
 		  }.bind( this ))
@@ -168,30 +181,28 @@ var model = ( function( view ){
 
 		}
 
-		fullLoad( callback ){
+		fullLoad(){
 
 		  // To Do -> Remove timeout
-		  callback = api.tool.secureCallback( callback )
 
 		  async.parallel({
 
-		    contacts : this._loadFullContactsList.bind(this),
+		    contacts : this._loadFullContactList.bind(this),
 		    conversations : this._loadFullConversationsList.bind(this)
 
 		  }, function( err, res ){
 
 		    if( err ){
-		    	return callback(err);
+		    	return console.log( err );
 		    }
 
-		    if( this._sidebarMode !== App.SIDEBAR_NULL ){
+		    console.log(this);
+		    if( this._sidebarMode !== this.SIDEBAR_NULL ){
 		      return
 		    }if( res.conversations.length ){
-		      callback( null, App.SIDEBAR_CONVERSATIONS );
-		      //this._changeSidebarMode( App.SIDEBAR_CONVERSATIONS )
+		      this._changeSidebarMode( this.SIDEBAR_CONVERSATIONS )
 		    }else if( res.contacts.contacts.length ){
-		      callback( null, App.SIDEBAR_CONTACTS );
-		      //this._changeSidebarMode( App.SIDEBAR_CONTACTS )
+		      this._changeSidebarMode( this.SIDEBAR_CONTACTS )
 		    }else{
 		      // To Do -> Show forever alone
 		    }
@@ -210,12 +221,25 @@ var model = ( function( view ){
 
 		}
 
+		updateContactsListUI(){
+
+		  var list = []
+
+		  for( var i in this.contacts ){
+		    list.push( this.contacts[ i ] )
+		  }
+
+		  this.view.updateContactsListUI( list );
+		
+		}
+
   }
 
   class Contact{
 
-  	constructor( user ){
+  	constructor( app, user ){
 
+  		this.app = app;
   		this.user = user;
   		this.connected = false;
 
@@ -224,16 +248,8 @@ var model = ( function( view ){
   	setConnection( value ){
 
   		this.connected = !!value
-
-		  /*if( this.connected ){
-		    this.dom.addClass('conected')
-		  }else{
-		    this.dom.removeClass('connected')
-		  }*/
-
 		  //TODO Actualizar lista
-
-		  //this.app.updateContactsListUI()
+		  this.app.updateContactsListUI()
 
   	}
 
@@ -241,7 +257,7 @@ var model = ( function( view ){
 
   class Conversation{
 
-  	constructor( context ){
+  	constructor( app, context ){
 
 		  this.context = context
 		  this.users = []
@@ -252,12 +268,12 @@ var model = ( function( view ){
 		  this.name // To Do -> Default value
 
 		  // Set UI
-		  this._loadAdditionalInfo()
+		  //this._loadAdditionalInfo()
 		  //this.updateUI()
 
   	}
 
-  	_loadAdditionalInfo(){
+  	/*_loadAdditionalInfo(){
 
 		  this.context.getUsers( { full : false }, function( err, list ){
 
@@ -355,7 +371,7 @@ var model = ( function( view ){
 		  //this.dom.find('.channel-img').css( 'background-image' , 'url(' + img + ')' )
 		  //this.dom.find('.channel-last-msg').text( this.lastMessage ? this.lastMessage.data.text : '' )
 
-		}
+		}*/
 
   }
 
@@ -368,7 +384,7 @@ var model = ( function( view ){
 
   	}
 
-  	getUsers( options, callback ){
+  	/*getUsers( options, callback ){
 
 		  if( arguments.length === 1 ){
 		    callback = options
@@ -394,7 +410,7 @@ var model = ( function( view ){
 
 		  callback( null, [] )
 
-		}
+		}*/
 
   }
 
