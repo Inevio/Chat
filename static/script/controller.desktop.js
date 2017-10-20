@@ -23,20 +23,13 @@ var controller = ( function( model, view ){
       // DOM Events
       this.dom.on( 'click', '.tab-selector', function(){
 
-        /*if( $(this).hasClass('chat-tab-selector') ){
-          that._changeSidebarMode( App.SIDEBAR_CONVERSATIONS )
+        //TODO revisar valores
+        if( $(this).hasClass('chat-tab-selector') ){
+          view.changeSidebarMode( App.SIDEBAR_CONVERSATIONS )
         }else if( $(this).hasClass('contact-tab-selector') ){
-          that._changeSidebarMode( App.SIDEBAR_CONTACTS )
-        }*/
+          view.changeSidebarMode( App.SIDEBAR_CONTACTS )
+        }
 
-      })
-
-      this._domConversationsList.on( 'click', '.channel', function(){
-        //that.openConversation( that.conversations[ parseInt( $(this).attr('data-id') ) ] )
-      })
-
-      this._domContactsList.on( 'click', '.contact', function(){
-        //that.openConversationWithContact( that.contacts[ parseInt( $(this).attr('data-id') ) ] )
       })
 
       this.dom.on( 'keypress', function( e ){
@@ -48,6 +41,14 @@ var controller = ( function( model, view ){
 
         }
 
+      })
+
+      this._domContactsList.on( 'click', '.contact', function(){
+        //that.openConversationWithContact( that.contacts[ parseInt( $(this).attr('data-id') ) ] )
+      })
+
+      this._domConversationsList.on( 'click', '.channel', function(){
+        //that.openConversation( that.conversations[ parseInt( $(this).attr('data-id') ) ] )
       })
 
       // COM API Events

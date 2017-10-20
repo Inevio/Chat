@@ -274,7 +274,7 @@ App.prototype._changeMainAreaMode = function( value ){
 
 }
 
-App.prototype._changeSidebarMode = function( value ){
+/*App.prototype._changeSidebarMode = function( value ){
 
   if( this._sidebarMode === value ){
     return
@@ -293,7 +293,7 @@ App.prototype._changeSidebarMode = function( value ){
     this.dom.find('.chat-body .contact-tab').addClass('visible')
   }
 
-}
+}*/
 
 App.prototype._cleanMessages = function(){
   this._domMessageContainer.empty()
@@ -437,6 +437,7 @@ App.prototype._updateAllConversationsUI = function(){
   for( var i in this.conversations ){
     this.conversations[ i ].updateUI()
   }
+
 }
 
 App.prototype._updateConversationsListUI = function(){
@@ -747,7 +748,7 @@ App.prototype.updateConversationId = function( oldId, newId ){
 
 }*/
 
-Conversation.prototype.updateUI = function(){
+/*Conversation.prototype.updateUI = function(){
 
   var img
 
@@ -767,12 +768,14 @@ Conversation.prototype.updateUI = function(){
     // To Do -> Unknown
   }
 
-  this.dom.attr( 'data-id', this.context.id )
-  this.dom.find('.channel-name').text( this.name );
-  this.dom.find('.channel-img').css( 'background-image' , 'url(' + img + ')' )
-  this.dom.find('.channel-last-msg').text( this.lastMessage ? this.lastMessage.data.text : '' )
+  //TODO llamar a la view
+  view.updateConversationUI();
+  //this.dom.attr( 'data-id', this.context.id )
+  //this.dom.find('.channel-name').text( this.name );
+  //this.dom.find('.channel-img').css( 'background-image' , 'url(' + img + ')' )
+  //this.dom.find('.channel-last-msg').text( this.lastMessage ? this.lastMessage.data.text : '' )
 
-}
+}*/
 
 /*var FakeContext = function( userId ){
 
