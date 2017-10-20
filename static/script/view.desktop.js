@@ -1,15 +1,30 @@
 const win = $( this );
 
-var view = ( function( model ){
+var view = ( function(){
+
+	// Static values
+	App.MAINAREA_NULL = 0
+	App.MAINAREA_CONVERSATION = 1
+	App.SIDEBAR_NULL = 0
+	App.SIDEBAR_CONVERSATIONS = 1
+	App.SIDEBAR_CONTACTS = 2
+
+	var contactPrototype      = $( '.contact.wz-prototype' );
+	var conversationPrototype = $( '.channel.wz-prototype' );
 
   class View{
 
-  	constructor( model ){
+  	constructor(){
 
-  		this.model = model;
+  		//this.model = model;
   		this.dom = win;
+  		this._mainAreaMode
+  		this._sidebarMode
 
   		this._translateInterface();
+  		// Set modes
+		  this.changeMainAreaMode( App.MAINAREA_NULL )
+		  this.changeSidebarMode( App.SIDEBAR_NULL )
 
   	}
 
@@ -44,6 +59,24 @@ var view = ( function( model ){
 		  $( '.send-txt' , this.dom ).text( lang.send );
 
   	}
+
+		changeMainAreaMode( value ){
+
+		  if( this._mainAreaMode === value ){
+		    return
+		  }
+
+		  this._mainAreaMode = value
+
+		  if( this._mainAreaMode === App.MAINAREA_NULL ){
+		    $('.ui-content').removeClass('visible')
+		    $('.no-content').addClass('visible')
+		  }else if( this._mainAreaMode === App.MAINAREA_CONVERSATION ){
+		    $('.ui-content').addClass('visible')
+		    $('.no-content').removeClass('visible')
+		  }
+
+		}
 
   	changeSidebarMode( value ){
 
@@ -81,6 +114,34 @@ var view = ( function( model ){
 
   }
 
+  class Contact{
+
+  	constructor( app, user ){
+
+  		this.dom = contactPrototype.clone().removeClass('wz-prototype')
+  		this.dom.addClass( 'user-id-' + this.user.id );
+		  this.dom.find('.contact-name').text( this.user.fullName )
+		  this.dom.find('.contact-img').css( 'background-image', 'url(' + this.user.avatar.big + ')' )
+		  this.dom.attr( 'data-id', this.user.id )
+
+  	}
+
+  }
+
+  class Conversation{
+
+  	constructor( app, context ){
+
+  		this.dom = contactPrototype.clone().removeClass('wz-prototype')
+  		this.dom.addClass( 'user-id-' + this.user.id );
+		  this.dom.find('.contact-name').text( this.user.fullName )
+		  this.dom.find('.contact-img').css( 'background-image', 'url(' + this.user.avatar.big + ')' )
+		  this.dom.attr( 'data-id', this.user.id )
+
+  	}
+
+  }
+
   return new View()
 
-})( model )
+})()

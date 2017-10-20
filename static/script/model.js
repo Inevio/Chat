@@ -79,13 +79,11 @@ var model = ( function( view ){
 
   class Model{
 
-  	constructor(){
+  	constructor( view ){
 
   	  this.openedChat
 		  this.contacts = {}
 		  this.conversations = {}
-
-		  this._fullLoad();
 
   	}
 
@@ -142,33 +140,6 @@ var model = ( function( view ){
 
 		}
 
-		_fullLoad(){
-
-		  // To Do -> Remove timeout
-
-		  async.parallel({
-
-		    contacts : this._loadFullContactsList.bind(this),
-		    conversations : this._loadFullConversationsList.bind(this)
-
-		  }, function( err, res ){
-
-		    console.log( err, res )
-
-		    /*if( this._sidebarMode !== App.SIDEBAR_NULL ){
-		      return
-		    }if( res.conversations.length ){
-		      this._changeSidebarMode( App.SIDEBAR_CONVERSATIONS )
-		    }else if( res.contacts.contacts.length ){
-		      this._changeSidebarMode( App.SIDEBAR_CONTACTS )
-		    }else{
-		      // To Do -> Show forever alone
-		    }*/
-
-		  }.bind(this))
-
-		}
-
 		addConversation( context ){
 
 		  if( this.conversations[ context.id ] ){
@@ -194,6 +165,38 @@ var model = ( function( view ){
 		  //this.updateContactsListUI()
 
 		  return this
+
+		}
+
+		fullLoad( callback ){
+
+		  // To Do -> Remove timeout
+		  callback = api.tool.secureCallback( callback )
+
+		  async.parallel({
+
+		    contacts : this._loadFullContactsList.bind(this),
+		    conversations : this._loadFullConversationsList.bind(this)
+
+		  }, function( err, res ){
+
+		    if( err ){
+		    	return callback(err);
+		    }
+
+		    if( this._sidebarMode !== App.SIDEBAR_NULL ){
+		      return
+		    }if( res.conversations.length ){
+		      callback( null, App.SIDEBAR_CONVERSATIONS );
+		      //this._changeSidebarMode( App.SIDEBAR_CONVERSATIONS )
+		    }else if( res.contacts.contacts.length ){
+		      callback( null, App.SIDEBAR_CONTACTS );
+		      //this._changeSidebarMode( App.SIDEBAR_CONTACTS )
+		    }else{
+		      // To Do -> Show forever alone
+		    }
+
+		  }.bind(this))
 
 		}
 
@@ -395,6 +398,6 @@ var model = ( function( view ){
 
   }
 
-  return new Model()
+  return new Model( view )
 
 })( view )
