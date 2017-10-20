@@ -15,6 +15,7 @@ var controller = ( function( model, view ){
       this._domCurrentConversation
       this.model = model;
       this.view = view;
+      this._fullLoad();
 
     }
 
@@ -72,6 +73,12 @@ var controller = ( function( model, view ){
       api.com.on( 'messageMarkedAsAttended', function( comMessageId, comContextId, userId, notificationId ){
         //that._updateMessageAttendedUI( comMessageId, comContextId )
       })
+
+    }
+
+    _fullLoad(){
+
+      model.fullLoad();
 
     }    
 

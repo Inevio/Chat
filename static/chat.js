@@ -101,33 +101,33 @@ var selectColor = function( string ){
 // Objects
 var App = function( dom ){
 
-  this.dom = dom
+  //this.dom = dom
 
-  this._domContactsList = $('.contact-list', this.dom)
+  /*this._domContactsList = $('.contact-list', this.dom)
   this._domConversationsList = $('.channel-list', this.dom)
   this._domMessageContainer = $('.message-container', this.dom)
   this._domMessageMePrototype = $('.message-me.wz-prototype', this._domMessageContainer)
   this._domMessageOtherPrototype = $('.message-other.wz-prototype', this._domMessageContainer)
-  this._domCurrentConversation
+  this._domCurrentConversation*/
 
   this.openedChat
   this.contacts = {}
   this.conversations = {}
-  this._mainAreaMode
-  this._sidebarMode
+  //this._mainAreaMode
+  //this._sidebarMode
 
   // Translate UI
-  this._translateInterface()
+  //this._translateInterface()
 
   // Set modes
-  this._changeMainAreaMode( App.MAINAREA_NULL )
-  this._changeSidebarMode( App.SIDEBAR_NULL )
+  //this._changeMainAreaMode( App.MAINAREA_NULL )
+  //this._changeSidebarMode( App.SIDEBAR_NULL )
 
   // Bind events
-  this._bindEvents()
+  //this._bindEvents()
 
   // Load all info
-  this._fullLoad()
+  //this._fullLoad()
 
   return this
 
@@ -256,7 +256,7 @@ App.prototype._appendMessage = function( message ){
 
 }*/
 
-App.prototype._changeMainAreaMode = function( value ){
+/*App.prototype._changeMainAreaMode = function( value ){
 
   if( this._mainAreaMode === value ){
     return
@@ -272,7 +272,7 @@ App.prototype._changeMainAreaMode = function( value ){
     $('.no-content').removeClass('visible')
   }
 
-}
+}*/
 
 /*App.prototype._changeSidebarMode = function( value ){
 
