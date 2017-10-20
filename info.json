@@ -53,7 +53,7 @@
                     },
 
                     "css"    : ["chat.css"],
-                    "script" : ["chat.js" , "jquery.textarea_autosize.min.js"],
+                    "script" : ["script/build/desktop.js" , "jquery.textarea_autosize.min.js"],
                     "start"  : ["start.js"]
 
                 }

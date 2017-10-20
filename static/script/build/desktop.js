@@ -325,6 +325,35 @@ var model = ( function( view ){
 
 		}
 
+		updateUI(){
+
+		  var img
+
+		  if( this.context.name ){
+		    this.name = this.context.name
+		  }else if( this.app.contacts[ this.users[ 0 ] ] ){
+		    this.name = this.app.contacts[ this.users[ 0 ] ].user.fullName
+		  }else{
+		    // To Do -> lang.unknown
+		  }
+
+		  if( this.world ){
+		    img = this.world.icon.big // To Do -> Mirar si es el tamaño adecuado
+		  }else if( this.app.contacts[ this.users[ 0 ] ] ){
+		    img = this.app.contacts[ this.users[ 0 ] ].user.avatar.big // To Do -> Mirar si es el tamaño adecuado
+		  }else{
+		    // To Do -> Unknown
+		  }
+
+		  //TODO llamar a la view
+		  view.updateConversationUI();
+		  //this.dom.attr( 'data-id', this.context.id )
+		  //this.dom.find('.channel-name').text( this.name );
+		  //this.dom.find('.channel-img').css( 'background-image' , 'url(' + img + ')' )
+		  //this.dom.find('.channel-last-msg').text( this.lastMessage ? this.lastMessage.data.text : '' )
+
+		}
+
   }
 
   class FakeContext{
@@ -370,12 +399,60 @@ var model = ( function( view ){
 
 })( view )
 
+const win = $( this );
+
 var view = ( function( model ){
 
   class View{
 
   	constructor( model ){
+
   		this.model = model;
+  		this.dom = win;
+
+  		this._translateInterface();
+
+  	}
+
+  	_translateInterface(){
+
+		  $( '.addPeople span' , this.dom ).text( lang.addPeople );
+		  $( '.app-color .dark' , this.dom ).text( lang.dark );
+		  $( '.app-color .white' , this.dom ).text( lang.white );
+		  $( '.cancel-group span' , this.dom ).text( lang.cancel );
+		  $( '.chat-search input' , this.dom ).attr( 'placeholder' , lang.search );
+		  $( '.chat-tab-selector span' , this.dom ).text( lang.chats );
+		  $( '.click-chat-txt' , this.dom ).text( lang.clickChat );
+		  $( '.close-coversation' , this.dom ).text( lang.close );
+		  $( '.contact-tab-selector span' , this.dom ).text( lang.contacts );
+		  $( '.conversation-input textarea' , this.dom ).attr( 'placeholder' , lang.msg );
+		  $( '.group-info .title' , this.dom ).text( lang.info );
+		  $( '.group-members .title' , this.dom ).text( lang.members );
+		  $( '.group-members input' , this.dom ).attr( 'placeholder' , lang.searchContacts );
+		  $( '.group-menu .back span' , this.dom ).text( lang.back );
+		  $( '.group-menu .edit' , this.dom ).text( lang.edit );
+		  $( '.group-name' , this.dom ).text( lang.groupName );
+		  $( '.group-name-input input' , this.dom ).attr( 'placeholder' , lang.groupName );
+		  $( '.groupName' , this.dom ).text( lang.nameGroup );
+		  $( '.invite .add' , this.dom ).text( lang.invite.add );
+		  $( '.invite .next' , this.dom ).text( lang.invite.send );
+		  $( '.invite h1' , this.dom ).text( lang.invite.title );
+		  $( '.invite h2' , this.dom ).html( lang.invite.subtitle );
+		  $( '.invite h3' , this.dom ).text( lang.invite.email );
+		  $( '.new-group-button span' , this.dom ).text( lang.newGroup );
+		  $( '.no-chat-txt' , this.dom ).text( lang.noChat );
+		  $( '.save-group span' , this.dom ).text( lang.save );
+		  $( '.send-txt' , this.dom ).text( lang.send );
+
+  	}
+
+  	updateConversationUI(){
+
+  		this.dom.attr( 'data-id', this.context.id );
+		  this.dom.find( '.channel-name' ).text( this.name );
+		  this.dom.find( '.channel-img' ).css( 'background-image' , 'url(' + img + ')' );
+		  this.dom.find( '.channel-last-msg' ).text( this.lastMessage ? this.lastMessage.data.text : '' );
+
   	}
 
   }
@@ -384,16 +461,81 @@ var view = ( function( model ){
 
 })( model )
 
-var win = $( this );
+const win = $( this );
 
 var controller = ( function( model, view ){
 
   class Controller{
 
     constructor( model, view ){
+
+      this.dom = win
+      this._domContactsList = $('.contact-list', this.dom)
+      this._domConversationsList = $('.channel-list', this.dom)
+      this._domMessageContainer = $('.message-container', this.dom)
+      this._domMessageMePrototype = $('.message-me.wz-prototype', this._domMessageContainer)
+      this._domMessageOtherPrototype = $('.message-other.wz-prototype', this._domMessageContainer)
+      this._domCurrentConversation
       this.model = model;
       this.view = view;
+
     }
+
+    _bindEvents(){
+
+      // DOM Events
+      this.dom.on( 'click', '.tab-selector', function(){
+
+        /*if( $(this).hasClass('chat-tab-selector') ){
+          that._changeSidebarMode( App.SIDEBAR_CONVERSATIONS )
+        }else if( $(this).hasClass('contact-tab-selector') ){
+          that._changeSidebarMode( App.SIDEBAR_CONTACTS )
+        }*/
+
+      })
+
+      this._domConversationsList.on( 'click', '.channel', function(){
+        //that.openConversation( that.conversations[ parseInt( $(this).attr('data-id') ) ] )
+      })
+
+      this._domContactsList.on( 'click', '.contact', function(){
+        //that.openConversationWithContact( that.contacts[ parseInt( $(this).attr('data-id') ) ] )
+      })
+
+      this.dom.on( 'keypress', function( e ){
+
+        if( e.which === 13 && !e.shiftKey && that.openedChat ){
+
+          e.preventDefault();
+          //that.openedChat.sendBuffer();
+
+        }
+
+      })
+
+      // COM API Events
+      api.com.on( 'message', function( event ){
+
+        if( event.data.action === 'message' ){
+
+          /*that._ensureConversation( event.context, function( err ){
+
+            // To Do -> Error
+
+            that.conversations[ event.context ].updateLastMessage( event )
+            that._appendMessage( event )
+
+          })*/
+
+        }
+
+      })
+
+      api.com.on( 'messageMarkedAsAttended', function( comMessageId, comContextId, userId, notificationId ){
+        //that._updateMessageAttendedUI( comMessageId, comContextId )
+      })
+
+    }    
 
   }
 

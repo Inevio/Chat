@@ -9,9 +9,11 @@ var view = ( function( model ){
   		this.model = model;
   		this.dom = win;
 
+  		this._translateInterface();
+
   	}
 
-  	translateInterface(){
+  	_translateInterface(){
 
 		  $( '.addPeople span' , this.dom ).text( lang.addPeople );
 		  $( '.app-color .dark' , this.dom ).text( lang.dark );
@@ -40,6 +42,40 @@ var view = ( function( model ){
 		  $( '.no-chat-txt' , this.dom ).text( lang.noChat );
 		  $( '.save-group span' , this.dom ).text( lang.save );
 		  $( '.send-txt' , this.dom ).text( lang.send );
+
+  	}
+
+  	changeSidebarMode( value ){
+
+		  if( this._sidebarMode === value ){
+		    return
+		  }
+
+		  this._sidebarMode = value
+
+		  this.dom.find( '.chat-footer > section' ).removeClass( 'active' )
+		  this.dom.find( '.chat-body > section' ).removeClass( 'visible' )
+
+		  if( this._sidebarMode === App.SIDEBAR_CONVERSATIONS ){
+
+		    this.dom.find( '.chat-footer .chat-tab-selector' ).addClass( 'active' )
+		    this.dom.find( '.chat-body .chat-tab' ).addClass( 'visible' )
+
+		  }else if( this._sidebarMode === App.SIDEBAR_CONTACTS ){
+
+		    this.dom.find( '.chat-footer .contact-tab-selector' ).addClass( 'active' )
+		    this.dom.find( '.chat-body .contact-tab' ).addClass( 'visible' )
+
+		  }
+
+		}
+
+  	updateConversationUI(){
+
+  		this.dom.attr( 'data-id' , this.context.id );
+		  this.dom.find( '.channel-name' ).text( this.name );
+		  this.dom.find( '.channel-img' ).css( 'background-image' , 'url(' + img + ')' );
+		  this.dom.find( '.channel-last-msg' ).text( this.lastMessage ? this.lastMessage.data.text : '' );
 
   	}
 

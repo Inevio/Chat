@@ -325,6 +325,35 @@ var model = ( function( view ){
 
 		}
 
+		updateUI(){
+
+		  var img
+
+		  if( this.context.name ){
+		    this.name = this.context.name
+		  }else if( this.app.contacts[ this.users[ 0 ] ] ){
+		    this.name = this.app.contacts[ this.users[ 0 ] ].user.fullName
+		  }else{
+		    // To Do -> lang.unknown
+		  }
+
+		  if( this.world ){
+		    img = this.world.icon.big // To Do -> Mirar si es el tamaño adecuado
+		  }else if( this.app.contacts[ this.users[ 0 ] ] ){
+		    img = this.app.contacts[ this.users[ 0 ] ].user.avatar.big // To Do -> Mirar si es el tamaño adecuado
+		  }else{
+		    // To Do -> Unknown
+		  }
+
+		  //TODO llamar a la view
+		  view.updateConversationUI();
+		  //this.dom.attr( 'data-id', this.context.id )
+		  //this.dom.find('.channel-name').text( this.name );
+		  //this.dom.find('.channel-img').css( 'background-image' , 'url(' + img + ')' )
+		  //this.dom.find('.channel-last-msg').text( this.lastMessage ? this.lastMessage.data.text : '' )
+
+		}
+
   }
 
   class FakeContext{
