@@ -1,13 +1,7 @@
-const win = $( this );
+
+var win = $(this);
 
 var view = ( function(){
-
-	// Static values
-	App.MAINAREA_NULL = 0
-	App.MAINAREA_CONVERSATION = 1
-	App.SIDEBAR_NULL = 0
-	App.SIDEBAR_CONVERSATIONS = 1
-	App.SIDEBAR_CONTACTS = 2
 
 	var contactPrototype      = $( '.contact.wz-prototype' );
 	var conversationPrototype = $( '.channel.wz-prototype' );
@@ -16,15 +10,29 @@ var view = ( function(){
 
   	constructor(){
 
+  		// Static values
+			this.MAINAREA_NULL = 0
+			this.MAINAREA_CONVERSATION = 1
+			this.SIDEBAR_NULL = 0
+			this.SIDEBAR_CONVERSATIONS = 1
+			this.SIDEBAR_CONTACTS = 2
+
   		//this.model = model;
   		this.dom = win;
   		this._mainAreaMode
   		this._sidebarMode
 
+  		this._domContactsList = $('.contact-list', this.dom)
+		  this._domConversationsList = $('.channel-list', this.dom)
+		  this._domMessageContainer = $('.message-container', this.dom)
+		  this._domMessageMePrototype = $('.message-me.wz-prototype', this._domMessageContainer)
+		  this._domMessageOtherPrototype = $('.message-other.wz-prototype', this._domMessageContainer)
+		  this._domCurrentConversation
+
   		this._translateInterface();
   		// Set modes
-		  this.changeMainAreaMode( App.MAINAREA_NULL )
-		  this.changeSidebarMode( App.SIDEBAR_NULL )
+		  this.changeMainAreaMode( this.MAINAREA_NULL )
+		  this.changeSidebarMode( this.SIDEBAR_NULL )
 
   	}
 
@@ -68,10 +76,10 @@ var view = ( function(){
 
 		  this._mainAreaMode = value
 
-		  if( this._mainAreaMode === App.MAINAREA_NULL ){
+		  if( this._mainAreaMode === this.MAINAREA_NULL ){
 		    $('.ui-content').removeClass('visible')
 		    $('.no-content').addClass('visible')
-		  }else if( this._mainAreaMode === App.MAINAREA_CONVERSATION ){
+		  }else if( this._mainAreaMode === this.MAINAREA_CONVERSATION ){
 		    $('.ui-content').addClass('visible')
 		    $('.no-content').removeClass('visible')
 		  }
@@ -80,26 +88,50 @@ var view = ( function(){
 
   	changeSidebarMode( value ){
 
-		  if( this._sidebarMode === value ){
-		    return
-		  }
-
-		  this._sidebarMode = value
-
 		  this.dom.find( '.chat-footer > section' ).removeClass( 'active' )
 		  this.dom.find( '.chat-body > section' ).removeClass( 'visible' )
 
-		  if( this._sidebarMode === App.SIDEBAR_CONVERSATIONS ){
+		  if( this._sidebarMode === this.SIDEBAR_CONVERSATIONS ){
 
 		    this.dom.find( '.chat-footer .chat-tab-selector' ).addClass( 'active' )
 		    this.dom.find( '.chat-body .chat-tab' ).addClass( 'visible' )
 
-		  }else if( this._sidebarMode === App.SIDEBAR_CONTACTS ){
+		  }else if( this._sidebarMode === this.SIDEBAR_CONTACTS ){
 
 		    this.dom.find( '.chat-footer .contact-tab-selector' ).addClass( 'active' )
 		    this.dom.find( '.chat-body .contact-tab' ).addClass( 'visible' )
 
 		  }
+
+		}
+
+		updateContactsListUI( list ){
+
+			list = list.sort( function( a, b ){
+
+		    if( a.connected && b.connected ){
+		      return a.user.fullName.localeCompare( b.user.fullName )
+		    }
+
+		    if( a.connected ){
+		      return -1
+		    }
+
+		    return 1
+
+		  })
+
+		  this._domContactsList.empty().append( list.map( function( item ){ 
+
+	  		item.dom = contactPrototype.clone().removeClass('wz-prototype')
+	  		item.dom.addClass( 'user-id-' + item.user.id );
+			  item.dom.find('.contact-name').text( item.user.fullName )
+			  item.dom.find('.contact-img').css( 'background-image', 'url(' + item.user.avatar.big + ')' )
+			  item.dom.attr( 'data-id', item.user.id )
+
+		  	return item.dom
+
+		  }) )
 
 		}
 
@@ -123,6 +155,16 @@ var view = ( function(){
 		  this.dom.find('.contact-name').text( this.user.fullName )
 		  this.dom.find('.contact-img').css( 'background-image', 'url(' + this.user.avatar.big + ')' )
 		  this.dom.attr( 'data-id', this.user.id )
+
+  	}
+
+   	setConnection( value ){
+
+		  if( !!value ){
+		    this.dom.addClass('conected')
+		  }else{
+		    this.dom.removeClass('connected')
+		  }
 
   	}
 

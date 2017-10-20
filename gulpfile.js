@@ -19,8 +19,8 @@ gulp.task( 'desktop', function( cb ){
 
   gulp.src([
 
-    './static/script/model.js',
     './static/script/view.desktop.js',
+    './static/script/model.js',
     './static/script/controller.desktop.js'
 
   ])
@@ -36,9 +36,9 @@ gulp.task( 'mobile', function( cb ){
 
   gulp.src([
 
+    './static/script/view.desktop.js',
     './static/script/model.js',
-    './static/script/view.mobile.js',
-    './static/script/controller.mobile.js'
+    './static/script/controller.desktop.js'
 
   ])
   .pipe( concat('mobile.js') )
@@ -53,9 +53,9 @@ gulp.task( 'tablet', function( cb ){
 
   gulp.src([
 
+    './static/script/view.desktop.js',
     './static/script/model.js',
-    './static/script/view.tablet.js',
-    './static/script/controller.tablet.js'
+    './static/script/controller.desktop.js'
 
   ])
   .pipe( concat('tablet.js') )

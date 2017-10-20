@@ -1,5 +1,3 @@
-const win = $( this );
-
 var controller = ( function( model, view ){
 
   class Controller{
