@@ -440,7 +440,7 @@ App.prototype._updateAllConversationsUI = function(){
 
 }
 
-App.prototype._updateConversationsListUI = function(){
+/*App.prototype._updateConversationsListUI = function(){
 
   var list = []
 
@@ -454,7 +454,7 @@ App.prototype._updateConversationsListUI = function(){
 
   this._domConversationsList.empty().append( list.map( function( item ){ return item.dom }) )
 
-}
+}*/
 
 App.prototype._updateMessageAttendedUI = function( messageId, contextId ){
 
@@ -576,7 +576,7 @@ App.prototype.openConversationWithContact = function( contact ){
 
 }
 
-App.prototype.updateContactsListUI = function(){
+/*App.prototype.updateContactsListUI = function(){
 
   var list = []
 
@@ -600,7 +600,7 @@ App.prototype.updateContactsListUI = function(){
 
   this._domContactsList.empty().append( list.map( function( item ){ return item.dom }) )
 
-}
+}*/
 
 App.prototype.updateConversationId = function( oldId, newId ){
 

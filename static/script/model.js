@@ -85,20 +85,10 @@ var model = ( function( view ){
   	  this.openedChat
 		  this.contacts = {}
 		  this.conversations = {}
+		  this._mainAreaMode
+  		this._sidebarMode
 
   	}
-
-		_changeSidebarMode( value ){
-
-		  if( this._sidebarMode === value ){
-		    return
-		  }
-
-		  this._sidebarMode = value
-
-		  view.changeSidebarMode( value )
-
-		}
 
   	_loadFullContactList( callback ){
 
@@ -161,7 +151,7 @@ var model = ( function( view ){
 
 		  this.conversations[ context.id ] = new Conversation( this, context )
 
-		  //this._updateConversationsListUI()
+		  this.updateConversationsListUI()
 
 		  return this
 
@@ -181,6 +171,18 @@ var model = ( function( view ){
 
 		}
 
+		changeSidebarMode( value ){
+
+		  if( this._sidebarMode === value ){
+		    return
+		  }
+
+		  this._sidebarMode = value
+
+		  view.changeSidebarMode( value )
+
+		}
+
 		fullLoad(){
 
 		  // To Do -> Remove timeout
@@ -196,13 +198,14 @@ var model = ( function( view ){
 		    	return console.log( err );
 		    }
 
-		    console.log(this);
-		    if( this._sidebarMode !== this.SIDEBAR_NULL ){
+		    console.log( res );
+		    /*if( this._sidebarMode !== SIDEBAR_NULL ){
 		      return
-		    }if( res.conversations.length ){
-		      this._changeSidebarMode( this.SIDEBAR_CONVERSATIONS )
+		    }*/
+		    if( res.conversations.length ){
+		      this.changeSidebarMode( SIDEBAR_CONVERSATIONS )
 		    }else if( res.contacts.contacts.length ){
-		      this._changeSidebarMode( this.SIDEBAR_CONTACTS )
+		      this.changeSidebarMode( SIDEBAR_CONTACTS )
 		    }else{
 		      // To Do -> Show forever alone
 		    }
@@ -233,6 +236,18 @@ var model = ( function( view ){
 		
 		}
 
+		updateConversationsListUI(){
+
+		  var list = []
+
+		  for( var i in this.conversations ){
+		    list.push( this.conversations[ i ] )
+		  }
+
+			this.view.updateConversationsListUI( list );
+
+		}
+
   }
 
   class Contact{
@@ -259,6 +274,7 @@ var model = ( function( view ){
 
   	constructor( app, context ){
 
+  		this.app = app;
 		  this.context = context
 		  this.users = []
 		  this.world
@@ -266,15 +282,17 @@ var model = ( function( view ){
 		  this.opened = false
 		  this.isGroup = false // To Do
 		  this.name // To Do -> Default value
+		  this.img;
 
 		  // Set UI
-		  //this._loadAdditionalInfo()
+		  this._loadAdditionalInfo()
 		  //this.updateUI()
 
   	}
 
-  	/*_loadAdditionalInfo(){
+  	_loadAdditionalInfo(){
 
+  		//TODO paralelizar y al acabar actualizar la UI
 		  this.context.getUsers( { full : false }, function( err, list ){
 
 		    this.users = api.tool.arrayDifference( list, [ api.system.user().id ] )
@@ -282,12 +300,15 @@ var model = ( function( view ){
 		  }.bind( this ))
 
 		  this.context.getMessages( { withAttendedStatus : true }, function( err, list ){ // To Do -> Limit to the last one
-		    this.updateLastMessage( list[ list.length - 1 ] )
+
+		    this.updateLastMessage( list[ list.length - 1 ] );
+		    this.updateUI();
+
 		  }.bind( this ))
 
 		}
 
-		_upgradeToRealConversation( callback ){
+		/*_upgradeToRealConversation( callback ){
 
 		  if( !( this.context instanceof FakeContext ) ){
 		    return callback()
@@ -336,7 +357,7 @@ var model = ( function( view ){
 
 		  return this
 
-		}
+		}*/
 
 		updateLastMessage( message ){
 
@@ -351,27 +372,24 @@ var model = ( function( view ){
 		  if( this.context.name ){
 		    this.name = this.context.name
 		  }else if( this.app.contacts[ this.users[ 0 ] ] ){
+		  	console.log( this.app.contacts[ this.users[ 0 ] ].user.fullName )
 		    this.name = this.app.contacts[ this.users[ 0 ] ].user.fullName
 		  }else{
 		    // To Do -> lang.unknown
 		  }
 
 		  if( this.world ){
-		    img = this.world.icon.big // To Do -> Mirar si es el tamaño adecuado
+		    this.img = this.world.icon.big // To Do -> Mirar si es el tamaño adecuado
 		  }else if( this.app.contacts[ this.users[ 0 ] ] ){
-		    img = this.app.contacts[ this.users[ 0 ] ].user.avatar.big // To Do -> Mirar si es el tamaño adecuado
+		    this.img = this.app.contacts[ this.users[ 0 ] ].user.avatar.big // To Do -> Mirar si es el tamaño adecuado
 		  }else{
 		    // To Do -> Unknown
 		  }
 
 		  //TODO llamar a la view
-		  view.updateConversationUI();
-		  //this.dom.attr( 'data-id', this.context.id )
-		  //this.dom.find('.channel-name').text( this.name );
-		  //this.dom.find('.channel-img').css( 'background-image' , 'url(' + img + ')' )
-		  //this.dom.find('.channel-last-msg').text( this.lastMessage ? this.lastMessage.data.text : '' )
+		  view.updateConversationUI( this );
 
-		}*/
+		}
 
   }
 
