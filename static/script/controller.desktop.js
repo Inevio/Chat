@@ -35,21 +35,21 @@ var controller = ( function( model, view ){
 
       this.dom.on( 'keypress', function( e ){
 
-        if( e.which === 13 && !e.shiftKey && that.openedChat ){
+        if( e.which === 13 && !e.shiftKey && $.trim( this.dom.find('.conversation-input textarea').val() ) ){
 
           e.preventDefault();
-          //that.openedChat.sendBuffer();
+          model.sendBuffer( $.trim( this.dom.find('.conversation-input textarea').val() ) );
 
         }
 
-      })
+      }.bind( this ))
 
       this._domContactsList.on( 'click', '.contact', function(){
-        //that.openConversationWithContact( that.contacts[ parseInt( $(this).attr('data-id') ) ] )
+        model.openConversationWithContact( parseInt( $(this).attr('data-id') ) )
       })
 
       this._domConversationsList.on( 'click', '.channel', function(){
-        //that.openConversation( that.conversations[ parseInt( $(this).attr('data-id') ) ] )
+        model.openConversation( parseInt( $(this).attr('data-id') ) )
       })
 
       // COM API Events
@@ -57,14 +57,7 @@ var controller = ( function( model, view ){
 
         if( event.data.action === 'message' ){
 
-          /*that._ensureConversation( event.context, function( err ){
-
-            // To Do -> Error
-
-            that.conversations[ event.context ].updateLastMessage( event )
-            that._appendMessage( event )
-
-          })*/
+          model.ensureConversation( event.context )
 
         }
 
