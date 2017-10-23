@@ -13,6 +13,7 @@ var controller = ( function( model, view ){
       this._domCurrentConversation
       this.model = model;
       this.view = view;
+      this._bindEvents();
       this._fullLoad();
 
     }
@@ -23,10 +24,11 @@ var controller = ( function( model, view ){
       this.dom.on( 'click', '.tab-selector', function(){
 
         //TODO revisar valores
+
         if( $(this).hasClass('chat-tab-selector') ){
-          view.changeSidebarMode( App.SIDEBAR_CONVERSATIONS )
+          model.changeSidebarMode( SIDEBAR_CONVERSATIONS )
         }else if( $(this).hasClass('contact-tab-selector') ){
-          view.changeSidebarMode( App.SIDEBAR_CONTACTS )
+          model.changeSidebarMode( SIDEBAR_CONTACTS )
         }
 
       })

@@ -1,5 +1,11 @@
 
 var win = $(this);
+// Static values
+const MAINAREA_NULL = 0
+const MAINAREA_CONVERSATION = 1
+const SIDEBAR_NULL = 0
+const SIDEBAR_CONVERSATIONS = 1
+const SIDEBAR_CONTACTS = 2
 
 var view = ( function(){
 
@@ -10,17 +16,8 @@ var view = ( function(){
 
   	constructor(){
 
-  		// Static values
-			this.MAINAREA_NULL = 0
-			this.MAINAREA_CONVERSATION = 1
-			this.SIDEBAR_NULL = 0
-			this.SIDEBAR_CONVERSATIONS = 1
-			this.SIDEBAR_CONTACTS = 2
-
   		//this.model = model;
   		this.dom = win;
-  		this._mainAreaMode
-  		this._sidebarMode
 
   		this._domContactsList = $('.contact-list', this.dom)
 		  this._domConversationsList = $('.channel-list', this.dom)
@@ -31,8 +28,8 @@ var view = ( function(){
 
   		this._translateInterface();
   		// Set modes
-		  this.changeMainAreaMode( this.MAINAREA_NULL )
-		  this.changeSidebarMode( this.SIDEBAR_NULL )
+		  //this.changeMainAreaMode( MAINAREA_NULL )
+		  //this.changeSidebarMode( SIDEBAR_NULL )
 
   	}
 
@@ -76,10 +73,10 @@ var view = ( function(){
 
 		  this._mainAreaMode = value
 
-		  if( this._mainAreaMode === this.MAINAREA_NULL ){
+		  if( this._mainAreaMode === MAINAREA_NULL ){
 		    $('.ui-content').removeClass('visible')
 		    $('.no-content').addClass('visible')
-		  }else if( this._mainAreaMode === this.MAINAREA_CONVERSATION ){
+		  }else if( this._mainAreaMode === MAINAREA_CONVERSATION ){
 		    $('.ui-content').addClass('visible')
 		    $('.no-content').removeClass('visible')
 		  }
@@ -88,15 +85,17 @@ var view = ( function(){
 
   	changeSidebarMode( value ){
 
+  		console.log( value );
+
 		  this.dom.find( '.chat-footer > section' ).removeClass( 'active' )
 		  this.dom.find( '.chat-body > section' ).removeClass( 'visible' )
 
-		  if( this._sidebarMode === this.SIDEBAR_CONVERSATIONS ){
+		  if( value === SIDEBAR_CONVERSATIONS ){
 
 		    this.dom.find( '.chat-footer .chat-tab-selector' ).addClass( 'active' )
 		    this.dom.find( '.chat-body .chat-tab' ).addClass( 'visible' )
 
-		  }else if( this._sidebarMode === this.SIDEBAR_CONTACTS ){
+		  }else if( value === SIDEBAR_CONTACTS ){
 
 		    this.dom.find( '.chat-footer .contact-tab-selector' ).addClass( 'active' )
 		    this.dom.find( '.chat-body .contact-tab' ).addClass( 'visible' )
@@ -135,12 +134,35 @@ var view = ( function(){
 
 		}
 
-  	updateConversationUI(){
+  	updateConversationUI( conversation ){
 
-  		this.dom.attr( 'data-id' , this.context.id );
-		  this.dom.find( '.channel-name' ).text( this.name );
-		  this.dom.find( '.channel-img' ).css( 'background-image' , 'url(' + img + ')' );
-		  this.dom.find( '.channel-last-msg' ).text( this.lastMessage ? this.lastMessage.data.text : '' );
+  		var conversationDom = $( '.channel-id-' + conversation.context.id );
+  		conversationDom.attr( 'data-id' , conversation.context.id );
+		  conversationDom.find( '.channel-name' ).text( conversation.name );
+		  conversationDom.find( '.channel-img' ).css( 'background-image' , 'url(' + conversation.img + ')' );
+		  conversationDom.find( '.channel-last-msg' ).text( conversation.lastMessage ? conversation.lastMessage.data.text : '' );
+
+  	}
+
+  	updateConversationsListUI( list ){
+
+		  list = list.sort( function( a, b ){
+
+		  })
+
+		  this._domConversationsList.empty().append( list.map( function( item ){ 
+
+		  	item.dom = conversationPrototype.clone().removeClass('wz-prototype')
+			  item.dom.addClass( 'channel-id-' + item.context.id );
+		  	item.dom.attr( 'data-id', item.context.id )
+			  item.dom.find('.channel-name').text( item.name );
+			  item.dom.find('.channel-img').css( 'background-image' , 'url(' + item.img + ')' )
+			  item.dom.find('.channel-last-msg').text( item.lastMessage ? item.lastMessage.data.text : '' )
+
+		  	return item.dom 
+
+		  }) )
+
 
   	}
 
@@ -275,20 +297,10 @@ var model = ( function( view ){
   	  this.openedChat
 		  this.contacts = {}
 		  this.conversations = {}
+		  this._mainAreaMode
+  		this._sidebarMode
 
   	}
-
-		_changeSidebarMode( value ){
-
-		  if( this._sidebarMode === value ){
-		    return
-		  }
-
-		  this._sidebarMode = value
-
-		  view.changeSidebarMode( value )
-
-		}
 
   	_loadFullContactList( callback ){
 
@@ -351,7 +363,7 @@ var model = ( function( view ){
 
 		  this.conversations[ context.id ] = new Conversation( this, context )
 
-		  //this._updateConversationsListUI()
+		  this.updateConversationsListUI()
 
 		  return this
 
@@ -371,6 +383,18 @@ var model = ( function( view ){
 
 		}
 
+		changeSidebarMode( value ){
+
+		  if( this._sidebarMode === value ){
+		    return
+		  }
+
+		  this._sidebarMode = value
+
+		  view.changeSidebarMode( value )
+
+		}
+
 		fullLoad(){
 
 		  // To Do -> Remove timeout
@@ -386,13 +410,14 @@ var model = ( function( view ){
 		    	return console.log( err );
 		    }
 
-		    console.log(this);
-		    if( this._sidebarMode !== this.SIDEBAR_NULL ){
+		    console.log( res );
+		    /*if( this._sidebarMode !== SIDEBAR_NULL ){
 		      return
-		    }if( res.conversations.length ){
-		      this._changeSidebarMode( this.SIDEBAR_CONVERSATIONS )
+		    }*/
+		    if( res.conversations.length ){
+		      this.changeSidebarMode( SIDEBAR_CONVERSATIONS )
 		    }else if( res.contacts.contacts.length ){
-		      this._changeSidebarMode( this.SIDEBAR_CONTACTS )
+		      this.changeSidebarMode( SIDEBAR_CONTACTS )
 		    }else{
 		      // To Do -> Show forever alone
 		    }
@@ -423,6 +448,18 @@ var model = ( function( view ){
 		
 		}
 
+		updateConversationsListUI(){
+
+		  var list = []
+
+		  for( var i in this.conversations ){
+		    list.push( this.conversations[ i ] )
+		  }
+
+			this.view.updateConversationsListUI( list );
+
+		}
+
   }
 
   class Contact{
@@ -449,6 +486,7 @@ var model = ( function( view ){
 
   	constructor( app, context ){
 
+  		this.app = app;
 		  this.context = context
 		  this.users = []
 		  this.world
@@ -456,15 +494,17 @@ var model = ( function( view ){
 		  this.opened = false
 		  this.isGroup = false // To Do
 		  this.name // To Do -> Default value
+		  this.img;
 
 		  // Set UI
-		  //this._loadAdditionalInfo()
+		  this._loadAdditionalInfo()
 		  //this.updateUI()
 
   	}
 
-  	/*_loadAdditionalInfo(){
+  	_loadAdditionalInfo(){
 
+  		//TODO paralelizar y al acabar actualizar la UI
 		  this.context.getUsers( { full : false }, function( err, list ){
 
 		    this.users = api.tool.arrayDifference( list, [ api.system.user().id ] )
@@ -472,12 +512,15 @@ var model = ( function( view ){
 		  }.bind( this ))
 
 		  this.context.getMessages( { withAttendedStatus : true }, function( err, list ){ // To Do -> Limit to the last one
-		    this.updateLastMessage( list[ list.length - 1 ] )
+
+		    this.updateLastMessage( list[ list.length - 1 ] );
+		    this.updateUI();
+
 		  }.bind( this ))
 
 		}
 
-		_upgradeToRealConversation( callback ){
+		/*_upgradeToRealConversation( callback ){
 
 		  if( !( this.context instanceof FakeContext ) ){
 		    return callback()
@@ -526,7 +569,7 @@ var model = ( function( view ){
 
 		  return this
 
-		}
+		}*/
 
 		updateLastMessage( message ){
 
@@ -541,27 +584,24 @@ var model = ( function( view ){
 		  if( this.context.name ){
 		    this.name = this.context.name
 		  }else if( this.app.contacts[ this.users[ 0 ] ] ){
+		  	console.log( this.app.contacts[ this.users[ 0 ] ].user.fullName )
 		    this.name = this.app.contacts[ this.users[ 0 ] ].user.fullName
 		  }else{
 		    // To Do -> lang.unknown
 		  }
 
 		  if( this.world ){
-		    img = this.world.icon.big // To Do -> Mirar si es el tamaño adecuado
+		    this.img = this.world.icon.big // To Do -> Mirar si es el tamaño adecuado
 		  }else if( this.app.contacts[ this.users[ 0 ] ] ){
-		    img = this.app.contacts[ this.users[ 0 ] ].user.avatar.big // To Do -> Mirar si es el tamaño adecuado
+		    this.img = this.app.contacts[ this.users[ 0 ] ].user.avatar.big // To Do -> Mirar si es el tamaño adecuado
 		  }else{
 		    // To Do -> Unknown
 		  }
 
 		  //TODO llamar a la view
-		  view.updateConversationUI();
-		  //this.dom.attr( 'data-id', this.context.id )
-		  //this.dom.find('.channel-name').text( this.name );
-		  //this.dom.find('.channel-img').css( 'background-image' , 'url(' + img + ')' )
-		  //this.dom.find('.channel-last-msg').text( this.lastMessage ? this.lastMessage.data.text : '' )
+		  view.updateConversationUI( this );
 
-		}*/
+		}
 
   }
 
@@ -623,6 +663,7 @@ var controller = ( function( model, view ){
       this._domCurrentConversation
       this.model = model;
       this.view = view;
+      this._bindEvents();
       this._fullLoad();
 
     }
@@ -633,10 +674,11 @@ var controller = ( function( model, view ){
       this.dom.on( 'click', '.tab-selector', function(){
 
         //TODO revisar valores
+
         if( $(this).hasClass('chat-tab-selector') ){
-          view.changeSidebarMode( App.SIDEBAR_CONVERSATIONS )
+          model.changeSidebarMode( SIDEBAR_CONVERSATIONS )
         }else if( $(this).hasClass('contact-tab-selector') ){
-          view.changeSidebarMode( App.SIDEBAR_CONTACTS )
+          model.changeSidebarMode( SIDEBAR_CONTACTS )
         }
 
       })
