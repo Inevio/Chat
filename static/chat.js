@@ -141,7 +141,7 @@ App.SIDEBAR_CONVERSATIONS = 1
 App.SIDEBAR_CONTACTS = 2
 
 // Private methods
-App.prototype._appendMessage = function( message ){
+/*App.prototype._appendMessage = function( message ){
 
   if( !this.openedChat || this.openedChat.context.id !== message.context ){
     return
@@ -196,7 +196,7 @@ App.prototype._appendMessage = function( message ){
     this._domMessageContainer.scrollTop( this._domMessageContainer[ 0 ].scrollHeight )
   }
 
-}
+}*/
 
 /*App.prototype._bindEvents = function(){
 
@@ -295,11 +295,11 @@ App.prototype._appendMessage = function( message ){
 
 }*/
 
-App.prototype._cleanMessages = function(){
+/*App.prototype._cleanMessages = function(){
   this._domMessageContainer.empty()
-}
+}*/
 
-App.prototype._ensureConversation = function( contextId, callback ){
+/*App.prototype._ensureConversation = function( contextId, callback ){
 
   if( this.conversations[ contextId ] ){
     return callback()
@@ -312,7 +312,7 @@ App.prototype._ensureConversation = function( contextId, callback ){
 
   }.bind(this))
 
-}
+}*/
 
 /*App.prototype._fullLoad = function(){
 
@@ -343,9 +343,9 @@ App.prototype._ensureConversation = function( contextId, callback ){
 
 }*/
 
-App.prototype._isScrolledToBottom = function(){
+/*App.prototype._isScrolledToBottom = function(){
   return this._domMessageContainer[ 0 ].scrollHeight - this._domMessageContainer[ 0 ].scrollTop === this._domMessageContainer[ 0 ].clientHeight
-}
+}*/
 
 /*App.prototype._loadFullContactsList = function( callback ){
 
@@ -456,7 +456,7 @@ App.prototype._updateAllConversationsUI = function(){
 
 }*/
 
-App.prototype._updateMessageAttendedUI = function( messageId, contextId ){
+/*App.prototype._updateMessageAttendedUI = function( messageId, contextId ){
 
   if( !this.openedChat || this.openedChat.context.id !== contextId ){
     return
@@ -464,7 +464,7 @@ App.prototype._updateMessageAttendedUI = function( messageId, contextId ){
 
   this._domMessageContainer.find( '.message-' + messageId ).addClass('readed')
 
-}
+}*/
 
 // Public methods
 /*App.prototype.addConversation = function( context ){
@@ -505,7 +505,7 @@ App.prototype._updateMessageAttendedUI = function( messageId, contextId ){
 
 }*/
 
-App.prototype.openConversation = function( conversation ){
+/*App.prototype.openConversation = function( conversation ){
 
   this._changeSidebarMode( App.SIDEBAR_CONVERSATIONS )
 
@@ -544,9 +544,9 @@ App.prototype.openConversation = function( conversation ){
 
   return this
 
-}
+}*/
 
-App.prototype.openConversationWithContact = function( contact ){
+/*App.prototype.openConversationWithContact = function( contact ){
 
   var conversation
 
@@ -574,7 +574,7 @@ App.prototype.openConversationWithContact = function( contact ){
 
   return this
 
-}
+}*/
 
 /*App.prototype.updateContactsListUI = function(){
 
@@ -602,7 +602,7 @@ App.prototype.openConversationWithContact = function( contact ){
 
 }*/
 
-App.prototype.updateConversationId = function( oldId, newId ){
+/*App.prototype.updateConversationId = function( oldId, newId ){
 
   this.conversations[ newId ] = this.conversations[ oldId ]
   delete this.conversations[ oldId ]
@@ -610,7 +610,7 @@ App.prototype.updateConversationId = function( oldId, newId ){
 
   return this
 
-}
+}*/
 
 /*var Contact = function( app, user ){
 

@@ -90,6 +90,29 @@ var model = ( function( view ){
 
   	}
 
+		_appendMessage( message ){
+
+			var senderName = null;
+			var senderAvatar = null;
+
+		  if( !this.openedChat || this.openedChat.context.id !== message.context ){
+		    return
+		  }
+
+		  if( this.conversations[ message.context ].isGroup ){
+
+		    senderName = this.contacts[ message.sender ].user.fullName
+
+		  }
+
+		  if( message.sender !== api.system.user().id ){
+				senderAvatar = this.contacts[ message.sender ].user.avatar.big
+			}
+
+		  view.appendMessage( message, senderName, senderAvatar );
+
+		}
+
   	_loadFullContactList( callback ){
 
   		callback = api.tool.secureCallback( callback )
@@ -171,6 +194,18 @@ var model = ( function( view ){
 
 		}
 
+		changeMainAreaMode( value ){
+
+		  if( this._mainAreaMode === value ){
+		    return
+		  }
+
+		  this._mainAreaMode = value
+
+			view.changeMainAreaMode(value);
+
+		}
+
 		changeSidebarMode( value ){
 
 		  if( this._sidebarMode === value ){
@@ -180,6 +215,22 @@ var model = ( function( view ){
 		  this._sidebarMode = value
 
 		  view.changeSidebarMode( value )
+
+		}
+
+		ensureConversation( contextId, callback ){
+
+		  if( this.conversations[ contextId ] ){
+		    return callback()
+		  }
+
+		  api.com.get( contextId, function( err, event ){
+
+		    this.addConversation( event.context )
+        this.conversations[ event.context ].updateLastMessage( event )
+        this._appendMessage( event )
+
+		  }.bind(this))
 
 		}
 
@@ -214,6 +265,86 @@ var model = ( function( view ){
 
 		}
 
+		openConversation( conversationId ){
+
+			var conversation;
+			if( typeof conversationId == 'number' ){
+				conversation = this.conversations[ conversationId ];
+			}else{
+				conversation = conversationId;
+			}
+			
+			var isConnected = this.contacts[ conversation.users[ 0 ] ] && this.contacts[ conversation.users[ 0 ] ].connected;
+
+		  this.changeSidebarMode( SIDEBAR_CONVERSATIONS )
+
+		  if( this.openedChat && conversation.context.id === this.openedChat.context.id ){
+		    return this
+		  }
+
+		  if( this.openedChat ){
+		    this.openedChat.setOpened( false )
+		  }
+
+		  this.openedChat = conversation.setOpened( true )
+
+		  this.changeMainAreaMode( MAINAREA_CONVERSATION )
+
+		  view.openConversation( conversation, isConnected );
+
+		  conversation.context.getMessages( { withAttendedStatus : true }, function( err, list ){
+
+		    // To Do -> Error
+		    list.forEach( function( message ){
+		      this._appendMessage( message )
+		    }.bind(this))
+
+		  }.bind(this))
+
+		  return this
+
+		}
+
+		openConversationWithContact( contactId ){
+
+			var contact = this.contacts[ contactId ];
+
+		  var conversation;
+
+		  for( var i in this.conversations ){
+
+		    if( this.conversations[ i ].isGroup ){
+		      continue
+		    }
+
+		    if( this.conversations[ i ].users[ 0 ] === contact.user.id ){
+		      conversation = this.conversations[ i ]
+		      break
+		    }
+
+		  }
+
+		  if( conversation ){
+		    return this.openConversation( conversation )
+		  }
+
+		  var context = new FakeContext( contact.user.id )
+
+		  this.addConversation( context )
+		  this.openConversation( this.conversations[ context.id ] )
+
+		  return this
+
+		}
+
+		sendBuffer( value ){
+
+			if( this.openedChat && value ){
+				this.openedChat.sendBuffer( value );
+			}
+
+		}
+
 		setContactConnection( id, connected ){
 
 		  if( this.contacts[ id ] ){
@@ -236,6 +367,14 @@ var model = ( function( view ){
 		
 		}
 
+		updateConversationId( oldId, newId ){
+
+		  this.conversations[ newId ] = this.conversations[ oldId ]
+		  delete this.conversations[ oldId ]
+		  this.updateConversationsListUI()
+
+		}
+
 		updateConversationsListUI(){
 
 		  var list = []
@@ -245,6 +384,16 @@ var model = ( function( view ){
 		  }
 
 			this.view.updateConversationsListUI( list );
+
+		}
+
+		updateMessageAttendedUI( messageId, contextId ){
+
+		  if( !this.openedChat || this.openedChat.context.id !== contextId ){
+		    return
+		  }
+
+		  view.markAsRead( messageId );
 
 		}
 
@@ -286,7 +435,7 @@ var model = ( function( view ){
 
 		  // Set UI
 		  this._loadAdditionalInfo()
-		  //this.updateUI()
+		  this.updateUI()
 
   	}
 
@@ -296,19 +445,19 @@ var model = ( function( view ){
 		  this.context.getUsers( { full : false }, function( err, list ){
 
 		    this.users = api.tool.arrayDifference( list, [ api.system.user().id ] )
+		    this.updateUI();
 
 		  }.bind( this ))
 
 		  this.context.getMessages( { withAttendedStatus : true }, function( err, list ){ // To Do -> Limit to the last one
 
 		    this.updateLastMessage( list[ list.length - 1 ] );
-		    this.updateUI();
 
 		  }.bind( this ))
 
 		}
 
-		/*_upgradeToRealConversation( callback ){
+		_upgradeToRealConversation( callback ){
 
 		  if( !( this.context instanceof FakeContext ) ){
 		    return callback()
@@ -332,9 +481,7 @@ var model = ( function( view ){
 
 		}
 
-		sendBuffer(){
-
-		  var value = $.trim( this.app.dom.find('.conversation-input textarea').val() )
+		sendBuffer( value ){
 
 		  if( !value ){
 		    return
@@ -342,6 +489,7 @@ var model = ( function( view ){
 
 		  this._upgradeToRealConversation( function(){
 
+		  	view.clearInput();
 		    //this.app.dom.find('.conversation-input textarea').val('')
 		    this.context.send( { data : { action : 'message', text : value }, persistency : true, notify : value }, function( err ){
 		      // To Do -> Error
@@ -355,13 +503,14 @@ var model = ( function( view ){
 
 		  this.opened = !!value
 
-		  return this
+		  return this;
 
-		}*/
+		}
 
 		updateLastMessage( message ){
 
 		  this.lastMessage = message
+		  view.updateConversationUI( this );
 
 		}
 
@@ -402,7 +551,7 @@ var model = ( function( view ){
 
   	}
 
-  	/*getUsers( options, callback ){
+  	getUsers( options, callback ){
 
 		  if( arguments.length === 1 ){
 		    callback = options
@@ -428,9 +577,11 @@ var model = ( function( view ){
 
 		  callback( null, [] )
 
-		}*/
+		}
 
   }
+
+  FakeContext.idCounter = 0
 
   return new Model( view )
 

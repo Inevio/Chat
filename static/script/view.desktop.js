@@ -33,6 +33,14 @@ var view = ( function(){
 
   	}
 
+		_cleanMessages(){
+		  this._domMessageContainer.empty()
+		}
+
+		_isScrolledToBottom(){
+		  return this._domMessageContainer[ 0 ].scrollHeight - this._domMessageContainer[ 0 ].scrollTop === this._domMessageContainer[ 0 ].clientHeight
+		}
+
   	_translateInterface(){
 
 		  $( '.addPeople span' , this.dom ).text( lang.addPeople );
@@ -65,6 +73,56 @@ var view = ( function(){
 
   	}
 
+  	appendMessage( message, senderName, senderAvatar ){
+
+  		var dom = ( message.sender === api.system.user().id ? this._domMessageMePrototype : this._domMessageOtherPrototype ).clone().removeClass('wz-prototype').data( 'message', message )
+		  var date = new Date( message.time )
+		  var hh = ( '0' + date.getHours().toString() ).slice(-2)
+		  var mm = ( '0' + date.getMinutes().toString() ).slice(-2)
+		  var text = message.data.text
+
+		  text = text.replace( /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/ , '<a href="$1" target="_blank">$1</a>')
+		  //textProcessed = text.replace( /(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})/ , '<a href="$1" target="_blank">$1</a>' );
+		  //textProcessed = text.replace( /((http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*))/ig, '<a href="$1" target="_blank">$1</a>' );
+		  text = text.replace(/\n/g, "<br />")
+		  text = $('<div/>').html( text )
+
+		  text.find('a').each( function(){
+
+		    if( !(/^http(s)?:\/\//i).test( $(this).attr('href') ) ){
+		      $(this).attr( 'href', 'http://' + $(this).attr('href') ).addClass('wz-selectable')
+		    }
+
+		  })
+
+		  text = text.html()
+
+		  dom.find( '.message-text' ).html( text )
+		  dom.find( '.message-time' ).text( hh + ':' + mm )
+
+		  if( senderName ){
+		    dom.addClass( 'sender-group' ).find('.sender').addClass( 'visible' ).text( senderName ).css( 'color' , COLORS[ selectColor( senderName ) ] )
+		  }
+
+		  if( message.sender !== api.system.user().id ){
+		    dom.find( '.message-avatar' ).css( 'background-image' , 'url(' + senderAvatar + ')' )
+		    message.markAsAttended( console.log.bind( console ) )
+		  }
+
+		  if( message.attended.length ){
+		    dom.addClass('readed')
+		  }
+
+		  var down = this._isScrolledToBottom()
+		  dom.addClass( 'message-' + message.id )
+		  this._domMessageContainer.append( dom )
+
+		  if( down ){
+		    this._domMessageContainer.scrollTop( this._domMessageContainer[ 0 ].scrollHeight )
+		  }
+
+  	}
+
 		changeMainAreaMode( value ){
 
 		  if( this._mainAreaMode === value ){
@@ -73,10 +131,10 @@ var view = ( function(){
 
 		  this._mainAreaMode = value
 
-		  if( this._mainAreaMode === MAINAREA_NULL ){
+		  if( value === MAINAREA_NULL ){
 		    $('.ui-content').removeClass('visible')
 		    $('.no-content').addClass('visible')
-		  }else if( this._mainAreaMode === MAINAREA_CONVERSATION ){
+		  }else if( value === MAINAREA_CONVERSATION ){
 		    $('.ui-content').addClass('visible')
 		    $('.no-content').removeClass('visible')
 		  }
@@ -101,6 +159,32 @@ var view = ( function(){
 		    this.dom.find( '.chat-body .contact-tab' ).addClass( 'visible' )
 
 		  }
+
+		}
+
+		clearInput(){
+			this.dom.find('.conversation-input textarea').val('')
+		}
+
+		markMessageAsRead( messageId ){
+			this._domMessageContainer.find( '.message-' + messageId ).addClass('readed')
+		}
+
+		openConversation( conversation, isConnected ){
+
+		  $('.conversation-name, .conver-header .conver-title').text( conversation.name )
+
+		  if( conversation.isGroup ){
+		    $('.conversation-moreinfo, .conver-moreinfo').removeClass('conected').text( conversation.users.length )
+		  }else if( isConnected ) {
+		    $('.conversation-moreinfo, .conver-moreinfo').addClass('conected').text( lang.conected );
+		  }else{
+		    $('.conversation-moreinfo, .conver-moreinfo').removeClass('conected').text( lang.disconected );
+		  }
+
+		  $( '.conversation-input textarea' ).val('').focus();
+
+		  this._cleanMessages()
 
 		}
 
