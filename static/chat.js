@@ -432,13 +432,13 @@ App.SIDEBAR_CONTACTS = 2
 
 }*/
 
-App.prototype._updateAllConversationsUI = function(){
+/*App.prototype._updateAllConversationsUI = function(){
 
   for( var i in this.conversations ){
     this.conversations[ i ].updateUI()
   }
 
-}
+}*/
 
 /*App.prototype._updateConversationsListUI = function(){
 

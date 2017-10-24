@@ -143,8 +143,6 @@ var view = ( function(){
 
   	changeSidebarMode( value ){
 
-  		console.log( value );
-
 		  this.dom.find( '.chat-footer > section' ).removeClass( 'active' )
 		  this.dom.find( '.chat-body > section' ).removeClass( 'visible' )
 
@@ -164,6 +162,16 @@ var view = ( function(){
 
 		clearInput(){
 			this.dom.find('.conversation-input textarea').val('')
+		}
+
+		conversationSetOpened( conversationId, value ){
+
+			if( value ){
+		    $( '.channel-id-' + conversationId ).addClass('active')
+		  }else{
+		    $( '.channel-id-' + conversationId ).removeClass('active')
+		  }
+
 		}
 
 		markMessageAsRead( messageId ){

@@ -14,7 +14,6 @@ var controller = ( function( model, view ){
       this.model = model;
       this.view = view;
       this._bindEvents();
-      this._fullLoad();
 
     }
 
@@ -55,25 +54,28 @@ var controller = ( function( model, view ){
       // COM API Events
       api.com.on( 'message', function( event ){
 
+        console.log( event )
         if( event.data.action === 'message' ){
 
-          model.ensureConversation( event.context )
+          model.ensureConversation( event.context, function( err ){
+
+            if( err ){
+              return;
+            }
+
+            model.handleMessage( event );
+
+          })
 
         }
 
       })
 
       api.com.on( 'messageMarkedAsAttended', function( comMessageId, comContextId, userId, notificationId ){
-        //that._updateMessageAttendedUI( comMessageId, comContextId )
+        model.updateMessageAttendedUI( comMessageId, comContextId )
       })
 
-    }
-
-    _fullLoad(){
-
-      model.fullLoad();
-
-    }    
+    }  
 
   }
 
