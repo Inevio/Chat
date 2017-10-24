@@ -88,30 +88,11 @@ var model = ( function( view ){
 		  this._mainAreaMode
   		this._sidebarMode
 
+		  this.changeMainAreaMode( MAINAREA_NULL )
+		  this.changeSidebarMode( SIDEBAR_NULL )
+  		this.fullLoad();
+
   	}
-
-		_appendMessage( message ){
-
-			var senderName = null;
-			var senderAvatar = null;
-
-		  if( !this.openedChat || this.openedChat.context.id !== message.context ){
-		    return
-		  }
-
-		  if( this.conversations[ message.context ].isGroup ){
-
-		    senderName = this.contacts[ message.sender ].user.fullName
-
-		  }
-
-		  if( message.sender !== api.system.user().id ){
-				senderAvatar = this.contacts[ message.sender ].user.avatar.big
-			}
-
-		  view.appendMessage( message, senderName, senderAvatar );
-
-		}
 
   	_loadFullContactList( callback ){
 
@@ -141,7 +122,7 @@ var model = ( function( view ){
 		      this.setContactConnection( userId, true )
 		    }.bind( this ))
 
-		    //this._updateAllConversationsUI()
+		    this._updateAllConversationsUI()
 		    callback( null, res )
 
 		  }.bind( this ))
@@ -163,6 +144,14 @@ var model = ( function( view ){
 		    callback( null, contexts )
 
 		  }.bind( this ) )
+
+		}
+
+		_updateAllConversationsUI(){
+
+		  for( var i in this.conversations ){
+		    this.conversations[ i ].updateUI()
+		  }
 
 		}
 
@@ -188,9 +177,32 @@ var model = ( function( view ){
 
 		  this.contacts[ user.id ] = new Contact( this, user )
 
-		  //this.updateContactsListUI()
+		  this.updateContactsListUI()
 
 		  return this
+
+		}
+
+		appendMessage( message ){
+
+			var senderName = null;
+			var senderAvatar = null;
+
+		  if( !this.openedChat || this.openedChat.context.id !== message.context ){
+		    return
+		  }
+
+		  if( this.conversations[ message.context ].isGroup ){
+
+		    senderName = this.contacts[ message.sender ].user.fullName
+
+		  }
+
+		  if( message.sender !== api.system.user().id ){
+				senderAvatar = this.contacts[ message.sender ].user.avatar.big
+			}
+
+		  view.appendMessage( message, senderName, senderAvatar );
 
 		}
 
@@ -226,9 +238,12 @@ var model = ( function( view ){
 
 		  api.com.get( contextId, function( err, event ){
 
+		  	if( err ){
+		  		return callback(err);
+		  	}
+
 		    this.addConversation( event.context )
-        this.conversations[ event.context ].updateLastMessage( event )
-        this._appendMessage( event )
+		    callback();
 
 		  }.bind(this))
 
@@ -249,10 +264,9 @@ var model = ( function( view ){
 		    	return console.log( err );
 		    }
 
-		    console.log( res );
-		    /*if( this._sidebarMode !== SIDEBAR_NULL ){
+		    if( this._sidebarMode !== SIDEBAR_NULL ){
 		      return
-		    }*/
+		    }
 		    if( res.conversations.length ){
 		      this.changeSidebarMode( SIDEBAR_CONVERSATIONS )
 		    }else if( res.contacts.contacts.length ){
@@ -262,6 +276,15 @@ var model = ( function( view ){
 		    }
 
 		  }.bind(this))
+
+		  return this;
+
+		}
+
+		handleMessage( message ){
+
+			this.conversations[ message.context ].updateLastMessage( message )
+      this.appendMessage( message )
 
 		}
 
@@ -296,7 +319,7 @@ var model = ( function( view ){
 
 		    // To Do -> Error
 		    list.forEach( function( message ){
-		      this._appendMessage( message )
+		      this.appendMessage( message )
 		    }.bind(this))
 
 		  }.bind(this))
@@ -373,6 +396,8 @@ var model = ( function( view ){
 		  delete this.conversations[ oldId ]
 		  this.updateConversationsListUI()
 
+		  return this;
+
 		}
 
 		updateConversationsListUI(){
@@ -412,8 +437,9 @@ var model = ( function( view ){
   	setConnection( value ){
 
   		this.connected = !!value
-		  //TODO Actualizar lista
 		  this.app.updateContactsListUI()
+
+		  return this;
 
   	}
 
@@ -490,18 +516,27 @@ var model = ( function( view ){
 		  this._upgradeToRealConversation( function(){
 
 		  	view.clearInput();
-		    //this.app.dom.find('.conversation-input textarea').val('')
 		    this.context.send( { data : { action : 'message', text : value }, persistency : true, notify : value }, function( err ){
+
 		      // To Do -> Error
+		      if( err ){
+		      	return
+		      }
+
+		      //updateLastMessage( this)
+
 		    })
 
 		  }.bind( this ))
+
+		  return this;
 
 		}
 
 		setOpened( value ){
 
 		  this.opened = !!value
+		  view.conversationSetOpened( this.context.id, this.opened );
 
 		  return this;
 
@@ -521,7 +556,6 @@ var model = ( function( view ){
 		  if( this.context.name ){
 		    this.name = this.context.name
 		  }else if( this.app.contacts[ this.users[ 0 ] ] ){
-		  	console.log( this.app.contacts[ this.users[ 0 ] ].user.fullName )
 		    this.name = this.app.contacts[ this.users[ 0 ] ].user.fullName
 		  }else{
 		    // To Do -> lang.unknown
