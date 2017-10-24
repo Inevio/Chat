@@ -288,6 +288,10 @@ var model = ( function( view ){
 
 		}
 
+		hideGroupMenu(){
+			view.hideGroupMenu();
+		}
+
 		openConversation( conversationId ){
 
 			var conversation;
@@ -375,6 +379,40 @@ var model = ( function( view ){
 		  }
 
 		  return this
+
+		}
+
+		startCreateGroup(){
+
+			/*if( this._mainAreaMode === MAINAREA_CREATING_GROUP ){
+				return;
+			}*/
+
+		  var list = []
+
+		  for( var i in this.contacts ){
+		    list.push( this.contacts[ i ] )
+		  }
+
+			//this._mainAreaMode = MAINAREA_CREATING_GROUP;
+
+			view.startCreateGroup( list );
+
+	    /*if( mobile ){
+
+	      prevMode = mode;
+	      mode = MODE_ANIMATING;
+	      $('.group-menu').transition({
+	        'x' : 0
+	      }, animationDuration, animationEffect, function(){
+	        mode = MODE_CREATING_GROUP;
+	      });
+	      $('.initial-header .new-group').removeClass('visible');
+	      $('.initial-header .back-button').addClass('visible');
+	      //$('.initial-header .more-button').hide();
+	      $('.initial-header .accept-button').show();
+
+	    }*/
 
 		}
 

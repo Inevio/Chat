@@ -1,4 +1,4 @@
-var app  = $( this );
+/*var app  = $( this );
 var mobile = app.hasClass('wz-mobile-view');
 var myContactID  = api.system.user().id;
 var desktop  = $(this).parent().parent();
@@ -102,4 +102,6 @@ if ( !params ) {
 
   }
 
-}
+}*/
+
+start();
