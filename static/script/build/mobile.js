@@ -11,6 +11,20 @@ var view = ( function(){
 
 	var contactPrototype      = $( '.contact.wz-prototype' );
 	var conversationPrototype = $( '.channel.wz-prototype' );
+	var memberPrototype      	= $( '.member.wz-prototype' );
+
+	var colorPalette = [
+	  {name: 'blue' , light: '#a6d2fa', text:'#2a77ad' , border:'#1664a5'},
+	  {name: 'green' , light: '#badb95', text:'#306e0d' , border:'#3c7919'},
+	  {name: 'purple' , light: '#d8ccf1', text:'#9064e1' , border:'#6742aa'},
+	  {name: 'orange' , light: '#f7c97e', text:'#b45d1f' , border:'#f68738'},
+	  {name: 'brown' , light: '#b2a59d', text:'#5a4638' , border:'#6e5646'},
+	  {name: 'green2' , light: '#8cd0b3', text:'#0a5a36' , border:'#128a54'},
+	  {name: 'red' , light: '#ec9a97', text:'#912521' , border:'#e13d35'},
+	  {name: 'pink' , light: '#f7beec', text:'#9c4ba5' , border:'#b44b9f'},
+	  {name: 'grey' , light: '#97a1a9', text:'#353b43' , border:'#384a59'},
+	  {name: 'yellow' , light: '#fbe27d', text:'#84740b' , border:'#ffb400'},
+	];
 
   class View{
 
@@ -24,6 +38,7 @@ var view = ( function(){
 		  this._domMessageContainer = $('.message-container', this.dom)
 		  this._domMessageMePrototype = $('.message-me.wz-prototype', this._domMessageContainer)
 		  this._domMessageOtherPrototype = $('.message-other.wz-prototype', this._domMessageContainer)
+		  this._domGroupMemberList = $( '.member-list', this.dom );
 		  this._domCurrentConversation
 
   		this._translateInterface();
@@ -39,6 +54,38 @@ var view = ( function(){
 
 		_isScrolledToBottom(){
 		  return this._domMessageContainer[ 0 ].scrollHeight - this._domMessageContainer[ 0 ].scrollTop === this._domMessageContainer[ 0 ].clientHeight
+		}
+
+		_selectColor( string ){
+
+		  var id = 0;
+
+		  for (var i = 0; i < string.length; i++) {
+
+		    id += string.charCodeAt(i);
+		    id++;
+
+		  }
+		  return id = id%colorPalette.length;
+
+		}
+
+		_setGroupAvatar( groupName , avatar ){
+
+		  var expNameWords = groupName.split(' ');
+
+		  avatar.html( '<span>' + (expNameWords[0] || ' ')[0].toUpperCase() + (expNameWords[1] || ' ')[0].toUpperCase() + '</span>');
+
+		  var colorId = this._selectColor( groupName );
+
+		  avatar.addClass('group').css({
+		    'background-image'  : 'none',
+		    'background-color'  : colorPalette[colorId].light,
+		    'border-color'      : colorPalette[colorId].border,
+		    'border-style'      : 'solid'
+		  });
+		  avatar.find( 'span' ).css('color', colorPalette[colorId].text);
+
 		}
 
   	_translateInterface(){
@@ -125,12 +172,6 @@ var view = ( function(){
 
 		changeMainAreaMode( value ){
 
-		  if( this._mainAreaMode === value ){
-		    return
-		  }
-
-		  this._mainAreaMode = value
-
 		  if( value === MAINAREA_NULL ){
 		    $('.ui-content').removeClass('visible')
 		    $('.no-content').addClass('visible')
@@ -138,7 +179,6 @@ var view = ( function(){
 		    $('.ui-content').addClass('visible')
 		    $('.no-content').removeClass('visible')
 		  }
-
 		}
 
   	changeSidebarMode( value ){
@@ -150,11 +190,15 @@ var view = ( function(){
 
 		    this.dom.find( '.chat-footer .chat-tab-selector' ).addClass( 'active' )
 		    this.dom.find( '.chat-body .chat-tab' ).addClass( 'visible' )
+		    this.dom.find( '.ui-navbar' ).addClass( 'inChats' )
+		    this.dom.find( '.new-group-button' ).removeClass( 'visible' )
 
 		  }else if( value === SIDEBAR_CONTACTS ){
 
 		    this.dom.find( '.chat-footer .contact-tab-selector' ).addClass( 'active' )
 		    this.dom.find( '.chat-body .contact-tab' ).addClass( 'visible' )
+		    this.dom.find( '.ui-navbar' ).removeClass( 'inChats' )
+		    this.dom.find( '.new-group-button' ).addClass( 'visible' )
 
 		  }
 
@@ -172,6 +216,10 @@ var view = ( function(){
 		    $( '.channel-id-' + conversationId ).removeClass('active')
 		  }
 
+		}
+
+		hideGroupMenu(){
+			$( '.group-menu' ).removeClass( 'visible' );
 		}
 
 		markMessageAsRead( messageId ){
@@ -193,6 +241,31 @@ var view = ( function(){
 		  $( '.conversation-input textarea' ).val('').focus();
 
 		  this._cleanMessages()
+
+		}
+
+		startCreateGroup( friendList ){
+
+			$( '.group-menu' ).removeClass('group-edit').removeClass('group-view');
+	    $( '.group-menu' ).addClass( 'visible' ).addClass( 'group-new' );
+	    $( '.group-name-input input' ).val( '' );
+	    $( '.search-members input' ).val( '' );
+
+	    this._setGroupAvatar( '?' , $( '.group-avatar' ) );
+	    $( '.memberDom' ).remove();
+
+	    this._domGroupMemberList.empty().append( friendList.map( function( item ){
+
+	    	item.dom = memberPrototype.clone().removeClass('wz-prototype')
+			  item.dom.find( 'span' ).text( item.user.fullName );
+			  item.dom.addClass( 'memberDom' );
+			  item.dom.find( '.member-avatar' ).css( 'background-image' , 'url(' + item.user.avatar.big + ')' );
+			  item.dom.attr( 'data-id', item.user.id )
+
+		  	return item.dom 
+
+
+	    }))
 
 		}
 
@@ -592,6 +665,10 @@ var model = ( function( view ){
 
 		}
 
+		hideGroupMenu(){
+			view.hideGroupMenu();
+		}
+
 		openConversation( conversationId ){
 
 			var conversation;
@@ -679,6 +756,40 @@ var model = ( function( view ){
 		  }
 
 		  return this
+
+		}
+
+		startCreateGroup(){
+
+			/*if( this._mainAreaMode === MAINAREA_CREATING_GROUP ){
+				return;
+			}*/
+
+		  var list = []
+
+		  for( var i in this.contacts ){
+		    list.push( this.contacts[ i ] )
+		  }
+
+			//this._mainAreaMode = MAINAREA_CREATING_GROUP;
+
+			view.startCreateGroup( list );
+
+	    /*if( mobile ){
+
+	      prevMode = mode;
+	      mode = MODE_ANIMATING;
+	      $('.group-menu').transition({
+	        'x' : 0
+	      }, animationDuration, animationEffect, function(){
+	        mode = MODE_CREATING_GROUP;
+	      });
+	      $('.initial-header .new-group').removeClass('visible');
+	      $('.initial-header .back-button').addClass('visible');
+	      //$('.initial-header .more-button').hide();
+	      $('.initial-header .accept-button').show();
+
+	    }*/
 
 		}
 
@@ -969,6 +1080,19 @@ var controller = ( function( model, view ){
         }
 
       }.bind( this ))
+
+      this.dom.on( 'click', '.new-group-button', function(){
+        model.startCreateGroup();
+      })
+
+      this.dom.on( 'click', '.group-menu .back, .cancel-group', function(){
+        model.hideGroupMenu();
+      })
+
+      this.dom.on( 'click', '.save-group, .accept-button', function(){
+        //TODO como obtener datos?
+        //model.saveGroup();
+      })
 
       this._domContactsList.on( 'click', '.contact', function(){
         model.openConversationWithContact( parseInt( $(this).attr('data-id') ) )

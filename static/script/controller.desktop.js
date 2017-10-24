@@ -43,6 +43,19 @@ var controller = ( function( model, view ){
 
       }.bind( this ))
 
+      this.dom.on( 'click', '.new-group-button', function(){
+        model.startCreateGroup();
+      })
+
+      this.dom.on( 'click', '.group-menu .back, .cancel-group', function(){
+        model.hideGroupMenu();
+      })
+
+      this.dom.on( 'click', '.save-group, .accept-button', function(){
+        //TODO como obtener datos?
+        //model.saveGroup();
+      })
+
       this._domContactsList.on( 'click', '.contact', function(){
         model.openConversationWithContact( parseInt( $(this).attr('data-id') ) )
       })
