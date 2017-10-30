@@ -267,6 +267,10 @@ var view = ( function(){
 			$( '.group-menu' ).removeClass( 'visible' );
 		}
 
+		launchAlert( message ){
+			alert( message );
+		}
+
 		markMessageAsRead( messageId ){
 			this._domMessageContainer.find( '.message-' + messageId ).addClass('readed')
 		}

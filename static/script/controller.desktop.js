@@ -51,9 +51,32 @@ var controller = ( function( model, view ){
         model.hideGroupMenu();
       })
 
+      this.dom.on( 'click', '.memberDom', function(){
+
+        $(this).toggleClass('active');
+        $(this).find( '.ui-checkbox' ).toggleClass( 'active' );
+
+      })
+
+      this.dom.on( 'click', '.memberDom .ui-checkbox', function(e){
+
+        $(this).toggleClass('active');
+        $(this).parent().toggleClass( 'active' );
+        e.stopPropagation();
+
+      })
+
       this.dom.on( 'click', '.save-group, .accept-button', function(){
-        //TODO como obtener datos?
-        //model.saveGroup();
+         
+        var info = {
+
+          name: $( '.group-name-input input' ).val(),
+          members: $( '.memberDom.active' )
+
+        }
+
+        model.saveGroup( info );
+
       })
 
       this.dom.on( 'input', '.chat-search input', function(){

@@ -267,6 +267,10 @@ var view = ( function(){
 			$( '.group-menu' ).removeClass( 'visible' );
 		}
 
+		launchAlert( message ){
+			alert( message );
+		}
+
 		markMessageAsRead( messageId ){
 			this._domMessageContainer.find( '.message-' + messageId ).addClass('readed')
 		}
@@ -567,7 +571,6 @@ var model = ( function( view ){
 		  api.com.list({ protocol : 'chat' }, function( err, contexts ){
 
 		    // To Do -> Error
-
 		    contexts.forEach( function( context ){
 		      this.addConversation( context )
 		    }.bind( this ))
@@ -593,9 +596,7 @@ var model = ( function( view ){
 		  }
 
 		  this.conversations[ context.id ] = new Conversation( this, context )
-
 		  this.updateConversationsListUI()
-
 		  return this
 
 		}
@@ -607,9 +608,7 @@ var model = ( function( view ){
 		  }
 
 		  this.contacts[ user.id ] = new Contact( this, user )
-
 		  this.updateContactsListUI()
-
 		  return this
 
 		}
@@ -624,9 +623,7 @@ var model = ( function( view ){
 		  }
 
 		  if( this.conversations[ message.context ].isGroup ){
-
 		    senderName = this.contacts[ message.sender ].user.fullName
-
 		  }
 
 		  if( message.sender !== api.system.user().id ){
@@ -657,7 +654,6 @@ var model = ( function( view ){
 		  }
 
 		  this._sidebarMode = value
-
 		  view.changeSidebarMode( value )
 
 		}
@@ -674,7 +670,7 @@ var model = ( function( view ){
 		  		return callback(err);
 		  	}
 
-		    this.addConversation( event.context )
+		    this.addConversation( event )
 		    callback();
 
 		  }.bind(this))
@@ -808,6 +804,33 @@ var model = ( function( view ){
 
 		}
 
+		saveGroup( info ){
+
+			//Disable edit group
+			if( this.openedChat ){
+				return
+			}
+
+			if( info.name === '' ){
+				return view.launchAlert( 'Wrong name' );
+			}
+			if( info.members.length === 0 ){
+				return view.launchAlert( 'Wrong users' );
+			}
+
+			var list = []
+
+		  info.members.each( function(){
+		    list.push( $(this).attr('data-id') )
+		  });
+		  console.log( list );
+
+		  info.members = list;
+
+			new Conversation( this, null, info );
+
+		}
+
 		sendBuffer( value ){
 
 			if( this.openedChat && value ){
@@ -929,27 +952,37 @@ var model = ( function( view ){
 
   class Conversation{
 
-  	constructor( app, context ){
+  	constructor( app, context, info ){
 
   		this.app = app;
 		  this.context = context
-		  this.users = []
 		  this.world
 		  this.lastMessage
 		  this.opened = false
-		  this.isGroup = false // To Do
-		  this.name // To Do -> Default value
+
+		  if( info ){
+
+		  	this.isGroup = true;
+		  	this.name = info.name || '';
+		  	this.users = info.members || []
+
+		  }else{
+
+		  	this.isGroup = false // To Do
+		  	this.name = '';
+		  	this.users = []
+
+		  }
+
 		  this.img;
 
 		  // Set UI
-		  this._loadAdditionalInfo()
-		  this.updateUI()
+		  this._startConversation()
 
   	}
 
   	_loadAdditionalInfo(){
 
-  		//TODO paralelizar y al acabar actualizar la UI
 		  this.context.getUsers( { full : false }, function( err, list ){
 
 		    this.users = api.tool.arrayDifference( list, [ api.system.user().id ] )
@@ -965,8 +998,44 @@ var model = ( function( view ){
 
 		}
 
+		_startConversation(){
+
+
+			if( this.context ){
+
+				this.updateUI()
+				this._loadAdditionalInfo();
+
+			}else{
+
+		    api.com.create( 
+		    { 
+		    	protocol : 'chat', 
+		    	name: this.name, 
+		    	users : this.users 
+		    }, function( err, context ){
+
+		    	if( err ){
+		    		return view.launchAlert( err ); 
+		    	}
+		      // To Do -> Err
+		      this.app.ensureConversation( context.id, function(){
+
+		      	this.context = context
+		      	this._loadAdditionalInfo();
+
+		      }.bind(this))
+		      
+
+		    }.bind( this ))
+
+			}
+
+		}
+
 		_upgradeToRealConversation( callback ){
 
+			//Creating group
 		  if( !( this.context instanceof FakeContext ) ){
 		    return callback()
 		  }
@@ -1156,9 +1225,32 @@ var controller = ( function( model, view ){
         model.hideGroupMenu();
       })
 
+      this.dom.on( 'click', '.memberDom', function(){
+
+        $(this).toggleClass('active');
+        $(this).find( '.ui-checkbox' ).toggleClass( 'active' );
+
+      })
+
+      this.dom.on( 'click', '.memberDom .ui-checkbox', function(e){
+
+        $(this).toggleClass('active');
+        $(this).parent().toggleClass( 'active' );
+        e.stopPropagation();
+
+      })
+
       this.dom.on( 'click', '.save-group, .accept-button', function(){
-        //TODO como obtener datos?
-        //model.saveGroup();
+         
+        var info = {
+
+          name: $( '.group-name-input input' ).val(),
+          members: $( '.memberDom.active' )
+
+        }
+
+        model.saveGroup( info );
+
       })
 
       this.dom.on( 'input', '.chat-search input', function(){
