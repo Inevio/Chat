@@ -56,6 +56,14 @@ var controller = ( function( model, view ){
         //model.saveGroup();
       })
 
+      this.dom.on( 'input', '.chat-search input', function(){
+        model.filterElements( $( this ).val() )
+      })
+
+      this.dom.on( 'input', '.search-members input', function(){
+        model.filterElements( $( this ).val() , true )
+      })
+
       this._domContactsList.on( 'click', '.contact', function(){
         model.openConversationWithContact( parseInt( $(this).attr('data-id') ) )
       })
