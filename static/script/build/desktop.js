@@ -3,9 +3,13 @@ var win = $(this);
 // Static values
 const MAINAREA_NULL = 0
 const MAINAREA_CONVERSATION = 1
+const MAINAREA_GROUPMODE = 2
 const SIDEBAR_NULL = 0
 const SIDEBAR_CONVERSATIONS = 1
 const SIDEBAR_CONTACTS = 2
+const GROUP_CREATING_NULL = 0
+const GROUP_CREATING_START = 1
+const GROUP_CREATING_EDIT = 2
 
 var view = ( function(){
 
@@ -170,15 +174,22 @@ var view = ( function(){
 
   	}
 
-		changeMainAreaMode( value ){
+		changeMainAreaMode( value, data ){
 
 		  if( value === MAINAREA_NULL ){
+
 		    $('.ui-content').removeClass('visible')
 		    $('.no-content').addClass('visible')
+
 		  }else if( value === MAINAREA_CONVERSATION ){
+
 		    $('.ui-content').addClass('visible')
 		    $('.no-content').removeClass('visible')
+
+		  }else if( value === MAINAREA_GROUPMODE && data){
+		 		this.startCreateGroup( data );
 		  }
+
 		}
 
   	changeSidebarMode( value ){
@@ -464,6 +475,7 @@ var model = ( function( view ){
 		  this.conversations = {}
 		  this._mainAreaMode
   		this._sidebarMode
+  		this._groupMode = GROUP_CREATING_NULL;
 
 		  this.changeMainAreaMode( MAINAREA_NULL )
 		  this.changeSidebarMode( SIDEBAR_NULL )
@@ -583,7 +595,7 @@ var model = ( function( view ){
 
 		}
 
-		changeMainAreaMode( value ){
+		changeMainAreaMode( value, list ){
 
 		  if( this._mainAreaMode === value ){
 		    return
@@ -591,7 +603,7 @@ var model = ( function( view ){
 
 		  this._mainAreaMode = value
 
-			view.changeMainAreaMode(value);
+			view.changeMainAreaMode( value, list );
 
 		}
 
@@ -761,9 +773,9 @@ var model = ( function( view ){
 
 		startCreateGroup(){
 
-			/*if( this._mainAreaMode === MAINAREA_CREATING_GROUP ){
+			if( this._mainAreaMode === MAINAREA_GROUPMODE ){
 				return;
-			}*/
+			}
 
 		  var list = []
 
@@ -771,9 +783,11 @@ var model = ( function( view ){
 		    list.push( this.contacts[ i ] )
 		  }
 
-			//this._mainAreaMode = MAINAREA_CREATING_GROUP;
+		  
+			this._groupMode = GROUP_CREATING_START;
+			this.changeMainAreaMode( MAINAREA_GROUPMODE, list );
 
-			view.startCreateGroup( list );
+			//view.startCreateGroup( list );
 
 	    /*if( mobile ){
 
@@ -833,7 +847,7 @@ var model = ( function( view ){
 		    return
 		  }
 
-		  view.markAsRead( messageId );
+		  view.markMessageAsRead( messageId );
 
 		}
 

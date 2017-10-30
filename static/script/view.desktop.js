@@ -3,9 +3,13 @@ var win = $(this);
 // Static values
 const MAINAREA_NULL = 0
 const MAINAREA_CONVERSATION = 1
+const MAINAREA_GROUPMODE = 2
 const SIDEBAR_NULL = 0
 const SIDEBAR_CONVERSATIONS = 1
 const SIDEBAR_CONTACTS = 2
+const GROUP_CREATING_NULL = 0
+const GROUP_CREATING_START = 1
+const GROUP_CREATING_EDIT = 2
 
 var view = ( function(){
 
@@ -170,15 +174,22 @@ var view = ( function(){
 
   	}
 
-		changeMainAreaMode( value ){
+		changeMainAreaMode( value, data ){
 
 		  if( value === MAINAREA_NULL ){
+
 		    $('.ui-content').removeClass('visible')
 		    $('.no-content').addClass('visible')
+
 		  }else if( value === MAINAREA_CONVERSATION ){
+
 		    $('.ui-content').addClass('visible')
 		    $('.no-content').removeClass('visible')
+
+		  }else if( value === MAINAREA_GROUPMODE && data){
+		 		this.startCreateGroup( data );
 		  }
+
 		}
 
   	changeSidebarMode( value ){
