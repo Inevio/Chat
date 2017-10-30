@@ -86,8 +86,8 @@ var model = ( function( view ){
 		  this.contacts = {}
 		  this.conversations = {}
 		  this._mainAreaMode
+		  this._prevMainAreaMode = MAINAREA_NULL
   		this._sidebarMode
-  		this._groupMode = GROUP_CREATING_NULL;
 
 		  this.changeMainAreaMode( MAINAREA_NULL )
 		  this.changeSidebarMode( SIDEBAR_NULL )
@@ -213,6 +213,7 @@ var model = ( function( view ){
 		    return
 		  }
 
+		  this._prevMainAreaMode = this._mainAreaMode
 		  this._mainAreaMode = value
 
 			view.changeMainAreaMode( value, list );
@@ -247,6 +248,18 @@ var model = ( function( view ){
 		    callback();
 
 		  }.bind(this))
+
+		}
+
+		filterElements( filter, groupSearch ){
+
+		  if( groupSearch ){
+		  	view.filterContacts( filter, groupSearch );
+		  }else if( this._sidebarMode === SIDEBAR_CONVERSATIONS ){
+		  	view.filterChats( filter )
+		  }else if( this._sidebarMode === SIDEBAR_CONTACTS ){
+		  	view.filterContacts( filter, false )
+		  }
 
 		}
 
@@ -395,8 +408,6 @@ var model = ( function( view ){
 		    list.push( this.contacts[ i ] )
 		  }
 
-		  
-			this._groupMode = GROUP_CREATING_START;
 			this.changeMainAreaMode( MAINAREA_GROUPMODE, list );
 
 			//view.startCreateGroup( list );

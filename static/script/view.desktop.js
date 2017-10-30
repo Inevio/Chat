@@ -7,9 +7,6 @@ const MAINAREA_GROUPMODE = 2
 const SIDEBAR_NULL = 0
 const SIDEBAR_CONVERSATIONS = 1
 const SIDEBAR_CONTACTS = 2
-const GROUP_CREATING_NULL = 0
-const GROUP_CREATING_START = 1
-const GROUP_CREATING_EDIT = 2
 
 var view = ( function(){
 
@@ -174,20 +171,22 @@ var view = ( function(){
 
   	}
 
-		changeMainAreaMode( value, data ){
+		changeMainAreaMode( value, additionalData ){
 
 		  if( value === MAINAREA_NULL ){
 
 		    $('.ui-content').removeClass('visible')
 		    $('.no-content').addClass('visible')
+		    this.hideGroupMenu();
 
 		  }else if( value === MAINAREA_CONVERSATION ){
 
 		    $('.ui-content').addClass('visible')
 		    $('.no-content').removeClass('visible')
+		    this.hideGroupMenu();
 
-		  }else if( value === MAINAREA_GROUPMODE && data){
-		 		this.startCreateGroup( data );
+		  }else if( value === MAINAREA_GROUPMODE && additionalData && additionalData.length ){
+		 		this.startCreateGroup( additionalData );
 		  }
 
 		}
@@ -226,6 +225,41 @@ var view = ( function(){
 		  }else{
 		    $( '.channel-id-' + conversationId ).removeClass('active')
 		  }
+
+		}
+
+		filterChats( filter ){
+
+	    var chats = $( '.channel' );
+	    var containerToCompare = '.channel-name';
+	    chats.show();
+	    var chatsToShow = chats.filter( this.startsWith( filter, containerToCompare ) );
+	    var chatsToHide = chats.not( chatsToShow );
+	    chatsToHide.hide();
+
+		}
+
+		filterContacts( filter, groupFilter ){
+
+			var contacts;
+			var containerToCompare;
+
+			if( groupFilter ){
+
+				contacts = $( '.memberDom' );
+				containerToCompare = 'span';
+
+			}else{
+
+				contacts = $( '.contact' );
+				containerToCompare = '.contact-name';
+
+			}
+
+	    contacts.show();
+	    var contactsToShow = contacts.filter( this.startsWith( filter, containerToCompare ) );
+	    var contactsToHide = contacts.not( contactsToShow );
+	    contactsToHide.hide();
 
 		}
 
@@ -277,6 +311,14 @@ var view = ( function(){
 
 
 	    }))
+
+		}
+
+		startsWith( wordToCompare, containterToCompare ){
+
+		  return function( index , element ) {
+		    return $( element ).find( containterToCompare ).text().toLowerCase().indexOf( wordToCompare.toLowerCase() ) !== -1;
+		  }
 
 		}
 
