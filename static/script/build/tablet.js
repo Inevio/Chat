@@ -14,7 +14,8 @@ var view = ( function(){
 	var conversationPrototype = $( '.channel.wz-prototype' );
 	var memberPrototype      	= $( '.member.wz-prototype' );
 
-	var colorPalette = [
+	const COLORS = [ '#4fb0c6' , '#d09e88' , '#fab1ce' , '#4698e0' , '#e85c5c', '#ebab10', '#5cab7d' , '#a593e0', '#fc913a' , '#58c9b9' ]
+	const colorPalette = [
 	  {name: 'blue' , light: '#a6d2fa', text:'#2a77ad' , border:'#1664a5'},
 	  {name: 'green' , light: '#badb95', text:'#306e0d' , border:'#3c7919'},
 	  {name: 'purple' , light: '#d8ccf1', text:'#9064e1' , border:'#6742aa'},
@@ -149,7 +150,7 @@ var view = ( function(){
 		  dom.find( '.message-time' ).text( hh + ':' + mm )
 
 		  if( senderName ){
-		    dom.addClass( 'sender-group' ).find('.sender').addClass( 'visible' ).text( senderName ).css( 'color' , COLORS[ selectColor( senderName ) ] )
+		    dom.addClass( 'sender-group' ).find('.sender').addClass( 'visible' ).text( senderName ).css( 'color' , COLORS[ this._selectColor( senderName ) ] )
 		  }
 
 		  if( message.sender !== api.system.user().id ){
@@ -280,7 +281,7 @@ var view = ( function(){
 		  $('.conversation-name, .conver-header .conver-title').text( conversation.name )
 
 		  if( conversation.isGroup ){
-		    $('.conversation-moreinfo, .conver-moreinfo').removeClass('conected').text( conversation.users.length )
+		    $('.conversation-moreinfo, .conver-moreinfo').removeClass('conected').text( conversation.users.length + ' ' + lang.members )
 		  }else if( isConnected ) {
 		    $('.conversation-moreinfo, .conver-moreinfo').addClass('conected').text( lang.conected );
 		  }else{
@@ -361,7 +362,13 @@ var view = ( function(){
   		var conversationDom = $( '.channel-id-' + conversation.context.id );
   		conversationDom.attr( 'data-id' , conversation.context.id );
 		  conversationDom.find( '.channel-name' ).text( conversation.name );
-		  conversationDom.find( '.channel-img' ).css( 'background-image' , 'url(' + conversation.img + ')' );
+
+		  if( conversation.isGroup ){
+		  	this._setGroupAvatar( conversation.name, conversationDom.find( '.channel-img' ) );
+		  }else{
+		  	conversationDom.find( '.channel-img' ).css( 'background-image' , 'url(' + conversation.img + ')' );
+		  }
+		  
 		  conversationDom.find( '.channel-last-msg' ).text( conversation.lastMessage ? conversation.lastMessage.data.text : '' );
 
   	}
@@ -622,12 +629,16 @@ var model = ( function( view ){
 		    return
 		  }
 
-		  if( this.conversations[ message.context ].isGroup ){
-		    senderName = this.contacts[ message.sender ].user.fullName
-		  }
-
 		  if( message.sender !== api.system.user().id ){
+
 				senderAvatar = this.contacts[ message.sender ].user.avatar.big
+
+				if( this.conversations[ message.context ].isGroup ){
+		    	senderName = this.contacts[ message.sender ].user.fullName
+		  	}
+
+			}else{
+				senderName = api.system.user().fullName
 			}
 
 		  view.appendMessage( message, senderName, senderAvatar );
@@ -1105,7 +1116,10 @@ var model = ( function( view ){
 		  var img
 
 		  if( this.context.name ){
+
 		    this.name = this.context.name
+		    this.isGroup = true;
+
 		  }else if( this.app.contacts[ this.users[ 0 ] ] ){
 		    this.name = this.app.contacts[ this.users[ 0 ] ].user.fullName
 		  }else{
@@ -1116,8 +1130,6 @@ var model = ( function( view ){
 		    this.img = this.world.icon.big // To Do -> Mirar si es el tamaño adecuado
 		  }else if( this.app.contacts[ this.users[ 0 ] ] ){
 		    this.img = this.app.contacts[ this.users[ 0 ] ].user.avatar.big // To Do -> Mirar si es el tamaño adecuado
-		  }else{
-		    // To Do -> Unknown
 		  }
 
 		  //TODO llamar a la view
@@ -1206,17 +1218,6 @@ var controller = ( function( model, view ){
 
       })
 
-      this.dom.on( 'keypress', function( e ){
-
-        if( e.which === 13 && !e.shiftKey && $.trim( this.dom.find('.conversation-input textarea').val() ) ){
-
-          e.preventDefault();
-          model.sendBuffer( $.trim( this.dom.find('.conversation-input textarea').val() ) );
-
-        }
-
-      }.bind( this ))
-
       this.dom.on( 'click', '.new-group-button', function(){
         model.startCreateGroup();
       })
@@ -1252,6 +1253,17 @@ var controller = ( function( model, view ){
         model.saveGroup( info );
 
       })
+
+      this.dom.on( 'keypress', function( e ){
+
+        if( e.which === 13 && !e.shiftKey && $.trim( this.dom.find('.conversation-input textarea').val() ) ){
+
+          e.preventDefault();
+          model.sendBuffer( $.trim( this.dom.find('.conversation-input textarea').val() ) );
+
+        }
+
+      }.bind( this ))
 
       this.dom.on( 'input', '.chat-search input', function(){
         model.filterElements( $( this ).val() )

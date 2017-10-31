@@ -32,17 +32,6 @@ var controller = ( function( model, view ){
 
       })
 
-      this.dom.on( 'keypress', function( e ){
-
-        if( e.which === 13 && !e.shiftKey && $.trim( this.dom.find('.conversation-input textarea').val() ) ){
-
-          e.preventDefault();
-          model.sendBuffer( $.trim( this.dom.find('.conversation-input textarea').val() ) );
-
-        }
-
-      }.bind( this ))
-
       this.dom.on( 'click', '.new-group-button', function(){
         model.startCreateGroup();
       })
@@ -78,6 +67,17 @@ var controller = ( function( model, view ){
         model.saveGroup( info );
 
       })
+
+      this.dom.on( 'keypress', function( e ){
+
+        if( e.which === 13 && !e.shiftKey && $.trim( this.dom.find('.conversation-input textarea').val() ) ){
+
+          e.preventDefault();
+          model.sendBuffer( $.trim( this.dom.find('.conversation-input textarea').val() ) );
+
+        }
+
+      }.bind( this ))
 
       this.dom.on( 'input', '.chat-search input', function(){
         model.filterElements( $( this ).val() )

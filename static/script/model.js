@@ -188,12 +188,16 @@ var model = ( function( view ){
 		    return
 		  }
 
-		  if( this.conversations[ message.context ].isGroup ){
-		    senderName = this.contacts[ message.sender ].user.fullName
-		  }
-
 		  if( message.sender !== api.system.user().id ){
+
 				senderAvatar = this.contacts[ message.sender ].user.avatar.big
+
+				if( this.conversations[ message.context ].isGroup ){
+		    	senderName = this.contacts[ message.sender ].user.fullName
+		  	}
+
+			}else{
+				senderName = api.system.user().fullName
 			}
 
 		  view.appendMessage( message, senderName, senderAvatar );
@@ -671,7 +675,10 @@ var model = ( function( view ){
 		  var img
 
 		  if( this.context.name ){
+
 		    this.name = this.context.name
+		    this.isGroup = true;
+
 		  }else if( this.app.contacts[ this.users[ 0 ] ] ){
 		    this.name = this.app.contacts[ this.users[ 0 ] ].user.fullName
 		  }else{
@@ -682,8 +689,6 @@ var model = ( function( view ){
 		    this.img = this.world.icon.big // To Do -> Mirar si es el tamaño adecuado
 		  }else if( this.app.contacts[ this.users[ 0 ] ] ){
 		    this.img = this.app.contacts[ this.users[ 0 ] ].user.avatar.big // To Do -> Mirar si es el tamaño adecuado
-		  }else{
-		    // To Do -> Unknown
 		  }
 
 		  //TODO llamar a la view
