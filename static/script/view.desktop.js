@@ -397,44 +397,6 @@ var view = ( function(){
 
   }
 
-  class Contact{
-
-  	constructor( app, user ){
-
-  		this.dom = contactPrototype.clone().removeClass('wz-prototype')
-  		this.dom.addClass( 'user-id-' + this.user.id );
-		  this.dom.find('.contact-name').text( this.user.fullName )
-		  this.dom.find('.contact-img').css( 'background-image', 'url(' + this.user.avatar.big + ')' )
-		  this.dom.attr( 'data-id', this.user.id )
-
-  	}
-
-   	setConnection( value ){
-
-		  if( !!value ){
-		    this.dom.addClass('conected')
-		  }else{
-		    this.dom.removeClass('connected')
-		  }
-
-  	}
-
-  }
-
-  class Conversation{
-
-  	constructor( app, context ){
-
-  		this.dom = contactPrototype.clone().removeClass('wz-prototype')
-  		this.dom.addClass( 'user-id-' + this.user.id );
-		  this.dom.find('.contact-name').text( this.user.fullName )
-		  this.dom.find('.contact-img').css( 'background-image', 'url(' + this.user.avatar.big + ')' )
-		  this.dom.attr( 'data-id', this.user.id )
-
-  	}
-
-  }
-
   return new View()
 
 })()
