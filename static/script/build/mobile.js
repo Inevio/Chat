@@ -376,7 +376,13 @@ var view = ( function(){
   	updateConversationsListUI( list ){
 
 		  list = list.sort( function( a, b ){
+		  	
+		  	if( a.lastMessage && b.lastMessage ){
 
+		  		return b.lastMessage.time - a.lastMessage.time;
+		  		
+		  	}
+		  	
 		  })
 
 		  this._domConversationsList.empty().append( list.map( function( item ){ 
@@ -628,6 +634,21 @@ var model = ( function( view ){
 
 		  this._sidebarMode = value
 		  view.changeSidebarMode( value )
+
+		}
+
+		deleteConversation( conversationId ){
+
+			api.com.delete( conversationId, function( err ){
+
+				if( err ){
+					return view.launchAlert( err );
+				}
+
+				delete this.conversations[ conversationId ];
+				this.updateConversationsListUI();
+
+			})
 
 		}
 
@@ -1068,7 +1089,8 @@ var model = ( function( view ){
 		updateLastMessage( message ){
 
 		  this.lastMessage = message
-		  view.updateConversationUI( this );
+		  //view.updateConversationUI( this );
+		  this.app.updateConversationsListUI();
 
 		}
 
@@ -1199,6 +1221,21 @@ var controller = ( function( model, view ){
         $(this).toggleClass('active');
         $(this).parent().toggleClass( 'active' );
         e.stopPropagation();
+
+      })
+
+      this.dom.on( 'contextmenu', '.channel', function(){
+
+        var menu = api.menu();
+
+        menu.addOption( lang.deleteChat , function(){
+
+          var id = $( this ).attr( 'data-id' );
+          model.deleteConversation( id );
+
+        });
+
+        menu.render();
 
       })
 

@@ -228,6 +228,21 @@ var model = ( function( view ){
 
 		}
 
+		deleteConversation( conversationId ){
+
+			api.com.delete( conversationId, function( err ){
+
+				if( err ){
+					return view.launchAlert( err );
+				}
+
+				delete this.conversations[ conversationId ];
+				this.updateConversationsListUI();
+
+			})
+
+		}
+
 		ensureConversation( contextId, callback ){
 
 		  if( this.conversations[ contextId ] ){
@@ -665,7 +680,8 @@ var model = ( function( view ){
 		updateLastMessage( message ){
 
 		  this.lastMessage = message
-		  view.updateConversationUI( this );
+		  //view.updateConversationUI( this );
+		  this.app.updateConversationsListUI();
 
 		}
 

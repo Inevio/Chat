@@ -55,6 +55,21 @@ var controller = ( function( model, view ){
 
       })
 
+      this.dom.on( 'contextmenu', '.channel', function(){
+
+        var menu = api.menu();
+
+        menu.addOption( lang.deleteChat , function(){
+
+          var id = $( this ).attr( 'data-id' );
+          model.deleteConversation( id );
+
+        });
+
+        menu.render();
+
+      })
+
       this.dom.on( 'click', '.save-group, .accept-button', function(){
          
         var info = {
