@@ -397,44 +397,6 @@ var view = ( function(){
 
   }
 
-  class Contact{
-
-  	constructor( app, user ){
-
-  		this.dom = contactPrototype.clone().removeClass('wz-prototype')
-  		this.dom.addClass( 'user-id-' + this.user.id );
-		  this.dom.find('.contact-name').text( this.user.fullName )
-		  this.dom.find('.contact-img').css( 'background-image', 'url(' + this.user.avatar.big + ')' )
-		  this.dom.attr( 'data-id', this.user.id )
-
-  	}
-
-   	setConnection( value ){
-
-		  if( !!value ){
-		    this.dom.addClass('conected')
-		  }else{
-		    this.dom.removeClass('connected')
-		  }
-
-  	}
-
-  }
-
-  class Conversation{
-
-  	constructor( app, context ){
-
-  		this.dom = contactPrototype.clone().removeClass('wz-prototype')
-  		this.dom.addClass( 'user-id-' + this.user.id );
-		  this.dom.find('.contact-name').text( this.user.fullName )
-		  this.dom.find('.contact-img').css( 'background-image', 'url(' + this.user.avatar.big + ')' )
-		  this.dom.attr( 'data-id', this.user.id )
-
-  	}
-
-  }
-
   return new View()
 
 })()
@@ -987,7 +949,6 @@ var model = ( function( view ){
 
 		  this.img;
 
-		  // Set UI
 		  this._startConversation()
 
   	}
@@ -1014,8 +975,8 @@ var model = ( function( view ){
 
 			if( this.context ){
 
-				this.updateUI()
 				this._loadAdditionalInfo();
+				this.updateUI()
 
 			}else{
 
@@ -1082,10 +1043,10 @@ var model = ( function( view ){
 
 		      // To Do -> Error
 		      if( err ){
-		      	return
+		      	return view.launchAlert( err );
 		      }
 
-		      //updateLastMessage( this)
+		      //updateLastMessage( this )
 
 		    })
 
@@ -1290,7 +1251,7 @@ var controller = ( function( model, view ){
           model.ensureConversation( event.context, function( err ){
 
             if( err ){
-              return;
+              return view.launchAlert( err );
             }
 
             model.handleMessage( event );

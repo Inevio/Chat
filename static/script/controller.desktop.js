@@ -104,7 +104,7 @@ var controller = ( function( model, view ){
           model.ensureConversation( event.context, function( err ){
 
             if( err ){
-              return;
+              return view.launchAlert( err );
             }
 
             model.handleMessage( event );

@@ -546,7 +546,6 @@ var model = ( function( view ){
 
 		  this.img;
 
-		  // Set UI
 		  this._startConversation()
 
   	}
@@ -573,8 +572,8 @@ var model = ( function( view ){
 
 			if( this.context ){
 
-				this.updateUI()
 				this._loadAdditionalInfo();
+				this.updateUI()
 
 			}else{
 
@@ -641,10 +640,10 @@ var model = ( function( view ){
 
 		      // To Do -> Error
 		      if( err ){
-		      	return
+		      	return view.launchAlert( err );
 		      }
 
-		      //updateLastMessage( this)
+		      //updateLastMessage( this )
 
 		    })
 
