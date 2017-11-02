@@ -376,7 +376,13 @@ var view = ( function(){
   	updateConversationsListUI( list ){
 
 		  list = list.sort( function( a, b ){
+		  	
+		  	if( a.lastMessage && b.lastMessage ){
 
+		  		return b.lastMessage.time - a.lastMessage.time;
+		  		
+		  	}
+		  	
 		  })
 
 		  this._domConversationsList.empty().append( list.map( function( item ){ 
