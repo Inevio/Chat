@@ -265,7 +265,9 @@ var view = ( function(){
 		}
 
 		hideGroupMenu(){
+
 			$( '.group-menu' ).removeClass( 'visible' );
+
 		}
 
 		launchAlert( message ){
@@ -346,6 +348,11 @@ var view = ( function(){
 		  this._domContactsList.empty().append( list.map( function( item ){ 
 
 	  		item.dom = contactPrototype.clone().removeClass('wz-prototype')
+
+	  		if( item.connected ){
+	  			item.dom.addClass( 'conected' )
+	  		}
+
 	  		item.dom.addClass( 'user-id-' + item.user.id );
 			  item.dom.find('.contact-name').text( item.user.fullName )
 			  item.dom.find('.contact-img').css( 'background-image', 'url(' + item.user.avatar.big + ')' )
@@ -373,13 +380,16 @@ var view = ( function(){
 
   	}
 
-  	updateConversationsListUI( list ){
+  	updateConversationsListUI( list, id ){
 
 		  list = list.sort( function( a, b ){
 		  	
-		  	if( a.lastMessage && b.lastMessage ){
+		  	var dateA = a.lastMessage ? a.lastMessage.time : a.context.created
+		  	var dateB = b.lastMessage ? b.lastMessage.time : b.context.created
 
-		  		return b.lastMessage.time - a.lastMessage.time;
+		  	if( dateA && dateB ){
+
+		  		return dateB - dateA;
 		  		
 		  	}
 		  	
@@ -391,13 +401,26 @@ var view = ( function(){
 			  item.dom.addClass( 'channel-id-' + item.context.id );
 		  	item.dom.attr( 'data-id', item.context.id )
 			  item.dom.find('.channel-name').text( item.name );
-			  item.dom.find('.channel-img').css( 'background-image' , 'url(' + item.img + ')' )
+
+			  if( item.isGroup ){
+
+			  	this._setGroupAvatar( item.name, item.dom.find( '.channel-img' ) );
+			  	item.dom.addClass( 'isGroup' );
+
+			  }else{
+			  	item.dom.find('.channel-img').css( 'background-image' , 'url(' + item.img + ')' )
+			  }
+			  
 			  item.dom.find('.channel-last-msg').text( item.lastMessage ? item.lastMessage.data.text : '' )
 
 		  	return item.dom 
 
-		  }) )
+		  }.bind( this ) ))
 
+		  if( id ){
+		  	this.changeSidebarMode( SIDEBAR_CONVERSATIONS );
+		  	$( '.channel-id-' + id ).trigger( 'click' );
+		  }
 
   	}
 
@@ -498,8 +521,11 @@ var model = ( function( view ){
 		  this._prevMainAreaMode = MAINAREA_NULL
   		this._sidebarMode
 
+  		this.unread
+
 		  this.changeMainAreaMode( MAINAREA_NULL )
 		  this.changeSidebarMode( SIDEBAR_NULL )
+		  this.reloadUnread();
   		this.fullLoad();
 
   	}
@@ -564,14 +590,21 @@ var model = ( function( view ){
 
 		}
 
-		addConversation( context ){
+		addConversation( context, justCreated ){
 
 		  if( this.conversations[ context.id ] ){
 		    return this
 		  }
 
 		  this.conversations[ context.id ] = new Conversation( this, context )
-		  this.updateConversationsListUI()
+
+		  var id = 0
+
+		  if( justCreated ){
+		  	id = context.id;
+		  }
+
+		  this.updateConversationsListUI( id )
 		  return this
 
 		}
@@ -639,14 +672,26 @@ var model = ( function( view ){
 
 		deleteConversation( conversationId ){
 
-			api.com.delete( conversationId, function( err ){
+			/*api.com.remove( conversationId, function( err ){
 
 				if( err ){
 					return view.launchAlert( err );
 				}
 
-				delete this.conversations[ conversationId ];
-				this.updateConversationsListUI();
+				//delete this.conversations[ conversationId ];
+				//this.updateConversationsListUI();
+
+			})*/
+
+			this.conversations[ conversationId ].context.remove( conversationId, function( err ){
+
+				if( err ){
+					return view.launchAlert( err );
+				}
+
+				console.log( arguments );
+				//delete this.conversations[ conversationId ];
+				//this.updateConversationsListUI();
 
 			})
 
@@ -664,10 +709,26 @@ var model = ( function( view ){
 		  		return callback(err);
 		  	}
 
-		    this.addConversation( event )
+		    this.addConversation( event, true )
 		    callback();
 
 		  }.bind(this))
+
+		}
+
+		exitGroup( groupId ){
+
+			if( !this.conversations[ groupId ] ){
+				return view.launchAlert( 'Grupo no existe' );
+			}
+
+			this.conversations[ groupId ].context.removeUser( api.system.user().id, function( err ){
+
+				if( err ){
+					return view.launchAlert( err );
+				}
+
+			});
 
 		}
 
@@ -798,6 +859,20 @@ var model = ( function( view ){
 
 		}
 
+		reloadUnread(){
+
+			api.notification.count( 'chat', function( err, counter ){
+
+		  	if( err ){
+		  		return
+		  	}
+
+		  	this.unread = counter;
+
+		  }.bind( this ))
+
+		}
+
 		saveGroup( info ){
 
 			//Disable edit group
@@ -899,7 +974,7 @@ var model = ( function( view ){
 
 		}
 
-		updateConversationsListUI(){
+		updateConversationsListUI( id ){
 
 		  var list = []
 
@@ -907,7 +982,7 @@ var model = ( function( view ){
 		    list.push( this.conversations[ i ] )
 		  }
 
-			this.view.updateConversationsListUI( list );
+			this.view.updateConversationsListUI( list, id );
 
 		}
 
@@ -969,6 +1044,7 @@ var model = ( function( view ){
 		  }
 
 		  this.img;
+		  this.unread;
 
 		  this._startConversation()
 
@@ -986,6 +1062,16 @@ var model = ( function( view ){
 		  this.context.getMessages( { withAttendedStatus : true }, function( err, list ){ // To Do -> Limit to the last one
 
 		    this.updateLastMessage( list[ list.length - 1 ] );
+
+		  }.bind( this ))
+
+		  api.notification.count( 'chat', { comContext : this.context.id }, function( err, counter ){
+
+		  	if( err ){
+		  		return
+		  	}
+
+		  	this.unread = counter;
 
 		  }.bind( this ))
 
@@ -1015,6 +1101,7 @@ var model = ( function( view ){
 		      this.app.ensureConversation( context.id, function(){
 
 		      	this.context = context
+		      	this.app.view.hideGroupMenu( this.context.id );
 		      	this._loadAdditionalInfo();
 
 		      }.bind(this))
@@ -1111,6 +1198,8 @@ var model = ( function( view ){
 
 		  if( this.world ){
 		    this.img = this.world.icon.big // To Do -> Mirar si es el tamaño adecuado
+		  }else if( this.isGroup ){
+		  	this.img = '';
 		  }else if( this.app.contacts[ this.users[ 0 ] ] ){
 		    this.img = this.app.contacts[ this.users[ 0 ] ].user.avatar.big // To Do -> Mirar si es el tamaño adecuado
 		  }
@@ -1227,13 +1316,19 @@ var controller = ( function( model, view ){
       this.dom.on( 'contextmenu', '.channel', function(){
 
         var menu = api.menu();
+        var id = $( this ).attr( 'data-id' );
 
         menu.addOption( lang.deleteChat , function(){
-
-          var id = $( this ).attr( 'data-id' );
           model.deleteConversation( id );
-
         });
+
+        if( $( this ).hasClass( 'isGroup' ) ){
+
+          menu.addOption( lang.exitGroup , function(){
+            model.exitGroup( id );
+          });
+
+        }
 
         menu.render();
 
@@ -1301,6 +1396,14 @@ var controller = ( function( model, view ){
 
       api.com.on( 'messageMarkedAsAttended', function( comMessageId, comContextId, userId, notificationId ){
         model.updateMessageAttendedUI( comMessageId, comContextId )
+      })
+
+      api.com.on( 'userAdded', function(){
+        console.log( arguments );
+      })
+
+      api.com.on( 'userRemoved', function(){
+        console.log( arguments );
       })
 
     }  
