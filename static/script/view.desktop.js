@@ -265,7 +265,9 @@ var view = ( function(){
 		}
 
 		hideGroupMenu(){
+
 			$( '.group-menu' ).removeClass( 'visible' );
+
 		}
 
 		launchAlert( message ){
@@ -346,6 +348,11 @@ var view = ( function(){
 		  this._domContactsList.empty().append( list.map( function( item ){ 
 
 	  		item.dom = contactPrototype.clone().removeClass('wz-prototype')
+
+	  		if( item.connected ){
+	  			item.dom.addClass( 'conected' )
+	  		}
+
 	  		item.dom.addClass( 'user-id-' + item.user.id );
 			  item.dom.find('.contact-name').text( item.user.fullName )
 			  item.dom.find('.contact-img').css( 'background-image', 'url(' + item.user.avatar.big + ')' )
@@ -373,13 +380,16 @@ var view = ( function(){
 
   	}
 
-  	updateConversationsListUI( list ){
+  	updateConversationsListUI( list, id ){
 
 		  list = list.sort( function( a, b ){
 		  	
-		  	if( a.lastMessage && b.lastMessage ){
+		  	var dateA = a.lastMessage ? a.lastMessage.time : a.context.created
+		  	var dateB = b.lastMessage ? b.lastMessage.time : b.context.created
 
-		  		return b.lastMessage.time - a.lastMessage.time;
+		  	if( dateA && dateB ){
+
+		  		return dateB - dateA;
 		  		
 		  	}
 		  	
@@ -391,13 +401,26 @@ var view = ( function(){
 			  item.dom.addClass( 'channel-id-' + item.context.id );
 		  	item.dom.attr( 'data-id', item.context.id )
 			  item.dom.find('.channel-name').text( item.name );
-			  item.dom.find('.channel-img').css( 'background-image' , 'url(' + item.img + ')' )
+
+			  if( item.isGroup ){
+
+			  	this._setGroupAvatar( item.name, item.dom.find( '.channel-img' ) );
+			  	item.dom.addClass( 'isGroup' );
+
+			  }else{
+			  	item.dom.find('.channel-img').css( 'background-image' , 'url(' + item.img + ')' )
+			  }
+			  
 			  item.dom.find('.channel-last-msg').text( item.lastMessage ? item.lastMessage.data.text : '' )
 
 		  	return item.dom 
 
-		  }) )
+		  }.bind( this ) ))
 
+		  if( id ){
+		  	this.changeSidebarMode( SIDEBAR_CONVERSATIONS );
+		  	$( '.channel-id-' + id ).trigger( 'click' );
+		  }
 
   	}
 

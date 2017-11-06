@@ -58,13 +58,19 @@ var controller = ( function( model, view ){
       this.dom.on( 'contextmenu', '.channel', function(){
 
         var menu = api.menu();
+        var id = $( this ).attr( 'data-id' );
 
         menu.addOption( lang.deleteChat , function(){
-
-          var id = $( this ).attr( 'data-id' );
           model.deleteConversation( id );
-
         });
+
+        if( $( this ).hasClass( 'isGroup' ) ){
+
+          menu.addOption( lang.exitGroup , function(){
+            model.exitGroup( id );
+          });
+
+        }
 
         menu.render();
 
@@ -132,6 +138,14 @@ var controller = ( function( model, view ){
 
       api.com.on( 'messageMarkedAsAttended', function( comMessageId, comContextId, userId, notificationId ){
         model.updateMessageAttendedUI( comMessageId, comContextId )
+      })
+
+      api.com.on( 'userAdded', function(){
+        console.log( arguments );
+      })
+
+      api.com.on( 'userRemoved', function(){
+        console.log( arguments );
       })
 
     }  
