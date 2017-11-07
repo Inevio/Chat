@@ -88,6 +88,7 @@ var model = ( function( view ){
 		  this._mainAreaMode
 		  this._prevMainAreaMode = MAINAREA_NULL
   		this._sidebarMode
+  		this._groupMode = GROUP_NULL
 
   		this.unread
 
@@ -158,21 +159,14 @@ var model = ( function( view ){
 
 		}
 
-		addConversation( context, justCreated ){
+		addConversation( context ){
 
 		  if( this.conversations[ context.id ] ){
 		    return this
 		  }
 
 		  this.conversations[ context.id ] = new Conversation( this, context )
-
-		  var id = 0
-
-		  if( justCreated ){
-		  	id = context.id;
-		  }
-
-		  this.updateConversationsListUI( id )
+		  this.updateConversationsListUI()
 		  return this
 
 		}
@@ -214,7 +208,7 @@ var model = ( function( view ){
 
 		}
 
-		changeMainAreaMode( value, list ){
+		changeMainAreaMode( value, list, conversation ){
 
 		  if( this._mainAreaMode === value ){
 		    return
@@ -223,7 +217,7 @@ var model = ( function( view ){
 		  this._prevMainAreaMode = this._mainAreaMode
 		  this._mainAreaMode = value
 
-			view.changeMainAreaMode( value, list );
+			view.changeMainAreaMode( value, list, conversation );
 
 		}
 
@@ -238,30 +232,78 @@ var model = ( function( view ){
 
 		}
 
-		deleteConversation( conversationId ){
+		changeGroupMode( value ){
 
-			/*api.com.remove( conversationId, function( err ){
+			if( this._groupMode === value ){
+		    return
+		  }
 
-				if( err ){
-					return view.launchAlert( err );
-				}
+		  this._groupMode = value
 
-				//delete this.conversations[ conversationId ];
-				//this.updateConversationsListUI();
+		}
 
-			})*/
+		deleteConversationFront( conversationId ){
 
-			this.conversations[ conversationId ].context.remove( conversationId, function( err ){
+			delete this.conversations[ conversationId ];
+			this.updateConversationsListUI();
+
+		}
+
+		deleteConversationApi( conversationId ){
+
+			this.conversations[ conversationId ].context.remove( function( err ){
 
 				if( err ){
 					return view.launchAlert( err );
 				}
 
 				console.log( arguments );
-				//delete this.conversations[ conversationId ];
-				//this.updateConversationsListUI();
 
 			})
+
+		}
+
+		editGroup( conversationId ){
+
+		  var list = []
+
+		  for( var i in this.contacts ){
+		    list.push( this.contacts[ i ] )
+		  }
+
+			if( conversationId ){
+
+				if( this.conversations[ conversationId ] && this.conversations[ conversationId ].isGroup ){
+
+					this.changeMainAreaMode( MAINAREA_GROUPMODE, list, this.conversations[ conversationId ] );
+					this.changeGroupMode( GROUP_EDIT );
+
+				}
+
+			}else{
+
+				this.changeMainAreaMode( MAINAREA_GROUPMODE, list );
+				this.changeGroupMode( GROUP_CREATE );
+
+			}
+
+			//view.startCreateGroup( list );
+
+	    /*if( mobile ){
+
+	      prevMode = mode;
+	      mode = MODE_ANIMATING;
+	      $('.group-menu').transition({
+	        'x' : 0
+	      }, animationDuration, animationEffect, function(){
+	        mode = MODE_CREATING_GROUP;
+	      });
+	      $('.initial-header .new-group').removeClass('visible');
+	      $('.initial-header .back-button').addClass('visible');
+	      //$('.initial-header .more-button').hide();
+	      $('.initial-header .accept-button').show();
+
+	    }*/
 
 		}
 
@@ -277,14 +319,14 @@ var model = ( function( view ){
 		  		return callback(err);
 		  	}
 
-		    this.addConversation( event, true )
+		    this.addConversation( event )
 		    callback();
 
 		  }.bind(this))
 
 		}
 
-		exitGroup( groupId ){
+		leaveConversation( groupId ){
 
 			if( !this.conversations[ groupId ] ){
 				return view.launchAlert( 'Grupo no existe' );
@@ -352,7 +394,11 @@ var model = ( function( view ){
 		}
 
 		hideGroupMenu(){
+
+			this.changeGroupMode( GROUP_NULL )
+			this.changeMainAreaMode( this._prevMainAreaMode )
 			view.hideGroupMenu();
+
 		}
 
 		openConversation( conversationId ){
@@ -363,7 +409,8 @@ var model = ( function( view ){
 			}else{
 				conversation = conversationId;
 			}
-			
+			console.log(conversation);
+
 			var isConnected = this.contacts[ conversation.users[ 0 ] ] && this.contacts[ conversation.users[ 0 ] ].connected;
 
 		  this.changeSidebarMode( SIDEBAR_CONVERSATIONS )
@@ -381,6 +428,7 @@ var model = ( function( view ){
 		  this.changeMainAreaMode( MAINAREA_CONVERSATION )
 
 		  view.openConversation( conversation, isConnected );
+		  //TODO mirar como atender conversacion
 
 		  conversation.context.getMessages( { withAttendedStatus : true }, function( err, list ){
 
@@ -443,11 +491,6 @@ var model = ( function( view ){
 
 		saveGroup( info ){
 
-			//Disable edit group
-			if( this.openedChat ){
-				return
-			}
-
 			if( info.name === '' ){
 				return view.launchAlert( 'Wrong name' );
 			}
@@ -464,7 +507,17 @@ var model = ( function( view ){
 
 		  info.members = list;
 
-			new Conversation( this, null, info );
+		  if( this._groupMode == GROUP_EDIT && info.conversationId ){
+
+				if( this.conversations[ info.conversationId ] ){
+					this.conversations[ info.conversationId ].editConversation( info )
+				}		  	
+
+		  }else if( this._groupMode == GROUP_CREATE ){
+		  	new Conversation( this, null, info );
+		  }
+
+			
 
 		}
 
@@ -483,40 +536,6 @@ var model = ( function( view ){
 		  }
 
 		  return this
-
-		}
-
-		startCreateGroup(){
-
-			if( this._mainAreaMode === MAINAREA_GROUPMODE ){
-				return;
-			}
-
-		  var list = []
-
-		  for( var i in this.contacts ){
-		    list.push( this.contacts[ i ] )
-		  }
-
-			this.changeMainAreaMode( MAINAREA_GROUPMODE, list );
-
-			//view.startCreateGroup( list );
-
-	    /*if( mobile ){
-
-	      prevMode = mode;
-	      mode = MODE_ANIMATING;
-	      $('.group-menu').transition({
-	        'x' : 0
-	      }, animationDuration, animationEffect, function(){
-	        mode = MODE_CREATING_GROUP;
-	      });
-	      $('.initial-header .new-group').removeClass('visible');
-	      $('.initial-header .back-button').addClass('visible');
-	      //$('.initial-header .more-button').hide();
-	      $('.initial-header .accept-button').show();
-
-	    }*/
 
 		}
 
@@ -539,6 +558,14 @@ var model = ( function( view ){
 		  this.updateConversationsListUI()
 
 		  return this;
+
+		}
+
+		updateConversationInfo( convesationId ){
+
+			if( this.conversations[ conversationId ] ){
+				this.conversations[ conversationId ]._loadAdditionalInfo();
+			}
 
 		}
 
@@ -665,15 +692,12 @@ var model = ( function( view ){
 		    	if( err ){
 		    		return view.launchAlert( err ); 
 		    	}
-		      // To Do -> Err
-		      this.app.ensureConversation( context.id, function(){
 
-		      	this.context = context
-		      	this.app.view.hideGroupMenu( this.context.id );
-		      	this._loadAdditionalInfo();
-
-		      }.bind(this))
-		      
+		    	this.app.conversations[ context.id ] = this;
+	      	this.context = context
+	      	this.app.hideGroupMenu();
+	      	this.app.updateConversationsListUI( this.context.id ) 
+	      	this._loadAdditionalInfo();
 
 		    }.bind( this ))
 
@@ -703,6 +727,44 @@ var model = ( function( view ){
 		    }.bind( this ))
 
 		  }.bind( this ))
+
+		}
+
+		editConversation( info ){
+
+			this.name = info.name;
+
+			//TODO cambiarMiembros
+			var toDelete = [];
+	    var toAdd = [];
+
+	    for (var i = 0; i < info.members.length; i++) {
+
+	    	var index = this.users.indexOf( info.members[i] )
+
+	      if ( index == -1 ){
+	        toAdd.push( info.members[i] );
+	      }
+
+	      delete this.users[ index ];
+
+	    }
+
+	   	if( this.users.length ){
+	   		toDelete = this.users;
+	   	}
+
+	   	/*this.context.addUser( toAdd, function( err, res ){
+	   		console.log( arguments );
+	   	})
+
+	   	this.context.removeUser( toDelete, function( err, res ){
+	   		console.log( arguments );
+	   	})
+
+			this._loadAdditionalInfo();*/
+			console.log( toAdd, toDelete )
+			this.app.hideGroupMenu();
 
 		}
 
