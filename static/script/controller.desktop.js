@@ -33,7 +33,11 @@ var controller = ( function( model, view ){
       })
 
       this.dom.on( 'click', '.new-group-button', function(){
-        model.startCreateGroup();
+        model.editGroup( null );
+      })
+
+      this.dom.on( 'click', '.conversation-info.isGroup', function(){
+        model.editGroup( parseInt( $('.channel.active').attr( 'data-id' ) ) );
       })
 
       this.dom.on( 'click', '.group-menu .back, .cancel-group', function(){
@@ -61,13 +65,13 @@ var controller = ( function( model, view ){
         var id = $( this ).attr( 'data-id' );
 
         menu.addOption( lang.deleteChat , function(){
-          model.deleteConversation( id );
+          model.deleteConversationApi( id );
         });
 
         if( $( this ).hasClass( 'isGroup' ) ){
 
           menu.addOption( lang.exitGroup , function(){
-            model.exitGroup( id );
+            model.leaveConversation( id );
           });
 
         }
@@ -81,7 +85,8 @@ var controller = ( function( model, view ){
         var info = {
 
           name: $( '.group-name-input input' ).val(),
-          members: $( '.memberDom.active' )
+          members: $( '.memberDom.active' ),
+          conversationId: parseInt( $( '.channel-list .channel.active' ).attr('data-id') )
 
         }
 
@@ -140,12 +145,32 @@ var controller = ( function( model, view ){
         model.updateMessageAttendedUI( comMessageId, comContextId )
       })
 
-      api.com.on( 'userAdded', function(){
-        console.log( arguments );
+      api.com.on( 'userAdded', function( conversationId, userId ){
+
+        /*if( userId === api.system.user().id ){
+          model.deleteConversationFront( conversationId );
+        }else{
+          model.updateConversationInfo( conversationId );
+        }*/
+
       })
 
-      api.com.on( 'userRemoved', function(){
-        console.log( arguments );
+      api.com.on( 'userRemoved', function( conversationId, userId ){
+
+        if( userId === api.system.user().id ){
+          model.deleteConversationFront( conversationId );
+        }else{
+          model.updateConversationInfo( conversationId );
+        }
+
+      })
+
+      api.notification.on( 'new', function( notification ){
+        console.log( notification )
+      })
+
+      api.notification.on( 'attended', function( list ){
+        console.log( list )
       })
 
     }  

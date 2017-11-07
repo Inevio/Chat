@@ -7,6 +7,9 @@ const MAINAREA_GROUPMODE = 2
 const SIDEBAR_NULL = 0
 const SIDEBAR_CONVERSATIONS = 1
 const SIDEBAR_CONTACTS = 2
+const GROUP_NULL = 0
+const GROUP_CREATE = 1
+const GROUP_EDIT = 2
 
 var view = ( function(){
 
@@ -172,7 +175,7 @@ var view = ( function(){
 
   	}
 
-		changeMainAreaMode( value, additionalData ){
+		changeMainAreaMode( value, additionalData, conversation ){
 
 		  if( value === MAINAREA_NULL ){
 
@@ -187,7 +190,7 @@ var view = ( function(){
 		    this.hideGroupMenu();
 
 		  }else if( value === MAINAREA_GROUPMODE && additionalData && additionalData.length ){
-		 		this.startCreateGroup( additionalData );
+		 		this.startCreateGroup( additionalData, conversation );
 		  }
 
 		}
@@ -283,11 +286,20 @@ var view = ( function(){
 		  $('.conversation-name, .conver-header .conver-title').text( conversation.name )
 
 		  if( conversation.isGroup ){
-		    $('.conversation-moreinfo, .conver-moreinfo').removeClass('conected').text( conversation.users.length + ' ' + lang.members )
+
+		  	$('.conversation-info').addClass('isGroup');
+		    $('.conversation-moreinfo, .conver-moreinfo').removeClass('conected').text( conversation.users.length + 1 + ' ' + lang.members )
+
 		  }else if( isConnected ) {
+
+		  	$('.conversation-info').removeClass('isGroup');
 		    $('.conversation-moreinfo, .conver-moreinfo').addClass('conected').text( lang.conected );
+
 		  }else{
+
+		  	$('.conversation-info').removeClass('isGroup');
 		    $('.conversation-moreinfo, .conver-moreinfo').removeClass('conected').text( lang.disconected );
+
 		  }
 
 		  $( '.conversation-input textarea' ).val('').focus();
@@ -296,15 +308,27 @@ var view = ( function(){
 
 		}
 
-		startCreateGroup( friendList ){
+		startCreateGroup( friendList, conversation ){
 
-			$( '.group-menu' ).removeClass('group-edit').removeClass('group-view');
-	    $( '.group-menu' ).addClass( 'visible' ).addClass( 'group-new' );
-	    $( '.group-name-input input' ).val( '' );
-	    $( '.search-members input' ).val( '' );
+			if( conversation ){
+
+			  $( '.group-menu' ).removeClass( 'group-view' ).removeClass( 'group-new' ).addClass( 'group-edit' );
+			  $( '.group-edit' ).addClass( 'visible' );
+			  $( '.group-name editMode' ).text( lang.nameGroup );
+			  $( '.group-name-input input' ).val( conversation.name );
+
+			}else{
+
+				$( '.group-menu' ).removeClass('group-edit').removeClass('group-view');
+		    $( '.group-menu' ).addClass( 'visible' ).addClass( 'group-new' );
+		    $( '.group-name-input input' ).val( '' );
+		    $( '.search-members input' ).val( '' );
+
+			}
 
 	    this._setGroupAvatar( '?' , $( '.group-avatar' ) );
 	    $( '.memberDom' ).remove();
+	    $( '.group-name .ui-input-search input' ).val( '' );
 
 	    this._domGroupMemberList.empty().append( friendList.map( function( item ){
 
@@ -314,8 +338,14 @@ var view = ( function(){
 			  item.dom.find( '.member-avatar' ).css( 'background-image' , 'url(' + item.user.avatar.big + ')' );
 			  item.dom.attr( 'data-id', item.user.id )
 
-		  	return item.dom 
+			  if( conversation && conversation.users && (conversation.users.indexOf( item.user.id ) != -1) ){
 
+			  	item.dom.addClass( 'active' );
+			  	item.dom.find('.ui-checkbox').addClass( 'active' );
+
+			  }
+
+		  	return item.dom 
 
 	    }))
 
@@ -401,6 +431,10 @@ var view = ( function(){
 			  item.dom.addClass( 'channel-id-' + item.context.id );
 		  	item.dom.attr( 'data-id', item.context.id )
 			  item.dom.find('.channel-name').text( item.name );
+
+			  if( item.context.id == id ){
+			  	console.log('sss')
+			  }
 
 			  if( item.isGroup ){
 
