@@ -147,21 +147,30 @@ var controller = ( function( model, view ){
 
       api.com.on( 'userAdded', function( conversationId, userId ){
 
-        /*if( userId === api.system.user().id ){
-          model.deleteConversationFront( conversationId );
+        console.log( 'userAdded', conversationId, userId );
+        if( userId === api.system.user().id ){
+          model.ensureConversation( conversationId );
         }else{
           model.updateConversationInfo( conversationId );
-        }*/
+        }
 
       })
 
       api.com.on( 'userRemoved', function( conversationId, userId ){
 
+        console.log( 'userRemoved', conversationId, userId );
         if( userId === api.system.user().id ){
           model.deleteConversationFront( conversationId );
         }else{
           model.updateConversationInfo( conversationId );
         }
+
+      })
+
+      api.com.on( 'contextRemoved', function( conversationId ){
+
+        console.log( 'contextRemoved', conversationId );
+        model.deleteConversationFront( conversationId );
 
       })
 
