@@ -244,6 +244,10 @@ var model = ( function( view ){
 
 		deleteConversationFront( conversationId ){
 
+			if( this.openedChat && conversationId === this.openedChat.context.id){
+				this.changeMainAreaMode( MAINAREA_NULL );
+			}
+
 			delete this.conversations[ conversationId ];
 			this.updateConversationsListUI();
 
@@ -256,8 +260,6 @@ var model = ( function( view ){
 				if( err ){
 					return view.launchAlert( err );
 				}
-
-				console.log( arguments );
 
 			})
 
@@ -501,9 +503,8 @@ var model = ( function( view ){
 			var list = []
 
 		  info.members.each( function(){
-		    list.push( $(this).attr('data-id') )
+		    list.push( parseInt( $(this).attr('data-id') ) )
 		  });
-		  console.log( list );
 
 		  info.members = list;
 
@@ -561,7 +562,7 @@ var model = ( function( view ){
 
 		}
 
-		updateConversationInfo( convesationId ){
+		updateConversationInfo( conversationId ){
 
 			if( this.conversations[ conversationId ] ){
 				this.conversations[ conversationId ]._loadAdditionalInfo();
@@ -649,22 +650,31 @@ var model = ( function( view ){
 
 		  this.context.getUsers( { full : false }, function( err, list ){
 
+		  	if( err ){
+		  		return this.app.view.launchAlert( err );
+		  	}
+
 		    this.users = api.tool.arrayDifference( list, [ api.system.user().id ] )
 		    this.updateUI();
 
 		  }.bind( this ))
 
-		  this.context.getMessages( { withAttendedStatus : true }, function( err, list ){ // To Do -> Limit to the last one
+		  this.context.getMessages( { withAttendedStatus : true, limit : 1, order : 'newFirst' }, function( err, list ){ // To Do -> Limit to the last one
 
-		    this.updateLastMessage( list[ list.length - 1 ] );
+		  	if( err ){
+		  		return this.app.view.launchAlert( err );
+		  	}
+
+		  	console.log( list );
+		    this.updateLastMessage( list[0] );
 
 		  }.bind( this ))
 
 		  api.notification.count( 'chat', { comContext : this.context.id }, function( err, counter ){
 
-		  	if( err ){
-		  		return
-		  	}
+		  	/*if( err ){
+		  		return this.app.view.launchAlert( err );
+		  	}*/
 
 		  	this.unread = counter;
 
@@ -737,32 +747,35 @@ var model = ( function( view ){
 			//TODO cambiarMiembros
 			var toDelete = [];
 	    var toAdd = [];
+	    console.log( this.users, info.members )
 
-	    for (var i = 0; i < info.members.length; i++) {
+	    for( var i = 0; i < info.members.length; i++ ){
 
-	    	var index = this.users.indexOf( info.members[i] )
+	    	var index = this.users.indexOf( info.members[i] );
 
-	      if ( index == -1 ){
+	      if( index == -1 ){
 	        toAdd.push( info.members[i] );
 	      }
 
-	      delete this.users[ index ];
+	    }
+
+	    for( var i = 0; i < this.users.length; i++ ){
+
+	    	var index = info.members.indexOf( this.users[i] );
+
+	    	if( index == -1 ){
+	        toDelete.push( this.users[i] );
+	      }
 
 	    }
 
-	   	if( this.users.length ){
-	   		toDelete = this.users;
-	   	}
-
-	   	/*this.context.addUser( toAdd, function( err, res ){
-	   		console.log( arguments );
+	   	this.context.addUser( toAdd, function( err, res ){
+	   		console.log( err );
 	   	})
 
 	   	this.context.removeUser( toDelete, function( err, res ){
-	   		console.log( arguments );
+	   		console.log( err );
 	   	})
-
-			this._loadAdditionalInfo();*/
 			console.log( toAdd, toDelete )
 			this.app.hideGroupMenu();
 
