@@ -1363,7 +1363,7 @@ input {
     position: absolute;
     margin-top: 92px;
     max-width: 550px;
-    max-height: ~'calc(100% - 230px)';
+    max-height: ~'calc(100% - 275px)';
 }
 
 .group-new .member-list, .group-edit .member-list {

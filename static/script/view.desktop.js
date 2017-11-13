@@ -274,7 +274,10 @@ var view = ( function(){
 		}
 
 		launchAlert( message ){
+
+			console.error( message );
 			alert( message );
+
 		}
 
 		markMessageAsRead( messageId ){
@@ -288,7 +291,8 @@ var view = ( function(){
 		  if( conversation.isGroup ){
 
 		  	$('.conversation-info').addClass('isGroup');
-		    $('.conversation-moreinfo, .conver-moreinfo').removeClass('conected').text( conversation.users.length + 1 + ' ' + lang.members )
+		  	var membersText = conversation.users.length === 0 ? (conversation.users.length + 1 + ' ' + lang.member) : (conversation.users.length + 1 + ' ' + lang.members)
+		    $('.conversation-moreinfo, .conver-moreinfo').removeClass('conected').text( membersText );
 
 		  }else if( isConnected ) {
 
@@ -328,7 +332,7 @@ var view = ( function(){
 
 	    this._setGroupAvatar( '?' , $( '.group-avatar' ) );
 	    $( '.memberDom' ).remove();
-	    $( '.group-name .ui-input-search input' ).val( '' );
+	    $( '.group-menu .ui-input-search input' ).val('')
 
 	    this._domGroupMemberList.empty().append( friendList.map( function( item ){
 
@@ -434,6 +438,7 @@ var view = ( function(){
 
 			  if( item.context.id == id ){
 			  	console.log('sss')
+			  	item.dom.addClass('active');
 			  }
 
 			  if( item.isGroup ){
