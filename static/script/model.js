@@ -200,6 +200,8 @@ var model = ( function( view ){
 		    	senderName = this.contacts[ message.sender ].user.fullName
 		  	}
 
+		  	message.markAsAttended( console.log.bind( console ) )
+
 			}else{
 				senderName = api.system.user().fullName
 			}
@@ -432,6 +434,14 @@ var model = ( function( view ){
 		  view.openConversation( conversation, isConnected );
 		  //TODO mirar como atender conversacion
 
+		  api.notification.markAsAttended( 'chat', { comContext : conversation.context.id, full: true }, function( err ){
+
+		  	if( err ){
+		  		view.launchAlert( err );
+		  	}
+
+			})
+
 		  conversation.context.getMessages( { withAttendedStatus : true }, function( err, list ){
 
 		    // To Do -> Error
@@ -567,6 +577,16 @@ var model = ( function( view ){
 
 		}
 
+		updateConversationUnread( conversationId ){
+
+			var converId = parseInt(conversationId);
+
+			if( this.conversations[ converId ] ){
+				this.conversations[ converId ]._loadUnread();
+			}
+
+		}
+
 		updateConversationsListUI(){
 
 		  var list = []
@@ -650,7 +670,42 @@ var model = ( function( view ){
 
   	_loadAdditionalInfo(){
 
-		  this.context.getUsers( { full : false }, function( err, list ){
+  		this._loadUsers();
+  		this._loadLastMessage();
+  		this._loadUnread();
+
+		}
+
+  	_loadLastMessage(){
+
+		  this.context.getMessages( { withAttendedStatus : true, limit : 1, order : 'newFirst' }, function( err, list ){ // To Do -> Limit to the last one
+
+		  	if( err ){
+		  		return this.app.view.launchAlert( err );
+		  	}
+		    this.updateLastMessage( list[0] );
+
+		  }.bind( this ))
+
+  	}
+
+  	_loadUnread(){
+
+  		api.notification.count( 'chat', { comContext : this.context.id }, function( err, counter ){
+
+		  	if( err ){
+		  		return this.app.view.launchAlert( err );
+		  	}
+		  	this.unread = counter;
+		  	this.updateUI();
+
+		  }.bind( this ))
+
+  	}
+
+   	_loadUsers(){
+
+  		this.context.getUsers( { full : false }, function( err, list ){
 
 		  	if( err ){
 		  		return this.app.view.launchAlert( err );
@@ -661,28 +716,7 @@ var model = ( function( view ){
 
 		  }.bind( this ))
 
-		  this.context.getMessages( { withAttendedStatus : true, limit : 1, order : 'newFirst' }, function( err, list ){ // To Do -> Limit to the last one
-
-		  	if( err ){
-		  		return this.app.view.launchAlert( err );
-		  	}
-
-		  	console.log( list );
-		    this.updateLastMessage( list[0] );
-
-		  }.bind( this ))
-
-		  api.notification.count( 'chat', { comContext : this.context.id }, function( err, counter ){
-
-		  	/*if( err ){
-		  		return this.app.view.launchAlert( err );
-		  	}*/
-
-		  	this.unread = counter;
-
-		  }.bind( this ))
-
-		}
+  	}
 
 		_startConversation(){
 
@@ -799,8 +833,6 @@ var model = ( function( view ){
 		      if( err ){
 		      	return view.launchAlert( err );
 		      }
-
-		      //updateLastMessage( this )
 
 		    })
 

@@ -158,7 +158,6 @@ var view = ( function(){
 
 		  if( message.sender !== api.system.user().id ){
 		    dom.find( '.message-avatar' ).css( 'background-image' , 'url(' + senderAvatar + ')' )
-		    message.markAsAttended( console.log.bind( console ) )
 		  }
 
 		  if( message.attended.length ){
@@ -320,17 +319,17 @@ var view = ( function(){
 			  $( '.group-edit' ).addClass( 'visible' );
 			  $( '.group-name editMode' ).text( lang.nameGroup );
 			  $( '.group-name-input input' ).val( conversation.name );
+			  this._setGroupAvatar( conversation.name , $( '.group-avatar' ) );
 
 			}else{
 
 				$( '.group-menu' ).removeClass('group-edit').removeClass('group-view');
 		    $( '.group-menu' ).addClass( 'visible' ).addClass( 'group-new' );
 		    $( '.group-name-input input' ).val( '' );
-		    $( '.search-members input' ).val( '' );
+		    this._setGroupAvatar( '?' , $( '.group-avatar' ) );
 
 			}
-
-	    this._setGroupAvatar( '?' , $( '.group-avatar' ) );
+	    
 	    $( '.memberDom' ).remove();
 	    $( '.group-menu .ui-input-search input' ).val('')
 
@@ -412,6 +411,12 @@ var view = ( function(){
 		  
 		  conversationDom.find( '.channel-last-msg' ).text( conversation.lastMessage ? conversation.lastMessage.data.text : '' );
 
+		  if( conversation.unread > 0 ) {
+        conversationDom.find( '.channel-badge' ).addClass('visible').find('span').text( conversation.unread )
+      }else{
+        conversationDom.find( '.channel-badge' ).removeClass('visible').find('span').text( '' )
+      }
+
   	}
 
   	updateConversationsListUI( list, id ){
@@ -449,6 +454,13 @@ var view = ( function(){
 			  }else{
 			  	item.dom.find('.channel-img').css( 'background-image' , 'url(' + item.img + ')' )
 			  }
+
+			  if( item.unread > 0 ) {
+	        item.dom.find( '.channel-badge' ).addClass('visible').find('span').text( item.unread )
+	      }else{
+	        item.dom.find( '.channel-badge' ).removeClass('visible').find('span').text( '' )
+	      }
+
 			  
 			  item.dom.find('.channel-last-msg').text( item.lastMessage ? item.lastMessage.data.text : '' )
 
@@ -670,6 +682,8 @@ var model = ( function( view ){
 				if( this.conversations[ message.context ].isGroup ){
 		    	senderName = this.contacts[ message.sender ].user.fullName
 		  	}
+
+		  	message.markAsAttended( console.log.bind( console ) )
 
 			}else{
 				senderName = api.system.user().fullName
@@ -903,6 +917,14 @@ var model = ( function( view ){
 		  view.openConversation( conversation, isConnected );
 		  //TODO mirar como atender conversacion
 
+		  api.notification.markAsAttended( 'chat', { comContext : conversation.context.id, full: true }, function( err ){
+
+		  	if( err ){
+		  		view.launchAlert( err );
+		  	}
+
+			})
+
 		  conversation.context.getMessages( { withAttendedStatus : true }, function( err, list ){
 
 		    // To Do -> Error
@@ -1038,6 +1060,16 @@ var model = ( function( view ){
 
 		}
 
+		updateConversationUnread( conversationId ){
+
+			var converId = parseInt(conversationId);
+
+			if( this.conversations[ converId ] ){
+				this.conversations[ converId ]._loadUnread();
+			}
+
+		}
+
 		updateConversationsListUI(){
 
 		  var list = []
@@ -1121,7 +1153,42 @@ var model = ( function( view ){
 
   	_loadAdditionalInfo(){
 
-		  this.context.getUsers( { full : false }, function( err, list ){
+  		this._loadUsers();
+  		this._loadLastMessage();
+  		this._loadUnread();
+
+		}
+
+  	_loadLastMessage(){
+
+		  this.context.getMessages( { withAttendedStatus : true, limit : 1, order : 'newFirst' }, function( err, list ){ // To Do -> Limit to the last one
+
+		  	if( err ){
+		  		return this.app.view.launchAlert( err );
+		  	}
+		    this.updateLastMessage( list[0] );
+
+		  }.bind( this ))
+
+  	}
+
+  	_loadUnread(){
+
+  		api.notification.count( 'chat', { comContext : this.context.id }, function( err, counter ){
+
+		  	if( err ){
+		  		return this.app.view.launchAlert( err );
+		  	}
+		  	this.unread = counter;
+		  	this.updateUI();
+
+		  }.bind( this ))
+
+  	}
+
+   	_loadUsers(){
+
+  		this.context.getUsers( { full : false }, function( err, list ){
 
 		  	if( err ){
 		  		return this.app.view.launchAlert( err );
@@ -1132,28 +1199,7 @@ var model = ( function( view ){
 
 		  }.bind( this ))
 
-		  this.context.getMessages( { withAttendedStatus : true, limit : 1, order : 'newFirst' }, function( err, list ){ // To Do -> Limit to the last one
-
-		  	if( err ){
-		  		return this.app.view.launchAlert( err );
-		  	}
-
-		  	console.log( list );
-		    this.updateLastMessage( list[0] );
-
-		  }.bind( this ))
-
-		  api.notification.count( 'chat', { comContext : this.context.id }, function( err, counter ){
-
-		  	/*if( err ){
-		  		return this.app.view.launchAlert( err );
-		  	}*/
-
-		  	this.unread = counter;
-
-		  }.bind( this ))
-
-		}
+  	}
 
 		_startConversation(){
 
@@ -1270,8 +1316,6 @@ var model = ( function( view ){
 		      if( err ){
 		      	return view.launchAlert( err );
 		      }
-
-		      //updateLastMessage( this )
 
 		    })
 
@@ -1553,11 +1597,13 @@ var controller = ( function( model, view ){
       })
 
       api.notification.on( 'new', function( notification ){
-        console.log( notification )
+        model.updateConversationUnread( notification.comContext )
       })
 
       api.notification.on( 'attended', function( list ){
-        console.log( list )
+
+        model.updateConversationUnread( notification.comContext )
+
       })
 
     }  
