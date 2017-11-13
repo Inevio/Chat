@@ -274,7 +274,10 @@ var view = ( function(){
 		}
 
 		launchAlert( message ){
+
+			console.error( message );
 			alert( message );
+
 		}
 
 		markMessageAsRead( messageId ){
@@ -288,7 +291,8 @@ var view = ( function(){
 		  if( conversation.isGroup ){
 
 		  	$('.conversation-info').addClass('isGroup');
-		    $('.conversation-moreinfo, .conver-moreinfo').removeClass('conected').text( conversation.users.length + 1 + ' ' + lang.members )
+		  	var membersText = conversation.users.length === 0 ? (conversation.users.length + 1 + ' ' + lang.member) : (conversation.users.length + 1 + ' ' + lang.members)
+		    $('.conversation-moreinfo, .conver-moreinfo').removeClass('conected').text( membersText );
 
 		  }else if( isConnected ) {
 
@@ -328,7 +332,7 @@ var view = ( function(){
 
 	    this._setGroupAvatar( '?' , $( '.group-avatar' ) );
 	    $( '.memberDom' ).remove();
-	    $( '.group-name .ui-input-search input' ).val( '' );
+	    $( '.group-menu .ui-input-search input' ).val('')
 
 	    this._domGroupMemberList.empty().append( friendList.map( function( item ){
 
@@ -434,6 +438,7 @@ var view = ( function(){
 
 			  if( item.context.id == id ){
 			  	console.log('sss')
+			  	item.dom.addClass('active');
 			  }
 
 			  if( item.isGroup ){
@@ -877,7 +882,7 @@ var model = ( function( view ){
 			}else{
 				conversation = conversationId;
 			}
-			console.log(conversation);
+			//console.log(conversation);
 
 			var isConnected = this.contacts[ conversation.users[ 0 ] ] && this.contacts[ conversation.users[ 0 ] ].connected;
 
@@ -962,9 +967,6 @@ var model = ( function( view ){
 			if( info.name === '' ){
 				return view.launchAlert( 'Wrong name' );
 			}
-			if( info.members.length === 0 ){
-				return view.launchAlert( 'Wrong users' );
-			}
 
 			var list = []
 
@@ -1036,12 +1038,17 @@ var model = ( function( view ){
 
 		}
 
-		updateConversationsListUI( id ){
+		updateConversationsListUI(){
 
 		  var list = []
+		  var id = null;
 
 		  for( var i in this.conversations ){
 		    list.push( this.conversations[ i ] )
+		  }
+
+		  if( this.openedChat && this.openedChat.context.id ){
+		  	id = this.openedChat.context.id;
 		  }
 
 			this.view.updateConversationsListUI( list, id );
@@ -1172,8 +1179,9 @@ var model = ( function( view ){
 		    	this.app.conversations[ context.id ] = this;
 	      	this.context = context
 	      	this.app.hideGroupMenu();
-	      	this.app.updateConversationsListUI( this.context.id ) 
+	      	this.app.updateConversationsListUI() 
 	      	this._loadAdditionalInfo();
+	      	this.openConversation( context.id )
 
 		    }.bind( this ))
 
@@ -1315,6 +1323,9 @@ var model = ( function( view ){
 
 		  //TODO llamar a la view
 		  view.updateConversationUI( this );
+		  if( this.app.openedChat && this.app.openedChat.context.id === this.context.id ){
+		  	view.openConversation( this );
+		  }
 
 		}
 
