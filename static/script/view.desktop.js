@@ -158,7 +158,6 @@ var view = ( function(){
 
 		  if( message.sender !== api.system.user().id ){
 		    dom.find( '.message-avatar' ).css( 'background-image' , 'url(' + senderAvatar + ')' )
-		    message.markAsAttended( console.log.bind( console ) )
 		  }
 
 		  if( message.attended.length ){
@@ -320,17 +319,17 @@ var view = ( function(){
 			  $( '.group-edit' ).addClass( 'visible' );
 			  $( '.group-name editMode' ).text( lang.nameGroup );
 			  $( '.group-name-input input' ).val( conversation.name );
+			  this._setGroupAvatar( conversation.name , $( '.group-avatar' ) );
 
 			}else{
 
 				$( '.group-menu' ).removeClass('group-edit').removeClass('group-view');
 		    $( '.group-menu' ).addClass( 'visible' ).addClass( 'group-new' );
 		    $( '.group-name-input input' ).val( '' );
-		    $( '.search-members input' ).val( '' );
+		    this._setGroupAvatar( '?' , $( '.group-avatar' ) );
 
 			}
-
-	    this._setGroupAvatar( '?' , $( '.group-avatar' ) );
+	    
 	    $( '.memberDom' ).remove();
 	    $( '.group-menu .ui-input-search input' ).val('')
 
@@ -412,6 +411,12 @@ var view = ( function(){
 		  
 		  conversationDom.find( '.channel-last-msg' ).text( conversation.lastMessage ? conversation.lastMessage.data.text : '' );
 
+		  if( conversation.unread > 0 ) {
+        conversationDom.find( '.channel-badge' ).addClass('visible').find('span').text( conversation.unread )
+      }else{
+        conversationDom.find( '.channel-badge' ).removeClass('visible').find('span').text( '' )
+      }
+
   	}
 
   	updateConversationsListUI( list, id ){
@@ -449,6 +454,13 @@ var view = ( function(){
 			  }else{
 			  	item.dom.find('.channel-img').css( 'background-image' , 'url(' + item.img + ')' )
 			  }
+
+			  if( item.unread > 0 ) {
+	        item.dom.find( '.channel-badge' ).addClass('visible').find('span').text( item.unread )
+	      }else{
+	        item.dom.find( '.channel-badge' ).removeClass('visible').find('span').text( '' )
+	      }
+
 			  
 			  item.dom.find('.channel-last-msg').text( item.lastMessage ? item.lastMessage.data.text : '' )
 

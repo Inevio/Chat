@@ -175,11 +175,13 @@ var controller = ( function( model, view ){
       })
 
       api.notification.on( 'new', function( notification ){
-        console.log( notification )
+        model.updateConversationUnread( notification.comContext )
       })
 
       api.notification.on( 'attended', function( list ){
-        console.log( list )
+
+        model.updateConversationUnread( notification.comContext )
+
       })
 
     }  
