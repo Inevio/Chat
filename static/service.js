@@ -41,7 +41,7 @@ api.notification.on( 'attended', function(){
 
   updateBadge( null, false )
 
-  api.notification.count( 'chat' , function( err, counted ){
+  api.notification.count( 'chat' , {}, function( err, counted ){
 
     if( !err ){
       updateBadge( counted )
@@ -52,7 +52,7 @@ api.notification.on( 'attended', function(){
 })
 
 //Start
-api.notification.count( 'chat' , function( err, counted ){
+api.notification.count( 'chat' , {}, function( err, counted ){
 
   if( !err ){
     updateBadge( counted )
