@@ -285,28 +285,7 @@ var view = ( function(){
 
 		openConversation( conversation, isConnected ){
 
-		  $('.conversation-name, .conver-header .conver-title').text( conversation.name )
-
-		  if( conversation.isGroup ){
-
-		  	$('.conversation-info').addClass('isGroup');
-		  	var membersText = conversation.users.length === 0 ? (conversation.users.length + 1 + ' ' + lang.member) : (conversation.users.length + 1 + ' ' + lang.members)
-		    $('.conversation-moreinfo, .conver-moreinfo').removeClass('conected').text( membersText );
-
-		  }else if( isConnected ) {
-
-		  	$('.conversation-info').removeClass('isGroup');
-		    $('.conversation-moreinfo, .conver-moreinfo').addClass('conected').text( lang.conected );
-
-		  }else{
-
-		  	$('.conversation-info').removeClass('isGroup');
-		    $('.conversation-moreinfo, .conver-moreinfo').removeClass('conected').text( lang.disconected );
-
-		  }
-
-		  $( '.conversation-input textarea' ).val('').focus();
-
+			this.updateConversationInfo( conversation, isConnected );
 		  this._cleanMessages()
 
 		}
@@ -394,6 +373,33 @@ var view = ( function(){
 		  	return item.dom
 
 		  }) )
+
+		}
+
+		updateConversationInfo( conversation, isConnected ){
+
+    	$('.conversation-name, .conver-header .conver-title').text( conversation.name )
+
+		  if( conversation.isGroup ){
+
+		  	$('.conversation-info').addClass('isGroup');
+		  	var membersText = conversation.users.length === 0 ? (conversation.users.length + 1 + ' ' + lang.member) : (conversation.users.length + 1 + ' ' + lang.members)
+		    $('.conversation-moreinfo, .conver-moreinfo').removeClass('conected').text( membersText );
+
+		  }else if( isConnected ) {
+
+		  	$('.conversation-info').removeClass('isGroup');
+		    $('.conversation-moreinfo, .conver-moreinfo').addClass('conected').text( lang.conected );
+
+		  }else{
+
+		  	$('.conversation-info').removeClass('isGroup');
+		    $('.conversation-moreinfo, .conver-moreinfo').removeClass('conected').text( lang.disconected );
+
+		  }
+
+		  $( '.conversation-input textarea' ).val('').focus();
+
 
 		}
 

@@ -200,7 +200,7 @@ var model = ( function( view ){
 		    	senderName = this.contacts[ message.sender ].user.fullName
 		  	}
 
-		  	message.markAsAttended( console.log.bind( console ) )
+		  	message.markAsAttended( { full: true }, console.log.bind( console ) )
 
 			}else{
 				senderName = api.system.user().fullName
@@ -413,7 +413,7 @@ var model = ( function( view ){
 			}else{
 				conversation = conversationId;
 			}
-			//console.log(conversation);
+			console.log(conversation);
 
 			var isConnected = this.contacts[ conversation.users[ 0 ] ] && this.contacts[ conversation.users[ 0 ] ].connected;
 
@@ -442,7 +442,7 @@ var model = ( function( view ){
 
 			})
 
-		  conversation.context.getMessages( { withAttendedStatus : true }, function( err, list ){
+	  	conversation.context.getMessages( { withAttendedStatus : true }, function( err, list ){
 
 		    // To Do -> Error
 		    list.forEach( function( message ){
@@ -705,12 +705,13 @@ var model = ( function( view ){
 
    	_loadUsers(){
 
-  		this.context.getUsers( { full : false }, function( err, list ){
+  		this.context.getUsers( { full : false }, function( err, list, admins ){
 
 		  	if( err ){
 		  		return this.app.view.launchAlert( err );
 		  	}
 
+		  	console.log( list, admins );
 		    this.users = api.tool.arrayDifference( list, [ api.system.user().id ] )
 		    this.updateUI();
 
@@ -744,7 +745,7 @@ var model = ( function( view ){
 	      	this.app.hideGroupMenu();
 	      	this.app.updateConversationsListUI() 
 	      	this._loadAdditionalInfo();
-	      	this.openConversation( context.id )
+	      	this.app.openConversation( context.id )
 
 		    }.bind( this ))
 
@@ -884,8 +885,13 @@ var model = ( function( view ){
 
 		  //TODO llamar a la view
 		  view.updateConversationUI( this );
+
+		  //Si la conversación esta abierta, tambien actualizamos su informacion en pantalla
 		  if( this.app.openedChat && this.app.openedChat.context.id === this.context.id ){
-		  	view.openConversation( this );
+
+				var isConnected = this.app.contacts[ this.users[ 0 ] ] && this.app.contacts[ this.users[ 0 ] ].connected;
+		  	view.updateConversationInfo( this, isConnected );
+
 		  }
 
 		}

@@ -180,7 +180,13 @@ var controller = ( function( model, view ){
 
       api.notification.on( 'attended', function( list ){
 
-        model.updateConversationUnread( notification.comContext )
+        list.forEach( function( element ){
+
+          if( element.comContext ){
+            model.updateConversationUnread( parseInt( element.comContext ) )
+          }
+
+        })
 
       })
 
