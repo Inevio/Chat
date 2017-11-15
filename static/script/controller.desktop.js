@@ -11,9 +11,9 @@ var controller = ( function( model, view ){
       this._domMessageMePrototype = $('.message-me.wz-prototype', this._domMessageContainer)
       this._domMessageOtherPrototype = $('.message-other.wz-prototype', this._domMessageContainer)
       this._domCurrentConversation
-      this.model = model;
-      this.view = view;
-      this._bindEvents();
+      this.model = model
+      this.view = view
+      this._bindEvents()
 
     }
 
@@ -33,50 +33,50 @@ var controller = ( function( model, view ){
       })
 
       this.dom.on( 'click', '.new-group-button', function(){
-        model.editGroup( null );
+        model.editGroup( null )
       })
 
       this.dom.on( 'click', '.conversation-info.isGroup', function(){
-        model.editGroup( parseInt( $('.channel.active').attr( 'data-id' ) ) );
+        model.editGroup( parseInt( $('.channel.active').attr( 'data-id' ) ) )
       })
 
       this.dom.on( 'click', '.group-menu .back, .cancel-group', function(){
-        model.hideGroupMenu();
+        model.hideGroupMenu()
       })
 
       this.dom.on( 'click', '.memberDom', function(){
 
-        $(this).toggleClass('active');
-        $(this).find( '.ui-checkbox' ).toggleClass( 'active' );
+        $(this).toggleClass('active')
+        $(this).find( '.ui-checkbox' ).toggleClass( 'active' )
 
       })
 
       this.dom.on( 'click', '.memberDom .ui-checkbox', function(e){
 
-        $(this).toggleClass('active');
-        $(this).parent().toggleClass( 'active' );
-        e.stopPropagation();
+        $(this).toggleClass('active')
+        $(this).parent().toggleClass( 'active' )
+        e.stopPropagation()
 
       })
 
       this.dom.on( 'contextmenu', '.channel', function(){
 
-        var menu = api.menu();
-        var id = $( this ).attr( 'data-id' );
+        var menu = api.menu()
+        var id = $( this ).attr( 'data-id' )
 
         menu.addOption( lang.deleteChat , function(){
-          model.deleteConversationApi( id );
-        });
+          model.deleteConversationApi( id )
+        })
 
         if( $( this ).hasClass( 'isGroup' ) ){
 
           menu.addOption( lang.exitGroup , function(){
-            model.leaveConversation( id );
-          });
+            model.leaveConversation( id )
+          })
 
         }
 
-        menu.render();
+        menu.render()
 
       })
 
@@ -90,7 +90,7 @@ var controller = ( function( model, view ){
 
         }
 
-        model.saveGroup( info );
+        model.saveGroup( info )
 
       })
 
@@ -98,8 +98,8 @@ var controller = ( function( model, view ){
 
         if( e.which === 13 && !e.shiftKey && $.trim( this.dom.find('.conversation-input textarea').val() ) ){
 
-          e.preventDefault();
-          model.sendBuffer( $.trim( this.dom.find('.conversation-input textarea').val() ) );
+          e.preventDefault()
+          model.sendBuffer( $.trim( this.dom.find('.conversation-input textarea').val() ) )
 
         }
 
@@ -130,10 +130,10 @@ var controller = ( function( model, view ){
           model.ensureConversation( event.context, function( err ){
 
             if( err ){
-              return view.launchAlert( err );
+              return view.launchAlert( err )
             }
 
-            model.handleMessage( event );
+            model.handleMessage( event )
 
           })
 
@@ -147,30 +147,30 @@ var controller = ( function( model, view ){
 
       api.com.on( 'userAdded', function( conversationId, userId ){
 
-        console.log( 'userAdded', conversationId, userId );
+        console.log( 'userAdded', conversationId, userId )
         if( userId === api.system.user().id ){
-          model.ensureConversation( conversationId );
+          model.ensureConversation( conversationId )
         }else{
-          model.updateConversationInfo( conversationId );
+          model.updateConversationInfo( conversationId )
         }
 
       })
 
       api.com.on( 'userRemoved', function( conversationId, userId ){
 
-        console.log( 'userRemoved', conversationId, userId );
+        console.log( 'userRemoved', conversationId, userId )
         if( userId === api.system.user().id ){
-          model.deleteConversationFront( conversationId );
+          model.deleteConversationFront( conversationId )
         }else{
-          model.updateConversationInfo( conversationId );
+          model.updateConversationInfo( conversationId )
         }
 
       })
 
       api.com.on( 'contextRemoved', function( conversationId ){
 
-        console.log( 'contextRemoved', conversationId );
-        model.deleteConversationFront( conversationId );
+        console.log( 'contextRemoved', conversationId )
+        model.deleteConversationFront( conversationId )
 
       })
 
@@ -194,6 +194,6 @@ var controller = ( function( model, view ){
 
   }
 
-  return new Controller( model, view );
+  return new Controller( model, view )
 
 })( model, view )
