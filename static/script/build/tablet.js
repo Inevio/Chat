@@ -980,7 +980,7 @@ var model = ( function( view ){
 
 		reloadUnread(){
 
-			api.notification.count( 'chat', function( err, counter ){
+			api.notification.count( 'chat', {}, function( err, counter ){
 
 		  	if( err ){
 		  		return
