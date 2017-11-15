@@ -1,28 +1,28 @@
-'use strict';
+'use strict'
 
-var myUserID = api.system.user().id;
+var myUserID = api.system.user().id
 
 var updateBadge = function( num, add ){
 
   if( num ){
-    api.app.setBadge( parseInt( num ) );
+    api.app.setBadge( parseInt( num ) )
   }else{
 
-    var actualBadge = api.app.getBadge();
+    var actualBadge = api.app.getBadge()
     if ( add ) {
-      api.app.setBadge( parseInt(actualBadge) + 1 );
+      api.app.setBadge( parseInt(actualBadge) + 1 )
     }else{
-      api.app.setBadge( parseInt(actualBadge) - 1 );
+      api.app.setBadge( parseInt(actualBadge) - 1 )
     }
 
   }
 
-};
+}
 
 api.notification.on( 'new', function( data ){
 
   if( data.sender === myUserID ){
-    return;
+    return
   }
 
   updateBadge( null, true )
@@ -35,7 +35,7 @@ api.notification.on( 'new', function( data ){
 
   })
 
-});
+})
 
 api.notification.on( 'attended', function(){
 
