@@ -4,7 +4,7 @@ var myUserID = api.system.user().id
 
 var updateBadge = function( num, add ){
 
-  if( num ){
+  if( num != null ){
     api.app.setBadge( parseInt( num ) )
   }else{
 
