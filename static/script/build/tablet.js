@@ -802,6 +802,8 @@ var model = ( function( view ){
 
 		ensureConversation( contextId, callback ){
 
+			callback = api.tool.secureCallback( callback )
+
 		  if( this.conversations[ contextId ] ){
 		    return callback()
 		  }
@@ -1013,8 +1015,6 @@ var model = ( function( view ){
 		  }else if( this._groupMode == GROUP_CREATE ){
 		  	new Conversation( this, null, info )
 		  }
-
-			
 
 		}
 
@@ -1244,6 +1244,8 @@ var model = ( function( view ){
 
 		_upgradeToRealConversation( callback ){
 
+			callback = api.tool.secureCallback( callback )
+			
 			//Creating group
 		  if( !( this.context instanceof FakeContext ) ){
 		    return callback()
@@ -1579,10 +1581,10 @@ var controller = ( function( model, view ){
         model.updateMessageAttendedUI( comMessageId, comContextId )
       })
 
-      api.com.on( 'userAdded', function( conversationId, userId ){
+      api.com.on( 'userAdded', function( conversationId, user ){
 
-        console.log( 'userAdded', conversationId, userId )
-        if( userId === api.system.user().id ){
+        console.log( 'userAdded', conversationId, user )
+        if( user.id == api.system.user().id ){
           model.ensureConversation( conversationId )
         }else{
           model.updateConversationInfo( conversationId )

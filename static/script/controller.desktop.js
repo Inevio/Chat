@@ -145,10 +145,10 @@ var controller = ( function( model, view ){
         model.updateMessageAttendedUI( comMessageId, comContextId )
       })
 
-      api.com.on( 'userAdded', function( conversationId, userId ){
+      api.com.on( 'userAdded', function( conversationId, user ){
 
-        console.log( 'userAdded', conversationId, userId )
-        if( userId === api.system.user().id ){
+        console.log( 'userAdded', conversationId, user )
+        if( user.id == api.system.user().id ){
           model.ensureConversation( conversationId )
         }else{
           model.updateConversationInfo( conversationId )

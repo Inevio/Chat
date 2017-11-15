@@ -313,6 +313,8 @@ var model = ( function( view ){
 
 		ensureConversation( contextId, callback ){
 
+			callback = api.tool.secureCallback( callback )
+
 		  if( this.conversations[ contextId ] ){
 		    return callback()
 		  }
@@ -524,8 +526,6 @@ var model = ( function( view ){
 		  }else if( this._groupMode == GROUP_CREATE ){
 		  	new Conversation( this, null, info )
 		  }
-
-			
 
 		}
 
@@ -755,6 +755,8 @@ var model = ( function( view ){
 
 		_upgradeToRealConversation( callback ){
 
+			callback = api.tool.secureCallback( callback )
+			
 			//Creating group
 		  if( !( this.context instanceof FakeContext ) ){
 		    return callback()
