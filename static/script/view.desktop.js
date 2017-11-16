@@ -448,7 +448,6 @@ var view = ( function(){
 			  item.dom.find('.channel-name').text( item.name )
 
 			  if( item.context.id == id ){
-			  	console.log('sss')
 			  	item.dom.addClass('active')
 			  }
 
