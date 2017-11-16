@@ -448,7 +448,6 @@ var view = ( function(){
 			  item.dom.find('.channel-name').text( item.name )
 
 			  if( item.context.id == id ){
-			  	console.log('sss')
 			  	item.dom.addClass('active')
 			  }
 
@@ -656,6 +655,12 @@ var model = ( function( view ){
 
 		  this.conversations[ context.id ] = new Conversation( this, context )
 		  this.updateConversationsListUI()
+
+		  //Si me añaden a una conversacion y no tenia ninguna
+		  if( Object.keys( this.conversations ).length == 1 && ( this._sidebarMode == SIDEBAR_CONTACTS || this._sidebarMode == SIDEBAR_NULL ) ){
+		  	this.changeSidebarMode( SIDEBAR_CONVERSATIONS )
+		  }
+
 		  return this
 
 		}
@@ -676,6 +681,8 @@ var model = ( function( view ){
 
 			var senderName = null
 			var senderAvatar = null
+			console.log( message );
+			
 
 		  if( !this.openedChat || this.openedChat.context.id !== message.context ){
 		    return
@@ -689,7 +696,10 @@ var model = ( function( view ){
 		    	senderName = this.contacts[ message.sender ].user.fullName
 		  	}
 
-		  	message.markAsAttended( { full: true }, console.log.bind( console ) )
+		  	
+		  	if( message.attended.length === 0 || message.attended.indexOf( api.system.user().id ) === -1 ){
+					message.markAsAttended( { full: true }, console.log.bind( console ) )
+		  	}
 
 			}else{
 				senderName = api.system.user().fullName
@@ -735,7 +745,7 @@ var model = ( function( view ){
 
 		deleteConversationFront( conversationId ){
 
-			if( this.openedChat && conversationId === this.openedChat.context.id){
+			if( this.openedChat && conversationId === this.openedChat.context.id ){
 				this.changeMainAreaMode( MAINAREA_NULL )
 			}
 
@@ -766,7 +776,8 @@ var model = ( function( view ){
 
 			if( conversationId ){
 
-				if( this.conversations[ conversationId ] && this.conversations[ conversationId ].isGroup ){
+				if( this.conversations[ conversationId ] && this.conversations[ conversationId ].isGroup 
+					&& this.conversations[ conversationId ].admins && this.conversations[ conversationId ].admins.indexOf( api.system.user().id ) !== -1 ){
 
 					this.changeMainAreaMode( MAINAREA_GROUPMODE, list, this.conversations[ conversationId ] )
 					this.changeGroupMode( GROUP_EDIT )
@@ -1135,6 +1146,7 @@ var model = ( function( view ){
 		  this.world
 		  this.lastMessage
 		  this.opened = false
+		  this.admins = [];
 
 		  if( info ){
 
@@ -1202,6 +1214,7 @@ var model = ( function( view ){
 
 		  	console.log( list, admins )
 		    this.users = api.tool.arrayDifference( list, [ api.system.user().id ] )
+		    this.admins = admins;
 		    this.updateUI()
 
 		  }.bind( this ))
