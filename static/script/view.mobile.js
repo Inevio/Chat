@@ -45,7 +45,11 @@ var view = ( function(){
 		  this._domMessageOtherPrototype = $('.message-other.wz-prototype', this._domMessageContainer)
 		  this._domGroupMemberList = $( '.member-list', this.dom )
 		  this._domCurrentConversation
-		  
+
+		  this._animationDuration = 500
+		  this._animationEffect = 'cubic-bezier(.4,0,.2,1)'
+
+		  this._startMobile();
   		this._translateInterface()
   		// Set modes
 		  //this.changeMainAreaMode( MAINAREA_NULL )
@@ -90,6 +94,29 @@ var view = ( function(){
 		    'border-style'      : 'solid'
 		  })
 		  avatar.find( 'span' ).css('color', colorPalette[colorId].text)
+
+		}
+
+		_startMobile(){
+
+			$( '.ui-window' ).addClass( 'dark' )
+
+			$( '.inChats' ).removeClass( 'inChats' )
+	    $( '.new-group-button, .new-group' ).hide()
+
+	    $( '.conversation-send-desktop' ).hide()
+
+	    $( 'input, textarea' ).on( 'focus' , function(){
+	      Keyboard.shrinkView( true )
+	    })
+
+	    .on( 'blur' , function(){
+	      Keyboard.shrinkView( false )
+	    });
+
+	    /*$(window).on('resize',function(){
+	      $('.message-container').scrollTop( $('.message-container')[ 0 ].scrollHeight );
+	    })*/
 
 		}
 
@@ -184,9 +211,28 @@ var view = ( function(){
 
 		  }else if( value === MAINAREA_CONVERSATION ){
 
-		    $('.ui-content').addClass('visible')
+		  	$('.ui-content').addClass('visible')
 		    $('.no-content').removeClass('visible')
 		    this.hideGroupMenu()
+        $('.initial-header').transition({
+	        'x': '-100%'
+	      }, this._animationDuration, this._animationEffect);
+
+	      $('.conver-header').transition({
+	        'x': '0'
+	      }, this._animationDuration, this._animationEffect);
+
+	      $('.conver-avatar').css('background-image', this.dom.find('.channel-img').css('background-image') );
+	      $( '.ui-content' ).show().transition({
+	        'x' : 0
+	      }, this._animationDuration, this._animationEffect, function(){
+	        $(this).addClass( 'visible' );
+	        //msgInput.focus();
+	      });
+
+	      $('.ui-navbar').transition({
+	        'x' : '-100%'
+	      }, this._animationDuration, this._animationEffect);
 
 		  }else if( value === MAINAREA_GROUPMODE && additionalData && additionalData.length ){
 		 		this.startCreateGroup( additionalData, conversation )
@@ -206,12 +252,36 @@ var view = ( function(){
 		    this.dom.find( '.ui-navbar' ).addClass( 'inChats' )
 		    this.dom.find( '.new-group-button' ).removeClass( 'visible' )
 
+		    $('.unread-messages').hide();
+	      contactsButton.removeClass('active');
+	      chatButton.addClass('active');
+	      contactTab.removeClass( 'visible' );
+	      chatTab.addClass( 'visible' );
+	      navbar.addClass('inChats');
+	      colorChange.addClass( 'visible' );
+	      groupMenu.removeClass( 'visible' );
+		    $( '.ui-header-mobile .window-title' ).text(lang.chats);
+        newGroupButton.hide();
+
 		  }else if( value === SIDEBAR_CONTACTS ){
 
 		    this.dom.find( '.chat-footer .contact-tab-selector' ).addClass( 'active' )
 		    this.dom.find( '.chat-body .contact-tab' ).addClass( 'visible' )
 		    this.dom.find( '.ui-navbar' ).removeClass( 'inChats' )
 		    this.dom.find( '.new-group-button' ).addClass( 'visible' )
+
+	      chatButton.removeClass( 'active' );
+	      contactsButton.addClass( 'active' );
+	      chatTab.removeClass( 'visible' );
+	      contactTab.addClass( 'visible' );
+	      navbar.removeClass('inChats');
+	      colorChange.addClass( 'visible');
+	      newGroupButton.addClass( 'visible' );
+
+	      if( mobile ){
+	        $( '.ui-header-mobile .window-title' ).text(lang.contacts);
+	        newGroupButton.hide();
+	      }
 
 		  }
 
