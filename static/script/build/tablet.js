@@ -242,39 +242,33 @@ var view = ( function(){
 
   	changeSidebarMode( value ){
 
-		  this.dom.find( '.chat-footer > section' ).removeClass( 'active' )
+		  //this.dom.find( '.chat-footer > section' ).removeClass( 'active' )
+		  this.dom.find( '.contact-tab-selector, .chat-tab-selector' ).removeClass( 'active' )
 		  this.dom.find( '.chat-body > section' ).removeClass( 'visible' )
 
 		  if( value === SIDEBAR_CONVERSATIONS ){
 
-		    this.dom.find( '.chat-footer .chat-tab-selector' ).addClass( 'active' )
-		    this.dom.find( '.chat-body .chat-tab' ).addClass( 'visible' )
+		    this.dom.find( '.chat-tab-selector' ).addClass( 'active' )
+		    //this.dom.find( '.chat-body .chat-tab' ).addClass( 'visible' )
 		    this.dom.find( '.ui-navbar' ).addClass( 'inChats' )
 		    this.dom.find( '.new-group-button' ).removeClass( 'visible' )
 
-		    $('.unread-messages').hide();
-	      contactTab.removeClass( 'visible' );
-	      chatTab.addClass( 'visible' );
-	      navbar.addClass('inChats');
-	      colorChange.addClass( 'visible' );
-	      groupMenu.removeClass( 'visible' );
-		    $( '.ui-header-mobile .window-title' ).text(lang.chats);
-        newGroupButton.hide();
+		    $( '.unread-messages' ).hide();
+	      navbar.addClass( 'inChats' );
+
+	      //colorChange.addClass( 'visible' );
+	      //groupMenu.removeClass( 'visible' );
+		    $( '.ui-header-mobile .window-title' ).text( lang.chats );
 
 		  }else if( value === SIDEBAR_CONTACTS ){
 
-		    this.dom.find( '.chat-footer .contact-tab-selector' ).addClass( 'active' )
-		    this.dom.find( '.chat-body .contact-tab' ).addClass( 'visible' )
+		    this.dom.find( '.contact-tab-selector' ).addClass( 'active' )
+		    //this.dom.find( '.chat-body .contact-tab' ).addClass( 'visible' )
 		    this.dom.find( '.ui-navbar' ).removeClass( 'inChats' )
 		    this.dom.find( '.new-group-button' ).addClass( 'visible' )
 
-	      chatTab.removeClass( 'visible' );
-	      contactTab.addClass( 'visible' );
-	      navbar.removeClass('inChats');
-	      colorChange.addClass( 'visible');
-	      newGroupButton.addClass( 'visible' );
-	      $( '.ui-header-mobile .window-title' ).text(lang.contacts);
-	      newGroupButton.hide();
+	      //colorChange.addClass( 'visible' );
+	      $( '.ui-header-mobile .window-title' ).text( lang.contacts );
 
 		  }
 
