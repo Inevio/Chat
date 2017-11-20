@@ -249,7 +249,7 @@ var view = ( function(){
 		  if( value === SIDEBAR_CONVERSATIONS ){
 
 		    this.dom.find( '.chat-tab-selector' ).addClass( 'active' )
-		    //this.dom.find( '.chat-body .chat-tab' ).addClass( 'visible' )
+		    this.dom.find( '.chat-body .chat-tab' ).addClass( 'visible' )
 		    this.dom.find( '.ui-navbar' ).addClass( 'inChats' )
 		    this.dom.find( '.new-group-button' ).removeClass( 'visible' )
 
@@ -263,7 +263,7 @@ var view = ( function(){
 		  }else if( value === SIDEBAR_CONTACTS ){
 
 		    this.dom.find( '.contact-tab-selector' ).addClass( 'active' )
-		    //this.dom.find( '.chat-body .contact-tab' ).addClass( 'visible' )
+		    this.dom.find( '.chat-body .contact-tab' ).addClass( 'visible' )
 		    this.dom.find( '.ui-navbar' ).removeClass( 'inChats' )
 		    this.dom.find( '.new-group-button' ).addClass( 'visible' )
 
