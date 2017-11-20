@@ -253,8 +253,6 @@ var view = ( function(){
 		    this.dom.find( '.new-group-button' ).removeClass( 'visible' )
 
 		    $('.unread-messages').hide();
-	      contactsButton.removeClass('active');
-	      chatButton.addClass('active');
 	      contactTab.removeClass( 'visible' );
 	      chatTab.addClass( 'visible' );
 	      navbar.addClass('inChats');
@@ -270,18 +268,13 @@ var view = ( function(){
 		    this.dom.find( '.ui-navbar' ).removeClass( 'inChats' )
 		    this.dom.find( '.new-group-button' ).addClass( 'visible' )
 
-	      chatButton.removeClass( 'active' );
-	      contactsButton.addClass( 'active' );
 	      chatTab.removeClass( 'visible' );
 	      contactTab.addClass( 'visible' );
 	      navbar.removeClass('inChats');
 	      colorChange.addClass( 'visible');
 	      newGroupButton.addClass( 'visible' );
-
-	      if( mobile ){
-	        $( '.ui-header-mobile .window-title' ).text(lang.contacts);
-	        newGroupButton.hide();
-	      }
+	      $( '.ui-header-mobile .window-title' ).text(lang.contacts);
+	      newGroupButton.hide();
 
 		  }
 
