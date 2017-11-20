@@ -45,7 +45,7 @@ var view = ( function(){
 		  this._domMessageOtherPrototype = $('.message-other.wz-prototype', this._domMessageContainer)
 		  this._domGroupMemberList = $( '.member-list', this.dom )
 		  this._domCurrentConversation
-
+		  
   		this._translateInterface()
   		// Set modes
 		  //this.changeMainAreaMode( MAINAREA_NULL )
