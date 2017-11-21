@@ -20,13 +20,16 @@ var controller = ( function( model, view ){
     _bindEvents(){
 
       // DOM Events
+      this.dom.on( 'click' , '.back-button', function(){
+        this.model.goBack();
+      })
+
       this.dom.on( 'click', '.tab-selector', function(){
 
         //TODO revisar valores
-
-        if( $(this).hasClass('chat-tab-selector') ){
+        if( $(this).hasClass( 'chat-tab-selector' ) ){
           model.changeSidebarMode( SIDEBAR_CONVERSATIONS )
-        }else if( $(this).hasClass('contact-tab-selector') ){
+        }else if( $(this).hasClass( 'contact-tab-selector' ) ){
           model.changeSidebarMode( SIDEBAR_CONTACTS )
         }
 
