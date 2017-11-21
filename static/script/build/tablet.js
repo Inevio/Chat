@@ -222,7 +222,7 @@ var view = ( function(){
 	        'x': '0'
 	      }, this._animationDuration, this._animationEffect);
 
-	      $('.conver-avatar').css('background-image', this.dom.find('.channel-img').css('background-image') );
+	      //$('.conver-avatar').css('background-image', this.dom.find('.channel-img').css('background-image') );
 	      $( '.ui-content' ).show().transition({
 	        'x' : 0
 	      }, this._animationDuration, this._animationEffect, function(){
@@ -254,7 +254,6 @@ var view = ( function(){
 		    this.dom.find( '.new-group-button' ).removeClass( 'visible' )
 
 		    $( '.unread-messages' ).hide();
-	      navbar.addClass( 'inChats' );
 
 	      //colorChange.addClass( 'visible' );
 	      //groupMenu.removeClass( 'visible' );
@@ -435,13 +434,22 @@ var view = ( function(){
 
 		updateConversationInfo( conversation, isConnected ){
 
-    	$('.conversation-name, .conver-header .conver-title').text( conversation.name )
+    	$( '.conversation-name, .conver-header .conver-title' ).text( conversation.name )
 
+    	if( conversation.img ){
+    		$( '.conver-avatar' ).css( 'background-image' , 'url( "' + conversation.img + '")' );
+    	}
+    	
 		  if( conversation.isGroup ){
 
-		  	$('.conversation-info').addClass('isGroup')
+		  	//$('.conversation-info').addClass('isGroup')
 		  	var membersText = conversation.users.length === 0 ? (conversation.users.length + 1 + ' ' + lang.member) : (conversation.users.length + 1 + ' ' + lang.members)
 		    $('.conversation-moreinfo, .conver-moreinfo').removeClass('conected').text( membersText )
+
+		    $( '.conver-info' ).addClass( 'viewGroup' );
+        $( '.conver-avatar' ).hide();
+        $( '.conver-avatar-group' ).show();
+        //setGroupAvatar( chat.find( '.channel-name' ).text() , $( '.conver-avatar-group' ) );
 
 		  }else if( isConnected ) {
 
@@ -455,8 +463,10 @@ var view = ( function(){
 
 		  }
 
-		  $( '.conversation-input textarea' ).val('').focus()
-
+      $( '.conver-avatar' ).show();
+      $( '.conver-avatar-group' ).hide();
+      $( '.conver-info' ).removeClass( 'viewGroup' );
+		  //$( '.conversation-input textarea' ).val('').focus()
 
 		}
 
@@ -738,8 +748,7 @@ var model = ( function( view ){
 
 			var senderName = null
 			var senderAvatar = null
-			console.log( message );
-			
+			//console.log( message );
 
 		  if( !this.openedChat || this.openedChat.context.id !== message.context ){
 		    return
