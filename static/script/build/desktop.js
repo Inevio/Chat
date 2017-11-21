@@ -681,8 +681,7 @@ var model = ( function( view ){
 
 			var senderName = null
 			var senderAvatar = null
-			console.log( message );
-			
+			//console.log( message );
 
 		  if( !this.openedChat || this.openedChat.context.id !== message.context ){
 		    return
