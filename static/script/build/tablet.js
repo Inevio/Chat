@@ -222,7 +222,6 @@ var view = ( function(){
 	        'x': '0'
 	      }, this._animationDuration, this._animationEffect);
 
-	      //$('.conver-avatar').css('background-image', this.dom.find('.channel-img').css('background-image') );
 	      $( '.ui-content' ).show().transition({
 	        'x' : 0
 	      }, this._animationDuration, this._animationEffect, function(){
@@ -646,6 +645,7 @@ var model = ( function( view ){
   		this._groupMode = GROUP_NULL
 
   		this.unread
+  		this.isMobile = this.view.dom.hasClass( 'wz-mobile-view' );
 
 		  this.changeMainAreaMode( MAINAREA_NULL )
 		  this.changeSidebarMode( SIDEBAR_NULL )
@@ -843,7 +843,9 @@ var model = ( function( view ){
 			if( conversationId ){
 
 				if( this.conversations[ conversationId ] && this.conversations[ conversationId ].isGroup 
-					&& this.conversations[ conversationId ].admins && this.conversations[ conversationId ].admins.indexOf( api.system.user().id ) !== -1 ){
+					&& !this.conversations[ conversationId ].world
+					&& this.conversations[ conversationId ].admins 
+					&& this.conversations[ conversationId ].admins.indexOf( api.system.user().id ) !== -1 ){
 
 					this.changeMainAreaMode( MAINAREA_GROUPMODE, list, this.conversations[ conversationId ] )
 					this.changeGroupMode( GROUP_EDIT )
@@ -955,6 +957,16 @@ var model = ( function( view ){
 		  }.bind(this))
 
 		  return this
+
+		}
+
+		goBack(){
+
+			if( this.isMobile ){
+
+
+
+			}
 
 		}
 
@@ -1085,8 +1097,13 @@ var model = ( function( view ){
 
 		  if( this._groupMode == GROUP_EDIT && info.conversationId ){
 
-				if( this.conversations[ info.conversationId ] ){
+				if( this.conversations[ info.conversationId ] && this.conversations[ info.conversationId ].isGroup 
+					&& !this.conversations[ info.conversationId ].world
+					&& this.conversations[ info.conversationId ].admins 
+					&& this.conversations[ info.conversationId ].admins.indexOf( api.system.user().id ) !== -1 ){
+
 					this.conversations[ info.conversationId ].editConversation( info )
+
 				}		  	
 
 		  }else if( this._groupMode == GROUP_CREATE ){
@@ -1278,7 +1295,7 @@ var model = ( function( view ){
 		  		return this.app.view.launchAlert( err )
 		  	}
 
-		  	console.log( list, admins )
+		  	//console.log( list, admins )
 		    this.users = api.tool.arrayDifference( list, [ api.system.user().id ] )
 		    this.admins = admins;
 		    this.updateUI()
@@ -1535,13 +1552,16 @@ var controller = ( function( model, view ){
     _bindEvents(){
 
       // DOM Events
+      this.dom.on( 'click' , '.back-button', function(){
+        this.model.goBack();
+      })
+
       this.dom.on( 'click', '.tab-selector', function(){
 
         //TODO revisar valores
-
-        if( $(this).hasClass('chat-tab-selector') ){
+        if( $(this).hasClass( 'chat-tab-selector' ) ){
           model.changeSidebarMode( SIDEBAR_CONVERSATIONS )
-        }else if( $(this).hasClass('contact-tab-selector') ){
+        }else if( $(this).hasClass( 'contact-tab-selector' ) ){
           model.changeSidebarMode( SIDEBAR_CONTACTS )
         }
 

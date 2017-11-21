@@ -222,7 +222,6 @@ var view = ( function(){
 	        'x': '0'
 	      }, this._animationDuration, this._animationEffect);
 
-	      //$('.conver-avatar').css('background-image', this.dom.find('.channel-img').css('background-image') );
 	      $( '.ui-content' ).show().transition({
 	        'x' : 0
 	      }, this._animationDuration, this._animationEffect, function(){
