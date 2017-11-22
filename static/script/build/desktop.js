@@ -58,7 +58,8 @@ var view = ( function(){
 		}
 
 		_isScrolledToBottom(){
-		  return this._domMessageContainer[ 0 ].scrollHeight - this._domMessageContainer[ 0 ].scrollTop === this._domMessageContainer[ 0 ].clientHeight
+			console.log( this._domMessageContainer[ 0 ].scrollHeight, this._domMessageContainer[ 0 ].scrollTop, this._domMessageContainer[ 0 ].clientHeight );
+		  return this._domMessageContainer[ 0 ].scrollHeight - this._domMessageContainer[ 0 ].scrollTop - this._domMessageContainer[ 0 ].clientHeight < 15
 		}
 
 		_selectColor( string ){
@@ -276,6 +277,22 @@ var view = ( function(){
 
 			console.error( message )
 			alert( message )
+
+		}
+
+		launchBanner( name , text , avatar , callback ){
+
+			if ( !this.dom.parent().hasClass( 'wz-app-focus' ) ){
+
+			  api.banner()
+			  .setTitle( name )
+			  .setText( text )
+			  .setIcon( avatar )
+			  // To Do -> .sound( 'marimba' )
+			  .on( 'click', callback )
+			  .render()
+
+			}
 
 		}
 
@@ -695,9 +712,9 @@ var model = ( function( view ){
 				if( this.conversations[ message.context ].isGroup ){
 		    	senderName = this.contacts[ message.sender ].user.fullName
 		  	}
-
-		  	
-		  	if( message.attended.length === 0 || message.attended.indexOf( api.system.user().id ) === -1 ){
+	
+		  	if( message.attended.length === 0 && message.attended.indexOf( api.system.user().id ) === -1 && this.view.dom.parent().hasClass( 'wz-app-focus' ) ){
+					console.log( this.view.dom.parent() )
 					message.markAsAttended( { full: true }, console.log.bind( console ) )
 		  	}
 
@@ -834,22 +851,6 @@ var model = ( function( view ){
 
 		}
 
-		leaveConversation( groupId ){
-
-			if( !this.conversations[ groupId ] ){
-				return view.launchAlert( 'Grupo no existe' )
-			}
-
-			this.conversations[ groupId ].context.removeUser( api.system.user().id, function( err ){
-
-				if( err ){
-					return view.launchAlert( err )
-				}
-
-			})
-
-		}
-
 		filterElements( filter, groupSearch ){
 
 		  if( groupSearch ){
@@ -919,6 +920,72 @@ var model = ( function( view ){
 
 		}
 
+		handleNewNotification( notification ){
+
+			this.updateConversationUnread( notification.comContext )
+
+			if( notification.sender !== api.system.user().id ){
+
+				api.user( notification.sender, function( error, user ){
+
+					if( error ){
+						return this.view.launchAlert( error );
+					}
+
+	        this.view.launchBanner( user.fullName , notification.message , user.avatar.tiny , function(){
+
+	          api.app.viewToFront( this.view.dom );
+	          this.openConversation( notification.comContext );
+
+	        }.bind(this));
+
+	      }.bind(this));
+
+			}
+
+		}
+
+		leaveConversation( groupId ){
+
+			if( !this.conversations[ groupId ] ){
+				return view.launchAlert( 'Grupo no existe' )
+			}
+
+			this.conversations[ groupId ].context.removeUser( api.system.user().id, function( err ){
+
+				if( err ){
+					return view.launchAlert( err )
+				}
+
+			})
+
+		}
+
+		markConversationAsAttended( conversationId ){
+
+			if( !this.unread ){
+				return;
+			}
+
+			if( conversationId == null && this.openedChat && this.openedChat.context ){
+
+				if( !this.openedChat || !this.openedChat.context ){
+					return;
+				}
+				conversationId = this.openedChat.context.id;
+				
+			}
+
+			api.notification.markAsAttended( 'chat', { comContext : conversationId, full: true }, function( err ){
+
+		  	if( err ){
+		  		view.launchAlert( err )
+		  	}
+
+			})
+
+		}
+
 		openConversation( conversationId ){
 
 			var conversation
@@ -948,13 +1015,7 @@ var model = ( function( view ){
 		  view.openConversation( conversation, isConnected )
 		  //TODO mirar como atender conversacion
 
-		  api.notification.markAsAttended( 'chat', { comContext : conversation.context.id, full: true }, function( err ){
-
-		  	if( err ){
-		  		view.launchAlert( err )
-		  	}
-
-			})
+		  this.markConversationAsAttended( conversation.context.id );
 
 	  	conversation.context.getMessages( { withAttendedStatus : true }, function( err, list ){
 
@@ -1164,6 +1225,9 @@ var model = ( function( view ){
 		  this.lastMessage
 		  this.opened = false
 		  this.admins = [];
+		  this.isGroup = false // To Do
+		 	this.name = ''
+		  this.users = []
 
 		  if( info ){
 
@@ -1171,11 +1235,18 @@ var model = ( function( view ){
 		  	this.name = info.name || ''
 		  	this.users = info.members || []
 
-		  }else{
+		  }else if( this.context ){
 
-		  	this.isGroup = false // To Do
-		  	this.name = ''
-		  	this.users = []
+		  	if( this.context.name ){
+
+		  		this.isGroup = true
+		  		this.name = this.context.name
+
+		  	}
+
+		  	if( this.context.worldId ){
+		  		this.world = this.context.worldId
+		  	}
 
 		  }
 
@@ -1375,9 +1446,13 @@ var model = ( function( view ){
 
 		updateLastMessage( message ){
 
-		  this.lastMessage = message
-		  //view.updateConversationUI( this )
-		  this.app.updateConversationsListUI()
+			if( message ){
+
+				this.lastMessage = message
+			  //view.updateConversationUI( this )
+			  this.app.updateConversationsListUI()
+
+			}
 
 		}
 
@@ -1396,7 +1471,7 @@ var model = ( function( view ){
 		    // To Do -> lang.unknown
 		  }
 
-		  if( this.world ){
+		  if( this.world && this.world.icon ){
 		    this.img = this.world.icon.big // To Do -> Mirar si es el tamaño adecuado
 		  }else if( this.isGroup ){
 		  	this.img = ''
@@ -1560,6 +1635,12 @@ var controller = ( function( model, view ){
 
       })
 
+      this.dom.on( 'ui-view-focus', function(){
+
+        this.model.markConversationAsAttended( null );
+
+      }.bind( this ))
+
       this.dom.on( 'keypress', function( e ){
 
         if( e.which === 13 && !e.shiftKey && $.trim( this.dom.find('.conversation-input textarea').val() ) ){
@@ -1641,15 +1722,22 @@ var controller = ( function( model, view ){
       })
 
       api.notification.on( 'new', function( notification ){
-        model.updateConversationUnread( notification.comContext )
+
+        model.handleNewNotification( notification )
+        model.reloadUnread();
+
       })
 
       api.notification.on( 'attended', function( list ){
 
+        console.log( 'attended', list );
         list.forEach( function( element ){
 
           if( element.comContext ){
+
             model.updateConversationUnread( parseInt( element.comContext ) )
+            model.reloadUnread();
+
           }
 
         })

@@ -94,6 +94,12 @@ var controller = ( function( model, view ){
 
       })
 
+      this.dom.on( 'ui-view-focus', function(){
+
+        this.model.markConversationAsAttended( null );
+
+      }.bind( this ))
+
       this.dom.on( 'keypress', function( e ){
 
         if( e.which === 13 && !e.shiftKey && $.trim( this.dom.find('.conversation-input textarea').val() ) ){
@@ -175,15 +181,22 @@ var controller = ( function( model, view ){
       })
 
       api.notification.on( 'new', function( notification ){
-        model.updateConversationUnread( notification.comContext )
+
+        model.handleNewNotification( notification )
+        model.reloadUnread();
+
       })
 
       api.notification.on( 'attended', function( list ){
 
+        console.log( 'attended', list );
         list.forEach( function( element ){
 
           if( element.comContext ){
+
             model.updateConversationUnread( parseInt( element.comContext ) )
+            model.reloadUnread();
+
           }
 
         })
