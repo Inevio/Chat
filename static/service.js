@@ -26,6 +26,31 @@ api.notification.on( 'new', function( data ){
   }
 
   //updateBadge( null, true )
+  if( api.app.getViews('main').length === 0 ){
+
+    api.user( data.sender, function( error, user ){
+
+      if( error ){
+        return this.view.launchAlert( error );
+      }
+
+      api.banner()
+        .setTitle( user.fullName )
+        .setText( data.message )
+        .setIcon( user.avatar.tiny )
+        // To Do -> .sound( 'marimba' )
+        .on( 'click', function(){
+
+          api.app.createView( data.comContext, 'main' );
+          //this.openConversation( notification.comContext );         
+
+        })
+        .render()
+
+    });
+
+  }
+
 
   api.notification.count( 'chat' , function( err, counted ){
 

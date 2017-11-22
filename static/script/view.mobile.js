@@ -334,6 +334,10 @@ var view = ( function(){
 
 		}
 
+		launchBanner( name , text , avatar , callback ){
+
+		}
+
 		markMessageAsRead( messageId ){
 			this._domMessageContainer.find( '.message-' + messageId ).addClass('readed')
 		}

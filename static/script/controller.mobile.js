@@ -178,7 +178,7 @@ var controller = ( function( model, view ){
       })
 
       api.notification.on( 'new', function( notification ){
-        model.updateConversationUnread( notification.comContext )
+        model.handleNewNotification( notification.comContext )
       })
 
       api.notification.on( 'attended', function( list ){

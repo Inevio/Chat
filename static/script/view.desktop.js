@@ -58,7 +58,8 @@ var view = ( function(){
 		}
 
 		_isScrolledToBottom(){
-		  return this._domMessageContainer[ 0 ].scrollHeight - this._domMessageContainer[ 0 ].scrollTop === this._domMessageContainer[ 0 ].clientHeight
+			console.log( this._domMessageContainer[ 0 ].scrollHeight, this._domMessageContainer[ 0 ].scrollTop, this._domMessageContainer[ 0 ].clientHeight );
+		  return this._domMessageContainer[ 0 ].scrollHeight - this._domMessageContainer[ 0 ].scrollTop - this._domMessageContainer[ 0 ].clientHeight < 15
 		}
 
 		_selectColor( string ){
@@ -276,6 +277,22 @@ var view = ( function(){
 
 			console.error( message )
 			alert( message )
+
+		}
+
+		launchBanner( name , text , avatar , callback ){
+
+			if ( !this.dom.parent().hasClass( 'wz-app-focus' ) ){
+
+			  api.banner()
+			  .setTitle( name )
+			  .setText( text )
+			  .setIcon( avatar )
+			  // To Do -> .sound( 'marimba' )
+			  .on( 'click', callback )
+			  .render()
+
+			}
 
 		}
 
