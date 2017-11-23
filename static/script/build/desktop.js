@@ -58,7 +58,6 @@ var view = ( function(){
 		}
 
 		_isScrolledToBottom(){
-			console.log( this._domMessageContainer[ 0 ].scrollHeight, this._domMessageContainer[ 0 ].scrollTop, this._domMessageContainer[ 0 ].clientHeight );
 		  return this._domMessageContainer[ 0 ].scrollHeight - this._domMessageContainer[ 0 ].scrollTop - this._domMessageContainer[ 0 ].clientHeight < 15
 		}
 
@@ -773,6 +772,18 @@ var model = ( function( view ){
 
 		deleteConversationApi( conversationId ){
 
+			if( !this.conversations[ conversationId ] ){
+				return;
+			}else{
+
+				if( this.conversations[ conversationId ].world ){
+					return view.launchAlert( 'Can not remove world chat' )
+				}else if( this.conversations[ conversationId ].context instanceof FakeContext ){
+		    	return this.deleteConversationFront( conversationId )
+		  	}
+
+			}
+
 			this.conversations[ conversationId ].context.remove( function( err ){
 
 				if( err ){
@@ -994,32 +1005,29 @@ var model = ( function( view ){
 			}else{
 				conversation = conversationId
 			}
-			console.log(conversation)
-
-			var isConnected = this.contacts[ conversation.users[ 0 ] ] && this.contacts[ conversation.users[ 0 ] ].connected
-
-		  this.changeSidebarMode( SIDEBAR_CONVERSATIONS )
 
 		  if( this.openedChat && conversation.context.id === this.openedChat.context.id ){
 		    return this
 		  }
+
+		  var isConnected = this.contacts[ conversation.users[ 0 ] ] && this.contacts[ conversation.users[ 0 ] ].connected
+		  this.changeSidebarMode( SIDEBAR_CONVERSATIONS )
 
 		  if( this.openedChat ){
 		    this.openedChat.setOpened( false )
 		  }
 
 		  this.openedChat = conversation.setOpened( true )
-
 		  this.changeMainAreaMode( MAINAREA_CONVERSATION )
-
-		  view.openConversation( conversation, isConnected )
-		  //TODO mirar como atender conversacion
-
+		  this.view.openConversation( conversation, isConnected )
 		  this.markConversationAsAttended( conversation.context.id );
 
 	  	conversation.context.getMessages( { withAttendedStatus : true }, function( err, list ){
 
-		    // To Do -> Error
+	  		if( err ){
+	  			return this.view.launchAlert( err );
+	  		}
+
 		    list.forEach( function( message ){
 		      this.appendMessage( message )
 		    }.bind(this))
@@ -1079,7 +1087,7 @@ var model = ( function( view ){
 		saveGroup( info ){
 
 			if( info.name === '' ){
-				return view.launchAlert( 'Wrong name' )
+				return this.view.launchAlert( 'Wrong name' )
 			}
 
 			var list = []
@@ -1188,7 +1196,7 @@ var model = ( function( view ){
 		    return
 		  }
 
-		  view.markMessageAsRead( messageId )
+		  this.view.markMessageAsRead( messageId )
 
 		}
 
@@ -1327,7 +1335,7 @@ var model = ( function( view ){
 		    }, function( err, context ){
 
 		    	if( err ){
-		    		return view.launchAlert( err ) 
+		    		return this.app.view.launchAlert( err ) 
 		    	}
 
 		    	this.app.conversations[ context.id ] = this
@@ -1419,15 +1427,14 @@ var model = ( function( view ){
 
 		  this._upgradeToRealConversation( function(){
 
-		  	view.clearInput()
+		  	this.app.view.clearInput()
 		    this.context.send( { data : { action : 'message', text : value }, persistency : true, notify : value }, function( err ){
 
-		      // To Do -> Error
 		      if( err ){
-		      	return view.launchAlert( err )
+		      	return this.app.view.launchAlert( err )
 		      }
 
-		    })
+		    }.bind( this ))
 
 		  }.bind( this ))
 
@@ -1438,7 +1445,7 @@ var model = ( function( view ){
 		setOpened( value ){
 
 		  this.opened = !!value
-		  view.conversationSetOpened( this.context.id, this.opened )
+		  this.app.view.conversationSetOpened( this.context.id, this.opened )
 
 		  return this
 
@@ -1480,13 +1487,13 @@ var model = ( function( view ){
 		  }
 
 		  //TODO llamar a la view
-		  view.updateConversationUI( this )
+		  this.app.view.updateConversationUI( this )
 
 		  //Si la conversación esta abierta, tambien actualizamos su informacion en pantalla
 		  if( this.app.openedChat && this.app.openedChat.context.id === this.context.id ){
 
 				var isConnected = this.app.contacts[ this.users[ 0 ] ] && this.app.contacts[ this.users[ 0 ] ].connected
-		  	view.updateConversationInfo( this, isConnected )
+		  	this.app.view.updateConversationInfo( this, isConnected )
 
 		  }
 
@@ -1603,7 +1610,7 @@ var controller = ( function( model, view ){
       this.dom.on( 'contextmenu', '.channel', function(){
 
         var menu = api.menu()
-        var id = $( this ).attr( 'data-id' )
+        var id = parseInt( $( this ).attr( 'data-id' ) )
 
         menu.addOption( lang.deleteChat , function(){
           model.deleteConversationApi( id )

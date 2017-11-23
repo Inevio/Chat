@@ -58,7 +58,6 @@ var view = ( function(){
 		}
 
 		_isScrolledToBottom(){
-			console.log( this._domMessageContainer[ 0 ].scrollHeight, this._domMessageContainer[ 0 ].scrollTop, this._domMessageContainer[ 0 ].clientHeight );
 		  return this._domMessageContainer[ 0 ].scrollHeight - this._domMessageContainer[ 0 ].scrollTop - this._domMessageContainer[ 0 ].clientHeight < 15
 		}
 
