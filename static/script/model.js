@@ -323,15 +323,15 @@ var model = ( function( view ){
 
 	      prevMode = mode
 	      mode = MODE_ANIMATING
-	      $('.group-menu').transition({
+	      $( '.group-menu' ).transition({
 	        'x' : 0
 	      }, animationDuration, animationEffect, function(){
 	        mode = MODE_CREATING_GROUP
 	      })
-	      $('.initial-header .new-group').removeClass('visible')
-	      $('.initial-header .back-button').addClass('visible')
-	      //$('.initial-header .more-button').hide()
-	      $('.initial-header .accept-button').show()
+	      $( '.initial-header .new-group' ).removeClass( 'visible' )
+	      $( '.initial-header .back-button' ).addClass( 'visible' )
+	      //$( '.initial-header .more-button' ).hide()
+	      $( '.initial-header .accept-button' ).show()
 
 	    }*/
 
@@ -589,7 +589,7 @@ var model = ( function( view ){
 			var list = []
 
 		  info.members.each( function(){
-		    list.push( parseInt( $(this).attr('data-id') ) )
+		    list.push( parseInt( $(this).attr( 'data-id' ) ) )
 		  })
 
 		  info.members = list

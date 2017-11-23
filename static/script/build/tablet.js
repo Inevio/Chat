@@ -38,11 +38,11 @@ var view = ( function(){
   		//this.model = model
   		this.dom = win
 
-  		this._domContactsList = $('.contact-list', this.dom)
-		  this._domConversationsList = $('.channel-list', this.dom)
-		  this._domMessageContainer = $('.message-container', this.dom)
-		  this._domMessageMePrototype = $('.message-me.wz-prototype', this._domMessageContainer)
-		  this._domMessageOtherPrototype = $('.message-other.wz-prototype', this._domMessageContainer)
+  		this._domContactsList = $( '.contact-list', this.dom )
+		  this._domConversationsList = $( '.channel-list', this.dom )
+		  this._domMessageContainer = $( '.message-container', this.dom )
+		  this._domMessageMePrototype = $( '.message-me.wz-prototype', this._domMessageContainer )
+		  this._domMessageOtherPrototype = $( '.message-other.wz-prototype', this._domMessageContainer )
 		  this._domGroupMemberList = $( '.member-list', this.dom )
 		  this._domCurrentConversation
 
@@ -81,19 +81,19 @@ var view = ( function(){
 
 		_setGroupAvatar( groupName , avatar ){
 
-		  var expNameWords = groupName.split(' ')
+		  var expNameWords = groupName.split( ' ' )
 
-		  avatar.html( '<span>' + (expNameWords[0] || ' ')[0].toUpperCase() + (expNameWords[1] || ' ')[0].toUpperCase() + '</span>')
+		  avatar.html( '<span>' + ( expNameWords[0] || ' ' )[0].toUpperCase() + ( expNameWords[1] || ' ' )[0].toUpperCase() + '</span>' )
 
 		  var colorId = this._selectColor( groupName )
 
-		  avatar.addClass('group').css({
+		  avatar.addClass( 'group' ).css({
 		    'background-image'  : 'none',
-		    'background-color'  : colorPalette[colorId].light,
-		    'border-color'      : colorPalette[colorId].border,
+		    'background-color'  : colorPalette[ colorId ].light,
+		    'border-color'      : colorPalette[ colorId ].border,
 		    'border-style'      : 'solid'
 		  })
-		  avatar.find( 'span' ).css('color', colorPalette[colorId].text)
+		  avatar.find( 'span' ).css( 'color', colorPalette[colorId].text )
 
 		}
 
@@ -114,8 +114,8 @@ var view = ( function(){
 	      Keyboard.shrinkView( false )
 	    });
 
-	    /*$(window).on('resize',function(){
-	      $('.message-container').scrollTop( $('.message-container')[ 0 ].scrollHeight );
+	    /*$(window).on( 'resize',function(){
+	      $( '.message-container' ).scrollTop( $( '.message-container' )[ 0 ].scrollHeight );
 	    })*/
 
 		}
@@ -154,22 +154,22 @@ var view = ( function(){
 
   	appendMessage( message, senderName, senderAvatar ){
 
-  		var dom = ( message.sender === api.system.user().id ? this._domMessageMePrototype : this._domMessageOtherPrototype ).clone().removeClass('wz-prototype').data( 'message', message )
+  		var dom = ( message.sender === api.system.user().id ? this._domMessageMePrototype : this._domMessageOtherPrototype ).clone().removeClass( 'wz-prototype' ).data( 'message', message )
 		  var date = new Date( message.time )
 		  var hh = ( '0' + date.getHours().toString() ).slice(-2)
 		  var mm = ( '0' + date.getMinutes().toString() ).slice(-2)
 		  var text = message.data.text
 
-		  text = text.replace( /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&%@.\w_]*)#?(?:[\w]*))?)/ , '<a href="$1" target="_blank">$1</a>')
+		  text = text.replace( /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&%@.\w_]*)#?(?:[\w]*))?)/ , '<a href="$1" target="_blank">$1</a>' )
 		  //textProcessed = text.replace( /(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})/ , '<a href="$1" target="_blank">$1</a>' )
 		  //textProcessed = text.replace( /((http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*))/ig, '<a href="$1" target="_blank">$1</a>' )
 		  text = text.replace(/\n/g, "<br />")
-		  text = $('<div/>').html( text )
+		  text = $( '<div/>' ).html( text )
 
-		  text.find('a').each( function(){
+		  text.find( 'a' ).each( function(){
 
-		    if( !(/^http(s)?:\/\//i).test( $(this).attr('href') ) ){
-		      $(this).attr( 'href', 'http://' + $(this).attr('href') ).addClass('wz-selectable')
+		    if( !(/^http(s)?:\/\//i).test( $(this).attr( 'href' ) ) ){
+		      $(this).attr( 'href', 'http://' + $(this).attr( 'href' ) ).addClass( 'wz-selectable' )
 		    }
 
 		  })
@@ -180,15 +180,15 @@ var view = ( function(){
 		  dom.find( '.message-time' ).text( hh + ':' + mm )
 
 		  if( senderName ){
-		    dom.addClass( 'sender-group' ).find('.sender').addClass( 'visible' ).text( senderName ).css( 'color' , COLORS[ this._selectColor( senderName ) ] )
+		    dom.addClass( 'sender-group' ).find( '.sender' ).addClass( 'visible' ).text( senderName ).css( 'color' , COLORS[ this._selectColor( senderName ) ] )
 		  }
 
 		  if( message.sender !== api.system.user().id ){
-		    dom.find( '.message-avatar' ).css( 'background-image' , 'url(' + senderAvatar + ')' )
+		    dom.find( '.message-avatar' ).css( 'background-image' , 'url( ' + senderAvatar + ' )' )
 		  }
 
 		  if( message.attended.length ){
-		    dom.addClass('readed')
+		    dom.addClass( 'readed' )
 		  }
 
 		  var down = this._isScrolledToBottom()
@@ -205,20 +205,20 @@ var view = ( function(){
 
 		  if( value === MAINAREA_NULL ){
 
-		    $('.ui-content').removeClass('visible')
-		    $('.no-content').addClass('visible')
+		    $( '.ui-content' ).removeClass( 'visible' )
+		    $( '.no-content' ).addClass( 'visible' )
 		    this.hideGroupMenu()
 
 		  }else if( value === MAINAREA_CONVERSATION ){
 
-		  	$('.ui-content').addClass('visible')
-		    $('.no-content').removeClass('visible')
+		  	$( '.ui-content' ).addClass( 'visible' )
+		    $( '.no-content' ).removeClass( 'visible' )
 		    this.hideGroupMenu()
-        $('.initial-header').transition({
+        $( '.initial-header' ).transition({
 	        'x': '-100%'
 	      }, this._animationDuration, this._animationEffect);
 
-	      $('.conver-header').transition({
+	      $( '.conver-header' ).transition({
 	        'x': '0'
 	      }, this._animationDuration, this._animationEffect);
 
@@ -229,7 +229,7 @@ var view = ( function(){
 	        //msgInput.focus();
 	      });
 
-	      $('.ui-navbar').transition({
+	      $( '.ui-navbar' ).transition({
 	        'x' : '-100%'
 	      }, this._animationDuration, this._animationEffect);
 
@@ -273,15 +273,15 @@ var view = ( function(){
 		}
 
 		clearInput(){
-			this.dom.find('.conversation-input textarea').val('')
+			this.dom.find( '.conversation-input textarea' ).val( '' )
 		}
 
 		conversationSetOpened( conversationId, value ){
 
 			if( value ){
-		    $( '.channel-id-' + conversationId ).addClass('active')
+		    $( '.channel-id-' + conversationId ).addClass( 'active' )
 		  }else{
-		    $( '.channel-id-' + conversationId ).removeClass('active')
+		    $( '.channel-id-' + conversationId ).removeClass( 'active' )
 		  }
 
 		}
@@ -339,7 +339,7 @@ var view = ( function(){
 		}
 
 		markMessageAsRead( messageId ){
-			this._domMessageContainer.find( '.message-' + messageId ).addClass('readed')
+			this._domMessageContainer.find( '.message-' + messageId ).addClass( 'readed' )
 		}
 
 		openConversation( conversation, isConnected ){
@@ -361,7 +361,7 @@ var view = ( function(){
 
 			}else{
 
-				$( '.group-menu' ).removeClass('group-edit').removeClass('group-view')
+				$( '.group-menu' ).removeClass( 'group-edit' ).removeClass( 'group-view' )
 		    $( '.group-menu' ).addClass( 'visible' ).addClass( 'group-new' )
 		    $( '.group-name-input input' ).val( '' )
 		    this._setGroupAvatar( '?' , $( '.group-avatar' ) )
@@ -369,20 +369,20 @@ var view = ( function(){
 			}
 	    
 	    $( '.memberDom' ).remove()
-	    $( '.group-menu .ui-input-search input' ).val('')
+	    $( '.group-menu .ui-input-search input' ).val( '' )
 
 	    this._domGroupMemberList.empty().append( friendList.map( function( item ){
 
-	    	item.dom = memberPrototype.clone().removeClass('wz-prototype')
+	    	item.dom = memberPrototype.clone().removeClass( 'wz-prototype' )
 			  item.dom.find( 'span' ).text( item.user.fullName )
 			  item.dom.addClass( 'memberDom' )
-			  item.dom.find( '.member-avatar' ).css( 'background-image' , 'url(' + item.user.avatar.big + ')' )
+			  item.dom.find( '.member-avatar' ).css( 'background-image' , 'url( ' + item.user.avatar.big + ' )' )
 			  item.dom.attr( 'data-id', item.user.id )
 
 			  if( conversation && conversation.users && (conversation.users.indexOf( item.user.id ) != -1) ){
 
 			  	item.dom.addClass( 'active' )
-			  	item.dom.find('.ui-checkbox').addClass( 'active' )
+			  	item.dom.find( '.ui-checkbox' ).addClass( 'active' )
 
 			  }
 
@@ -418,15 +418,15 @@ var view = ( function(){
 
 		  this._domContactsList.empty().append( list.map( function( item ){ 
 
-	  		item.dom = contactPrototype.clone().removeClass('wz-prototype')
+	  		item.dom = contactPrototype.clone().removeClass( 'wz-prototype' )
 
 	  		if( item.connected ){
 	  			item.dom.addClass( 'conected' )
 	  		}
 
 	  		item.dom.addClass( 'user-id-' + item.user.id )
-			  item.dom.find('.contact-name').text( item.user.fullName )
-			  item.dom.find('.contact-img').css( 'background-image', 'url(' + item.user.avatar.big + ')' )
+			  item.dom.find( '.contact-name' ).text( item.user.fullName )
+			  item.dom.find( '.contact-img' ).css( 'background-image', 'url( ' + item.user.avatar.big + ' )' )
 			  item.dom.attr( 'data-id', item.user.id )
 
 		  	return item.dom
@@ -445,9 +445,9 @@ var view = ( function(){
     	
 		  if( conversation.isGroup ){
 
-		  	//$('.conversation-info').addClass('isGroup')
-		  	var membersText = conversation.users.length === 0 ? (conversation.users.length + 1 + ' ' + lang.member) : (conversation.users.length + 1 + ' ' + lang.members)
-		    $('.conversation-moreinfo, .conver-moreinfo').removeClass('conected').text( membersText )
+		  	//$( '.conversation-info' ).addClass( 'isGroup' )
+		  	var membersText = conversation.users.length === 0 ? ( conversation.users.length + 1 + ' ' + lang.member ) : ( conversation.users.length + 1 + ' ' + lang.members )
+		    $( '.conversation-moreinfo, .conver-moreinfo' ).removeClass( 'conected' ).text( membersText )
 
 		    $( '.conver-info' ).addClass( 'viewGroup' );
         $( '.conver-avatar' ).hide();
@@ -456,20 +456,20 @@ var view = ( function(){
 
 		  }else if( isConnected ) {
 
-		  	$('.conversation-info').removeClass('isGroup')
-		    $('.conversation-moreinfo, .conver-moreinfo').addClass('conected').text( lang.conected )
+		  	$( '.conversation-info' ).removeClass( 'isGroup' )
+		    $( '.conversation-moreinfo, .conver-moreinfo' ).addClass( 'conected' ).text( lang.conected )
 
 		  }else{
 
-		  	$('.conversation-info').removeClass('isGroup')
-		    $('.conversation-moreinfo, .conver-moreinfo').removeClass('conected').text( lang.disconected )
+		  	$( '.conversation-info' ).removeClass( 'isGroup' )
+		    $( '.conversation-moreinfo, .conver-moreinfo' ).removeClass( 'conected' ).text( lang.disconected )
 
 		  }
 
       $( '.conver-avatar' ).show();
       $( '.conver-avatar-group' ).hide();
       $( '.conver-info' ).removeClass( 'viewGroup' );
-		  //$( '.conversation-input textarea' ).val('').focus()
+		  //$( '.conversation-input textarea' ).val( '' ).focus()
 
 		}
 
@@ -482,15 +482,15 @@ var view = ( function(){
 		  if( conversation.isGroup ){
 		  	this._setGroupAvatar( conversation.name, conversationDom.find( '.channel-img' ) )
 		  }else{
-		  	conversationDom.find( '.channel-img' ).css( 'background-image' , 'url(' + conversation.img + ')' )
+		  	conversationDom.find( '.channel-img' ).css( 'background-image' , 'url( ' + conversation.img + ' )' )
 		  }
 		  
 		  conversationDom.find( '.channel-last-msg' ).text( conversation.lastMessage ? conversation.lastMessage.data.text : '' )
 
 		  if( conversation.unread > 0 ) {
-        conversationDom.find( '.channel-badge' ).addClass('visible').find('span').text( conversation.unread )
+        conversationDom.find( '.channel-badge' ).addClass( 'visible' ).find( 'span' ).text( conversation.unread )
       }else{
-        conversationDom.find( '.channel-badge' ).removeClass('visible').find('span').text( '' )
+        conversationDom.find( '.channel-badge' ).removeClass( 'visible' ).find( 'span' ).text( '' )
       }
 
   	}
@@ -512,13 +512,13 @@ var view = ( function(){
 
 		  this._domConversationsList.empty().append( list.map( function( item ){ 
 
-		  	item.dom = conversationPrototype.clone().removeClass('wz-prototype')
+		  	item.dom = conversationPrototype.clone().removeClass( 'wz-prototype' )
 			  item.dom.addClass( 'channel-id-' + item.context.id )
 		  	item.dom.attr( 'data-id', item.context.id )
-			  item.dom.find('.channel-name').text( item.name )
+			  item.dom.find( '.channel-name' ).text( item.name )
 
 			  if( item.context.id == id ){
-			  	item.dom.addClass('active')
+			  	item.dom.addClass( 'active' )
 			  }
 
 			  if( item.isGroup ){
@@ -527,17 +527,17 @@ var view = ( function(){
 			  	item.dom.addClass( 'isGroup' )
 
 			  }else{
-			  	item.dom.find('.channel-img').css( 'background-image' , 'url(' + item.img + ')' )
+			  	item.dom.find( '.channel-img' ).css( 'background-image' , 'url( ' + item.img + ' )' )
 			  }
 
 			  if( item.unread > 0 ) {
-	        item.dom.find( '.channel-badge' ).addClass('visible').find('span').text( item.unread )
+	        item.dom.find( '.channel-badge' ).addClass( 'visible' ).find( 'span' ).text( item.unread )
 	      }else{
-	        item.dom.find( '.channel-badge' ).removeClass('visible').find('span').text( '' )
+	        item.dom.find( '.channel-badge' ).removeClass( 'visible' ).find( 'span' ).text( '' )
 	      }
 
 			  
-			  item.dom.find('.channel-last-msg').text( item.lastMessage ? item.lastMessage.data.text : '' )
+			  item.dom.find( '.channel-last-msg' ).text( item.lastMessage ? item.lastMessage.data.text : '' )
 
 		  	return item.dom 
 
@@ -881,15 +881,15 @@ var model = ( function( view ){
 
 	      prevMode = mode
 	      mode = MODE_ANIMATING
-	      $('.group-menu').transition({
+	      $( '.group-menu' ).transition({
 	        'x' : 0
 	      }, animationDuration, animationEffect, function(){
 	        mode = MODE_CREATING_GROUP
 	      })
-	      $('.initial-header .new-group').removeClass('visible')
-	      $('.initial-header .back-button').addClass('visible')
-	      //$('.initial-header .more-button').hide()
-	      $('.initial-header .accept-button').show()
+	      $( '.initial-header .new-group' ).removeClass( 'visible' )
+	      $( '.initial-header .back-button' ).addClass( 'visible' )
+	      //$( '.initial-header .more-button' ).hide()
+	      $( '.initial-header .accept-button' ).show()
 
 	    }*/
 
@@ -1147,7 +1147,7 @@ var model = ( function( view ){
 			var list = []
 
 		  info.members.each( function(){
-		    list.push( parseInt( $(this).attr('data-id') ) )
+		    list.push( parseInt( $(this).attr( 'data-id' ) ) )
 		  })
 
 		  info.members = list
@@ -1607,11 +1607,11 @@ var controller = ( function( model, view ){
     constructor( model, view ){
 
       this.dom = win
-      this._domContactsList = $('.contact-list', this.dom)
-      this._domConversationsList = $('.channel-list', this.dom)
-      this._domMessageContainer = $('.message-container', this.dom)
-      this._domMessageMePrototype = $('.message-me.wz-prototype', this._domMessageContainer)
-      this._domMessageOtherPrototype = $('.message-other.wz-prototype', this._domMessageContainer)
+      this._domContactsList = $( '.contact-list', this.dom )
+      this._domConversationsList = $( '.channel-list', this.dom )
+      this._domMessageContainer = $( '.message-container', this.dom )
+      this._domMessageMePrototype = $( '.message-me.wz-prototype', this._domMessageContainer )
+      this._domMessageOtherPrototype = $( '.message-other.wz-prototype', this._domMessageContainer )
       this._domCurrentConversation
       this.model = model
       this.view = view
@@ -1642,7 +1642,7 @@ var controller = ( function( model, view ){
       })
 
       this.dom.on( 'click', '.conversation-info.isGroup', function(){
-        model.editGroup( parseInt( $('.channel.active').attr( 'data-id' ) ) )
+        model.editGroup( parseInt( $( '.channel.active' ).attr( 'data-id' ) ) )
       })
 
       this.dom.on( 'click', '.group-menu .back, .cancel-group', function(){
@@ -1651,14 +1651,14 @@ var controller = ( function( model, view ){
 
       this.dom.on( 'click', '.memberDom', function(){
 
-        $(this).toggleClass('active')
+        $(this).toggleClass( 'active' )
         $(this).find( '.ui-checkbox' ).toggleClass( 'active' )
 
       })
 
       this.dom.on( 'click', '.memberDom .ui-checkbox', function(e){
 
-        $(this).toggleClass('active')
+        $(this).toggleClass( 'active' )
         $(this).parent().toggleClass( 'active' )
         e.stopPropagation()
 
@@ -1691,7 +1691,7 @@ var controller = ( function( model, view ){
 
           name: $( '.group-name-input input' ).val(),
           members: $( '.memberDom.active' ),
-          conversationId: parseInt( $( '.channel-list .channel.active' ).attr('data-id') )
+          conversationId: parseInt( $( '.channel-list .channel.active' ).attr( 'data-id' ) )
 
         }
 
@@ -1701,10 +1701,10 @@ var controller = ( function( model, view ){
 
       this.dom.on( 'keypress', function( e ){
 
-        if( e.which === 13 && !e.shiftKey && $.trim( this.dom.find('.conversation-input textarea').val() ) ){
+        if( e.which === 13 && !e.shiftKey && $.trim( this.dom.find( '.conversation-input textarea' ).val() ) ){
 
           e.preventDefault()
-          model.sendBuffer( $.trim( this.dom.find('.conversation-input textarea').val() ) )
+          model.sendBuffer( $.trim( this.dom.find( '.conversation-input textarea' ).val() ) )
 
         }
 
@@ -1719,11 +1719,11 @@ var controller = ( function( model, view ){
       })
 
       this._domContactsList.on( 'click', '.contact', function(){
-        model.openConversationWithContact( parseInt( $(this).attr('data-id') ) )
+        model.openConversationWithContact( parseInt( $(this).attr( 'data-id' ) ) )
       })
 
       this._domConversationsList.on( 'click', '.channel', function(){
-        model.openConversation( parseInt( $(this).attr('data-id') ) )
+        model.openConversation( parseInt( $(this).attr( 'data-id' ) ) )
       })
 
       // COM API Events

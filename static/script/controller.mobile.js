@@ -5,11 +5,11 @@ var controller = ( function( model, view ){
     constructor( model, view ){
 
       this.dom = win
-      this._domContactsList = $('.contact-list', this.dom)
-      this._domConversationsList = $('.channel-list', this.dom)
-      this._domMessageContainer = $('.message-container', this.dom)
-      this._domMessageMePrototype = $('.message-me.wz-prototype', this._domMessageContainer)
-      this._domMessageOtherPrototype = $('.message-other.wz-prototype', this._domMessageContainer)
+      this._domContactsList = $( '.contact-list', this.dom )
+      this._domConversationsList = $( '.channel-list', this.dom )
+      this._domMessageContainer = $( '.message-container', this.dom )
+      this._domMessageMePrototype = $( '.message-me.wz-prototype', this._domMessageContainer )
+      this._domMessageOtherPrototype = $( '.message-other.wz-prototype', this._domMessageContainer )
       this._domCurrentConversation
       this.model = model
       this.view = view
@@ -40,7 +40,7 @@ var controller = ( function( model, view ){
       })
 
       this.dom.on( 'click', '.conversation-info.isGroup', function(){
-        model.editGroup( parseInt( $('.channel.active').attr( 'data-id' ) ) )
+        model.editGroup( parseInt( $( '.channel.active' ).attr( 'data-id' ) ) )
       })
 
       this.dom.on( 'click', '.group-menu .back, .cancel-group', function(){
@@ -49,14 +49,14 @@ var controller = ( function( model, view ){
 
       this.dom.on( 'click', '.memberDom', function(){
 
-        $(this).toggleClass('active')
+        $(this).toggleClass( 'active' )
         $(this).find( '.ui-checkbox' ).toggleClass( 'active' )
 
       })
 
       this.dom.on( 'click', '.memberDom .ui-checkbox', function(e){
 
-        $(this).toggleClass('active')
+        $(this).toggleClass( 'active' )
         $(this).parent().toggleClass( 'active' )
         e.stopPropagation()
 
@@ -89,7 +89,7 @@ var controller = ( function( model, view ){
 
           name: $( '.group-name-input input' ).val(),
           members: $( '.memberDom.active' ),
-          conversationId: parseInt( $( '.channel-list .channel.active' ).attr('data-id') )
+          conversationId: parseInt( $( '.channel-list .channel.active' ).attr( 'data-id' ) )
 
         }
 
@@ -99,10 +99,10 @@ var controller = ( function( model, view ){
 
       this.dom.on( 'keypress', function( e ){
 
-        if( e.which === 13 && !e.shiftKey && $.trim( this.dom.find('.conversation-input textarea').val() ) ){
+        if( e.which === 13 && !e.shiftKey && $.trim( this.dom.find( '.conversation-input textarea' ).val() ) ){
 
           e.preventDefault()
-          model.sendBuffer( $.trim( this.dom.find('.conversation-input textarea').val() ) )
+          model.sendBuffer( $.trim( this.dom.find( '.conversation-input textarea' ).val() ) )
 
         }
 
@@ -117,11 +117,11 @@ var controller = ( function( model, view ){
       })
 
       this._domContactsList.on( 'click', '.contact', function(){
-        model.openConversationWithContact( parseInt( $(this).attr('data-id') ) )
+        model.openConversationWithContact( parseInt( $(this).attr( 'data-id' ) ) )
       })
 
       this._domConversationsList.on( 'click', '.channel', function(){
-        model.openConversation( parseInt( $(this).attr('data-id') ) )
+        model.openConversation( parseInt( $(this).attr( 'data-id' ) ) )
       })
 
       // COM API Events
