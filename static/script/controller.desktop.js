@@ -62,7 +62,7 @@ var controller = ( function( model, view ){
       this.dom.on( 'contextmenu', '.channel', function(){
 
         var menu = api.menu()
-        var id = $( this ).attr( 'data-id' )
+        var id = parseInt( $( this ).attr( 'data-id' ) )
 
         menu.addOption( lang.deleteChat , function(){
           model.deleteConversationApi( id )
