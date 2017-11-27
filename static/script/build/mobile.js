@@ -1041,7 +1041,7 @@ var model = ( function( view ){
 				
 			}
 
-			api.notification.markAsAttended( 'chat', { comContext : conversationId, full: true }, function( err ){
+			api.notification.markAsAttended( 'chat', { comContext : conversationId, full: true, previous: true }, function( err ){
 
 		  	if( err ){
 		  		view.launchAlert( err )
