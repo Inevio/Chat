@@ -406,7 +406,7 @@ var model = ( function( view ){
 
 			if( this.isMobile ){
 
-				this.changeMainAreaMode( this._prevMainAreaMode );
+				this.changeMainAreaMode( this._prevMainAreaMode, this._mainAreaMode );
 
 			}
 

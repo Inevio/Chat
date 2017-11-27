@@ -22,7 +22,7 @@ var controller = ( function( model, view ){
       // DOM Events
       this.dom.on( 'click' , '.back-button', function(){
         this.model.goBack();
-      })
+      }.bind(this))
 
       this.dom.on( 'click', '.tab-selector', function(){
 
@@ -35,7 +35,7 @@ var controller = ( function( model, view ){
 
       })
 
-      this.dom.on( 'click', '.new-group-button', function(){
+      this.dom.on( 'click', '.new-group', function(){
         model.editGroup( null )
       })
 

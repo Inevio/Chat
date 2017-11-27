@@ -203,10 +203,50 @@ var view = ( function(){
 
 		changeMainAreaMode( value, additionalData, conversation ){
 
-		  if( value === MAINAREA_NULL ){
+			if( value === MAINAREA_NULL && additionalData == MAINAREA_GROUPMODE ){
 
-		    $( '.ui-content' ).removeClass( 'visible' )
-		    $( '.no-content' ).addClass( 'visible' )
+		  	//$( '.ui-content' ).addClass( 'visible' )
+		    //$( '.no-content' ).removeClass( 'visible' )
+        $('.initial-header .new-group').addClass('visible');
+        $('.initial-header .back-button').removeClass('visible');
+        //$('.initial-header .more-button').show();
+        $('.initial-header .accept-button').hide();
+
+	      $('.group-menu').transition({
+	        'x' : '100%'
+	      }, this._animationDuration, this._animationEffect, function(){
+
+	       	this.hideGroupMenu();
+
+	      }.bind(this));
+
+		  }else if( value === MAINAREA_NULL ){
+
+		    //$( '.ui-content' ).removeClass( 'visible' )
+		    //$( '.no-content' ).addClass( 'visible' )
+
+		    $( '.channel.active' ).removeClass( 'active' );
+
+	      $( '.initial-header' ).transition({
+	        'x': '0'
+	      }, this._animationDuration, this._animationEffect );
+
+	      $( '.conver-header' ).transition({
+	        'x': '100%'
+	      }, this._animationDuration, this._animationEffect );
+
+	      $( '.contactDom.active' ).removeClass( 'active' );
+	      $( '.chatDom.active' ).removeClass( 'active' );
+	      $( '.ui-navbar' ).transition({
+	        'x' : 0
+	      }, this._animationDuration, this._animationEffect );
+
+	      $( '.ui-content' ).stop().clearQueue().transition({
+	        'x' : '100%'
+	      }, this._animationDuration, this._animationEffect, function(){
+	        $(this).hide().removeClass( 'visible' );
+	      });
+
 		    this.hideGroupMenu()
 
 		  }else if( value === MAINAREA_CONVERSATION ){
@@ -216,11 +256,11 @@ var view = ( function(){
 		    this.hideGroupMenu()
         $( '.initial-header' ).transition({
 	        'x': '-100%'
-	      }, this._animationDuration, this._animationEffect);
+	      }, this._animationDuration, this._animationEffect );
 
 	      $( '.conver-header' ).transition({
 	        'x': '0'
-	      }, this._animationDuration, this._animationEffect);
+	      }, this._animationDuration, this._animationEffect );
 
 	      $( '.ui-content' ).show().transition({
 	        'x' : 0
@@ -367,6 +407,13 @@ var view = ( function(){
 		    this._setGroupAvatar( '?' , $( '.group-avatar' ) )
 
 			}
+
+			$( '.group-menu' ).transition({
+        'x' : 0
+      }, this._animationDuration, this._animationEffect, function(){});
+      $('.initial-header .new-group').removeClass('visible');
+      $('.initial-header .back-button').addClass('visible');
+      $('.initial-header .accept-button').show();
 	    
 	    $( '.memberDom' ).remove()
 	    $( '.group-menu .ui-input-search input' ).val( '' )
@@ -445,29 +492,31 @@ var view = ( function(){
     	
 		  if( conversation.isGroup ){
 
-		  	//$( '.conversation-info' ).addClass( 'isGroup' )
 		  	var membersText = conversation.users.length === 0 ? ( conversation.users.length + 1 + ' ' + lang.member ) : ( conversation.users.length + 1 + ' ' + lang.members )
 		    $( '.conversation-moreinfo, .conver-moreinfo' ).removeClass( 'conected' ).text( membersText )
 
 		    $( '.conver-info' ).addClass( 'viewGroup' );
         $( '.conver-avatar' ).hide();
         $( '.conver-avatar-group' ).show();
-        //setGroupAvatar( chat.find( '.channel-name' ).text() , $( '.conver-avatar-group' ) );
+        this._setGroupAvatar( conversation.name , $( '.conver-avatar-group' ) );
 
 		  }else if( isConnected ) {
 
 		  	$( '.conversation-info' ).removeClass( 'isGroup' )
 		    $( '.conversation-moreinfo, .conver-moreinfo' ).addClass( 'conected' ).text( lang.conected )
+		    $( '.conver-avatar' ).show();
+      	$( '.conver-avatar-group' ).hide();
 
 		  }else{
 
 		  	$( '.conversation-info' ).removeClass( 'isGroup' )
 		    $( '.conversation-moreinfo, .conver-moreinfo' ).removeClass( 'conected' ).text( lang.disconected )
+		    $( '.conver-avatar' ).show();
+     	 	$( '.conver-avatar-group' ).hide();
 
 		  }
 
-      $( '.conver-avatar' ).show();
-      $( '.conver-avatar-group' ).hide();
+
       $( '.conver-info' ).removeClass( 'viewGroup' );
 		  //$( '.conversation-input textarea' ).val( '' ).focus()
 
@@ -964,7 +1013,7 @@ var model = ( function( view ){
 
 			if( this.isMobile ){
 
-				this.changeMainAreaMode( this._prevMainAreaMode );
+				this.changeMainAreaMode( this._prevMainAreaMode, this._mainAreaMode );
 
 			}
 
@@ -1624,7 +1673,7 @@ var controller = ( function( model, view ){
       // DOM Events
       this.dom.on( 'click' , '.back-button', function(){
         this.model.goBack();
-      })
+      }.bind(this))
 
       this.dom.on( 'click', '.tab-selector', function(){
 
@@ -1637,7 +1686,7 @@ var controller = ( function( model, view ){
 
       })
 
-      this.dom.on( 'click', '.new-group-button', function(){
+      this.dom.on( 'click', '.new-group', function(){
         model.editGroup( null )
       })
 
