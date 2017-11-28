@@ -153,7 +153,8 @@ var view = ( function(){
 		  dom.find( '.message-time' ).text( hh + ':' + mm )
 
 		  if( senderName ){
-		    dom.addClass( 'sender-group' ).find( '.sender' ).addClass( 'visible' ).text( senderName ).css( 'color' , COLORS[ this._selectColor( senderName ) ] )
+		    //dom.addClass( 'sender-group' ).find( '.sender' ).addClass( 'visible' ).text( senderName ).css( 'color' , COLORS[ this._selectColor( senderName ) ] )
+		    dom.find( '.sender' ).addClass( 'visible' ).text( senderName ).css( 'color' , COLORS[ this._selectColor( senderName ) ] )
 		  }
 
 		  if( message.sender !== api.system.user().id ){
