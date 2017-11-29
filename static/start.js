@@ -1,3 +1,5 @@
+return alert( lang.updating );
+
 var app  = $( this );
 var mobile = app.hasClass('wz-mobile-view');
 var myContactID  = api.system.user().id;
