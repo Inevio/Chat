@@ -67,6 +67,7 @@
 
     "noContactsMobile"  : "You don't have any contacts, search for your friends in Community",
     "noChatMobile"      : "Start a new conversation from the contacts tab",
-    "openCommunity"     : "Open Community"
+    "openCommunity"     : "Open Community",
+    "updating"          : "Chat is currently unavailable, we are applying an update. Please, try again later."
 
 }

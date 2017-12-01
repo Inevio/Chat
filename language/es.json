@@ -65,6 +65,7 @@
 
     "noContactsMobile"  : "No tienes contactos, busca a tus amigos en Community",
     "noChatMobile"      : "Comienza una nueva conversación desde la pestaña de contactos",
-    "openCommunity"     : "Abrir Community"
+    "openCommunity"     : "Abrir Community",
+    "updating"          : "Chat está actualmente desactivado, estamos aplicando una actualización. Por favor, inténtelo más tarde."
 
 }
