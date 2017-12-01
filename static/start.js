@@ -1,11 +1,4 @@
-
-api.banner()
-    .setTitle( 'Error' )
-    .setText( lang.updating )
-    .setIcon( 'https://static.horbito.com/app/14/icon.png' )
-    .render();
-
-return api.app.close();
+return alert( lang.updating );
 
 var app  = $( this );
 var mobile = app.hasClass('wz-mobile-view');
