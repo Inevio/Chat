@@ -500,8 +500,10 @@ var view = ( function(){
 
   	updateMessagesUI( user ){
 
-  		$( '.sender-' + user.id + ' .sender' ).text( user.fullName );
+  		$( '.sender-' + user.id + ' .sender' ).text( user.fullName ).css( 'color' , COLORS[ this._selectColor( user.fullName ) ] );
   		$( '.sender-' + user.id + ' .message-avatar' ).css( 'background-image' , 'url( ' + user.avatar.big + ' )' )
+
+		  this._domMessageContainer.scrollTop( this._domMessageContainer[ 0 ].scrollHeight )
 
   	}
 
