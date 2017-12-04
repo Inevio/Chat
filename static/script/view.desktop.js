@@ -167,6 +167,7 @@ var view = ( function(){
 
 		  var down = this._isScrolledToBottom()
 		  dom.addClass( 'message-' + message.id )
+		  dom.addClass( 'sender-' + message.sender );
 		  this._domMessageContainer.append( dom )
 
 		  if( down ){
@@ -494,6 +495,13 @@ var view = ( function(){
 		  	this.changeSidebarMode( SIDEBAR_CONVERSATIONS )
 		  	$( '.channel-id-' + id ).trigger( 'click' )
 		  }
+
+  	}
+
+  	updateMessagesUI( user ){
+
+  		$( '.sender-' + user.id + ' .sender' ).text( user.fullName );
+  		$( '.sender-' + user.id + ' .message-avatar' ).css( 'background-image' , 'url( ' + user.avatar.big + ' )' )
 
   	}
 

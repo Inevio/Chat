@@ -167,6 +167,7 @@ var view = ( function(){
 
 		  var down = this._isScrolledToBottom()
 		  dom.addClass( 'message-' + message.id )
+		  dom.addClass( 'sender-' + message.sender );
 		  this._domMessageContainer.append( dom )
 
 		  if( down ){
@@ -497,6 +498,13 @@ var view = ( function(){
 
   	}
 
+  	updateMessagesUI( user ){
+
+  		$( '.sender-' + user.id + ' .sender' ).text( user.fullName );
+  		$( '.sender-' + user.id + ' .message-avatar' ).css( 'background-image' , 'url( ' + user.avatar.big + ' )' )
+
+  	}
+
   }
 
   return new View()
@@ -707,16 +715,32 @@ var model = ( function( view ){
 
 		  if( message.sender !== api.system.user().id ){
 
-				senderAvatar = this.contacts[ message.sender ].user.avatar.big
-
-				if( this.conversations[ message.context ].isGroup ){
-		    	senderName = this.contacts[ message.sender ].user.fullName
-		  	}
-	
 		  	if( message.attended.length === 0 && message.attended.indexOf( api.system.user().id ) === -1 && this.view.dom.parent().hasClass( 'wz-app-focus' ) ){
-					console.log( this.view.dom.parent() )
 					message.markAsAttended( { full: true }, console.log.bind( console ) )
 		  	}
+
+		  	if( this.contacts[ message.sender ] ){
+
+		  		senderAvatar = this.contacts[ message.sender ].user.avatar.big
+
+					if( this.conversations[ message.context ].isGroup || this.conversations[ message.context ].world ){
+			    	senderName = this.contacts[ message.sender ].user.fullName
+			  	}
+
+		  	}else if( this.conversations[ message.context ].moreUsers[ message.sender ] ){
+
+		  		senderAvatar = this.conversations[ message.context ].moreUsers[ message.sender ].user.avatar.big
+
+					if( this.conversations[ message.context ].isGroup || this.conversations[ message.context ].world ){
+			    	senderName = this.conversations[ message.context ].moreUsers[ message.sender ].user.fullName
+			  	}
+
+		  	}else{
+
+		  		this.conversations[ message.context ].addNewUser( message.sender );
+
+		  	}
+
 
 			}else{
 				senderName = api.system.user().fullName
@@ -981,11 +1005,10 @@ var model = ( function( view ){
 
 			if( conversationId == null && this.openedChat && this.openedChat.context ){
 
-				if( !this.openedChat || !this.openedChat.context ){
-					return;
-				}
 				conversationId = this.openedChat.context.id;
 				
+			}else{
+				return;
 			}
 
 			api.notification.markAsAttended( 'chat', { comContext : conversationId, full: true, previous: true }, function( err ){
@@ -1006,6 +1029,8 @@ var model = ( function( view ){
 			}else{
 				conversation = conversationId
 			}
+
+			console.log( conversation );
 
 		  if( this.openedChat && conversation.context.id === this.openedChat.context.id ){
 		    return this
@@ -1237,6 +1262,7 @@ var model = ( function( view ){
 		  this.isGroup = false // To Do
 		 	this.name = ''
 		  this.users = []
+		  this.moreUsers = [] //Usuarios que no son contactos
 
 		  if( info ){
 
@@ -1376,6 +1402,21 @@ var model = ( function( view ){
 		    }.bind( this ))
 
 		  }.bind( this ))
+
+		}
+
+		addNewUser( userId ){
+
+			api.user( userId, function( err, user ){
+
+				if( err ){
+					this.app.view.launchAlert( err );
+				}
+
+				this.moreUsers.push[ user ];
+				this.app.view.updateMessagesUI( user );
+
+			}.bind(this))
 
 		}
 
