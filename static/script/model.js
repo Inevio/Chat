@@ -333,24 +333,6 @@ var model = ( function( view ){
 
 			}
 
-			//view.startCreateGroup( list )
-
-	    /*if( mobile ){
-
-	      prevMode = mode
-	      mode = MODE_ANIMATING
-	      $( '.group-menu' ).transition({
-	        'x' : 0
-	      }, animationDuration, animationEffect, function(){
-	        mode = MODE_CREATING_GROUP
-	      })
-	      $( '.initial-header .new-group' ).removeClass( 'visible' )
-	      $( '.initial-header .back-button' ).addClass( 'visible' )
-	      //$( '.initial-header .more-button' ).hide()
-	      $( '.initial-header .accept-button' ).show()
-
-	    }*/
-
 		}
 
 		ensureConversation( contextId, callback ){
@@ -388,8 +370,6 @@ var model = ( function( view ){
 
 		fullLoad(){
 
-		  // To Do -> Remove timeout
-
 		  async.parallel({
 
 		    contacts : this._loadFullContactList.bind(this),
@@ -421,9 +401,7 @@ var model = ( function( view ){
 		goBack(){
 
 			if( this.isMobile ){
-
 				this.changeMainAreaMode( this._prevMainAreaMode, this._mainAreaMode );
-
 			}
 
 		}
@@ -486,17 +464,11 @@ var model = ( function( view ){
 
 		markConversationAsAttended( conversationId ){
 
-			if( !this.unread ){
+			if( !this.unread || !(conversationId == null && this.openedChat && this.openedChat.context) ){
 				return;
 			}
 
-			if( conversationId == null && this.openedChat && this.openedChat.context ){
-
-				conversationId = this.openedChat.context.id;
-				
-			}else{
-				return;
-			}
+			conversationId = this.openedChat.context.id;
 
 			api.notification.markAsAttended( 'chat', { comContext : conversationId, full: true, previous: true }, function( err ){
 
