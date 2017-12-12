@@ -191,7 +191,7 @@ var view = ( function(){
   		var domList = []
 
   		list.forEach( function( message ){
-		    domList.push( this.appendMessage( message ) )
+		    domList.push( this.appendMessage( message, true ) )
 	    }.bind(this) )
 
   		this._domMessageContainer.append( domList )
