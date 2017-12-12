@@ -195,6 +195,10 @@ var view = ( function(){
 
 		  if( loadingList ){
 
+				return dom
+
+		  }else{
+		  	
 		  	var down = this._isScrolledToBottom()
 			  this._domMessageContainer.append( dom )
 
@@ -202,8 +206,6 @@ var view = ( function(){
 			    this._domMessageContainer.scrollTop( this._domMessageContainer[ 0 ].scrollHeight )
 			  }
 
-		  }else{
-		  	return dom
 		  }
 
 
