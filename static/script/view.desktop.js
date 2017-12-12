@@ -125,7 +125,7 @@ var view = ( function(){
 
   	}
 
-  	appendMessage( message, senderName, senderAvatar ){
+  	appendMessage( message, loadingList ){
 
   		var dom = ( message.sender === api.system.user().id ? this._domMessageMePrototype : this._domMessageOtherPrototype ).clone().removeClass( 'wz-prototype' ).data( 'message', message )
 		  var date = new Date( message.time )
@@ -152,27 +152,48 @@ var view = ( function(){
 		  dom.find( '.message-text' ).html( text )
 		  dom.find( '.message-time' ).text( hh + ':' + mm )
 
-		  if( senderName ){
+		  if( message.senderName ){
 		    //dom.addClass( 'sender-group' ).find( '.sender' ).addClass( 'visible' ).text( senderName ).css( 'color' , COLORS[ this._selectColor( senderName ) ] )
-		    dom.find( '.sender' ).addClass( 'visible' ).text( senderName ).css( 'color' , COLORS[ this._selectColor( senderName ) ] )
+		    dom.find( '.sender' ).addClass( 'visible' ).text( message.senderName ).css( 'color' , COLORS[ this._selectColor( message.senderName ) ] )
 		  }
 
 		  if( message.sender !== api.system.user().id ){
-		    dom.find( '.message-avatar' ).css( 'background-image' , 'url( ' + senderAvatar + ' )' )
+		    dom.find( '.message-avatar' ).css( 'background-image' , 'url( ' + message.senderAvatar + ' )' )
 		  }
 
 		  if( message.attended.length ){
 		    dom.addClass( 'readed' )
 		  }
 
-		  var down = this._isScrolledToBottom()
 		  dom.addClass( 'message-' + message.id )
 		  dom.addClass( 'sender-' + message.sender );
-		  this._domMessageContainer.append( dom )
+		  
+		  if( loadingList ){
 
-		  if( down ){
-		    this._domMessageContainer.scrollTop( this._domMessageContainer[ 0 ].scrollHeight )
+		  	var down = this._isScrolledToBottom()
+			  this._domMessageContainer.append( dom )
+
+			  if( down ){
+			    this._domMessageContainer.scrollTop( this._domMessageContainer[ 0 ].scrollHeight )
+			  }
+
+		  }else{
+		  	return dom;
 		  }
+
+
+  	}
+
+  	appendMessageList( list ){
+
+  		var domList = []
+
+  		list.forEach( function( message ){
+		    domList.push( this.appendMessage( message ) )
+	    }.bind(this) )
+
+  		this._domMessageContainer.append( domList )
+  		this._domMessageContainer.scrollTop( this._domMessageContainer[ 0 ].scrollHeight )
 
   	}
 

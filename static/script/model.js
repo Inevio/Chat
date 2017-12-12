@@ -190,7 +190,7 @@ var model = ( function( view ){
 
 		}
 
-		appendMessage( message ){
+		appendMessage( message, loadingList ){
 
 			var senderName = null
 			var senderAvatar = null
@@ -233,7 +233,24 @@ var model = ( function( view ){
 				senderName = api.system.user().fullName
 			}
 
-		  view.appendMessage( message, senderName, senderAvatar )
+			message.senderName = senderName;
+			message.senderAvatar = senderAvatar;
+
+			if( loadingList ){
+				return message
+			}else{
+				view.appendMessage( message )
+			}
+
+		}
+
+		appendMessageList( list ){
+
+			for( var i = 0; i < list.length; i++ ){
+				list[i] = this.appendMessage( list[i], true );
+			}
+
+			view.appendMessageList( list );
 
 		}
 
@@ -513,9 +530,11 @@ var model = ( function( view ){
 	  			return this.view.launchAlert( err );
 	  		}
 
-		    list.forEach( function( message ){
+	  		this.appendMessageList( list );
+
+		    /*list.forEach( function( message ){
 		      this.appendMessage( message )
-		    }.bind(this))
+		    }.bind(this))*/
 
 		  }.bind(this))
 
