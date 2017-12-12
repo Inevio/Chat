@@ -152,7 +152,7 @@ var view = ( function(){
 
   	}
 
-  	appendMessage( message, senderName, senderAvatar ){
+  	appendMessage( message, loadingList ){
 
   		var dom = ( message.sender === api.system.user().id ? this._domMessageMePrototype : this._domMessageOtherPrototype ).clone().removeClass( 'wz-prototype' ).data( 'message', message )
 		  var date = new Date( message.time )
@@ -179,25 +179,46 @@ var view = ( function(){
 		  dom.find( '.message-text' ).html( text )
 		  dom.find( '.message-time' ).text( hh + ':' + mm )
 
-		  if( senderName ){
-		    dom.addClass( 'sender-group' ).find( '.sender' ).addClass( 'visible' ).text( senderName ).css( 'color' , COLORS[ this._selectColor( senderName ) ] )
+		  if( message.senderName ){
+		    dom.addClass( 'sender-group' ).find( '.sender' ).addClass( 'visible' ).text( message.senderName ).css( 'color' , COLORS[ this._selectColor( message.senderName ) ] )
 		  }
 
 		  if( message.sender !== api.system.user().id ){
-		    dom.find( '.message-avatar' ).css( 'background-image' , 'url( ' + senderAvatar + ' )' )
+		    dom.find( '.message-avatar' ).css( 'background-image' , 'url( ' + message.senderAvatar + ' )' )
 		  }
 
 		  if( message.attended.length ){
 		    dom.addClass( 'readed' )
 		  }
 
-		  var down = this._isScrolledToBottom()
 		  dom.addClass( 'message-' + message.id )
-		  this._domMessageContainer.append( dom )
 
-		  if( down ){
-		    this._domMessageContainer.scrollTop( this._domMessageContainer[ 0 ].scrollHeight )
+		  if( loadingList ){
+
+		  	var down = this._isScrolledToBottom()
+			  this._domMessageContainer.append( dom )
+
+			  if( down ){
+			    this._domMessageContainer.scrollTop( this._domMessageContainer[ 0 ].scrollHeight )
+			  }
+
+		  }else{
+		  	return dom
 		  }
+
+
+  	}
+
+   	appendMessageList( list ){
+
+  		var domList = []
+
+  		list.forEach( function( message ){
+		    domList.push( this.appendMessage( message ) )
+	    }.bind(this))
+
+  		this._domMessageContainer.append( domList )
+  		this._domMessageContainer.scrollTop( this._domMessageContainer[ 0 ].scrollHeight )
 
   	}
 
@@ -797,7 +818,7 @@ var model = ( function( view ){
 
 		}
 
-		appendMessage( message ){
+		appendMessage( message, loadingList ){
 
 			var senderName = null
 			var senderAvatar = null
@@ -840,7 +861,24 @@ var model = ( function( view ){
 				senderName = api.system.user().fullName
 			}
 
-		  view.appendMessage( message, senderName, senderAvatar )
+			message.senderName = senderName;
+			message.senderAvatar = senderAvatar;
+
+			if( loadingList ){
+				return message
+			}else{
+				view.appendMessage( message )
+			}
+
+		}
+
+		appendMessageList( list ){
+
+			for( var i = 0; i < list.length; i++ ){
+				list[i] = this.appendMessage( list[i], true );
+			}
+
+			view.appendMessageList( list );
 
 		}
 
@@ -1120,9 +1158,11 @@ var model = ( function( view ){
 	  			return this.view.launchAlert( err );
 	  		}
 
-		    list.forEach( function( message ){
+	  		this.appendMessageList( list );
+
+		    /*list.forEach( function( message ){
 		      this.appendMessage( message )
-		    }.bind(this))
+		    }.bind(this))*/
 
 		  }.bind(this))
 
