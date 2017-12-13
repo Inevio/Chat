@@ -876,6 +876,10 @@ var model = ( function( view ){
 
 		appendMessageList( list ){
 
+			/*for( var i = 300; i < list.length; i++ ){
+				list[i] = this.appendMessage( list[i], true );
+			}*/
+
 			for( var i = 0; i < list.length; i++ ){
 				list[i] = this.appendMessage( list[i], true );
 			}
@@ -1154,6 +1158,8 @@ var model = ( function( view ){
 		  this.view.openConversation( conversation, isConnected )
 		  this.markConversationAsAttended( conversation.context.id );
 
+		  //TODO pedir 500 mensajes y además saber si hay más o no
+
 	  	conversation.context.getMessages( { withAttendedStatus : true }, function( err, list ){
 
 	  		if( err ){
@@ -1161,6 +1167,8 @@ var model = ( function( view ){
 	  		}
 
 	  		this.appendMessageList( list );
+
+	  		//this.appendMessageList( list.slice( list.length - 350 , list.length ) );
 
 		    /*list.forEach( function( message ){
 		      this.appendMessage( message )
