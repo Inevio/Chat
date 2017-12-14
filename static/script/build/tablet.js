@@ -747,6 +747,9 @@ var model = ( function( view ){
 		  }, function( err, res ){
 
 		    // To Do -> Error
+		    if( err ){
+		    	return this.view.launchAlert( err );
+		    }
 
 		    this.contacts = {}
 
@@ -772,6 +775,10 @@ var model = ( function( view ){
 		  api.com.list({ protocol : 'chat' }, function( err, contexts ){
 
 		    // To Do -> Error
+		    if( err ){
+		    	return this.view.launchAlert( err );
+		    }
+
 		    contexts.forEach( function( context ){
 		      this.addConversation( context )
 		    }.bind( this ))
@@ -937,15 +944,13 @@ var model = ( function( view ){
 
 			if( !this.conversations[ conversationId ] ){
 				return;
-			}else{
-
-				if( this.conversations[ conversationId ].world ){
-					return view.launchAlert( 'Can not remove world chat' )
-				}else if( this.conversations[ conversationId ].context instanceof FakeContext ){
-		    	return this.deleteConversationFront( conversationId )
-		  	}
-
 			}
+
+			if( this.conversations[ conversationId ].world ){
+				return view.launchAlert( 'Can not remove world chat' )
+			}else if( this.conversations[ conversationId ].context instanceof FakeContext ){
+	    	return this.deleteConversationFront( conversationId )
+	  	}
 
 			this.conversations[ conversationId ].context.remove( function( err ){
 
@@ -1029,7 +1034,7 @@ var model = ( function( view ){
 		  }, function( err, res ){
 
 		    if( err ){
-		    	return console.log( err )
+		    	return this.view.launchAlert( err )
 		    }
 
 		    if( this._sidebarMode !== SIDEBAR_NULL ){
@@ -1644,7 +1649,6 @@ var model = ( function( view ){
 		    this.img = this.app.contacts[ this.users[ 0 ] ].user.avatar.big // To Do -> Mirar si es el tamaño adecuado
 		  }
 
-		  //TODO llamar a la view
 		  this.app.view.updateConversationUI( this )
 
 		  //Si la conversación esta abierta, tambien actualizamos su informacion en pantalla
