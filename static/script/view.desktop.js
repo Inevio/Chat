@@ -46,7 +46,11 @@ var view = ( function(){
 		  this._domGroupMemberList = $( '.member-list', this.dom )
 		  this._domCurrentConversation
 
+		  this._animationDuration = 500
+		  this._animationEffect = 'cubic-bezier(.4,0,.2,1)'
+
   		this._translateInterface()
+  		this._initInterface();
   		// Set modes
 		  //this.changeMainAreaMode( MAINAREA_NULL )
 		  //this.changeSidebarMode( SIDEBAR_NULL )
@@ -55,6 +59,10 @@ var view = ( function(){
 
 		_cleanMessages(){
 		  this._domMessageContainer.empty()
+		}
+
+		_initInterface(){
+			//$( '.app-color' ).addClass( 'visible' )
 		}
 
 		_isScrolledToBottom(){
@@ -122,6 +130,8 @@ var view = ( function(){
 		  $( '.no-chat-txt' , this.dom ).text( lang.noChat )
 		  $( '.save-group span' , this.dom ).text( lang.save )
 		  $( '.send-txt' , this.dom ).text( lang.send )
+		  $( '.app-color .white' ).text( lang.white )
+  		$( '.app-color .dark' ).text( lang.dark )
 
   	}
 
@@ -196,6 +206,27 @@ var view = ( function(){
 
   		this._domMessageContainer.append( domList )
   		this._domMessageContainer.scrollTop( this._domMessageContainer[ 0 ].scrollHeight )
+
+  	}
+
+  	changeColor(){
+
+		  if ( $( '.ui-window' ).hasClass( 'dark' ) ) {
+
+		    $( '.app-color' ).find( 'i' ).stop().clearQueue().transition({
+		      'margin-left' : '18px'
+		    }, 250, this._animationEffect);
+
+		  }else{
+
+		    $( '.app-color' ).find( 'i' ).stop().clearQueue().transition({
+		      'margin-left' : '2px'
+		    }, 250, this._animationEffect);
+
+		  }
+
+		  this.dom.toggleClass( 'dark' );
+		  $( '.ui-window' ).toggleClass( 'dark' );
 
   	}
 

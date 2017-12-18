@@ -59,6 +59,12 @@ var controller = ( function( model, view ){
 
       })
 
+      this.dom.on( 'click', '.app-color', function(e){
+
+        this.view.changeColor();
+
+      }.bind(this))
+
       this.dom.on( 'contextmenu', '.channel', function(){
 
         var menu = api.menu()
