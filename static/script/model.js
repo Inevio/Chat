@@ -774,9 +774,12 @@ var model = ( function( view ){
 		  		this.world = this.context.worldId
 		  	}
 
-		  }
+		  	if( this.context.icons ){
+		  		this.img = this.context.icons.big
+		  	}
 
-		  this.img
+		  }
+		  
 		  this.unread
 
 		  this._startConversation()
@@ -1011,12 +1014,14 @@ var model = ( function( view ){
 		    // To Do -> lang.unknown
 		  }
 
-		  if( this.world && this.world.icon ){
-		    this.img = this.world.icon.big // To Do -> Mirar si es el tamaño adecuado
-		  }else if( this.isGroup ){
-		  	this.img = ''
-		  }else if( this.app.contacts[ this.users[ 0 ] ] ){
-		    this.img = this.app.contacts[ this.users[ 0 ] ].user.avatar.big // To Do -> Mirar si es el tamaño adecuado
+		  if( !this.img ){
+
+				if( this.isGroup ){
+			  	this.img = ''
+			  }else if( this.app.contacts[ this.users[ 0 ] ] ){
+			    this.img = this.app.contacts[ this.users[ 0 ] ].user.avatar.big // To Do -> Mirar si es el tamaño adecuado
+			  }
+
 		  }
 
 		  this.app.view.updateConversationUI( this )
