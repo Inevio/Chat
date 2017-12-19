@@ -359,6 +359,7 @@ var view = ( function(){
 
 			this.updateConversationInfo( conversation, isConnected )
 		  this._cleanMessages()
+		  this.clearInput()
 
 		}
 
@@ -470,7 +471,7 @@ var view = ( function(){
 
 		  }
 
-		  $( '.conversation-input textarea' ).val( '' ).focus()
+		  $( '.conversation-input textarea' ).focus()
 
 
 		}

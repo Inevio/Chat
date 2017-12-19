@@ -83,6 +83,12 @@ var controller = ( function( model, view ){
 
       })
 
+      this.dom.on( 'click', '.conversation-send', function(e){
+
+        model.sendBuffer( $.trim( this.dom.find( '.conversation-input textarea' ).val() ) )
+
+      }.bind(this))
+
       this.dom.on( 'click', '.save-group, .accept-button', function(){
          
         var info = {

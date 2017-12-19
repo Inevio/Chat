@@ -359,6 +359,7 @@ var view = ( function(){
 
 			this.updateConversationInfo( conversation, isConnected )
 		  this._cleanMessages()
+		  this.clearInput()
 
 		}
 
@@ -470,7 +471,7 @@ var view = ( function(){
 
 		  }
 
-		  $( '.conversation-input textarea' ).val( '' ).focus()
+		  $( '.conversation-input textarea' ).focus()
 
 
 		}
@@ -1711,6 +1712,12 @@ var controller = ( function( model, view ){
       this.dom.on( 'click', '.app-color', function(e){
 
         this.view.changeColor();
+
+      }.bind(this))
+
+      this.dom.on( 'click', '.conversation-send', function(e){
+
+        model.sendBuffer( $.trim( this.dom.find( '.conversation-input textarea' ).val() ) )
 
       }.bind(this))
 
