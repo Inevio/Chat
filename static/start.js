@@ -1,13 +1,4 @@
-
-api.banner()
-    .setTitle( 'Error' )
-    .setText( lang.updating )
-    .setIcon( 'https://static.horbito.com/app/14/icon.png' )
-    .render();
-
-return api.app.close();
-
-var app  = $( this );
+/*var app  = $( this );
 var mobile = app.hasClass('wz-mobile-view');
 var myContactID  = api.system.user().id;
 var desktop  = $(this).parent().parent();
@@ -111,4 +102,6 @@ if ( !params ) {
 
   }
 
-}
+}*/
+
+start();
