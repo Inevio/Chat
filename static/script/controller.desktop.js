@@ -65,6 +65,12 @@ var controller = ( function( model, view ){
 
       }.bind(this))
 
+      this.dom.on( 'click', '.conversation-send', function(e){
+
+        model.sendBuffer( $.trim( this.dom.find( '.conversation-input textarea' ).val() ) )
+
+      }.bind(this))
+
       this.dom.on( 'contextmenu', '.channel', function(){
 
         var menu = api.menu()
