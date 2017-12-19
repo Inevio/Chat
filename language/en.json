@@ -26,6 +26,7 @@
     "info"  : "INFORMATION",
     "MEMBERS"  : "MEMBERS",
     "members" : "Members",
+    "member" : "Member",
     "deleteExit" : "Delete and exit",
     "newGroupTitle"  : "New group chat",
     "search"  : "Search here...",

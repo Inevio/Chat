@@ -278,7 +278,7 @@ input {
     background-size: 9px 9px;
     width: 9px;
     height: 9px;
-    background-image: url('@static/triangulito.png');
+    background-image: url('@static/images/triangulito.png');
 }
 
 .dark .message-triangle {
@@ -325,7 +325,7 @@ input {
 }
 
 .check {
-    background: url('@static/sprite-ticks.png');
+    background: url('@static/images/sprite-ticks.png');
     position: absolute;
     background-size: 77px 10px;
     height: 10px;
@@ -747,7 +747,7 @@ input {
     width: 17px;
     height: 16px;
     margin-top: 5px;
-    background: url('@static/sprite.png');
+    background: url('@static/images/sprite.png');
     background-size: 113px 20px;
     background-position: -18px 0px;
 }
@@ -777,7 +777,7 @@ input {
     margin-top: 3px;
     width: 20px;
     height: 20px;
-    background: url('@static/sprite.png');
+    background: url('@static/images/sprite.png');
     background-size: 113px 20px;
     background-position: -55px 0;
 }
@@ -806,12 +806,12 @@ input {
     top: 50px;
     left: 318px;
     background-size: 1484px 1455px;
-    background-image: url('@static/pattern.png');
+    background-image: url('@static/images/pattern.png');
     background-position: bottom left;
 }
 
 .dark.chat .ui-content {
-    background-image: url('@static/pattern-dark.png');
+    background-image: url('@static/images/pattern-dark.png');
     width: ~'calc(100% - 318px)';
     height: ~'calc(100% - 50px)';
     border-radius: 0 0 6px 0;
@@ -822,10 +822,10 @@ input {
 @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi) {
     .chat .ui-content {
 
-        background-image: url('@static/pattern.png');
+        background-image: url('@static/images/pattern.png');
     }
     .dark.chat .ui-content {
-        background-image: url('@static/pattern-dark.png');
+        background-image: url('@static/images/pattern-dark.png');
 
     }
 }
@@ -1018,13 +1018,13 @@ input {
 }
 
 .conversation-input .search-icon i {
-    background-image: url('@static/sprite.png');
+    background-image: url('@static/images/sprite.png');
     background-size: 113px 20px;
     background-position: -70px 0;
 }
 
 .conversation-input.active .search-icon i {
-    background-image: url('@static/sprite.png');
+    background-image: url('@static/images/sprite.png');
     background-size: 113px 20px;
     background-position: -86px 0;
 }
@@ -1061,6 +1061,9 @@ input {
     right: 0px;
 }
 
+.conversation-send-mobile{
+    display: none;
+}
 
 .conversation-send:hover {
     background-color: @blueHorbitoHover;
@@ -1087,6 +1090,11 @@ input {
     left: 318px;
     background: rgba(255, 255, 255, 1);
     border-left: 1px solid rgba(229, 233, 234, .9);
+    display: none;
+
+    &.visible{
+        display: block;
+    }
 }
 
 .dark .no-content {
@@ -1106,11 +1114,11 @@ input {
     width: 236px;
     height: 188px;
     background-size: 236px 188px;
-    background-image: url('@static/icono-no-chat.png');
+    background-image: url('@static/images/icono-no-chat.png');
 }
 
 .dark .no-chat-img {
-    background-image: url('@static/icono-no-chat-dark.png');
+    background-image: url('@static/images/icono-no-chat-dark.png');
     background-size: 236px 188px;
 }
 
@@ -1194,14 +1202,14 @@ input {
     width: 14px;
     height: 12px;
     margin-left: 10px;
-    background: url('@static/Back.png');
+    background: url('@static/images/Back.png');
     background-size: 14px 12px;
     margin-top: 18px;
     margin-bottom: 16px;
 }
 
 .dark .group-menu .back figure {
-    background: url('@static/Back-black.png');
+    background: url('@static/images/Back-black.png');
     background-size: 14px 12px;
 }
 
@@ -1356,7 +1364,7 @@ input {
     position: absolute;
     margin-top: 92px;
     max-width: 550px;
-    max-height: ~'calc(100% - 230px)';
+    max-height: ~'calc(100% - 275px)';
 }
 
 .group-new .member-list, .group-edit .member-list {
@@ -1681,7 +1689,7 @@ input {
 .go-bottom .go-bottom-arrow {
     width: 18px;
     height: 10px;
-    background-image: url('@static/sprite-flecha.png');
+    background-image: url('@static/images/sprite-flecha.png');
     background-position: 0px 0px;
     background-size: 54px 10px;
     margin: 18px auto 0 auto;
@@ -1982,7 +1990,7 @@ input {
     .image {
         width: 212px;
         height: 210px;
-        background-image: url('@static/forever-alone.png');
+        background-image: url('@static/images/forever-alone.png');
         background-size: 212px 210px;
         display: inline-block;
         margin: 150px auto 0 auto;
@@ -2103,7 +2111,7 @@ input {
     .back-button i {
         width: 16px;
         height: 15px;
-        background: url('@static/mobile/sprite.png');
+        background: url('@static/images/mobile/sprite.png');
         background-size: 170px 31px;
         background-position: -100px 0px;
         display: inline-block;
@@ -2111,7 +2119,7 @@ input {
     .more-button {
         width: 4px;
         height: 18px;
-        background: url('@static/mobile/sprite.png');
+        background: url('@static/images/mobile/sprite.png');
         background-size: 170px 31px;
         background-position: -116px 0px;
         float: right;
@@ -2390,7 +2398,7 @@ input {
     .chat-tab-selector figure {
         width: 24px;
         height: 20px;
-        background: url('@static/mobile/sprite.png');
+        background: url('@static/images/mobile/sprite.png');
         background-size: 170px 31px;
         background-position: 0px 0px;
         margin-top: 3px;
@@ -2404,7 +2412,7 @@ input {
     .contact-tab-selector figure {
         width: 26px;
         height: 20px;
-        background: url('@static/mobile/sprite.png');
+        background: url('@static/images/mobile/sprite.png');
         background-size: 170px 31px;
         background-position: -48px 0px;
         margin-top: 3px;
@@ -2554,7 +2562,7 @@ input {
     .new-group .new-group-icon {
         width: 27px;
         height: 21px;
-        background-image: url('@static/mobile/new-group.png');
+        background-image: url('@static/images/mobile/new-group.png');
         background-size: 27px 21px;
     }
     .channel .channel-badge span {
@@ -2600,6 +2608,7 @@ input {
         display: none;
     }
     .conversation-send-mobile {
+        display: block;
         width: 34px;
         height: 34px;
         border-radius: 50%;
@@ -2612,7 +2621,7 @@ input {
     .conversation-send-mobile figure {
         width: 16px;
         height: 14px;
-        background-image: url('@static/mobile/flecha.png');
+        background-image: url('@static/images/mobile/flecha.png');
         background-size: 16px 14px;
         margin-top: 10px;
         margin-left: 10px;
@@ -2652,7 +2661,7 @@ input {
         max-height: none;
     }
     .check {
-        background: url('@static/sprite-ticks@2x.png');
+        background: url('@static/images/sprite-ticks@2x.png');
         background-size: 77px 10px;
         width: 8px;
         background-position: 8px 0;
