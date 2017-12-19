@@ -482,10 +482,12 @@ var view = ( function(){
   		conversationDom.attr( 'data-id' , conversation.context.id )
 		  conversationDom.find( '.channel-name' ).text( conversation.name )
 
-		  if( conversation.isGroup ){
+		  if( conversation.img ){
+				conversationDom.find( '.channel-img' ).css( 'background-image' , 'url( ' + conversation.img + ' )' )
+		  }else if( conversation.isGroup ){
 		  	this._setGroupAvatar( conversation.name, conversationDom.find( '.channel-img' ) )
 		  }else{
-		  	conversationDom.find( '.channel-img' ).css( 'background-image' , 'url( ' + conversation.img + ' )' )
+		  	
 		  }
 		  
 		  conversationDom.find( '.channel-last-msg' ).text( conversation.lastMessage ? conversation.lastMessage.data.text : '' )
@@ -524,9 +526,16 @@ var view = ( function(){
 			  	item.dom.addClass( 'active' )
 			  }
 
+			  if( item.img ){
+			  	item.dom.find( '.channel-img' ).css( 'background-image' , 'url( ' + item.img + ' )' )
+			  }
+
 			  if( item.isGroup ){
 
-			  	this._setGroupAvatar( item.name, item.dom.find( '.channel-img' ) )
+			  	if( !item.img ){
+			  		this._setGroupAvatar( item.name, item.dom.find( '.channel-img' ) )
+			  	}
+
 			  	item.dom.addClass( 'isGroup' )
 
 			  }else{
@@ -1344,9 +1353,12 @@ var model = ( function( view ){
 		  		this.world = this.context.worldId
 		  	}
 
-		  }
+		  	if( this.context.icons ){
+		  		this.img = this.context.icons.big
+		  	}
 
-		  this.img
+		  }
+		  
 		  this.unread
 
 		  this._startConversation()
@@ -1581,12 +1593,14 @@ var model = ( function( view ){
 		    // To Do -> lang.unknown
 		  }
 
-		  if( this.world && this.world.icon ){
-		    this.img = this.world.icon.big // To Do -> Mirar si es el tamaño adecuado
-		  }else if( this.isGroup ){
-		  	this.img = ''
-		  }else if( this.app.contacts[ this.users[ 0 ] ] ){
-		    this.img = this.app.contacts[ this.users[ 0 ] ].user.avatar.big // To Do -> Mirar si es el tamaño adecuado
+		  if( !this.img ){
+
+				if( this.isGroup ){
+			  	this.img = ''
+			  }else if( this.app.contacts[ this.users[ 0 ] ] ){
+			    this.img = this.app.contacts[ this.users[ 0 ] ].user.avatar.big // To Do -> Mirar si es el tamaño adecuado
+			  }
+
 		  }
 
 		  this.app.view.updateConversationUI( this )

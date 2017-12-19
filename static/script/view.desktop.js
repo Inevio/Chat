@@ -482,10 +482,12 @@ var view = ( function(){
   		conversationDom.attr( 'data-id' , conversation.context.id )
 		  conversationDom.find( '.channel-name' ).text( conversation.name )
 
-		  if( conversation.isGroup ){
+		  if( conversation.img ){
+				conversationDom.find( '.channel-img' ).css( 'background-image' , 'url( ' + conversation.img + ' )' )
+		  }else if( conversation.isGroup ){
 		  	this._setGroupAvatar( conversation.name, conversationDom.find( '.channel-img' ) )
 		  }else{
-		  	conversationDom.find( '.channel-img' ).css( 'background-image' , 'url( ' + conversation.img + ' )' )
+		  	
 		  }
 		  
 		  conversationDom.find( '.channel-last-msg' ).text( conversation.lastMessage ? conversation.lastMessage.data.text : '' )
@@ -524,9 +526,16 @@ var view = ( function(){
 			  	item.dom.addClass( 'active' )
 			  }
 
+			  if( item.img ){
+			  	item.dom.find( '.channel-img' ).css( 'background-image' , 'url( ' + item.img + ' )' )
+			  }
+
 			  if( item.isGroup ){
 
-			  	this._setGroupAvatar( item.name, item.dom.find( '.channel-img' ) )
+			  	if( !item.img ){
+			  		this._setGroupAvatar( item.name, item.dom.find( '.channel-img' ) )
+			  	}
+
 			  	item.dom.addClass( 'isGroup' )
 
 			  }else{
