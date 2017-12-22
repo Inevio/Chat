@@ -51,7 +51,7 @@ var view = ( function(){
 
 		  this._startMobile()
   		this._translateInterface()
-  		this._textareaAutoSize()
+  		setTimeout( this._textareaAutoSize() , 250 );
 
   		// Set modes
 		  //this.changeMainAreaMode( MAINAREA_NULL )

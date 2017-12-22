@@ -51,8 +51,8 @@ var view = ( function(){
 
   		this._translateInterface()
   		this._initInterface()
-  		this._textareaAutoSize()
-  		
+  		setTimeout( this._textareaAutoSize() , 250 );
+
   		// Set modes
 		  //this.changeMainAreaMode( MAINAREA_NULL )
 		  //this.changeSidebarMode( SIDEBAR_NULL )
