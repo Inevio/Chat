@@ -49,8 +49,10 @@ var view = ( function(){
 		  this._animationDuration = 500
 		  this._animationEffect = 'cubic-bezier(.4,0,.2,1)'
 
-		  this._startMobile();
+		  this._startMobile()
   		this._translateInterface()
+  		this._textareaAutoSize()
+
   		// Set modes
 		  //this.changeMainAreaMode( MAINAREA_NULL )
 		  //this.changeSidebarMode( SIDEBAR_NULL )
@@ -118,6 +120,10 @@ var view = ( function(){
 	      $( '.message-container' ).scrollTop( $( '.message-container' )[ 0 ].scrollHeight );
 	    })*/
 
+		}
+
+		_textareaAutoSize(){
+			$( '.conversation-input textarea' ).textareaAutoSize();
 		}
 
   	_translateInterface(){
