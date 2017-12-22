@@ -49,8 +49,10 @@ var view = ( function(){
 		  this._animationDuration = 500
 		  this._animationEffect = 'cubic-bezier(.4,0,.2,1)'
 
-		  this._startMobile();
+		  this._startMobile()
   		this._translateInterface()
+  		this._textareaAutoSize()
+
   		// Set modes
 		  //this.changeMainAreaMode( MAINAREA_NULL )
 		  //this.changeSidebarMode( SIDEBAR_NULL )
@@ -118,6 +120,10 @@ var view = ( function(){
 	      $( '.message-container' ).scrollTop( $( '.message-container' )[ 0 ].scrollHeight );
 	    })*/
 
+		}
+
+		_textareaAutoSize(){
+			$( '.conversation-input textarea' ).textareaAutoSize();
 		}
 
   	_translateInterface(){
@@ -1131,7 +1137,8 @@ var model = ( function( view ){
 
 		markConversationAsAttended( conversationId ){
 
-			if( !this.unread || !(conversationId == null && this.openedChat && this.openedChat.context) ){
+			//Si no hay mensajes no leidos o no existe la conversacion pasada como argumento
+			if( !this.unread || (conversationId == null && !this.openedChat && !this.openedChat.context) ){
 				return;
 			}
 

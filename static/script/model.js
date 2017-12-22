@@ -490,7 +490,8 @@ var model = ( function( view ){
 
 		markConversationAsAttended( conversationId ){
 
-			if( !this.unread || !(conversationId == null && this.openedChat && this.openedChat.context) ){
+			//Si no hay mensajes no leidos o no existe la conversacion pasada como argumento
+			if( !this.unread || (conversationId == null && !this.openedChat && !this.openedChat.context) ){
 				return;
 			}
 

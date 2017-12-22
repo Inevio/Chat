@@ -50,10 +50,13 @@ var view = ( function(){
 		  this._animationEffect = 'cubic-bezier(.4,0,.2,1)'
 
   		this._translateInterface()
-  		this._initInterface();
+  		this._initInterface()
+  		this._textareaAutoSize()
+  		
   		// Set modes
 		  //this.changeMainAreaMode( MAINAREA_NULL )
 		  //this.changeSidebarMode( SIDEBAR_NULL )
+
 
   	}
 
@@ -99,6 +102,10 @@ var view = ( function(){
 		  })
 		  avatar.find( 'span' ).css( 'color', colorPalette[colorId].text)
 
+		}
+
+		_textareaAutoSize(){
+			$( '.conversation-input textarea' ).textareaAutoSize();
 		}
 
   	_translateInterface(){
