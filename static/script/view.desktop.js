@@ -51,7 +51,7 @@ var view = ( function(){
 
   		this._translateInterface()
   		this._initInterface()
-  		setTimeout( this._textareaAutoSize() , 1000 );
+  		this._textareaAutoSize();
 
   		// Set modes
 		  //this.changeMainAreaMode( MAINAREA_NULL )
@@ -105,7 +105,16 @@ var view = ( function(){
 		}
 
 		_textareaAutoSize(){
-			$( '.conversation-input textarea' ).textareaAutoSize();
+
+			var interval = setInterval(function(){
+
+				if( typeof $().textareaAutoSize == 'function' ){
+					$( '.conversation-input textarea' ).textareaAutoSize();
+					clearInterval(interval)
+				}
+
+			}, 500);
+			
 		}
 
   	_translateInterface(){
