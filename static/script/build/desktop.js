@@ -355,6 +355,7 @@ var view = ( function(){
 
 			if ( !this.dom.parent().hasClass( 'wz-app-focus' ) ){
 
+				console.log('En busca del object perdido: ', name, text, avatar);
 			  api.banner()
 			  .setTitle( name )
 			  .setText( text )
@@ -1043,6 +1044,10 @@ var model = ( function( view ){
 		}
 
 		handleNewNotification( notification ){
+
+			if ( notification.protocol != 'chat') {
+		    return
+		  }
 
 			this.updateConversationUnread( notification.comContext )
 
@@ -1874,6 +1879,10 @@ var controller = ( function( model, view ){
       })
 
       api.notification.on( 'new', function( notification ){
+
+        if ( notification.protocol != 'chat') {
+          return
+        }
 
         model.handleNewNotification( notification )
         model.reloadUnread();
