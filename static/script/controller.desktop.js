@@ -194,6 +194,10 @@ var controller = ( function( model, view ){
 
       api.notification.on( 'new', function( notification ){
 
+        if ( notification.protocol != 'chat') {
+          return
+        }
+
         model.handleNewNotification( notification )
         model.reloadUnread();
 

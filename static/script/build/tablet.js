@@ -1096,6 +1096,10 @@ var model = ( function( view ){
 
 		handleNewNotification( notification ){
 
+			if ( notification.protocol != 'chat') {
+		    return
+		  }
+
 			this.updateConversationUnread( notification.comContext )
 
 			if( notification.sender !== api.system.user().id ){

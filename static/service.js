@@ -21,6 +21,10 @@ var updateBadge = function( num, add ){
 
 api.notification.on( 'new', function( data ){
 
+  if ( data.protocol != 'chat') {
+    return
+  }
+
   if( data.sender === myUserID ){
     return
   }
