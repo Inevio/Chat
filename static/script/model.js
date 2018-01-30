@@ -407,6 +407,8 @@ var model = ( function( view ){
 		    	return this.view.launchAlert( err )
 		    }
 
+		    this.openWorldConversation()
+
 		    if( this._sidebarMode !== SIDEBAR_NULL ){
 		      return
 		    }
@@ -417,6 +419,8 @@ var model = ( function( view ){
 		    }else{
 		      // To Do -> Show forever alone
 		    }
+
+
 
 		  }.bind(this))
 
@@ -589,6 +593,26 @@ var model = ( function( view ){
 		  this.openConversation( this.conversations[ context.id ] )
 
 		  return this
+
+		}
+
+		openWorldConversation(){
+
+			if( params && params[0] == 'open-world-chat' && params[1] ){
+
+				//console.log( params[1].world.worldId, worldId )
+
+				var conversations = Object.values( this.conversations )
+
+				conversations.forEach( function( conversation ){
+
+					if( params[1].world.id === conversation.world ){
+						return this.openConversation( conversation.context.id )
+					}
+
+				}.bind(this))
+		    
+		  }
 
 		}
 
