@@ -606,7 +606,7 @@ var model = ( function( view ){
 
 				conversations.forEach( function( conversation ){
 
-					if( params[1].world.id === conversation.world ){
+					if( conversation.world && params[1].world.id === conversation.world ){
 						return this.openConversation( conversation.context.id )
 					}
 
