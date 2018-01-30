@@ -373,6 +373,7 @@ var view = ( function(){
 
 		openConversation( conversation, isConnected ){
 
+			$( '.channel-list' ).scrollTop( $( '.channel-id-' + conversation.context.id )[0].scrollHeight + 50 )
 			this.updateConversationInfo( conversation, isConnected )
 		  this._cleanMessages()
 		  this.clearInput()
