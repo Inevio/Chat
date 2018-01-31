@@ -515,7 +515,7 @@ var model = ( function( view ){
 
 		}
 
-		openConversation( conversationId ){
+		openConversation( conversationId, scroll ){
 
 			var conversation
 			if( typeof conversationId == 'number' ){
@@ -539,7 +539,7 @@ var model = ( function( view ){
 
 		  this.openedChat = conversation.setOpened( true )
 		  this.changeMainAreaMode( MAINAREA_CONVERSATION )
-		  this.view.openConversation( conversation, isConnected )
+		  this.view.openConversation( conversation, isConnected, scroll )
 		  this.markConversationAsAttended( conversation.context.id );
 
 		  //TODO pedir 500 mensajes y además saber si hay más o no
@@ -607,7 +607,7 @@ var model = ( function( view ){
 				conversations.forEach( function( conversation ){
 
 					if( conversation.world && params[1].world.id === conversation.world ){
-						return this.openConversation( conversation.context.id )
+						return this.openConversation( conversation.context.id, true )
 					}
 
 				}.bind(this))

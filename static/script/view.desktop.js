@@ -371,9 +371,11 @@ var view = ( function(){
 			this._domMessageContainer.find( '.message-' + messageId ).addClass( 'readed' )
 		}
 
-		openConversation( conversation, isConnected ){
+		openConversation( conversation, isConnected, scroll ){
 
-			$( '.channel-list' ).scrollTop( $( '.channel-id-' + conversation.context.id )[0].scrollHeight + 50 )
+			if( scroll ){
+				$( '.channel-list' ).scrollTop( $( '.channel-id-' + conversation.context.id )[0].offsetTop )
+			}
 			this.updateConversationInfo( conversation, isConnected )
 		  this._cleanMessages()
 		  this.clearInput()
