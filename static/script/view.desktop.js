@@ -192,7 +192,7 @@ var view = ( function(){
 		  }
 
 		  dom.addClass( 'message-' + message.id )
-		  dom.addClass( 'sender-' + message.sender );
+		  dom.addClass( 'sender-' + message.sender )
 		  
 		  if( loadingList ){
 

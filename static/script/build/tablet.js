@@ -198,6 +198,7 @@ var view = ( function(){
 		  }
 
 		  dom.addClass( 'message-' + message.id )
+		  dom.addClass( 'sender-' + message.sender )
 
 		  if( loadingList ){
 
@@ -636,6 +637,15 @@ var view = ( function(){
 		  	this.changeSidebarMode( SIDEBAR_CONVERSATIONS )
 		  	$( '.channel-id-' + id ).trigger( 'click' )
 		  }
+
+  	}
+
+  	updateMessagesUI( user ){
+
+  		$( '.sender-' + user.id + ' .sender' ).text( user.fullName ).css( 'color' , COLORS[ this._selectColor( user.fullName ) ] );
+  		$( '.sender-' + user.id + ' .message-avatar' ).css( 'background-image' , 'url( ' + user.avatar.big + ' )' )
+
+		  this._domMessageContainer.scrollTop( this._domMessageContainer[ 0 ].scrollHeight )
 
   	}
 
