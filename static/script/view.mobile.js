@@ -123,19 +123,7 @@ var view = ( function(){
 		}
 
 		_textareaAutoSize(){
-
-			var interval = setInterval( ()=>{
-
-				if( $().textareaAutoSize ){
-					console.log('loaded')
-					$( '.conversation-input textarea' ).textareaAutoSize()
-					clearInterval(interval)
-				}else{
-					console.log('not loaded')
-				}
-
-			}, 100 )
-			
+			$( '.conversation-input textarea' ).textareaAutoSize()
 		}
 
   	_translateInterface(){
