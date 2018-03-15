@@ -19,6 +19,7 @@ gulp.task( 'desktop', function( cb ){
 
   gulp.src([
 
+    './static/jquery.textarea_autosize.min.js',
     './static/script/view.desktop.js',
     './static/script/model.js',
     './static/script/controller.desktop.js'
@@ -36,6 +37,7 @@ gulp.task( 'mobile', function( cb ){
 
   gulp.src([
 
+    './static/jquery.textarea_autosize.min.js',
     './static/script/view.mobile.js',
     './static/script/model.js',
     './static/script/controller.mobile.js'
@@ -53,6 +55,7 @@ gulp.task( 'tablet', function( cb ){
 
   gulp.src([
 
+    './static/jquery.textarea_autosize.min.js',
     './static/script/view.mobile.js',
     './static/script/model.js',
     './static/script/controller.mobile.js'
