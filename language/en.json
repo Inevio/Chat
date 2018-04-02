@@ -69,6 +69,8 @@
     "noContactsMobile"  : "You don't have any contacts, search for your friends in Community",
     "noChatMobile"      : "Start a new conversation from the contacts tab",
     "openCommunity"     : "Open Community",
-    "updating"          : "Chat is currently unavailable, we are applying an update. Please, try again later."
+    "updating"          : "Chat is currently unavailable, we are applying an update. Please, try again later.",
+    "errorDeleteWorldChat1" : "I'm sorry but the conversation you're trying to remove belongs to the world",
+    "errorDeleteWorldChat2" : "so it can't be deleted. If you no longer want to be part of the world, open Cosmos, right click on a world and select 'Leave world'".
 
 }
