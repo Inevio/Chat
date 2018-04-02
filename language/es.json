@@ -67,6 +67,8 @@
     "noContactsMobile"  : "No tienes contactos, busca a tus amigos en Community",
     "noChatMobile"      : "Comienza una nueva conversación desde la pestaña de contactos",
     "openCommunity"     : "Abrir Community",
-    "updating"          : "Chat está actualmente desactivado, estamos aplicando una actualización. Por favor, inténtelo más tarde."
+    "updating"          : "Chat está actualmente desactivado, estamos aplicando una actualización. Por favor, inténtelo más tarde.",
+    "errorDeleteWorldChat1" : "Me temo que el chat que quieres eliminar pertenece al mundo",
+    "errorDeleteWorldChat2" : "y por lo tanto no se puede eliminar. Si ya no quieres pertenecer a ese mundo, ve a Cosmos, haz click derecho sobre el mundo y selecciona 'Abandonar mundo'"
 
 }

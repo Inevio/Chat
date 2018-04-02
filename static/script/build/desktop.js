@@ -916,7 +916,7 @@ var model = ( function( view ){
 			}
 
 			if( this.conversations[ conversationId ].world ){
-				return view.launchAlert( 'Can not remove world chat' )
+				return view.launchAlert( lang.errorDeleteWorldChat1 + ' \'' + this.conversations[ conversationId ].name + '\' ' + lang.errorDeleteWorldChat2 )
 			}else if( this.conversations[ conversationId ].context instanceof FakeContext ){
 	    	return this.deleteConversationFront( conversationId )
 	  	}
