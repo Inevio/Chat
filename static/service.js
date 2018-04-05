@@ -5,7 +5,7 @@ var myUserID = api.system.user().id
 var updateBadge = function( num, add ){
 
   if( num != null ){
-    console.log('Chat badge actualizado, tienes: ' + parseInt(num) + ' notificationes')
+    console.log('Chat badge actualizado, tienes: ' + num + ' notificationes')
     api.app.setBadge( parseInt( num ) )
   }else{
 
