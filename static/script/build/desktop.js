@@ -1458,7 +1458,7 @@ var model = ( function( view ){
 		  	}
 
 		  	//console.log( list, admins )
-		    this.users = api.tool.arrayDifference( list, [ api.system.workspace().idWorkspace ] )
+		    this.users = api.tool.arrayDifference( list, [ parseInt(api.system.workspace().idWorkspace, 10) ] )
 		    this.admins = admins;
 		    this.updateUI()
 
