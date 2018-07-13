@@ -53,7 +53,7 @@
                     },
 
                     "css"    : ["chat.css"],
-                    "script" : ["chat.js" , "jquery.textarea_autosize.min.js"],
+                    "script" : ["script/build/desktop.js"],
                     "start"  : ["start.js"]
 
                 }
@@ -80,7 +80,7 @@
 
                     "template" : "chat.html",
                     "css"    : ["chat.css"],
-                    "script" : ["chat.js", "jquery.textarea_autosize.min.js"],
+                    "script" : ["script/build/mobile.js"],
                     "start"  : ["start.js"]
 
                 }

@@ -1,4 +1,3 @@
-
 {
 
     "emptyList" : "No tienes contactos todavía, abre Contactos y búscalos.",
@@ -19,15 +18,19 @@
     "days" : "días",
     "months"  : "meses",
     "years" : "años",
-    "noChat" : "No tienes ningún chat abierto",
+    "noChat" : "Abre un chat para comenzar",
+    "clickChat" : "Puedes abrir una nueva conversación en \"Contactos\"",
     "back"  : "Volver",
     "edit"  : "Editar",
     "info"  : "INFORMACIÓN",
     "MEMBERS" : "MIEMBROS",
     "members" : "Miembros",
+    "member" : "Miembro",
     "deleteExit" : "Eliminar y salir",
     "newGroupTitle"  : "Creación nuevo chat grupal",
     "search"  : "Busca aquí...",
+    "searchContacts" :  "Buscar contactos...",
+    "nameGroup"   : "Nombre del grupo",
     "cancel"  : "Cancelar",
     "save"  : "Guardar",
     "groupName" : "Nombre del grupo",
@@ -49,13 +52,23 @@
     "dark" : "Oscuro",
     "white" : "Claro",
     "is" : "está",
-
+    "cantSend" : "Estás desconectado de internet. Comprueba tu conexión e intentalo de nuevo.",
+    "addPeople" : "Añadir personas",
     "invite" : {
       "title" : "No tienes contactos",
       "subtitle" : "Actualmente no tienes ningún contacto en tu cuenta con el que iniciar una conversación.<br /><br />Busca a tus compañeros y amigos a través de la app de <b>Comunidad</b> o invita a quien quieras a unirse a horbito contigo:",
       "email" : "Emails",
       "add" : "+ Añadir más emails",
-      "send" : "Enviar invitaciones"
-    }
+      "send" : "Enviar invitaciones",
+      "invitationSentTitle"    : "Invitaciones enviadas",
+      "invitationSentSubtitle" : "Tus invitaciones están de camino!"
+    },
+
+    "noContactsMobile"  : "No tienes contactos, busca a tus amigos en Community",
+    "noChatMobile"      : "Comienza una nueva conversación desde la pestaña de contactos",
+    "openCommunity"     : "Abrir Community",
+    "updating"          : "Chat está actualmente desactivado, estamos aplicando una actualización. Por favor, inténtelo más tarde.",
+    "errorDeleteWorldChat1" : "Me temo que el chat que quieres eliminar pertenece al mundo",
+    "errorDeleteWorldChat2" : "y por lo tanto no se puede eliminar. Si ya no quieres pertenecer a ese mundo, ve a Cosmos, haz click derecho sobre el mundo y selecciona 'Abandonar mundo'"
 
 }
