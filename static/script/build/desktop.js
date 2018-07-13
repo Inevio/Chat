@@ -701,7 +701,7 @@ var model = ( function( view ){
 
   	_loadFullContactList( callback ){
 
-  		callback = api.tool.secureCallback( callback )
+  		//callback = api.tool.secureCallback( callback )
 
 		  async.parallel({
 
@@ -739,7 +739,7 @@ var model = ( function( view ){
 
   	_loadFullConversationsList( callback ){
 
-		  callback = api.tool.secureCallback( callback )
+		  //callback = api.tool.secureCallback( callback )
 
 		  api.com.list({ protocol : 'chat' }, function( err, contexts ){
 
@@ -962,7 +962,7 @@ var model = ( function( view ){
 
 		ensureConversation( contextId, callback ){
 
-			callback = api.tool.secureCallback( callback )
+			//callback = api.tool.secureCallback( callback )
 
 		  if( this.conversations[ contextId ] ){
 		    return callback()
@@ -1217,11 +1217,13 @@ var model = ( function( view ){
 
 		reloadUnread(){
 
+			console.log(api)
 			api.notification.count( 'chat', {}, function( err, counter ){
 
 		  	if( err ){
 		  		return
 		  	}
+		  	console.log('response to apiNotification', err, counter)
 
 		  	this.unread = counter
 
@@ -1502,7 +1504,7 @@ var model = ( function( view ){
 
 		_upgradeToRealConversation( callback ){
 
-			callback = api.tool.secureCallback( callback )
+			//callback = api.tool.secureCallback( callback )
 			
 			//Creating group
 		  if( !( this.context instanceof FakeContext ) ){
@@ -1638,7 +1640,14 @@ var model = ( function( view ){
 
 		  }else if( this.app.contacts[ this.users[ 0 ] ] ){
 		    this.name = this.app.contacts[ this.users[ 0 ] ].user.fullName
-		  }else{
+		  }else if( this.users[0] ){
+
+				api.user( this.users[0], function( err, user ){
+					this.name = user.fullName
+					this.app.view.updateConversationUI( this )
+				}.bind(this))
+
+			}else{
 		    // To Do -> lang.unknown
 		  }
 
@@ -1647,7 +1656,17 @@ var model = ( function( view ){
 				if( this.isGroup ){
 			  	this.img = ''
 			  }else if( this.app.contacts[ this.users[ 0 ] ] ){
+			  	console.log(this.app.contacts[ this.users[ 0 ] ])
 			    this.img = this.app.contacts[ this.users[ 0 ] ].user.avatar.big // To Do -> Mirar si es el tamaño adecuado
+			  }else if( this.users[0] ){
+
+  				api.user( this.users[0], function( err, user ){
+						this.img = user.avatar.big
+						this.app.view.updateConversationUI( this )
+					}.bind(this))
+
+			  }else if( this.moreUsers.length ){
+					this.img = this.app.contacts[ this.moreUsers[ 0 ] ].user.avatar.big 
 			  }
 
 		  }

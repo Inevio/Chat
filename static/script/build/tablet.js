@@ -1,6 +1,6 @@
 !function(t,e,i,n){function s(e,i){this.element=e,this.$element=t(e),this.init()}var h="textareaAutoSize",o="plugin_"+h,r=function(t){return t.replace(/\s/g,"").length>0};s.prototype={init:function(){var i=parseInt(this.$element.css("paddingBottom"))+parseInt(this.$element.css("paddingTop"))+parseInt(this.$element.css("borderTopWidth"))+parseInt(this.$element.css("borderBottomWidth"))||0;r(this.element.value)&&this.$element.height(this.element.scrollHeight-i),this.$element.on("input keyup",function(n){var s=t(e),h=s.scrollTop();t(this).height(0).height(this.scrollHeight-i),s.scrollTop(h)})}},t.fn[h]=function(e){return this.each(function(){t.data(this,o)||t.data(this,o,new s(this,e))}),this}}(jQuery,window,document);
 
-var win = $(this)
+var win = $(document.body)
 // Static values
 const MAINAREA_NULL = 0
 const MAINAREA_CONVERSATION = 1
@@ -11,6 +11,8 @@ const SIDEBAR_CONTACTS = 2
 const GROUP_NULL = 0
 const GROUP_CREATE = 1
 const GROUP_EDIT = 2
+
+console.log(api)
 
 var view = ( function(){
 
@@ -109,13 +111,13 @@ var view = ( function(){
 
 	    $( '.conversation-send-desktop' ).hide()
 
-	    $( 'input, textarea' ).on( 'focus' , function(){
+	    /*$( 'input, textarea' ).on( 'focus' , function(){
 	      Keyboard.shrinkView( true )
 	    })
 
 	    .on( 'blur' , function(){
 	      Keyboard.shrinkView( false )
-	    });
+	    });*/
 
 	    /*$(window).on( 'resize',function(){
 	      $( '.message-container' ).scrollTop( $( '.message-container' )[ 0 ].scrollHeight );
@@ -124,7 +126,14 @@ var view = ( function(){
 		}
 
 		_textareaAutoSize(){
+
+      if( typeof $( '.conversation-input textarea' ).textareaAutoSize === 'undefined' ){
+        //alert('postMessage listo')
+        return setTimeout(_textareaAutoSize, 50)
+      }
+
 			$( '.conversation-input textarea' ).textareaAutoSize()
+
 		}
 
   	_translateInterface(){
@@ -563,6 +572,8 @@ var view = ( function(){
   		conversationDom.attr( 'data-id' , conversation.context.id )
 		  conversationDom.find( '.channel-name' ).text( conversation.name )
 
+		  console.log(conversation)
+
 		  if( conversation.img ){
 				conversationDom.find( '.channel-img' ).css( 'background-image' , 'url( ' + conversation.img + ' )' )
 		  }else if( conversation.isGroup ){
@@ -760,7 +771,7 @@ var model = ( function( view ){
 
   	_loadFullContactList( callback ){
 
-  		callback = api.tool.secureCallback( callback )
+  		//callback = api.tool.secureCallback( callback )
 
 		  async.parallel({
 
@@ -798,7 +809,7 @@ var model = ( function( view ){
 
   	_loadFullConversationsList( callback ){
 
-		  callback = api.tool.secureCallback( callback )
+		  //callback = api.tool.secureCallback( callback )
 
 		  api.com.list({ protocol : 'chat' }, function( err, contexts ){
 
@@ -1021,7 +1032,7 @@ var model = ( function( view ){
 
 		ensureConversation( contextId, callback ){
 
-			callback = api.tool.secureCallback( callback )
+			//callback = api.tool.secureCallback( callback )
 
 		  if( this.conversations[ contextId ] ){
 		    return callback()
@@ -1276,11 +1287,13 @@ var model = ( function( view ){
 
 		reloadUnread(){
 
+			console.log(api)
 			api.notification.count( 'chat', {}, function( err, counter ){
 
 		  	if( err ){
 		  		return
 		  	}
+		  	console.log('response to apiNotification', err, counter)
 
 		  	this.unread = counter
 
@@ -1561,7 +1574,7 @@ var model = ( function( view ){
 
 		_upgradeToRealConversation( callback ){
 
-			callback = api.tool.secureCallback( callback )
+			//callback = api.tool.secureCallback( callback )
 			
 			//Creating group
 		  if( !( this.context instanceof FakeContext ) ){
@@ -1697,7 +1710,14 @@ var model = ( function( view ){
 
 		  }else if( this.app.contacts[ this.users[ 0 ] ] ){
 		    this.name = this.app.contacts[ this.users[ 0 ] ].user.fullName
-		  }else{
+		  }else if( this.users[0] ){
+
+				api.user( this.users[0], function( err, user ){
+					this.name = user.fullName
+					this.app.view.updateConversationUI( this )
+				}.bind(this))
+
+			}else{
 		    // To Do -> lang.unknown
 		  }
 
@@ -1706,7 +1726,17 @@ var model = ( function( view ){
 				if( this.isGroup ){
 			  	this.img = ''
 			  }else if( this.app.contacts[ this.users[ 0 ] ] ){
+			  	console.log(this.app.contacts[ this.users[ 0 ] ])
 			    this.img = this.app.contacts[ this.users[ 0 ] ].user.avatar.big // To Do -> Mirar si es el tamaño adecuado
+			  }else if( this.users[0] ){
+
+  				api.user( this.users[0], function( err, user ){
+						this.img = user.avatar.big
+						this.app.view.updateConversationUI( this )
+					}.bind(this))
+
+			  }else if( this.moreUsers.length ){
+					this.img = this.app.contacts[ this.moreUsers[ 0 ] ].user.avatar.big 
 			  }
 
 		  }

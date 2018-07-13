@@ -1,5 +1,5 @@
 
-var win = $(this)
+var win = $(document.body)
 // Static values
 const MAINAREA_NULL = 0
 const MAINAREA_CONVERSATION = 1
@@ -10,6 +10,8 @@ const SIDEBAR_CONTACTS = 2
 const GROUP_NULL = 0
 const GROUP_CREATE = 1
 const GROUP_EDIT = 2
+
+console.log(api)
 
 var view = ( function(){
 
@@ -108,13 +110,13 @@ var view = ( function(){
 
 	    $( '.conversation-send-desktop' ).hide()
 
-	    $( 'input, textarea' ).on( 'focus' , function(){
+	    /*$( 'input, textarea' ).on( 'focus' , function(){
 	      Keyboard.shrinkView( true )
 	    })
 
 	    .on( 'blur' , function(){
 	      Keyboard.shrinkView( false )
-	    });
+	    });*/
 
 	    /*$(window).on( 'resize',function(){
 	      $( '.message-container' ).scrollTop( $( '.message-container' )[ 0 ].scrollHeight );
@@ -123,7 +125,14 @@ var view = ( function(){
 		}
 
 		_textareaAutoSize(){
+
+      if( typeof $( '.conversation-input textarea' ).textareaAutoSize === 'undefined' ){
+        //alert('postMessage listo')
+        return setTimeout(_textareaAutoSize, 50)
+      }
+
 			$( '.conversation-input textarea' ).textareaAutoSize()
+
 		}
 
   	_translateInterface(){
@@ -561,6 +570,8 @@ var view = ( function(){
   		var conversationDom = $( '.channel-id-' + conversation.context.id )
   		conversationDom.attr( 'data-id' , conversation.context.id )
 		  conversationDom.find( '.channel-name' ).text( conversation.name )
+
+		  console.log(conversation)
 
 		  if( conversation.img ){
 				conversationDom.find( '.channel-img' ).css( 'background-image' , 'url( ' + conversation.img + ' )' )
