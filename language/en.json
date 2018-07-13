@@ -19,15 +19,19 @@
     "days" : "days",
     "months" : "months",
     "years" : "años",
-    "noChat" : "There is no open chat",
+    "noChat" : "Select a chat to begin",
+    "clickChat" : "You can start a new conversation in \"Contacts\"",
     "back"  : "Back",
     "edit"  : "Edit",
     "info"  : "INFORMATION",
     "MEMBERS"  : "MEMBERS",
     "members" : "Members",
+    "member" : "Member",
     "deleteExit" : "Delete and exit",
     "newGroupTitle"  : "New group chat",
     "search"  : "Search here...",
+    "searchContacts" :  "Search contacts...",
+    "nameGroup"   : "Group name",
     "cancel"  : "Cancel",
     "save"  : "Save",
     "groupName" : "Group name",
@@ -35,8 +39,8 @@
     "noMemberError" : "Please, select almost one group member",
     "admin" : "Admin",
     "exitGroup" : "Exit group",
-    "conected"  : "connected",
-    "disconected" :  "disconnected",
+    "conected"  : "online",
+    "disconected" :  "offline",
     "exitAdmin" : "You can't drop de admin from the group",
     "last"   : "",
     "lastYear" : "Last year",
@@ -49,13 +53,24 @@
     "dark" : "Dark",
     "white" : "White",
     "is" : "is",
+    "cantSend" : "You have disconnected. Please check your internet connection and try again.",
+    "addPeople" : "Add people",
 
     "invite" : {
       "title" : "Invite your friends",
       "subtitle" : "You currently don't have any contact to start a conversation with.<br /><br />Find your coworkers and friends using the <b>Community</b> app or invite whoever you want to join horbito with you:",
       "email" : "Emails",
       "add" : "+ Add more emails",
-      "send" : "Send invitations"
-    }
+      "send" : "Send invitations",
+      "invitationSentTitle"    : "Invitations sent",
+      "invitationSentSubtitle" : "Your invitations are on their way!"
+    },
+
+    "noContactsMobile"  : "You don't have any contacts, search for your friends in Community",
+    "noChatMobile"      : "Start a new conversation from the contacts tab",
+    "openCommunity"     : "Open Community",
+    "updating"          : "Chat is currently unavailable, we are applying an update. Please, try again later.",
+    "errorDeleteWorldChat1" : "I'm sorry but the conversation you're trying to remove belongs to the world",
+    "errorDeleteWorldChat2" : "so it can't be deleted. If you no longer want to be part of the world, open Cosmos, right click on a world and select 'Leave world'"
 
 }

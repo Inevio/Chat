@@ -41,10 +41,6 @@
       </section>
       <span class="color white"></span>
     </section>
-    <section class="new-group-button ui-btn">
-      <i></i>
-      <span></span>
-    </section>
     <section class="ui-header-buttons">
       <figure class="ui-minimize"><i></i></figure>
       <figure class="ui-maximize window"><i></i></figure>
@@ -85,20 +81,30 @@
 
   </section>
 
-  <section class="ui-navbar">
+  <section class="ui-navbar inChats">
 
-    <section class="ui-input-search chat-search">
-      <figure class="search-icon">
-        <i></i>
-      </figure>
-      <input placeholder="Search input">
-      <figure class="delete-content">
-        <i></i>
-      </figure>
+    <section class="search-area">
+      <section class="chat-search ui-input-search small">
+        <figure class="search-icon">
+          <i></i>
+        </figure>
+        <input placeholder="Search input">
+        <figure class="delete-content">
+          <i></i>
+        </figure>
+      </section>
+      <section class="new-group-button">
+        <span class="ellipsis"></span>
+      </section>
     </section>
 
     <section class="chat-body">
       <section class="chat-tab">
+        <section class="no-chat-tab-mobile">
+          <figure class="no-chat-img"></figure>
+          <span class="no-chat-text"></span>
+          <figure class="arrow"></figure>
+        </section>
         <section class="channel-list wz-scroll">
           <article class="channel wz-prototype">
             <section class="highlight-area">
@@ -112,6 +118,16 @@
         </section>
       </section>
       <section class="contact-tab">
+        <section class="no-contacts-tab-mobile">
+          <figure class="no-contacts-img"></figure>
+          <span class="no-contacts-text"></span>
+          <figure class="open-community-button"><span></span></figure>        
+        </section>
+        <section class="no-contacts-tab-mobile">
+          <figure class="no-contacts-img"></figure>
+          <span class="no-contacts-text"></span>
+          <figure class="open-community-button"><span></span></figure>        
+        </section>
         <section class="contact-list wz-scroll">
           <article class="contact wz-prototype">
             <section class="highlight-area">
@@ -125,14 +141,14 @@
     </section>
 
     <section class="chat-footer">
-      <section class="chat-tab-selector active">
+      <section class="tab-selector chat-tab-selector">
         <section class="selector-img">
           <figure></figure>
           <i class="unread-messages"></i>
           <span></span>
         </section>
       </section>
-      <section class="contact-tab-selector">
+      <section class="tab-selector contact-tab-selector">
         <section class="selector-img">
           <figure></figure>
           <span></span>
@@ -213,7 +229,10 @@
   </section>
   <section class="no-content">
     <figure class="no-chat-img"></figure>
-    <span class="no-chat-txt"></span>
+    <article class="no-chat-selected-text">
+      <span class="no-chat-txt"></span>
+      <span class="click-chat-txt"></span>
+    </article>
   </section>
   <section class="group-menu">
     <section class="group-header">
@@ -221,12 +240,14 @@
         <figure></figure>
         <span></span>
       </section>
-      <span class="group-create-txt group-new"></span>
+      <article class="remove-group cancel headerBtn">
+        <span class="ellipsis"></span>
+      </article>
       <span class="edit group-view"></span>
       <button class="ui-btn save-group accept group-new group-edit">
         <span class="ellipsis"></span>
       </button>
-      <button class="ui-btn cancel-group group-new gray group-edit">
+      <button class="ui-btn cancel-group group-new gray group-edit cancel">
         <span class="ellipsis"></span>
       </button>
     </section>
@@ -235,6 +256,7 @@
       <figure class="group-avatar"></figure>
       <section class="group-info-names">
         <span class="group-name group-view"></span>
+        <span class="groupName"></span>
         <section class="ui-input group-name-input group-new group-edit">
           <input placeholder="Regular input">
           <figure>
@@ -243,10 +265,13 @@
         </section>
         <span class="group-members-txt"></span>
       </section>
+      <article class="ui-btn accept addPeople">
+        <span></span>
+      </article>
     </section>
     <section class="group-members">
       <span class="title"></span>
-      <section class="ui-input-search group-new group-edit search-members">
+      <section class="ui-input-search group-new group-edit search-members small">
         <figure class="search-icon">
           <i></i>
         </figure>
@@ -257,13 +282,13 @@
       </section>
       <section class="member-list wz-scroll">
         <article class="member wz-prototype">
-          <figure class="ui-checkbox group-new group-edit"><i></i></figure>
+          <figure class="ui-checkbox group-new group-edit blue"><i></i></figure>
           <figure class="member-avatar"></figure>
-          <span></span>
+          <span class="ellipsis"></span>
         </article>
       </section>
     </section>
-    <button class="ui-btn remove-group cancel">
+    <button class="ui-btn remove-group cancel hideBtn">
       <span class="ellipsis"></span>
     </button>
   </section>
