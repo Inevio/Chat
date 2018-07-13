@@ -701,7 +701,7 @@ var model = ( function( view ){
 
   	_loadFullContactList( callback ){
 
-  		//callback = api.tool.secureCallback( callback )
+  		callback = api.tool.secureCallback( callback )
 
 		  async.parallel({
 
@@ -739,7 +739,7 @@ var model = ( function( view ){
 
   	_loadFullConversationsList( callback ){
 
-		  //callback = api.tool.secureCallback( callback )
+		  callback = api.tool.secureCallback( callback )
 
 		  api.com.list({ protocol : 'chat' }, function( err, contexts ){
 
@@ -962,7 +962,7 @@ var model = ( function( view ){
 
 		ensureConversation( contextId, callback ){
 
-			//callback = api.tool.secureCallback( callback )
+			callback = api.tool.secureCallback( callback )
 
 		  if( this.conversations[ contextId ] ){
 		    return callback()
@@ -1217,7 +1217,6 @@ var model = ( function( view ){
 
 		reloadUnread(){
 
-			console.log(api)
 			api.notification.count( 'chat', {}, function( err, counter ){
 
 		  	if( err ){
@@ -1504,7 +1503,7 @@ var model = ( function( view ){
 
 		_upgradeToRealConversation( callback ){
 
-			//callback = api.tool.secureCallback( callback )
+			callback = api.tool.secureCallback( callback )
 			
 			//Creating group
 		  if( !( this.context instanceof FakeContext ) ){
