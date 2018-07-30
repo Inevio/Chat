@@ -14,7 +14,21 @@ var controller = ( function( model, view ){
       this.model = model
       this.view = view
       this._bindEvents()
+      this._checkOpenParams()
 
+    }
+
+    _checkOpenParams(){
+
+      if(window.params && window.params.command && window.params.command === 'pushAttended' && window.params.data && window.params.data.comContext ){
+
+        console.log(window.params.data.comContext)
+        setTimeout(function(){
+          model.openConversation( parseInt(window.params.data.comContext) )
+        },750)
+        
+      }
+      
     }
 
     _bindEvents(){
@@ -122,6 +136,20 @@ var controller = ( function( model, view ){
         model.filterElements( $( this ).val() , true )
       })
 
+      this.dom.on( 'app-param', function( e, params ){
+
+        console.log('app-param', params)
+        if( params && params.command === 'pushAttended' ){
+
+          //console.log(JSON.parse(params.data))
+          if( params.data.comContext ){
+            model.openConversation( parseInt( params.data.comContext ) )
+          }
+
+        }
+
+      })
+
       this._domContactsList.on( 'click', '.contact', function(){
         model.openConversationWithContact( parseInt( $(this).attr( 'data-id' ) ) )
       })
@@ -189,6 +217,7 @@ var controller = ( function( model, view ){
 
       api.notification.on( 'attended', function( list ){
 
+        console.log('attended', list)
         list.forEach( function( element ){
 
           if( element.comContext ){
