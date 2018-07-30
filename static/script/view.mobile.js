@@ -571,7 +571,7 @@ var view = ( function(){
   		conversationDom.attr( 'data-id' , conversation.context.id )
 		  conversationDom.find( '.channel-name' ).text( conversation.name )
 
-		  console.log(conversation)
+		  //console.log(conversation)
 
 		  if( conversation.img ){
 				conversationDom.find( '.channel-img' ).css( 'background-image' , 'url( ' + conversation.img + ' )' )

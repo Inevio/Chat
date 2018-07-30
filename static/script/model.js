@@ -524,7 +524,7 @@ var model = ( function( view ){
 				conversation = conversationId
 			}
 
-			console.log( conversation );
+			console.log( 'openConversation', conversation );
 
 		  if( this.openedChat && conversation.context.id === this.openedChat.context.id ){
 		    return this
@@ -951,7 +951,7 @@ var model = ( function( view ){
 			//TODO cambiarMiembros
 			var toDelete = []
 	    var toAdd = []
-	    console.log( this.users, info.members )
+	    //console.log( this.users, info.members )
 
 	    for( var i = 0; i < info.members.length; i++ ){
 
@@ -980,7 +980,8 @@ var model = ( function( view ){
 	   	this.context.removeUser( toDelete, function( err, res ){
 	   		console.log( err )
 	   	})
-			console.log( toAdd, toDelete )
+
+			//console.log( toAdd, toDelete )
 			this.app.hideGroupMenu()
 
 		}
@@ -1056,7 +1057,7 @@ var model = ( function( view ){
 				if( this.isGroup ){
 			  	this.img = ''
 			  }else if( this.app.contacts[ this.users[ 0 ] ] ){
-			  	console.log(this.app.contacts[ this.users[ 0 ] ])
+			  	//console.log(this.app.contacts[ this.users[ 0 ] ])
 			    this.img = this.app.contacts[ this.users[ 0 ] ].user.avatar.big // To Do -> Mirar si es el tamaño adecuado
 			  }else if( this.users[0] ){
 
