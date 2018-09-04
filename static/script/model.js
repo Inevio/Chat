@@ -187,11 +187,11 @@ var model = ( function( view ){
 
 		addContact( user ){
 
-		  if( this.contacts[ user.id ] ){
+		  if( this.contacts[ user.idWorkspace ] ){
 		    return this
 		  }
 
-		  this.contacts[ user.id ] = new Contact( this, user )
+		  this.contacts[ user.idWorkspace ] = new Contact( this, user )
 		  this.updateContactsListUI()
 		  return this
 
@@ -207,9 +207,9 @@ var model = ( function( view ){
 		    return
 		  }
 
-		  if( message.sender !== api.system.user().id ){
+		  if( message.sender !== api.system.workspace().idWorkspace ){
 
-		  	if( message.attended.length === 0 && message.attended.indexOf( api.system.user().id ) === -1 && this.view.dom.parent().hasClass( 'wz-app-focus' ) ){
+		  	if( message.attended.length === 0 && message.attended.indexOf( api.system.workspace().idWorkspace ) === -1 && this.view.dom.parent().hasClass( 'wz-app-focus' ) ){
 					message.markAsAttended( { full: true }, console.log.bind( console ) )
 		  	}
 
@@ -342,10 +342,10 @@ var model = ( function( view ){
 
 			if( conversationId ){
 
-				if( this.conversations[ conversationId ] && this.conversations[ conversationId ].isGroup 
+				if( this.conversations[ conversationId ] && this.conversations[ conversationId ].isGroup
 					&& !this.conversations[ conversationId ].world
-					&& this.conversations[ conversationId ].admins 
-					&& this.conversations[ conversationId ].admins.indexOf( api.system.user().id ) !== -1 ){
+					&& this.conversations[ conversationId ].admins
+					&& this.conversations[ conversationId ].admins.indexOf( api.system.workspace().idWorkspace ) !== -1 ){
 
 					this.changeMainAreaMode( MAINAREA_GROUPMODE, list, this.conversations[ conversationId ] )
 					this.changeGroupMode( GROUP_EDIT )
@@ -459,7 +459,7 @@ var model = ( function( view ){
 
 			this.updateConversationUnread( notification.comContext )
 
-			if( notification.sender !== api.system.user().id ){
+			if( notification.sender !== api.system.workspace().idWorkspace ){
 
 				api.user( notification.sender, function( error, user ){
 
@@ -486,7 +486,7 @@ var model = ( function( view ){
 				return view.launchAlert( 'Grupo no existe' )
 			}
 
-			this.conversations[ groupId ].context.removeUser( api.system.user().id, function( err ){
+			this.conversations[ groupId ].context.removeUser( api.system.workspace().idWorkspace, function( err ){
 
 				if( err ){
 					return view.launchAlert( err )
@@ -576,7 +576,7 @@ var model = ( function( view ){
 		      continue
 		    }
 
-		    if( this.conversations[ i ].users[ 0 ] === contact.user.id ){
+		    if( this.conversations[ i ].users[ 0 ] === contact.user.idWorkspace ){
 		      conversation = this.conversations[ i ]
 		      break
 		    }
@@ -587,7 +587,7 @@ var model = ( function( view ){
 		    return this.openConversation( conversation )
 		  }
 
-		  var context = new FakeContext( contact.user.id )
+		  var context = new FakeContext( contact.user.idWorkspace )
 
 		  this.addConversation( context )
 		  this.openConversation( this.conversations[ context.id ] )
@@ -611,7 +611,7 @@ var model = ( function( view ){
 					}
 
 				}.bind(this))
-		    
+
 		  }
 
 		}
@@ -647,14 +647,14 @@ var model = ( function( view ){
 
 		  if( this._groupMode == GROUP_EDIT && info.conversationId ){
 
-				if( this.conversations[ info.conversationId ] && this.conversations[ info.conversationId ].isGroup 
+				if( this.conversations[ info.conversationId ] && this.conversations[ info.conversationId ].isGroup
 					&& !this.conversations[ info.conversationId ].world
-					&& this.conversations[ info.conversationId ].admins 
-					&& this.conversations[ info.conversationId ].admins.indexOf( api.system.user().id ) !== -1 ){
+					&& this.conversations[ info.conversationId ].admins
+					&& this.conversations[ info.conversationId ].admins.indexOf( api.system.workspace().idWorkspace ) !== -1 ){
 
 					this.conversations[ info.conversationId ].editConversation( info )
 
-				}		  	
+				}
 
 		  }else if( this._groupMode == GROUP_CREATE ){
 		  	new Conversation( this, null, info )
@@ -689,7 +689,7 @@ var model = ( function( view ){
 		  }
 
 		  this.view.updateContactsListUI( list )
-		
+
 		}
 
 		updateConversationId( oldId, newId ){
@@ -809,7 +809,7 @@ var model = ( function( view ){
 		  	}
 
 		  }
-		  
+
 		  this.unread
 
 		  this._startConversation()
@@ -860,7 +860,7 @@ var model = ( function( view ){
 		  	}
 
 		  	//console.log( list, admins )
-		    this.users = api.tool.arrayDifference( list, [ api.system.user().id ] )
+		    this.users = api.tool.arrayDifference( list, [ parseInt(api.system.workspace().idWorkspace, 10) ] )
 		    this.admins = admins;
 		    this.updateUI()
 
@@ -878,21 +878,21 @@ var model = ( function( view ){
 
 			}else{
 
-		    api.com.create( 
-		    { 
-		    	protocol : 'chat', 
-		    	name: this.name, 
-		    	users : this.users 
+		    api.com.create(
+		    {
+		    	protocol : 'chat',
+		    	name: this.name,
+		    	users : this.users
 		    }, function( err, context ){
 
 		    	if( err ){
-		    		return this.app.view.launchAlert( err ) 
+		    		return this.app.view.launchAlert( err )
 		    	}
 
 		    	this.app.conversations[ context.id ] = this
 	      	this.context = context
 	      	this.app.hideGroupMenu()
-	      	this.app.updateConversationsListUI() 
+	      	this.app.updateConversationsListUI()
 	      	this._loadAdditionalInfo()
 	      	this.app.openConversation( context.id )
 
@@ -905,7 +905,7 @@ var model = ( function( view ){
 		_upgradeToRealConversation( callback ){
 
 			callback = api.tool.secureCallback( callback )
-			
+
 			//Creating group
 		  if( !( this.context instanceof FakeContext ) ){
 		    return callback()
