@@ -104,7 +104,7 @@ var controller = ( function( model, view ){
       }.bind(this))
 
       this.dom.on( 'click', '.save-group, .accept-button', function(){
-         
+
         var info = {
 
           name: $( '.group-name-input input' ).val(),
@@ -185,7 +185,7 @@ var controller = ( function( model, view ){
       api.com.on( 'userAdded', function( conversationId, user ){
 
         console.log( 'userAdded', conversationId, user )
-        if( user.id == api.system.user().id ){
+        if( user.id == api.system.workspace().idWorkspace ){
           model.ensureConversation( conversationId )
         }else{
           model.updateConversationInfo( conversationId )
@@ -196,7 +196,7 @@ var controller = ( function( model, view ){
       api.com.on( 'userRemoved', function( conversationId, userId ){
 
         console.log( 'userRemoved', conversationId, userId )
-        if( userId === api.system.user().id ){
+        if( userId === api.system.workspace().idWorkspace ){
           model.deleteConversationFront( conversationId )
         }else{
           model.updateConversationInfo( conversationId )
@@ -228,7 +228,7 @@ var controller = ( function( model, view ){
 
       })
 
-    }  
+    }
 
   }
 
