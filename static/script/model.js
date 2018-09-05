@@ -431,6 +431,7 @@ var model = ( function( view ){
 		goBack(){
 
 			if( this.isMobile ){
+				this.openedChat = null
 				this.changeMainAreaMode( this._prevMainAreaMode, this._mainAreaMode );
 			}
 

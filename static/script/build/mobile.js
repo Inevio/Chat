@@ -104,7 +104,7 @@ var view = ( function(){
 
 		_startMobile(){
 
-			$( '.ui-window' ).addClass( 'dark' )
+			//$( '.ui-window' ).addClass( 'dark' )
 
 			$( '.inChats' ).removeClass( 'inChats' )
 	    $( '.new-group-button, .new-group' ).hide()
@@ -1100,6 +1100,7 @@ var model = ( function( view ){
 		goBack(){
 
 			if( this.isMobile ){
+				this.openedChat = null
 				this.changeMainAreaMode( this._prevMainAreaMode, this._mainAreaMode );
 			}
 
@@ -1963,7 +1964,7 @@ var controller = ( function( model, view ){
       // COM API Events
       api.com.on( 'message', function( event ){
 
-        console.log( event )
+        console.log( 'message', event )
         if( event.data.action === 'message' ){
 
           model.ensureConversation( event.context, function( err ){

@@ -103,7 +103,7 @@ var view = ( function(){
 
 		_startMobile(){
 
-			$( '.ui-window' ).addClass( 'dark' )
+			//$( '.ui-window' ).addClass( 'dark' )
 
 			$( '.inChats' ).removeClass( 'inChats' )
 	    $( '.new-group-button, .new-group' ).hide()

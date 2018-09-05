@@ -161,7 +161,7 @@ var controller = ( function( model, view ){
       // COM API Events
       api.com.on( 'message', function( event ){
 
-        console.log( event )
+        console.log( 'message', event )
         if( event.data.action === 'message' ){
 
           model.ensureConversation( event.context, function( err ){
