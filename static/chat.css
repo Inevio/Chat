@@ -34,10 +34,6 @@ input {
     border-radius: 6px;
 }
 
-.wz-view.wz-mobile-view {
-    border-radius: 0px !important;
-}
-
 .visible {
     display: inline-block !important;
 }
@@ -421,6 +417,7 @@ input {
     float: left;
     width: ~'calc(100% + 1px)';
     height: 100%;
+    -webkit-overflow-scrolling: touch;
 }
 
 .contact-list {
@@ -2051,6 +2048,10 @@ input {
 }
 
 .wz-view.wz-mobile-view {
+
+    border-radius: 0px !important;
+    background-color: #2c3238;
+
     .search-area {
         display: block;
         width: 100%;
@@ -2078,7 +2079,7 @@ input {
         width: 100%;
         overflow-y: scroll;
         transition: all .2s ease;
-        /*-webkit-overflow-scrolling: touch;*/
+        -webkit-overflow-scrolling: touch;
     }
     .message-container {
         overflow-y: scroll;
