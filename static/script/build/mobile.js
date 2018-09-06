@@ -491,15 +491,13 @@ var view = ( function(){
 
 			list = list.sort( function( a, b ){
 
-		    if( a.connected && b.connected ){
-		      return a.user.fullName.localeCompare( b.user.fullName )
-		    }
-
-		    if( a.connected ){
+		    if( (a.connected && b.connected) || (!a.connected && !b.connected) ){
+		      return a.user.fullName.toLowerCase().localeCompare( b.user.fullName.toLowerCase() )
+		    }else if( a.connected ){
 		      return -1
+		    }else if( b.connected ){
+		    	return 1
 		    }
-
-		    return 1
 
 		  })
 
