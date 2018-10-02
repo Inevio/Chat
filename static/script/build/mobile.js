@@ -12,8 +12,6 @@ const GROUP_NULL = 0
 const GROUP_CREATE = 1
 const GROUP_EDIT = 2
 
-console.log(api)
-
 var view = ( function(){
 
 	var contactPrototype      = $( '.contact.wz-prototype' )
@@ -809,12 +807,15 @@ var model = ( function( view ){
 
 		  callback = api.tool.secureCallback( callback )
 
-		  api.com.list({ protocol : 'chat' }, function( err, contexts ){
+		  api.com.list({ protocol : 'chat', lastMessage: true }, function( err, contexts ){
 
 		    // To Do -> Error
+
 		    if( err ){
 		    	return this.view.launchAlert( err );
 		    }
+
+		    console.log(contexts)
 
 		    contexts.forEach( function( context ){
 		      this.addConversation( context )
@@ -1212,13 +1213,13 @@ var model = ( function( view ){
 
 		  //TODO pedir 500 mensajes y además saber si hay más o no
 
-	  	conversation.context.getMessages( { withAttendedStatus : true }, function( err, list ){
+	  	conversation.context.getMessages( { withAttendedStatus : true, limit : 100, order : 'newFirst' }, function( err, list ){
 
 	  		if( err ){
 	  			return this.view.launchAlert( err );
 	  		}
 
-	  		this.appendMessageList( list );
+	  		this.appendMessageList( list.reverse() );
 
 	  		//this.appendMessageList( list.slice( list.length - 350 , list.length ) );
 
@@ -1445,7 +1446,7 @@ var model = ( function( view ){
   		this.app = app
 		  this.context = context
 		  this.world
-		  this.lastMessage
+		  this.lastMessage = context.lastMessage
 		  this.opened = false
 		  this.admins = [];
 		  this.isGroup = false // To Do
@@ -1487,7 +1488,7 @@ var model = ( function( view ){
   	_loadAdditionalInfo(){
 
   		this._loadUsers()
-  		this._loadLastMessage()
+  		//this._loadLastMessage()
   		this._loadUnread()
 
 		}
@@ -1527,7 +1528,7 @@ var model = ( function( view ){
 		  		return this.app.view.launchAlert( err )
 		  	}
 
-		  	//console.log( list, admins )
+		  	console.log( list, admins )
 		    this.users = api.tool.arrayDifference( list, [ parseInt(api.system.workspace().idWorkspace, 10) ] )
 		    this.admins = admins;
 		    this.updateUI()
