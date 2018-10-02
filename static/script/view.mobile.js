@@ -11,8 +11,6 @@ const GROUP_NULL = 0
 const GROUP_CREATE = 1
 const GROUP_EDIT = 2
 
-console.log(api)
-
 var view = ( function(){
 
 	var contactPrototype      = $( '.contact.wz-prototype' )
