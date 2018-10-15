@@ -228,6 +228,16 @@ var controller = ( function( model, view ){
 
       })
 
+      // System API Events
+      api.system.on('connect', function(){
+        console.log('connect')
+        model.fullLoad()
+      })
+
+      api.system.on('disconnect', function(){
+        console.log('disconnect')
+      })
+
     }
 
   }

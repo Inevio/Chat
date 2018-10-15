@@ -694,7 +694,6 @@ var model = ( function( view ){
 
 		  this.changeMainAreaMode( MAINAREA_NULL )
 		  this.changeSidebarMode( SIDEBAR_NULL )
-		  this.reloadUnread()
   		this.fullLoad()
 
   	}
@@ -771,9 +770,9 @@ var model = ( function( view ){
 
 		addConversation( context ){
 
-		  if( this.conversations[ context.id ] ){
+		  /*if( this.conversations[ context.id ] ){
 		    return this
-		  }
+		  }*/
 
 		  this.conversations[ context.id ] = new Conversation( this, context )
 		  this.updateConversationsListUI()
@@ -997,6 +996,8 @@ var model = ( function( view ){
 		}
 
 		fullLoad(){
+
+			this.reloadUnread()
 
 		  async.parallel({
 
@@ -1462,7 +1463,6 @@ var model = ( function( view ){
 		  		return this.app.view.launchAlert( err )
 		  	}
 
-		  	console.log( list, admins )
 		    this.users = api.tool.arrayDifference( list, [ parseInt(api.system.workspace().idWorkspace, 10) ] )
 		    this.admins = admins;
 		    this.updateUI()
