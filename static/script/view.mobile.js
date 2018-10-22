@@ -217,7 +217,8 @@ var view = ( function(){
 			  this._domMessageContainer.append( dom )
 
 			  if( down ){
-			    this._domMessageContainer.scrollTop( this._domMessageContainer[ 0 ].scrollHeight )
+			    //this._domMessageContainer.scrollTop( this._domMessageContainer[ 0 ].scrollHeight )
+			    this._domMessageContainer.scrollTop( 999999999 )
 			  }
 
 		  }
