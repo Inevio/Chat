@@ -38,6 +38,7 @@ var view = ( function(){
 
   		//this.model = model
   		this.dom = win
+  		this.domHeight = parseInt(win.height())
 
   		this._domContactsList = $( '.contact-list', this.dom )
 		  this._domConversationsList = $( '.channel-list', this.dom )
@@ -164,6 +165,12 @@ var view = ( function(){
 		  $( '.save-group span' , this.dom ).text( lang.save )
 		  $( '.send-txt' , this.dom ).text( lang.send )
 
+  	}
+
+  	adjustScrollResize( newHeight ){
+  		if( newHeight === this.domHeight ) return
+  		this._domMessageContainer.scrollTop( this._domMessageContainer.scrollTop() + this.domHeight - newHeight)
+  		this.domHeight = newHeight
   	}
 
   	appendMessage( message, loadingList ){
@@ -1951,6 +1958,11 @@ var controller = ( function( model, view ){
 
         }
 
+      })
+
+      $(window).on('resize', () => {
+        console.log('resize')
+        view.adjustScrollResize(this.dom.height())
       })
 
       this._domContactsList.on( 'click', '.contact', function(){
