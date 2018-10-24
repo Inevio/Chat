@@ -150,6 +150,11 @@ var controller = ( function( model, view ){
 
       })
 
+      $(window).on('resize', () => {
+        console.log('resize')
+        view.adjustScrollResize(this.dom.height())
+      })
+
       this._domContactsList.on( 'click', '.contact', function(){
         model.openConversationWithContact( parseInt( $(this).attr( 'data-id' ) ) )
       })
