@@ -1,6 +1,6 @@
 'use strict'
 
-var myUserID = api.system.user().id
+var myWorkspaceId = api.system.workspace().idWorkspace
 
 var updateBadge = function( num, add ){
 
@@ -26,7 +26,7 @@ api.notification.on( 'new', function( data ){
     return
   }
 
-  if( data.sender === myUserID ){
+  if( data.sender === myWorkspaceId ){
     return
   }
 
@@ -47,7 +47,7 @@ api.notification.on( 'new', function( data ){
         .on( 'click', function(){
 
           api.app.createView( data.comContext, 'main' );
-          //this.openConversation( notification.comContext );         
+          //this.openConversation( notification.comContext );
 
         })
         .render()

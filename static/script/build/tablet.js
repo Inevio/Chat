@@ -12,8 +12,6 @@ const GROUP_NULL = 0
 const GROUP_CREATE = 1
 const GROUP_EDIT = 2
 
-console.log(api)
-
 var view = ( function(){
 
 	var contactPrototype      = $( '.contact.wz-prototype' )
@@ -40,6 +38,7 @@ var view = ( function(){
 
   		//this.model = model
   		this.dom = win
+  		this.domHeight = parseInt(win.height())
 
   		this._domContactsList = $( '.contact-list', this.dom )
 		  this._domConversationsList = $( '.channel-list', this.dom )
@@ -104,7 +103,7 @@ var view = ( function(){
 
 		_startMobile(){
 
-			$( '.ui-window' ).addClass( 'dark' )
+			//$( '.ui-window' ).addClass( 'dark' )
 
 			$( '.inChats' ).removeClass( 'inChats' )
 	    $( '.new-group-button, .new-group' ).hide()
@@ -168,9 +167,15 @@ var view = ( function(){
 
   	}
 
+  	adjustScrollResize( newHeight ){
+  		if( newHeight === this.domHeight ) return
+  		this._domMessageContainer.scrollTop( this._domMessageContainer.scrollTop() + this.domHeight - newHeight)
+  		this.domHeight = newHeight
+  	}
+
   	appendMessage( message, loadingList ){
 
-  		var dom = ( message.sender === api.system.user().id ? this._domMessageMePrototype : this._domMessageOtherPrototype ).clone().removeClass( 'wz-prototype' ).data( 'message', message )
+  		var dom = ( message.sender === api.system.workspace().idWorkspace ? this._domMessageMePrototype : this._domMessageOtherPrototype ).clone().removeClass( 'wz-prototype' ).data( 'message', message )
 		  var date = new Date( message.time )
 		  var hh = ( '0' + date.getHours().toString() ).slice(-2)
 		  var mm = ( '0' + date.getMinutes().toString() ).slice(-2)
@@ -199,7 +204,7 @@ var view = ( function(){
 		    dom.addClass( 'sender-group' ).find( '.sender' ).addClass( 'visible' ).text( message.senderName ).css( 'color' , COLORS[ this._selectColor( message.senderName ) ] )
 		  }
 
-		  if( message.sender !== api.system.user().id ){
+		  if( message.sender !== api.system.workspace().idWorkspace ){
 		    dom.find( '.message-avatar' ).css( 'background-image' , 'url( ' + message.senderAvatar + ' )' )
 		  }
 
@@ -215,12 +220,13 @@ var view = ( function(){
 				return dom
 
 		  }else{
-		  	
+
 		  	var down = this._isScrolledToBottom()
 			  this._domMessageContainer.append( dom )
 
 			  if( down ){
-			    this._domMessageContainer.scrollTop( this._domMessageContainer[ 0 ].scrollHeight )
+			    //this._domMessageContainer.scrollTop( this._domMessageContainer[ 0 ].scrollHeight )
+			    this._domMessageContainer.scrollTop( 999999999 )
 			  }
 
 		  }
@@ -454,7 +460,7 @@ var view = ( function(){
       $('.initial-header .new-group').removeClass('visible');
       $('.initial-header .back-button').addClass('visible');
       $('.initial-header .accept-button').show();
-	    
+
 	    $( '.memberDom' ).remove()
 	    $( '.group-menu .ui-input-search input' ).val( '' )
 
@@ -464,16 +470,16 @@ var view = ( function(){
 			  item.dom.find( 'span' ).text( item.user.fullName )
 			  item.dom.addClass( 'memberDom' )
 			  item.dom.find( '.member-avatar' ).css( 'background-image' , 'url( ' + item.user.avatar.big + ' )' )
-			  item.dom.attr( 'data-id', item.user.id )
+			  item.dom.attr( 'data-id', item.user.idWorkspace )
 
-			  if( conversation && conversation.users && (conversation.users.indexOf( item.user.id ) != -1) ){
+			  if( conversation && conversation.users && (conversation.users.indexOf( item.user.idWorkspace ) != -1) ){
 
 			  	item.dom.addClass( 'active' )
 			  	item.dom.find( '.ui-checkbox' ).addClass( 'active' )
 
 			  }
 
-		  	return item.dom 
+		  	return item.dom
 
 	    }))
 
@@ -491,19 +497,17 @@ var view = ( function(){
 
 			list = list.sort( function( a, b ){
 
-		    if( a.connected && b.connected ){
-		      return a.user.fullName.localeCompare( b.user.fullName )
-		    }
-
-		    if( a.connected ){
+		    if( (a.connected && b.connected) || (!a.connected && !b.connected) ){
+		      return a.user.fullName.toLowerCase().localeCompare( b.user.fullName.toLowerCase() )
+		    }else if( a.connected ){
 		      return -1
+		    }else if( b.connected ){
+		    	return 1
 		    }
-
-		    return 1
 
 		  })
 
-		  this._domContactsList.empty().append( list.map( function( item ){ 
+		  this._domContactsList.empty().append( list.map( function( item ){
 
 	  		item.dom = contactPrototype.clone().removeClass( 'wz-prototype' )
 
@@ -511,10 +515,10 @@ var view = ( function(){
 	  			item.dom.addClass( 'conected' )
 	  		}
 
-	  		item.dom.addClass( 'user-id-' + item.user.id )
+	  		item.dom.addClass( 'user-id-' + item.user.idWorkspace )
 			  item.dom.find( '.contact-name' ).text( item.user.fullName )
 			  item.dom.find( '.contact-img' ).css( 'background-image', 'url( ' + item.user.avatar.big + ' )' )
-			  item.dom.attr( 'data-id', item.user.id )
+			  item.dom.attr( 'data-id', item.user.idWorkspace )
 
 		  	return item.dom
 
@@ -529,7 +533,7 @@ var view = ( function(){
     	if( conversation.img ){
     		$( '.conver-avatar' ).css( 'background-image' , 'url( "' + conversation.img + '")' );
     	}
-    	
+
 		  if( conversation.isGroup ){
 
 		  	var membersText = conversation.users.length === 0 ? ( conversation.users.length + 1 + ' ' + lang.member ) : ( conversation.users.length + 1 + ' ' + lang.members )
@@ -538,11 +542,11 @@ var view = ( function(){
 		    $( '.conver-info' ).addClass( 'viewGroup' );
         $( '.conver-avatar' ).hide();
         $( '.conver-avatar-group' ).show();
-        
+
         if( !conversation.img ){
         	this._setGroupAvatar( conversation.name , $( '.conver-avatar-group' ) );
         }
-        
+
 
 		  }else if( isConnected ) {
 
@@ -572,16 +576,16 @@ var view = ( function(){
   		conversationDom.attr( 'data-id' , conversation.context.id )
 		  conversationDom.find( '.channel-name' ).text( conversation.name )
 
-		  console.log(conversation)
+		  //console.log(conversation)
 
 		  if( conversation.img ){
 				conversationDom.find( '.channel-img' ).css( 'background-image' , 'url( ' + conversation.img + ' )' )
 		  }else if( conversation.isGroup ){
 		  	this._setGroupAvatar( conversation.name, conversationDom.find( '.channel-img' ) )
 		  }else{
-		  	
+
 		  }
-		  
+
 		  conversationDom.find( '.channel-last-msg' ).text( conversation.lastMessage ? conversation.lastMessage.data.text : '' )
 
 		  if( conversation.unread > 0 ) {
@@ -595,19 +599,19 @@ var view = ( function(){
   	updateConversationsListUI( list, id ){
 
 		  list = list.sort( function( a, b ){
-		  	
+
 		  	var dateA = a.lastMessage ? a.lastMessage.time : a.context.created
 		  	var dateB = b.lastMessage ? b.lastMessage.time : b.context.created
 
 		  	if( dateA && dateB ){
 
 		  		return dateB - dateA
-		  		
+
 		  	}
-		  	
+
 		  })
 
-		  this._domConversationsList.empty().append( list.map( function( item ){ 
+		  this._domConversationsList.empty().append( list.map( function( item ){
 
 		  	item.dom = conversationPrototype.clone().removeClass( 'wz-prototype' )
 			  item.dom.addClass( 'channel-id-' + item.context.id )
@@ -638,10 +642,10 @@ var view = ( function(){
 	        item.dom.find( '.channel-badge' ).removeClass( 'visible' ).find( 'span' ).text( '' )
 	      }
 
-			  
+
 			  item.dom.find( '.channel-last-msg' ).text( item.lastMessage ? item.lastMessage.data.text : '' )
 
-		  	return item.dom 
+		  	return item.dom
 
 		  }.bind( this ) ))
 
@@ -654,8 +658,8 @@ var view = ( function(){
 
   	updateMessagesUI( user ){
 
-  		$( '.sender-' + user.id + ' .sender' ).text( user.fullName ).css( 'color' , COLORS[ this._selectColor( user.fullName ) ] );
-  		$( '.sender-' + user.id + ' .message-avatar' ).css( 'background-image' , 'url( ' + user.avatar.big + ' )' )
+  		$( '.sender-' + user.idWorkspace + ' .sender' ).text( user.fullName ).css( 'color' , COLORS[ this._selectColor( user.fullName ) ] );
+  		$( '.sender-' + user.idWorkspace + ' .message-avatar' ).css( 'background-image' , 'url( ' + user.avatar.big + ' )' )
 
 		  this._domMessageContainer.scrollTop( this._domMessageContainer[ 0 ].scrollHeight )
 
@@ -764,14 +768,13 @@ var model = ( function( view ){
 
 		  this.changeMainAreaMode( MAINAREA_NULL )
 		  this.changeSidebarMode( SIDEBAR_NULL )
-		  this.reloadUnread()
   		this.fullLoad()
 
   	}
 
   	_loadFullContactList( callback ){
 
-  		//callback = api.tool.secureCallback( callback )
+  		callback = api.tool.secureCallback( callback )
 
 		  async.parallel({
 
@@ -809,14 +812,17 @@ var model = ( function( view ){
 
   	_loadFullConversationsList( callback ){
 
-		  //callback = api.tool.secureCallback( callback )
+		  callback = api.tool.secureCallback( callback )
 
-		  api.com.list({ protocol : 'chat' }, function( err, contexts ){
+		  api.com.list({ protocol : 'chat', lastMessage: true }, function( err, contexts ){
 
 		    // To Do -> Error
+
 		    if( err ){
 		    	return this.view.launchAlert( err );
 		    }
+
+		    console.log(contexts)
 
 		    contexts.forEach( function( context ){
 		      this.addConversation( context )
@@ -838,9 +844,9 @@ var model = ( function( view ){
 
 		addConversation( context ){
 
-		  if( this.conversations[ context.id ] ){
+		  /*if( this.conversations[ context.id ] ){
 		    return this
-		  }
+		  }*/
 
 		  this.conversations[ context.id ] = new Conversation( this, context )
 		  this.updateConversationsListUI()
@@ -856,11 +862,11 @@ var model = ( function( view ){
 
 		addContact( user ){
 
-		  if( this.contacts[ user.id ] ){
+		  if( this.contacts[ user.idWorkspace ] ){
 		    return this
 		  }
 
-		  this.contacts[ user.id ] = new Contact( this, user )
+		  this.contacts[ user.idWorkspace ] = new Contact( this, user )
 		  this.updateContactsListUI()
 		  return this
 
@@ -876,9 +882,9 @@ var model = ( function( view ){
 		    return
 		  }
 
-		  if( message.sender !== api.system.user().id ){
+		  if( message.sender !== api.system.workspace().idWorkspace ){
 
-		  	if( message.attended.length === 0 && message.attended.indexOf( api.system.user().id ) === -1 && this.view.dom.parent().hasClass( 'wz-app-focus' ) ){
+		  	if( message.attended.length === 0 && message.attended.indexOf( api.system.workspace().idWorkspace ) === -1 && this.view.dom.parent().hasClass( 'wz-app-focus' ) ){
 					message.markAsAttended( { full: true }, console.log.bind( console ) )
 		  	}
 
@@ -1011,10 +1017,10 @@ var model = ( function( view ){
 
 			if( conversationId ){
 
-				if( this.conversations[ conversationId ] && this.conversations[ conversationId ].isGroup 
+				if( this.conversations[ conversationId ] && this.conversations[ conversationId ].isGroup
 					&& !this.conversations[ conversationId ].world
-					&& this.conversations[ conversationId ].admins 
-					&& this.conversations[ conversationId ].admins.indexOf( api.system.user().id ) !== -1 ){
+					&& this.conversations[ conversationId ].admins
+					&& this.conversations[ conversationId ].admins.indexOf( api.system.workspace().idWorkspace ) !== -1 ){
 
 					this.changeMainAreaMode( MAINAREA_GROUPMODE, list, this.conversations[ conversationId ] )
 					this.changeGroupMode( GROUP_EDIT )
@@ -1032,7 +1038,7 @@ var model = ( function( view ){
 
 		ensureConversation( contextId, callback ){
 
-			//callback = api.tool.secureCallback( callback )
+			callback = api.tool.secureCallback( callback )
 
 		  if( this.conversations[ contextId ] ){
 		    return callback()
@@ -1064,6 +1070,8 @@ var model = ( function( view ){
 		}
 
 		fullLoad(){
+
+			this.reloadUnread()
 
 		  async.parallel({
 
@@ -1100,6 +1108,7 @@ var model = ( function( view ){
 		goBack(){
 
 			if( this.isMobile ){
+				this.openedChat = null
 				this.changeMainAreaMode( this._prevMainAreaMode, this._mainAreaMode );
 			}
 
@@ -1128,7 +1137,7 @@ var model = ( function( view ){
 
 			this.updateConversationUnread( notification.comContext )
 
-			if( notification.sender !== api.system.user().id ){
+			if( notification.sender !== api.system.workspace().idWorkspace ){
 
 				api.user( notification.sender, function( error, user ){
 
@@ -1155,7 +1164,7 @@ var model = ( function( view ){
 				return view.launchAlert( 'Grupo no existe' )
 			}
 
-			this.conversations[ groupId ].context.removeUser( api.system.user().id, function( err ){
+			this.conversations[ groupId ].context.removeUser( api.system.workspace().idWorkspace, function( err ){
 
 				if( err ){
 					return view.launchAlert( err )
@@ -1193,7 +1202,7 @@ var model = ( function( view ){
 				conversation = conversationId
 			}
 
-			console.log( conversation );
+			console.log( 'openConversation', conversation );
 
 		  if( this.openedChat && conversation.context.id === this.openedChat.context.id ){
 		    return this
@@ -1213,13 +1222,13 @@ var model = ( function( view ){
 
 		  //TODO pedir 500 mensajes y además saber si hay más o no
 
-	  	conversation.context.getMessages( { withAttendedStatus : true }, function( err, list ){
+	  	conversation.context.getMessages( { withAttendedStatus : true, limit : 100, order : 'newFirst' }, function( err, list ){
 
 	  		if( err ){
 	  			return this.view.launchAlert( err );
 	  		}
 
-	  		this.appendMessageList( list );
+	  		this.appendMessageList( list.reverse() );
 
 	  		//this.appendMessageList( list.slice( list.length - 350 , list.length ) );
 
@@ -1245,7 +1254,7 @@ var model = ( function( view ){
 		      continue
 		    }
 
-		    if( this.conversations[ i ].users[ 0 ] === contact.user.id ){
+		    if( this.conversations[ i ].users[ 0 ] === contact.user.idWorkspace ){
 		      conversation = this.conversations[ i ]
 		      break
 		    }
@@ -1256,7 +1265,7 @@ var model = ( function( view ){
 		    return this.openConversation( conversation )
 		  }
 
-		  var context = new FakeContext( contact.user.id )
+		  var context = new FakeContext( contact.user.idWorkspace )
 
 		  this.addConversation( context )
 		  this.openConversation( this.conversations[ context.id ] )
@@ -1280,14 +1289,13 @@ var model = ( function( view ){
 					}
 
 				}.bind(this))
-		    
+
 		  }
 
 		}
 
 		reloadUnread(){
 
-			console.log(api)
 			api.notification.count( 'chat', {}, function( err, counter ){
 
 		  	if( err ){
@@ -1317,14 +1325,14 @@ var model = ( function( view ){
 
 		  if( this._groupMode == GROUP_EDIT && info.conversationId ){
 
-				if( this.conversations[ info.conversationId ] && this.conversations[ info.conversationId ].isGroup 
+				if( this.conversations[ info.conversationId ] && this.conversations[ info.conversationId ].isGroup
 					&& !this.conversations[ info.conversationId ].world
-					&& this.conversations[ info.conversationId ].admins 
-					&& this.conversations[ info.conversationId ].admins.indexOf( api.system.user().id ) !== -1 ){
+					&& this.conversations[ info.conversationId ].admins
+					&& this.conversations[ info.conversationId ].admins.indexOf( api.system.workspace().idWorkspace ) !== -1 ){
 
 					this.conversations[ info.conversationId ].editConversation( info )
 
-				}		  	
+				}
 
 		  }else if( this._groupMode == GROUP_CREATE ){
 		  	new Conversation( this, null, info )
@@ -1359,7 +1367,7 @@ var model = ( function( view ){
 		  }
 
 		  this.view.updateContactsListUI( list )
-		
+
 		}
 
 		updateConversationId( oldId, newId ){
@@ -1447,7 +1455,7 @@ var model = ( function( view ){
   		this.app = app
 		  this.context = context
 		  this.world
-		  this.lastMessage
+		  this.lastMessage = context.lastMessage
 		  this.opened = false
 		  this.admins = [];
 		  this.isGroup = false // To Do
@@ -1479,7 +1487,7 @@ var model = ( function( view ){
 		  	}
 
 		  }
-		  
+
 		  this.unread
 
 		  this._startConversation()
@@ -1489,7 +1497,7 @@ var model = ( function( view ){
   	_loadAdditionalInfo(){
 
   		this._loadUsers()
-  		this._loadLastMessage()
+  		//this._loadLastMessage()
   		this._loadUnread()
 
 		}
@@ -1529,8 +1537,7 @@ var model = ( function( view ){
 		  		return this.app.view.launchAlert( err )
 		  	}
 
-		  	//console.log( list, admins )
-		    this.users = api.tool.arrayDifference( list, [ api.system.user().id ] )
+		    this.users = api.tool.arrayDifference( list, [ parseInt(api.system.workspace().idWorkspace, 10) ] )
 		    this.admins = admins;
 		    this.updateUI()
 
@@ -1548,21 +1555,21 @@ var model = ( function( view ){
 
 			}else{
 
-		    api.com.create( 
-		    { 
-		    	protocol : 'chat', 
-		    	name: this.name, 
-		    	users : this.users 
+		    api.com.create(
+		    {
+		    	protocol : 'chat',
+		    	name: this.name,
+		    	users : this.users
 		    }, function( err, context ){
 
 		    	if( err ){
-		    		return this.app.view.launchAlert( err ) 
+		    		return this.app.view.launchAlert( err )
 		    	}
 
 		    	this.app.conversations[ context.id ] = this
 	      	this.context = context
 	      	this.app.hideGroupMenu()
-	      	this.app.updateConversationsListUI() 
+	      	this.app.updateConversationsListUI()
 	      	this._loadAdditionalInfo()
 	      	this.app.openConversation( context.id )
 
@@ -1574,8 +1581,8 @@ var model = ( function( view ){
 
 		_upgradeToRealConversation( callback ){
 
-			//callback = api.tool.secureCallback( callback )
-			
+			callback = api.tool.secureCallback( callback )
+
 			//Creating group
 		  if( !( this.context instanceof FakeContext ) ){
 		    return callback()
@@ -1621,7 +1628,7 @@ var model = ( function( view ){
 			//TODO cambiarMiembros
 			var toDelete = []
 	    var toAdd = []
-	    console.log( this.users, info.members )
+	    //console.log( this.users, info.members )
 
 	    for( var i = 0; i < info.members.length; i++ ){
 
@@ -1650,7 +1657,8 @@ var model = ( function( view ){
 	   	this.context.removeUser( toDelete, function( err, res ){
 	   		console.log( err )
 	   	})
-			console.log( toAdd, toDelete )
+
+			//console.log( toAdd, toDelete )
 			this.app.hideGroupMenu()
 
 		}
@@ -1726,7 +1734,7 @@ var model = ( function( view ){
 				if( this.isGroup ){
 			  	this.img = ''
 			  }else if( this.app.contacts[ this.users[ 0 ] ] ){
-			  	console.log(this.app.contacts[ this.users[ 0 ] ])
+			  	//console.log(this.app.contacts[ this.users[ 0 ] ])
 			    this.img = this.app.contacts[ this.users[ 0 ] ].user.avatar.big // To Do -> Mirar si es el tamaño adecuado
 			  }else if( this.users[0] ){
 
@@ -1816,7 +1824,21 @@ var controller = ( function( model, view ){
       this.model = model
       this.view = view
       this._bindEvents()
+      this._checkOpenParams()
 
+    }
+
+    _checkOpenParams(){
+
+      if(window.params && window.params.command && window.params.command === 'pushAttended' && window.params.data && window.params.data.comContext ){
+
+        console.log(window.params.data.comContext)
+        setTimeout(function(){
+          model.openConversation( parseInt(window.params.data.comContext) )
+        },750)
+        
+      }
+      
     }
 
     _bindEvents(){
@@ -1892,7 +1914,7 @@ var controller = ( function( model, view ){
       }.bind(this))
 
       this.dom.on( 'click', '.save-group, .accept-button', function(){
-         
+
         var info = {
 
           name: $( '.group-name-input input' ).val(),
@@ -1924,6 +1946,25 @@ var controller = ( function( model, view ){
         model.filterElements( $( this ).val() , true )
       })
 
+      this.dom.on( 'app-param', function( e, params ){
+
+        console.log('app-param', params)
+        if( params && params.command === 'pushAttended' ){
+
+          //console.log(JSON.parse(params.data))
+          if( params.data.comContext ){
+            model.openConversation( parseInt( params.data.comContext ) )
+          }
+
+        }
+
+      })
+
+      $(window).on('resize', () => {
+        console.log('resize')
+        view.adjustScrollResize(this.dom.height())
+      })
+
       this._domContactsList.on( 'click', '.contact', function(){
         model.openConversationWithContact( parseInt( $(this).attr( 'data-id' ) ) )
       })
@@ -1935,7 +1976,7 @@ var controller = ( function( model, view ){
       // COM API Events
       api.com.on( 'message', function( event ){
 
-        console.log( event )
+        console.log( 'message', event )
         if( event.data.action === 'message' ){
 
           model.ensureConversation( event.context, function( err ){
@@ -1959,7 +2000,7 @@ var controller = ( function( model, view ){
       api.com.on( 'userAdded', function( conversationId, user ){
 
         console.log( 'userAdded', conversationId, user )
-        if( user.id == api.system.user().id ){
+        if( user.id == api.system.workspace().idWorkspace ){
           model.ensureConversation( conversationId )
         }else{
           model.updateConversationInfo( conversationId )
@@ -1970,7 +2011,7 @@ var controller = ( function( model, view ){
       api.com.on( 'userRemoved', function( conversationId, userId ){
 
         console.log( 'userRemoved', conversationId, userId )
-        if( userId === api.system.user().id ){
+        if( userId === api.system.workspace().idWorkspace ){
           model.deleteConversationFront( conversationId )
         }else{
           model.updateConversationInfo( conversationId )
@@ -1991,6 +2032,7 @@ var controller = ( function( model, view ){
 
       api.notification.on( 'attended', function( list ){
 
+        console.log('attended', list)
         list.forEach( function( element ){
 
           if( element.comContext ){
@@ -2001,7 +2043,17 @@ var controller = ( function( model, view ){
 
       })
 
-    }  
+      // System API Events
+      api.system.on('connect', function(){
+        console.log('connect')
+        model.fullLoad()
+      })
+
+      api.system.on('disconnect', function(){
+        console.log('disconnect')
+      })
+
+    }
 
   }
 

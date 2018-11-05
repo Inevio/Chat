@@ -103,5 +103,22 @@ if ( !params ) {
   }
 
 }*/
+if( !document ){
 
-start();
+  $(this).removeClass('dark');
+  $('.ui-window.chat').removeClass('dark');
+
+  start();
+
+}else{
+
+  var mobile = $(document.body).hasClass('wz-mobile-view');
+
+  if( mobile ){
+    $(document.body).addClass('dark');
+    $('.ui-window.chat').addClass('dark');
+  }
+
+  start();
+
+}

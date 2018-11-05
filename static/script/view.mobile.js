@@ -11,8 +11,6 @@ const GROUP_NULL = 0
 const GROUP_CREATE = 1
 const GROUP_EDIT = 2
 
-console.log(api)
-
 var view = ( function(){
 
 	var contactPrototype      = $( '.contact.wz-prototype' )
@@ -39,6 +37,7 @@ var view = ( function(){
 
   		//this.model = model
   		this.dom = win
+  		this.domHeight = parseInt(win.height())
 
   		this._domContactsList = $( '.contact-list', this.dom )
 		  this._domConversationsList = $( '.channel-list', this.dom )
@@ -103,7 +102,7 @@ var view = ( function(){
 
 		_startMobile(){
 
-			$( '.ui-window' ).addClass( 'dark' )
+			//$( '.ui-window' ).addClass( 'dark' )
 
 			$( '.inChats' ).removeClass( 'inChats' )
 	    $( '.new-group-button, .new-group' ).hide()
@@ -167,9 +166,15 @@ var view = ( function(){
 
   	}
 
+  	adjustScrollResize( newHeight ){
+  		if( newHeight === this.domHeight ) return
+  		this._domMessageContainer.scrollTop( this._domMessageContainer.scrollTop() + this.domHeight - newHeight)
+  		this.domHeight = newHeight
+  	}
+
   	appendMessage( message, loadingList ){
 
-  		var dom = ( message.sender === api.system.user().id ? this._domMessageMePrototype : this._domMessageOtherPrototype ).clone().removeClass( 'wz-prototype' ).data( 'message', message )
+  		var dom = ( message.sender === api.system.workspace().idWorkspace ? this._domMessageMePrototype : this._domMessageOtherPrototype ).clone().removeClass( 'wz-prototype' ).data( 'message', message )
 		  var date = new Date( message.time )
 		  var hh = ( '0' + date.getHours().toString() ).slice(-2)
 		  var mm = ( '0' + date.getMinutes().toString() ).slice(-2)
@@ -198,7 +203,7 @@ var view = ( function(){
 		    dom.addClass( 'sender-group' ).find( '.sender' ).addClass( 'visible' ).text( message.senderName ).css( 'color' , COLORS[ this._selectColor( message.senderName ) ] )
 		  }
 
-		  if( message.sender !== api.system.user().id ){
+		  if( message.sender !== api.system.workspace().idWorkspace ){
 		    dom.find( '.message-avatar' ).css( 'background-image' , 'url( ' + message.senderAvatar + ' )' )
 		  }
 
@@ -214,12 +219,13 @@ var view = ( function(){
 				return dom
 
 		  }else{
-		  	
+
 		  	var down = this._isScrolledToBottom()
 			  this._domMessageContainer.append( dom )
 
 			  if( down ){
-			    this._domMessageContainer.scrollTop( this._domMessageContainer[ 0 ].scrollHeight )
+			    //this._domMessageContainer.scrollTop( this._domMessageContainer[ 0 ].scrollHeight )
+			    this._domMessageContainer.scrollTop( 999999999 )
 			  }
 
 		  }
@@ -453,7 +459,7 @@ var view = ( function(){
       $('.initial-header .new-group').removeClass('visible');
       $('.initial-header .back-button').addClass('visible');
       $('.initial-header .accept-button').show();
-	    
+
 	    $( '.memberDom' ).remove()
 	    $( '.group-menu .ui-input-search input' ).val( '' )
 
@@ -463,16 +469,16 @@ var view = ( function(){
 			  item.dom.find( 'span' ).text( item.user.fullName )
 			  item.dom.addClass( 'memberDom' )
 			  item.dom.find( '.member-avatar' ).css( 'background-image' , 'url( ' + item.user.avatar.big + ' )' )
-			  item.dom.attr( 'data-id', item.user.id )
+			  item.dom.attr( 'data-id', item.user.idWorkspace )
 
-			  if( conversation && conversation.users && (conversation.users.indexOf( item.user.id ) != -1) ){
+			  if( conversation && conversation.users && (conversation.users.indexOf( item.user.idWorkspace ) != -1) ){
 
 			  	item.dom.addClass( 'active' )
 			  	item.dom.find( '.ui-checkbox' ).addClass( 'active' )
 
 			  }
 
-		  	return item.dom 
+		  	return item.dom
 
 	    }))
 
@@ -490,19 +496,17 @@ var view = ( function(){
 
 			list = list.sort( function( a, b ){
 
-		    if( a.connected && b.connected ){
-		      return a.user.fullName.localeCompare( b.user.fullName )
-		    }
-
-		    if( a.connected ){
+		    if( (a.connected && b.connected) || (!a.connected && !b.connected) ){
+		      return a.user.fullName.toLowerCase().localeCompare( b.user.fullName.toLowerCase() )
+		    }else if( a.connected ){
 		      return -1
+		    }else if( b.connected ){
+		    	return 1
 		    }
-
-		    return 1
 
 		  })
 
-		  this._domContactsList.empty().append( list.map( function( item ){ 
+		  this._domContactsList.empty().append( list.map( function( item ){
 
 	  		item.dom = contactPrototype.clone().removeClass( 'wz-prototype' )
 
@@ -510,10 +514,10 @@ var view = ( function(){
 	  			item.dom.addClass( 'conected' )
 	  		}
 
-	  		item.dom.addClass( 'user-id-' + item.user.id )
+	  		item.dom.addClass( 'user-id-' + item.user.idWorkspace )
 			  item.dom.find( '.contact-name' ).text( item.user.fullName )
 			  item.dom.find( '.contact-img' ).css( 'background-image', 'url( ' + item.user.avatar.big + ' )' )
-			  item.dom.attr( 'data-id', item.user.id )
+			  item.dom.attr( 'data-id', item.user.idWorkspace )
 
 		  	return item.dom
 
@@ -528,7 +532,7 @@ var view = ( function(){
     	if( conversation.img ){
     		$( '.conver-avatar' ).css( 'background-image' , 'url( "' + conversation.img + '")' );
     	}
-    	
+
 		  if( conversation.isGroup ){
 
 		  	var membersText = conversation.users.length === 0 ? ( conversation.users.length + 1 + ' ' + lang.member ) : ( conversation.users.length + 1 + ' ' + lang.members )
@@ -537,11 +541,11 @@ var view = ( function(){
 		    $( '.conver-info' ).addClass( 'viewGroup' );
         $( '.conver-avatar' ).hide();
         $( '.conver-avatar-group' ).show();
-        
+
         if( !conversation.img ){
         	this._setGroupAvatar( conversation.name , $( '.conver-avatar-group' ) );
         }
-        
+
 
 		  }else if( isConnected ) {
 
@@ -571,16 +575,16 @@ var view = ( function(){
   		conversationDom.attr( 'data-id' , conversation.context.id )
 		  conversationDom.find( '.channel-name' ).text( conversation.name )
 
-		  console.log(conversation)
+		  //console.log(conversation)
 
 		  if( conversation.img ){
 				conversationDom.find( '.channel-img' ).css( 'background-image' , 'url( ' + conversation.img + ' )' )
 		  }else if( conversation.isGroup ){
 		  	this._setGroupAvatar( conversation.name, conversationDom.find( '.channel-img' ) )
 		  }else{
-		  	
+
 		  }
-		  
+
 		  conversationDom.find( '.channel-last-msg' ).text( conversation.lastMessage ? conversation.lastMessage.data.text : '' )
 
 		  if( conversation.unread > 0 ) {
@@ -594,19 +598,19 @@ var view = ( function(){
   	updateConversationsListUI( list, id ){
 
 		  list = list.sort( function( a, b ){
-		  	
+
 		  	var dateA = a.lastMessage ? a.lastMessage.time : a.context.created
 		  	var dateB = b.lastMessage ? b.lastMessage.time : b.context.created
 
 		  	if( dateA && dateB ){
 
 		  		return dateB - dateA
-		  		
+
 		  	}
-		  	
+
 		  })
 
-		  this._domConversationsList.empty().append( list.map( function( item ){ 
+		  this._domConversationsList.empty().append( list.map( function( item ){
 
 		  	item.dom = conversationPrototype.clone().removeClass( 'wz-prototype' )
 			  item.dom.addClass( 'channel-id-' + item.context.id )
@@ -637,10 +641,10 @@ var view = ( function(){
 	        item.dom.find( '.channel-badge' ).removeClass( 'visible' ).find( 'span' ).text( '' )
 	      }
 
-			  
+
 			  item.dom.find( '.channel-last-msg' ).text( item.lastMessage ? item.lastMessage.data.text : '' )
 
-		  	return item.dom 
+		  	return item.dom
 
 		  }.bind( this ) ))
 
@@ -653,8 +657,8 @@ var view = ( function(){
 
   	updateMessagesUI( user ){
 
-  		$( '.sender-' + user.id + ' .sender' ).text( user.fullName ).css( 'color' , COLORS[ this._selectColor( user.fullName ) ] );
-  		$( '.sender-' + user.id + ' .message-avatar' ).css( 'background-image' , 'url( ' + user.avatar.big + ' )' )
+  		$( '.sender-' + user.idWorkspace + ' .sender' ).text( user.fullName ).css( 'color' , COLORS[ this._selectColor( user.fullName ) ] );
+  		$( '.sender-' + user.idWorkspace + ' .message-avatar' ).css( 'background-image' , 'url( ' + user.avatar.big + ' )' )
 
 		  this._domMessageContainer.scrollTop( this._domMessageContainer[ 0 ].scrollHeight )
 
