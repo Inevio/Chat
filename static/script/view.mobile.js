@@ -11,8 +11,6 @@ const GROUP_NULL = 0
 const GROUP_CREATE = 1
 const GROUP_EDIT = 2
 
-console.log(api)
-
 var view = ( function(){
 
 	var contactPrototype      = $( '.contact.wz-prototype' )
@@ -39,6 +37,7 @@ var view = ( function(){
 
   		//this.model = model
   		this.dom = win
+  		this.domHeight = parseInt(win.height())
 
   		this._domContactsList = $( '.contact-list', this.dom )
 		  this._domConversationsList = $( '.channel-list', this.dom )
@@ -103,7 +102,7 @@ var view = ( function(){
 
 		_startMobile(){
 
-			$( '.ui-window' ).addClass( 'dark' )
+			//$( '.ui-window' ).addClass( 'dark' )
 
 			$( '.inChats' ).removeClass( 'inChats' )
 	    $( '.new-group-button, .new-group' ).hide()
@@ -167,6 +166,12 @@ var view = ( function(){
 
   	}
 
+  	adjustScrollResize( newHeight ){
+  		if( newHeight === this.domHeight ) return
+  		this._domMessageContainer.scrollTop( this._domMessageContainer.scrollTop() + this.domHeight - newHeight)
+  		this.domHeight = newHeight
+  	}
+
   	appendMessage( message, loadingList ){
 
   		var dom = ( message.sender === api.system.workspace().idWorkspace ? this._domMessageMePrototype : this._domMessageOtherPrototype ).clone().removeClass( 'wz-prototype' ).data( 'message', message )
@@ -219,7 +224,8 @@ var view = ( function(){
 			  this._domMessageContainer.append( dom )
 
 			  if( down ){
-			    this._domMessageContainer.scrollTop( this._domMessageContainer[ 0 ].scrollHeight )
+			    //this._domMessageContainer.scrollTop( this._domMessageContainer[ 0 ].scrollHeight )
+			    this._domMessageContainer.scrollTop( 999999999 )
 			  }
 
 		  }
@@ -490,15 +496,13 @@ var view = ( function(){
 
 			list = list.sort( function( a, b ){
 
-		    if( a.connected && b.connected ){
-		      return a.user.fullName.localeCompare( b.user.fullName )
-		    }
-
-		    if( a.connected ){
+		    if( (a.connected && b.connected) || (!a.connected && !b.connected) ){
+		      return a.user.fullName.toLowerCase().localeCompare( b.user.fullName.toLowerCase() )
+		    }else if( a.connected ){
 		      return -1
+		    }else if( b.connected ){
+		    	return 1
 		    }
-
-		    return 1
 
 		  })
 
@@ -571,7 +575,7 @@ var view = ( function(){
   		conversationDom.attr( 'data-id' , conversation.context.id )
 		  conversationDom.find( '.channel-name' ).text( conversation.name )
 
-		  console.log(conversation)
+		  //console.log(conversation)
 
 		  if( conversation.img ){
 				conversationDom.find( '.channel-img' ).css( 'background-image' , 'url( ' + conversation.img + ' )' )

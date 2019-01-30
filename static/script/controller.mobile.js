@@ -14,7 +14,21 @@ var controller = ( function( model, view ){
       this.model = model
       this.view = view
       this._bindEvents()
+      this._checkOpenParams()
 
+    }
+
+    _checkOpenParams(){
+
+      if(window.params && window.params.command && window.params.command === 'pushAttended' && window.params.data && window.params.data.comContext ){
+
+        console.log(window.params.data.comContext)
+        setTimeout(function(){
+          model.openConversation( parseInt(window.params.data.comContext) )
+        },750)
+        
+      }
+      
     }
 
     _bindEvents(){
@@ -122,6 +136,25 @@ var controller = ( function( model, view ){
         model.filterElements( $( this ).val() , true )
       })
 
+      this.dom.on( 'app-param', function( e, params ){
+
+        console.log('app-param', params)
+        if( params && params.command === 'pushAttended' ){
+
+          //console.log(JSON.parse(params.data))
+          if( params.data.comContext ){
+            model.openConversation( parseInt( params.data.comContext ) )
+          }
+
+        }
+
+      })
+
+      $(window).on('resize', () => {
+        console.log('resize')
+        view.adjustScrollResize(this.dom.height())
+      })
+
       this._domContactsList.on( 'click', '.contact', function(){
         model.openConversationWithContact( parseInt( $(this).attr( 'data-id' ) ) )
       })
@@ -133,7 +166,7 @@ var controller = ( function( model, view ){
       // COM API Events
       api.com.on( 'message', function( event ){
 
-        console.log( event )
+        console.log( 'message', event )
         if( event.data.action === 'message' ){
 
           model.ensureConversation( event.context, function( err ){
@@ -189,6 +222,7 @@ var controller = ( function( model, view ){
 
       api.notification.on( 'attended', function( list ){
 
+        console.log('attended', list)
         list.forEach( function( element ){
 
           if( element.comContext ){
@@ -197,6 +231,16 @@ var controller = ( function( model, view ){
 
         })
 
+      })
+
+      // System API Events
+      api.system.on('connect', function(){
+        console.log('connect')
+        model.fullLoad()
+      })
+
+      api.system.on('disconnect', function(){
+        console.log('disconnect')
       })
 
     }
