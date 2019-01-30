@@ -694,14 +694,13 @@ var model = ( function( view ){
 
 		  this.changeMainAreaMode( MAINAREA_NULL )
 		  this.changeSidebarMode( SIDEBAR_NULL )
-		  this.reloadUnread()
   		this.fullLoad()
 
   	}
 
   	_loadFullContactList( callback ){
 
-  		//callback = api.tool.secureCallback( callback )
+  		callback = api.tool.secureCallback( callback )
 
 		  async.parallel({
 
@@ -739,14 +738,17 @@ var model = ( function( view ){
 
   	_loadFullConversationsList( callback ){
 
-		  //callback = api.tool.secureCallback( callback )
+		  callback = api.tool.secureCallback( callback )
 
-		  api.com.list({ protocol : 'chat' }, function( err, contexts ){
+		  api.com.list({ protocol : 'chat', lastMessage: true }, function( err, contexts ){
 
 		    // To Do -> Error
+
 		    if( err ){
 		    	return this.view.launchAlert( err );
 		    }
+
+		    console.log(contexts)
 
 		    contexts.forEach( function( context ){
 		      this.addConversation( context )
@@ -768,9 +770,9 @@ var model = ( function( view ){
 
 		addConversation( context ){
 
-		  if( this.conversations[ context.id ] ){
+		  /*if( this.conversations[ context.id ] ){
 		    return this
-		  }
+		  }*/
 
 		  this.conversations[ context.id ] = new Conversation( this, context )
 		  this.updateConversationsListUI()
@@ -962,7 +964,7 @@ var model = ( function( view ){
 
 		ensureConversation( contextId, callback ){
 
-			//callback = api.tool.secureCallback( callback )
+			callback = api.tool.secureCallback( callback )
 
 		  if( this.conversations[ contextId ] ){
 		    return callback()
@@ -994,6 +996,8 @@ var model = ( function( view ){
 		}
 
 		fullLoad(){
+
+			this.reloadUnread()
 
 		  async.parallel({
 
@@ -1030,6 +1034,7 @@ var model = ( function( view ){
 		goBack(){
 
 			if( this.isMobile ){
+				this.openedChat = null
 				this.changeMainAreaMode( this._prevMainAreaMode, this._mainAreaMode );
 			}
 
@@ -1123,7 +1128,7 @@ var model = ( function( view ){
 				conversation = conversationId
 			}
 
-			console.log( conversation );
+			console.log( 'openConversation', conversation );
 
 		  if( this.openedChat && conversation.context.id === this.openedChat.context.id ){
 		    return this
@@ -1143,13 +1148,13 @@ var model = ( function( view ){
 
 		  //TODO pedir 500 mensajes y además saber si hay más o no
 
-	  	conversation.context.getMessages( { withAttendedStatus : true }, function( err, list ){
+	  	conversation.context.getMessages( { withAttendedStatus : true, limit : 100, order : 'newFirst' }, function( err, list ){
 
 	  		if( err ){
 	  			return this.view.launchAlert( err );
 	  		}
 
-	  		this.appendMessageList( list );
+	  		this.appendMessageList( list.reverse() );
 
 	  		//this.appendMessageList( list.slice( list.length - 350 , list.length ) );
 
@@ -1217,7 +1222,6 @@ var model = ( function( view ){
 
 		reloadUnread(){
 
-			console.log(api)
 			api.notification.count( 'chat', {}, function( err, counter ){
 
 		  	if( err ){
@@ -1377,7 +1381,7 @@ var model = ( function( view ){
   		this.app = app
 		  this.context = context
 		  this.world
-		  this.lastMessage
+		  this.lastMessage = context.lastMessage
 		  this.opened = false
 		  this.admins = [];
 		  this.isGroup = false // To Do
@@ -1419,7 +1423,7 @@ var model = ( function( view ){
   	_loadAdditionalInfo(){
 
   		this._loadUsers()
-  		this._loadLastMessage()
+  		//this._loadLastMessage()
   		this._loadUnread()
 
 		}
@@ -1459,7 +1463,6 @@ var model = ( function( view ){
 		  		return this.app.view.launchAlert( err )
 		  	}
 
-		  	//console.log( list, admins )
 		    this.users = api.tool.arrayDifference( list, [ parseInt(api.system.workspace().idWorkspace, 10) ] )
 		    this.admins = admins;
 		    this.updateUI()
@@ -1551,7 +1554,7 @@ var model = ( function( view ){
 			//TODO cambiarMiembros
 			var toDelete = []
 	    var toAdd = []
-	    console.log( this.users, info.members )
+	    //console.log( this.users, info.members )
 
 	    for( var i = 0; i < info.members.length; i++ ){
 
@@ -1580,7 +1583,8 @@ var model = ( function( view ){
 	   	this.context.removeUser( toDelete, function( err, res ){
 	   		console.log( err )
 	   	})
-			console.log( toAdd, toDelete )
+
+			//console.log( toAdd, toDelete )
 			this.app.hideGroupMenu()
 
 		}
@@ -1656,7 +1660,7 @@ var model = ( function( view ){
 				if( this.isGroup ){
 			  	this.img = ''
 			  }else if( this.app.contacts[ this.users[ 0 ] ] ){
-			  	console.log(this.app.contacts[ this.users[ 0 ] ])
+			  	//console.log(this.app.contacts[ this.users[ 0 ] ])
 			    this.img = this.app.contacts[ this.users[ 0 ] ].user.avatar.big // To Do -> Mirar si es el tamaño adecuado
 			  }else if( this.users[0] ){
 
